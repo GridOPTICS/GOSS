@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+
+    <feature name="goss-core-feature" version="${pom.version}">
+<!--     	<config name="pnnl.goss.core.server"> -->
+<!--   			brokerURI=tcp://${activemq.host}:${activemq.port} -->
+<!--   			systemUser=goss -->
+<!-- 			systemPW=CHANGEME -->
+<!-- 			useAuthorization=true -->
+<!-- 			ldapURL=ldap://localhost:10389 -->
+<!-- 		</config> -->
+		
+<!-- 		<config name="pnnl.goss.core.security"> -->
+<!-- 			ac_databaseURI=jdbc:mysql://localhost:3306/auth_policy -->
+<!-- 			ac_databaseUser=security -->
+<!-- 			ac_databasePW=CHANGEME -->
+<!-- 		</config> -->
+		
+<!-- 		<config name="pnnl.goss.core.client"> -->
+<!-- 			brokerURI=tcp://${activemq.host}:${activemq.port} -->
+<!-- 		</config> -->
+		<configfile finalname="/deploy/LDAPLogin.xml">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/xml/ldap-config
+		</configfile>
+		<configfile finalname="/etc/pnnl.goss.core.security.utils.cfg">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/security-utils-config
+		</configfile>
+		<configfile finalname="/etc/pnnl-activemq-goss-broker.xml">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/xml/activemq-config
+		</configfile>
+		<configfile finalname="/etc/pnnl-activemq-goss-broker-nosecurity.xml">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/xml/activemq-config-nosec
+		</configfile>
+		<configfile finalname="/etc/pnnl.goss.activemq.broker.cfg">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/activemq
+		</configfile>
+		<configfile finalname="/etc/pnnl.goss.core.client.cfg">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/client-config
+		</configfile>
+		<configfile finalname="/etc/pnnl.goss.core.security.cfg">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/security-config
+		</configfile>
+
+		<configfile finalname="/etc/pnnl.goss.core.server.cfg">
+			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/server-config
+		</configfile>
+
+
+    	<feature version="${cxf.version}">cxf</feature>
+    	<!-- Installs all the necessary activemq info for the broker and web-console -->
+<!-- 		<feature version="${pom.version}">goss-activemq-broker-feature</feature> -->
+    	<feature version="${activemq.version}" >activemq</feature>
+    	<feature version="${activemq.version}" >activemq-web-console</feature>
+    	
+    	<!-- Installs all the necessary activemq info for the broker and web-console -->
+    	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/${pom.version}</bundle>
+    	<bundle start-level="81" dependency="true">mvn:pnnl.goss/goss-activemq-broker/${pom.version}</bundle>
+    	
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${xstream.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${commons-io.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${commons-dbcp.version}</bundle>
+    	<bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql-connector.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${httpclient-osgi.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${httpclient-osgi.version}</bundle>
+    	
+    	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/1.19</bundle>
+  		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/1.20</bundle>
+    	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/1.20</bundle>
+  		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/1.9</bundle>
+    	
+    	<bundle start-level="84" dependency="true">mvn:pnnl.goss/goss-core/${pom.version}</bundle>
+    	<bundle start-level="85" dependency="true">mvn:pnnl.goss/goss-core-client/${pom.version}</bundle>    	    	
+    	<bundle start-level="86" dependency="true">mvn:pnnl.goss/goss-core-security/${pom.version}</bundle>
+    	<bundle start-level="87" dependency="true">mvn:pnnl.goss/goss-core-server/${pom.version}</bundle>
+
+    </feature>   
+</features>

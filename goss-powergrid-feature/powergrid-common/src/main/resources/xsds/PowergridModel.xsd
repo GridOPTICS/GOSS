@@ -1,0 +1,1312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!--
+ * ER/Studio Data Architect 9.1 XML Schema Generation
+ * Project:		PowerGridModel.dm1
+ * Version:		1.0
+ * Date Created:	3/12/2014
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"
+           jaxb:version="1.0">
+<xs:annotation>
+   <xs:appinfo>
+      <jaxb:globalBindings generateIsSetMethod="true">
+          <xjc:serializable uid="12343"/>
+      </jaxb:globalBindings>
+   </xs:appinfo>
+</xs:annotation>
+
+
+  <xs:complexType name="Area">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="AreaName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="AreaId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Isw">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Pdes">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Ptol">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Branch">
+    <xs:sequence>
+      <xs:element name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="FromBusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="ToBusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="IndexNum">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Ckt">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="2"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="R">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="X">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Rating">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="RateA">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="RateB">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="RateC">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="P">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Q">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Bus">
+    <xs:sequence>
+      <xs:element name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="0" name="SubstationId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="BusName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="BaseKv">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Code">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Pl">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Ql">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Gl">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Bl">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="AreaId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Va">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Vm">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="ZoneId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BusTimestep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Code">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Va">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Vm">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ConnectivityNode">
+    <xs:sequence>
+      <xs:element name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Contingency">
+    <xs:sequence>
+      <xs:element name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="PowerFlowStatus">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContingencyBranchOut">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContingencyBranchViolation">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Voltage">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContingencyBranchViolationTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Voltage">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContingencyBusViolation">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Voltage">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContingencyBusViolationTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Voltage">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContingencyTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="ContingencyId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="PowerFlowStatus">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EquipmentContainer">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GlobalMrid">
+    <xs:sequence>
+      <xs:element name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="DataType">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="10"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Line">
+    <xs:sequence>
+      <xs:element name="LineId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="0" name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Gi">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Bi">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Gj">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Bj">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Bcap">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LineTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="LineId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="P">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Q">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Load">
+    <xs:sequence>
+      <xs:element name="LoadId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="LoadName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Pload">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Qload">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LoadTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="LoadId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Pload">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Qload">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Machine">
+    <xs:sequence>
+      <xs:element name="MachineId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MachineName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Pgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Qgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MaxPgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MaxQgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MinPgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="MinQgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="IsSvc">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Vs">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Ireg">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Zr">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Zx">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Rt">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Xt">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Gtap">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="RmPct">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MachineTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="MachineId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Pgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Qgen">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Measurement">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Powergrid">
+    <xs:sequence>
+      <xs:element name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="CoordinateSystem">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PowergridTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Substation">
+    <xs:sequence>
+      <xs:element name="SubstationId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="0" name="AreaName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="0" name="ZoneName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="SubstationName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Latitude">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Longitude">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Switch">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="SubstationId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SwitchedShunt">
+    <xs:sequence>
+      <xs:element name="SwitchedShuntId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BusNumber">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="SwitchedShuntName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Bshunt">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Binit">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="ModSw">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="VswHi">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="VswLo">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="SwRem">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="N1">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="B1">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="N2">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="B2">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="N3">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="B3">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SwitchedShuntTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="SwitchedShuntId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Terminal">
+    <xs:sequence>
+      <xs:element name="TerminalId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TerminalBranchlMap">
+    <xs:sequence>
+      <xs:element name="FromOrToTerminal">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TerminalId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TerminalSwitchMap">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="TerminalId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="SubstationId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TerminalZbrmap">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="TerminalId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Transformer">
+    <xs:sequence>
+      <xs:element name="TransformerId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="0" name="BranchId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Ratio">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Icont">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="TapPosition">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Angle">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Rma">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Rmi">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Vma">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Table1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TransformerTimeStep">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TimeStep">
+        <xs:simpleType>
+          <xs:restriction base="xs:dateTime"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="TransformerId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="TapPosition">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Ratio">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Status">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="P">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Q">
+        <xs:simpleType>
+          <xs:restriction base="xs:double"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Zbr">
+    <xs:sequence>
+      <xs:element name="Name">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Zone">
+    <xs:sequence>
+      <xs:element maxOccurs="1" minOccurs="1" name="PowergridId">
+        <xs:simpleType>
+          <xs:restriction base="xs:int"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="ZoneName">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element maxOccurs="1" minOccurs="1" name="Mrid">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:length value="36"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

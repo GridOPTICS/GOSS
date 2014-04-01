@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="goss-dsa-feature-${pom.version}">
+
+    <feature name="goss-dsa-feature" version="${pom.version}">
+    	
+<!--     	<config name="pnnl.goss.dsa"> -->
+<!--     		pnnl.goss.dsa.powergridname = north -->
+<!--     	</config> -->
+		<configfile finalname="/etc/pnnl.goss.dsa.cfg">
+			mvn:pnnl.goss/goss-dsa-feature/${pom.version}/cfg/config
+		</configfile>
+
+		<!-- <feature>war</feature> -->
+		<feature version="${goss-core.version}">goss-core-feature</feature>		
+		
+		<!-- 
+		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${httpcore.version}</bundle>
+    	<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${httpcore.version}</bundle>
+    	 -->
+		<!-- <bundle start-level="92" dependency="true">mvn:pnnl.goss/goss-core-client/${goss-core.version}</bundle>-->
+    	<bundle start-level="94">mvn:pnnl.goss/goss-dsa/${pom.version}</bundle>
+    	
+    	
+    </feature>
+   
+</features>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>goss-kairosdb-common</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>GOSS KairosDB Common Bundle</name>
+	<description>GOSS KairosDB Common Bundle</description>
+
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-kairosdb-feature</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>pnnl.goss.gridmw.GridMWActivator</Bundle-Activator>
+						<Export-Package>
+							pnnl.goss.gridmw.datamodel*;version=${project.version}
+							pnnl.goss.gridmw.requests**;version=${project.version}
+						</Export-Package>
+						<Import-Package>
+							*
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

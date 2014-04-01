@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>goss-tool-fncs-common</artifactId>
+	<version>0.0.1</version>
+	<packaging>bundle</packaging>
+
+	<name>GOSS fncs Common Bundle</name>
+	<description>
+        FNCS Common Bundle
+    </description>
+	
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-tool-fncs-feature</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+
+	<properties>
+		<maven-bundle-plugin.version>2.4.0</maven-bundle-plugin.version>
+		<osgi.version>4.2.0</osgi.version>
+		<woodstox.version>4.2.0</woodstox.version>
+		<jaxb.api.version>2.2</jaxb.api.version>
+		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
+		<external-build-path>mvn-build</external-build-path>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.specs</groupId>
+			<artifactId>org.apache.servicemix.specs.jsr311-api-1.1.1</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.specs</groupId>
+			<artifactId>org.apache.servicemix.specs.jaxb-api-${jaxb.api.version}</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>pnnl.goss.fncs.common.FNCSCommonActivator</Bundle-Activator>
+						<Export-Package>
+							pnnl.goss.fncs.common;version=${project.version},
+							pnnl.goss.fncs.common.datamodel;version=${project.version}
+						</Export-Package>
+						<Import-Package>
+							javax.wsdl,
+							javax.xml.bind,
+							javax.xml.bind.annotation,
+							javax.ws.rs,
+							javax.ws.rs.core,
+							*
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

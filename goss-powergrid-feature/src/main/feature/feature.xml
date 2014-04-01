@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+
+    <feature name="goss-powergrid-feature" version="${pom.version}">
+<!--     	<config name="pnnl.goss.powergrid.server"> -->
+<!-- 
+    		# multiple datasurces defined with 
+			# name,uri,username,password,(optional)driver class
+ -->			
+<!-- 			datasource0=northandsouth,jdbc:mysql://superfly:3306/northandsouth,powergrid,rootpass,com.mysql.jdbc.Driver -->
+<!-- 			datasource1=north,jdbc:mysql://superfly:3306/north,powergrid,rootpass -->
+<!-- 			datasource2=south,jdbc:mysql://superfly:3306/south,powergrid,rootpass -->
+<!-- 
+			# default datasource should be specified and should be the key of one
+			# of the datasources above.  If the default is not specified then the
+			# application should assume that the first datasource is the one that 
+			# should be used.
+ -->
+<!-- 			datasourcedefault = datasource0 -->
+<!-- 		</config> -->
+
+		<configfile finalname="/etc/pnnl.goss.powergrid.server.cfg">
+			mvn:pnnl.goss/goss-powergrid-feature/${pom.version}/cfg/config
+		</configfile>
+		
+		<feature>jdbc</feature>
+		<feature>goss-core-feature</feature>
+    	
+    	<bundle start-level="88" dependency="true">mvn:pnnl.goss/goss-powergrid-common/${pom.version}</bundle>
+    	<bundle start-level="89" dependency="true">mvn:pnnl.goss/goss-powergrid-server/${pom.version}</bundle>
+    	
+    </feature>
+ </features>

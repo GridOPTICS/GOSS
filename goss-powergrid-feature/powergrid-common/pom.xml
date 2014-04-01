@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>goss-powergrid-common</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>GOSS Powergrid Common</name>
+	<description>
+        GOSS Powergrid Common OSGi bundle project.
+    </description>
+
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-powergrid-feature</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- schemaDirectory - The directory where all schema's should be put 
+				.xsd packageName - The package that the schema's should be created in. outputDirectory 
+				- The working directory to create the generated java source files. ***** 
+				IMPORTANT that the directory will be erased before the source is generated, 
+				so be very careful about where the directory is located. Enable this plugin 
+				to auto-gen the powergrid datamodel from an xsd. In order for the objects 
+				to be serializable make sure the xsd has the following namespace/annotation 
+				declaration xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+				jaxb:extensionBindingPrefixes="xjc" jaxb:version="1.0"> <xs:annotation> <xs:appinfo> 
+				<jaxb:globalBindings generateIsSetMethod="true"> <xjc:serializable uid="12343"/> 
+				</jaxb:globalBindings> </xs:appinfo> </xs:annotation> -->
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>jaxb2-maven-plugin</artifactId> 
+				<version>1.5</version> <executions> <execution> <id>xjc</id> <goals> <goal>xjc</goal> 
+				</goals> </execution> </executions> <configuration> <arguments>-extension</arguments> 
+				<schemaDirectory>${basedir}/src/main/resources/xsds</schemaDirectory> <packageName>pnnl.goss.powergrid.datamodel</packageName> 
+				<outputDirectory>${basedir}/src/main/java/gen</outputDirectory> </configuration> 
+				</plugin> -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.4.0</version>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>pnnl.goss.powergrid.PowergridCommonActivator</Bundle-Activator>
+						<Import-Package>
+							*
+						</Import-Package>
+						<Export-Package>
+							pnnl.goss.powergrid,
+							pnnl.goss.powergrid.collections,
+							pnnl.goss.powergrid.datamodel,
+							pnnl.goss.powergrid.requests
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
