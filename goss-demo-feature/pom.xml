@@ -88,7 +88,7 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>target/classes/feature/feature.xml</file>
+									<file>target/feature/feature.xml</file>
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
