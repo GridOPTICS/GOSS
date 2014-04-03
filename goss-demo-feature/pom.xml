@@ -21,6 +21,12 @@
 	</modules>
 
 	<build>
+		 <resources>
+	      <resource>
+	        <directory>src/main/config</directory>
+	        <filtering>true</filtering>
+	      </resource>
+	    </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
@@ -56,6 +62,19 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.8</version>
@@ -72,6 +91,11 @@
 									<file>target/classes/feature/feature.xml</file>
 									<classifier>features</classifier>
 									<type>xml</type>
+								</artifact>
+								<artifact>
+									<file>target/classes/pnnl.goss.demo.pmu.security.cfg</file>
+									<classifier>pmu-security-config</classifier>
+									<type>cfg</type>
 								</artifact>
 							</artifacts>
 						</configuration>

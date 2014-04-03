@@ -2,17 +2,20 @@
 <features name="goss-demo-feature-${pom.version}">
 
     <feature name="goss-demo-feature" version="${pom.version}">
-    	<config name="goss.demo.feature">
-  			brokerURI=tcp://${activemq.host}:${activemq.port}
-  			defaultPollFreq=10	
-			defaultPollInc=15
-			defaultPollTimeShown=1
-			defaultStart=04/01/2010 00:00:00
-		</config>
-		<config name="pnnl.goss.core.client">
-  			brokerURI=tcp://${activemq.host}:${activemq.port}
+<!--     	<config name="goss.demo.feature"> -->
+<!--   			brokerURI=tcp://${activemq.host}:${activemq.port} -->
+<!--   			defaultPollFreq=10	 -->
+<!-- 			defaultPollInc=15 -->
+<!-- 			defaultPollTimeShown=1 -->
+<!-- 			defaultStart=04/01/2010 00:00:00 -->
+<!-- 		</config> -->
+<!-- 		<config name="pnnl.goss.core.client"> -->
+<!--   			brokerURI=tcp://${activemq.host}:${activemq.port} -->
   			
-		</config>
+<!-- 		</config> -->
+		<configfile finalname="/etc/pnnl.goss.demo.pmu.security.cfg">
+			mvn:pnnl.goss/goss-demo-feature/${pom.version}/cfg/pmu-security-config
+		</configfile>
 		
 		<feature>war</feature>
 		<feature version="${goss-core.version}">goss-core-feature</feature>
