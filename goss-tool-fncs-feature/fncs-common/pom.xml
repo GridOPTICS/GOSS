@@ -5,7 +5,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-tool-fncs-common</artifactId>
-	<version>0.0.1</version>
 	<packaging>bundle</packaging>
 
 	<name>GOSS fncs Common Bundle</name>
@@ -16,7 +15,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-tool-fncs-feature</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.0</version>
 	</parent>
 	
 

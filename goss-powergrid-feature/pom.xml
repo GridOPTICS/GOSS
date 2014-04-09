@@ -7,12 +7,12 @@
 	<artifactId>goss-powergrid-feature</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS Powergrid Feature</name>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -130,22 +130,22 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-server</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-powergrid-common</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
