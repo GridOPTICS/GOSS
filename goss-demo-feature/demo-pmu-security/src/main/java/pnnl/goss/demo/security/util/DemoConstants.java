@@ -46,6 +46,7 @@ package pnnl.goss.demo.security.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Dictionary;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -56,6 +57,11 @@ public class DemoConstants {
 	
 	protected static Logger log = Logger.getLogger(DemoConstants.class);
 
+	public static final String CONST_DEF_POLL_FREQ = "defaultPollFreq";
+	public static final String CONST_DEF_POLL_INC = "defaultPollInc";
+	public static final String CONST_DEF_POLL_TIME_SHOWN = "defaultPollTimeShown";
+	public static final String CONST_DEF_START = "defaultStart";
+	
 
 	public static String LOGIN_URL = "index.jsp";
 	public static String LOGIN_CHECK_URL = "checkLogin";
@@ -63,19 +69,25 @@ public class DemoConstants {
 	public static String USERNAME_CONSTANT = "username";
 	public static String PASSWORD_CONSTANT = "pass";
 	
-	public static String DEFAULT_POLL_FREQ = DemoConstants.getProperty("defaultPollFreq");
-	public static String DEFAULT_POLL_INC = DemoConstants.getProperty("defaultPollInc");
-	public static String DEFAULT_POLL_TIME_SHOWN = DemoConstants.getProperty("defaultPollTimeShown");
-	public static String DEFAULT_START = DemoConstants.getProperty("defaultStart");
+//	public static String DEFAULT_POLL_FREQ = DemoConstants.getProperty("defaultPollFreq");
+//	public static String DEFAULT_POLL_INC = DemoConstants.getProperty("defaultPollInc");
+//	public static String DEFAULT_POLL_TIME_SHOWN = DemoConstants.getProperty("defaultPollTimeShown");
+//	public static String DEFAULT_START = DemoConstants.getProperty("defaultStart");
 	
-	protected static Properties configProperties;
-	protected static String getProperty(String name){
+	protected static Dictionary configProperties;
+	
+	public static void setProperties(Dictionary props){
+		configProperties = props;
+	}
+	
+	public static String getProperty(String name){
 		if(configProperties==null){
 			configProperties = loadProperties();
 		}
 		if(configProperties!=null){
-			if(configProperties.containsKey(name)){
-				return configProperties.getProperty(name);
+			Object result = configProperties.get(name);
+			if(result!=null){
+				return result.toString();
 			} else {
 				log.warn("Property "+name+" not found in properties file");
 			}

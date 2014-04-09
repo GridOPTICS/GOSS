@@ -51,9 +51,9 @@ import pnnl.goss.core.Request;
 public class RequestGenerators extends Request {
 
 	private static final long serialVersionUID = 3741963289446444455L;
-	public enum GENERATOR_TYPE {ALL,WIND_NON_CSGI,WIND_CSGI,NON_WIND_MISC};
+	public enum GENERATOR_TYPE {WIND_NON_CSGI,WIND_CSGI,NON_WIND_MISC};
 	Date timestamp;
-	GENERATOR_TYPE generatorType = GENERATOR_TYPE.ALL;
+	GENERATOR_TYPE generatorType;
 	
 	public RequestGenerators(Date timestamp){
 		this.timestamp = timestamp;

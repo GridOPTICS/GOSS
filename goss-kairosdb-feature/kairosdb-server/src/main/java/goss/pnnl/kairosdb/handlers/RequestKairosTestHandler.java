@@ -61,7 +61,6 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
-import pnnl.goss.gridmw.datasources.GridMW;
 import pnnl.goss.kairosdb.datamodel.KairosTestData;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
@@ -85,7 +84,8 @@ public class RequestKairosTestHandler extends GossRequestHandler {
 		DataResponse dataResponse =null;
 		RequestKairosTest testRequest = (RequestKairosTest) request;
 		KairosTestData data = new KairosTestData();
-		data.setBeforetime(System.currentTimeMillis());
+		long beforeTime = System.currentTimeMillis();
+		data.setBeforetime(beforeTime);
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     	Date startTime = new Date((long)testRequest.getStartTime()*1000);
     	Date endTime = new Date((long)testRequest.getEndTime()*1000);
@@ -102,17 +102,17 @@ public class RequestKairosTestHandler extends GossRequestHandler {
 	    		dataResponse = new DataResponse(error);
 	    		return dataResponse;
 	    	}
-	    	for(DataPoint dataPoint : response.getQueries().get(0).getResults().get(0).getDataPoints()){
+	    	/*for(DataPoint dataPoint : response.getQueries().get(0).getResults().get(0).getDataPoints()){
 	    		LongDataPoint point = (LongDataPoint)dataPoint;
 	    		values.add((float)point.getValue());
-	    	}
+	    	}*/
 		}catch(Exception e){
 			dataResponse = new DataResponse(new DataError(e.getCause().toString()));
 			return dataResponse;
 		}
 		
-		data.setTime(System.currentTimeMillis());
-		data.setValues(values.toArray(new Float[values.size()]));
+		data.setTime(System.currentTimeMillis()-beforeTime);
+		//data.setValues(values.toArray(new Float[values.size()]));
 		dataResponse  = new DataResponse(data);
 		client.shutdown();
 		return dataResponse;

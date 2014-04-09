@@ -71,7 +71,7 @@ public interface PowergridSharedPerspectiveDao  extends PowergridDao{
 	List<ACLineSegment> getACLineSegments(int powergridId, String timestampStr) throws Exception;
 	List<ACLineSegment> getACLineSegmentsUpdate(int powergridId, String timestampStr) throws Exception;
 	
-	List<Substation> getSubstationList(int powergridId) throws Exception;
+	List<Substation> getSubstationList(int powergridId, String timestampStr) throws Exception;
 	
 	ContingencyResultList getContingencyResults(Timestamp timestamp) throws Exception;
 	

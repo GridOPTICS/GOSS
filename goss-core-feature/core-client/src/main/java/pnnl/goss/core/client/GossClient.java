@@ -66,10 +66,13 @@ import org.fusesource.stomp.jms.StompJmsTopic;
 import org.fusesource.stomp.jms.message.StompJmsBytesMessage;
 
 import pnnl.goss.core.Data;
+import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.client.internal.ClientConfiguration;
+
+import com.google.gson.Gson;
 
 public class GossClient {
 
@@ -247,7 +250,9 @@ public class GossClient {
 			            if(msg instanceof StompJmsBytesMessage){
 			            	StompJmsBytesMessage stompMessage = (StompJmsBytesMessage)msg;
 			            	org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
-			            	System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+			            	//System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+			            	String message = buffer.toString().substring(buffer.toString().indexOf(":")+1);
+			            	event.onMessage(new DataResponse(message));
 			            }
 				 }
 			}
@@ -258,7 +263,7 @@ public class GossClient {
 		}
 	}
 	
-	public void publish(String topicName, Data data) throws NullPointerException{
+	public void publish(String topicName, Data data, RESPONSE_FORMAT responseFormat) throws NullPointerException{
 		try{
 			if(data==null)
 				throw new NullPointerException("event cannot be null");
@@ -268,14 +273,19 @@ public class GossClient {
 				destination = session.createTopic(topicName);
 			else if(this.protocol.equals(PROTOCOL.STOMP))
 				destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
+			
+			if(responseFormat==null)
+				clientPublisher.publishTo(destination, data);
+			else if(responseFormat.equals(RESPONSE_FORMAT.JSON)){
+				Gson gson = new Gson();
+				clientPublisher.publishTo(destination, gson.toJson(data));
+			}
 				
-			clientPublisher.publishTo(destination, data);
 		}
 		catch(JMSException e){
 			log.error(e);
 		}
 	}
-
 	
 	public void publish(String topicName, String data) throws NullPointerException{
 		try{

@@ -44,18 +44,17 @@
 */
 package pnnl.goss.server;
 
+//import goss.pnnl.fusiondb.handlers.RequestUploadTestHandler;
 import goss.pnnl.fusiondb.handlers.RequestActualTotalHandler;
 import goss.pnnl.fusiondb.handlers.RequestCapacityRequirementHandler;
 import goss.pnnl.fusiondb.handlers.RequestForecastTotalHandler;
 import goss.pnnl.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
 import goss.pnnl.fusiondb.handlers.RequestRTEDScheduleHandler;
-//import goss.pnnl.fusiondb.handlers.RequestUploadTestHandler;
 import goss.pnnl.kairosdb.handlers.RequestKairosTestHandler;
 
 import java.sql.SQLException;
 import java.util.Dictionary;
 
-import pnnl.goss.core.ExecuteRequest;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
@@ -68,12 +67,16 @@ import pnnl.goss.gridmw.requests.RequestGridMWAsyncTest;
 import pnnl.goss.gridmw.requests.RequestGridMWTest;
 import pnnl.goss.gridmw.requests.RequestPMU;
 import pnnl.goss.gridmw.security.AccessControlHandlerPMU;
+import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 //import pnnl.goss.hpc.handlers.ExecuteHPCHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
+import pnnl.goss.mdart.common.requests.RequestPIRecords;
+import pnnl.goss.mdart.server.handlers.RequestPIRecordsHandler;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
+import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.server.core.InvalidDatasourceException;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
@@ -121,10 +124,20 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestGridMWTest.class, RequestGridMWTestHandler.class);
 		handlers.addHandlerMapping(RequestGridMWAsyncTest.class, RequestGridMWTestHandler.class);
 		handlers.addHandlerMapping(RequestKairosTest.class, RequestKairosTestHandler.class);
+		handlers.addHandlerMapping(RequestKairosAsyncTest.class, RequestKairosTestHandler.class);
+		
+		//---------------------------Performance Testing Security-----------------------------------
+		handlers.addSecurityMapping(RequestKairosTest.class, AccessControlHandlerAllowAll.class);
+		//handlers.addSecurityMapping(RequestKairosAsyncTest.class, AccessControlHandlerAllowAll.class);
+		
+		//--------------------------------Performance Security---------------------------------------
+		handlers.addSecurityMapping(RequestGridMWTest.class, AccessControlHandlerAllowAll.class);
 
 		//-------------------------------------PMU(GridMW)-----------------------------------------
 		handlers.addHandlerMapping(RequestPMU.class, RequestPMUHandler.class);
-		handlers.addSecurityMapping(RequestPMU.class, AccessControlHandlerPMU.class);
+		//handlers.addSecurityMapping(RequestPMU.class, AccessControlHandlerPMU.class);
+		
+		
 
 		//--------------------------------Shared Perspective---------------------------------------
 		handlers.addHandlerMapping(RequestTopology.class, RequestTopologyHandler.class);
@@ -132,7 +145,10 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestContingencyResult.class, RequestContingencyResultHandler.class);
 		handlers.addHandlerMapping(RequestLineLoad.class, RequestLineLoadHandler.class);
 		handlers.addHandlerMapping(RequestContingencyResult.class, RequestContingencyResultHandler.class);
-
+		
+		//--------------------------------Shared Perspective Security---------------------------------------
+		//handlers.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
+		
 		//-------------------------------------HPC-------------------------------------------------
 		//handlers.addHandlerMapping(ExecuteRequest.class, ExecuteHPCHandler.class);
 
@@ -144,8 +160,10 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestRTEDSchedule.class, RequestRTEDScheduleHandler.class);		
 		handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
 		
-		//-------------------------------------FNCS----------------------------------------------
-		//handlers.addHandlerMapping(RequestUploadTest.class, RequestUploadTestHandler.class);
+		//-------------------------------------MDART----------------------------------------------
+		handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
+		//handlers.addSecurityMapping(RequestPIRecords.class, AccessControlHandlerAllowAll.class);
+		
 
 		try {
 			Dictionary config = Utilities.loadProperties(powergridDatasourceConfig);

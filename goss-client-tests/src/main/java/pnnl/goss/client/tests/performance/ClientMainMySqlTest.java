@@ -49,6 +49,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
+import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
@@ -88,7 +89,7 @@ public class ClientMainMySqlTest {
 				public void run() {
 					DataResponse response=null;		
 					try{
-						GossClient client = new GossClient();
+						GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 						RequestLineLoadTest request = null;
 						FileWriter logWriter = new FileWriter("mysql_synchronous_client"+clientNum+".log",true);
 						logWriter.write("MySQL,MySQL+GOSS\n");

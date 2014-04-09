@@ -45,11 +45,21 @@
 package pnnl.goss.demo.pmu;
 
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
+
+import pnnl.goss.demo.security.util.DemoConstants;
 
 
-public class GossSecurityDemoActivator implements BundleActivator{
+public class GossSecurityDemoActivator implements BundleActivator, ManagedService{
 
 	/**
 	 * <p>
@@ -57,10 +67,16 @@ public class GossSecurityDemoActivator implements BundleActivator{
 	 * </p>
 	 */
 	private static final String CONFIG_PID = "pnnl.goss.demo.security";
+	private static final Log log = LogFactory.getLog(GossSecurityDemoActivator.class);
 
+	
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Starting the "+this.getClass().getName()+" Activator");
 		
+		// Register for updates to the goss.core.security config file.
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        properties.put(Constants.SERVICE_PID, CONFIG_PID);
+        context.registerService(ManagedService.class.getName(), this, properties);
 	}
 
 	public void stop(BundleContext context) throws Exception {
@@ -69,6 +85,10 @@ public class GossSecurityDemoActivator implements BundleActivator{
 	}
 
 
-	
+	public void updated(Dictionary properties) throws ConfigurationException {
+		log.debug("Updating configuration for: "+this.getClass().getName());
+		//TODO it would be nice if this could be on the GOSS Client so that it closes and restarts the session when this happens
+		DemoConstants.setProperties(properties);
+	}
 	
 }

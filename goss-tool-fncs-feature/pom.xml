@@ -6,12 +6,12 @@
 	<artifactId>goss-tool-fncs-feature</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS fncs Feature</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

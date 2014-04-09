@@ -47,19 +47,15 @@ package goss.pnnl.kairosdb;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.kairosdb.client.HttpClient;
-import org.kairosdb.client.builder.AggregatorFactory;
 import org.kairosdb.client.builder.DataPoint;
-import org.kairosdb.client.builder.DoubleDataPoint;
 import org.kairosdb.client.builder.LongDataPoint;
 import org.kairosdb.client.builder.MetricBuilder;
 import org.kairosdb.client.builder.QueryBuilder;
-import org.kairosdb.client.builder.TimeUnit;
 import org.kairosdb.client.response.QueryResponse;
 import org.kairosdb.client.response.Response;
 
@@ -145,9 +141,7 @@ public class App
     			.setEnd(df.parse(df.format(endTime)))
     			.addMetric("test_flag");
     	HttpClient client1 = new HttpClient("we22743", 8080);
-    	HttpClient client2 = new HttpClient("we22743", 8080);
     	QueryResponse response = client1.query(builder);
-    	 response = client2.query(builder);
     	if(response.getErrors().size()>0)
     		System.out.println(response.getErrors().get(0));
     	for(DataPoint dataPoint : response.getQueries().get(0).getResults().get(0).getDataPoints()){
@@ -157,7 +151,7 @@ public class App
     	
    
     	client1.shutdown();
-    	client2.shutdown();
+    	
     }
     
     

@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-dsa-feature</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>GOSS DSA Feature</name>
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -113,7 +113,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.4.0</version>
+				<version>${maven-dependency-plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -134,17 +134,17 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-tool-sharedperspective-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>

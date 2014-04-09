@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-dsa-feature</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -86,6 +86,10 @@
 						<Import-Package>
 							*
 						</Import-Package>
+						<!-- Add resources directory in one go. -->
+						<Include-Resource>
+							src/main/resources
+						</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>

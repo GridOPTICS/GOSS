@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-tool-mdart-feature</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GOSS mdart Feature</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -21,23 +21,43 @@
 		<gson.version>2.2.4</gson.version>
 
 		<httpclient-osgi.version>4.3.1</httpclient-osgi.version>
+		<activemq.version>5.9.0</activemq.version>
+		<osgi.version>4.2.0</osgi.version>
 		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
 		<org-reflections.version>0.9.8</org-reflections.version>
+		<apacheds.version>2.0.0-M15</apacheds.version>
 		<slf4j.version>1.7.5</slf4j.version>
+		<mysql.connector.version>5.1.25</mysql.connector.version>
 
+		<commons-io.version>2.4</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
 
 		<javax-persist.version>1.0.2</javax-persist.version>
 		<woodstox.version>4.2.0</woodstox.version>
+		<external-build-path>mvn-build</external-build-path>
+		<servicemix-specs.version>2.4.0</servicemix-specs.version>
+		<commons-dbcp.version>1.4_3</commons-dbcp.version>
 	</properties>
 
 	<modules>
 		<module>mdart-common</module>
 		<module>mdart-server</module>
 	</modules>
+	<distributionManagement>
+		<repository>
+			<id>PNNL Release Repository</id>
+			<name>PNNL Release Repository</name>
+			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>PNNL Snapshot Repository</id>
+			<name>PNNL Snapshot Repository</name>
+			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<build>
-		<plugins>
-			<plugin>
+			<plugins>
+				<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.8</version>
@@ -59,6 +79,15 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -86,7 +115,7 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
@@ -168,6 +197,11 @@
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.servicemix.bundles</groupId>
+				<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+				<version>${commons-dbcp.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -4,11 +4,11 @@
 	<artifactId>goss-client-tests</artifactId>
 	<name>GOSS Client Test Jar</name>
 	<packaging>jar</packaging>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<description>
@@ -45,6 +45,10 @@
 			<artifactId>goss-tool-mdart-common</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-tool-fncs-common</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 		</dependency>
@@ -53,5 +57,21 @@
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 	</dependencies>
-	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

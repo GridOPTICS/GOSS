@@ -6,7 +6,7 @@
 
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-master-build</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GOSS Master Builder</name>
 
@@ -16,18 +16,19 @@
 
 		<!-- Goss properties that are listed below in the dependencymanagement 
 			section. -->
-		<goss-core.version>0.1.0-SNAPSHOT</goss-core.version>
-		<goss-demo.version>0.0.1-SNAPSHOT</goss-demo.version>
-		<goss-dsa.version>0.0.1-SNAPSHOT</goss-dsa.version>
-		<goss-fncs.version>0.0.1-SNAPSHOT</goss-fncs.version>
-		<goss-fusion.version>0.0.1-SNAPSHOT</goss-fusion.version>
-		<goss-gridmw.version>0.0.1-SNAPSHOT</goss-gridmw.version>
-		<goss-gridpack.version>0.0.1-SNAPSHOT</goss-gridpack.version>
-		<goss-kariosdb.version>0.0.1-SNAPSHOT</goss-kariosdb.version>
-		<goss-mdart.version>0.0.1-SNAPSHOT</goss-mdart.version>
-		<goss-pmuevents.version>0.0.1-SNAPSHOT</goss-pmuevents.version>
-		<goss-powergrid.version>0.0.1-SNAPSHOT</goss-powergrid.version>
-		<goss-sharedperspective.version>0.0.1-SNAPSHOT</goss-sharedperspective.version>
+		<goss-core.version>0.1.1-SNAPSHOT</goss-core.version>
+		<goss-demo.version>0.1.1-SNAPSHOT</goss-demo.version>
+		<goss-dsa.version>0.1.1-SNAPSHOT</goss-dsa.version>
+		<goss-fncs.version>0.1.1-SNAPSHOT</goss-fncs.version>
+		<goss-fusion.version>0.1.1-SNAPSHOT</goss-fusion.version>
+		<goss-gridmw.version>0.1.1-SNAPSHOT</goss-gridmw.version>
+		<goss-gridpack.version>0.1.1-SNAPSHOT</goss-gridpack.version>
+		<goss-kariosdb.version>0.1.1-SNAPSHOT</goss-kariosdb.version>
+		<goss-mdart.version>0.1.1-SNAPSHOT</goss-mdart.version>
+		<goss-pmuevents.version>0.1.1-SNAPSHOT</goss-pmuevents.version>
+		<goss-powergrid.version>0.1.1-SNAPSHOT</goss-powergrid.version>
+		<goss-sharedperspective.version>0.1.1-SNAPSHOT</goss-sharedperspective.version>
+		<goss-fncs.version>0.0.1</goss-fncs.version>
 
 
 		
@@ -82,6 +83,7 @@
 		<module>goss-powergrid-feature</module>
 		<module>goss-gridmw-feature</module>
 		<module>goss-tool-gridpack-feature</module>
+		<module>goss-tool-fncs-feature</module>
 
 		<module>goss-tool-sharedperspective-feature</module>
 		<module>goss-kairosdb-feature</module>
@@ -95,6 +97,7 @@
 		<module>goss-client-tests</module>
 		<module>goss-tool-pmuevents-feature</module>
 		<module>goss-demo-feature</module>
+		<module>goss-server</module>
 	</modules>
 	<scm>
 		<developerConnection>scm:git:https://git.pnnl.gov/GOSS/</developerConnection>
@@ -111,6 +114,41 @@
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>local-devdeveloper</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<global.properties.path>${user.home}/goss.properties</global.properties.path>
+			</properties>			
+		</profile>
+		<profile>
+			<id>eioc-north</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>eioc-north</value>
+				</property>				
+			</activation>
+			<properties>
+				<global.properties.path>${user.home}/goss.north.properties</global.properties.path>
+			</properties>
+		</profile>
+		<profile>
+			<id>eioc-south</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>eioc-south</value>
+				</property>				
+			</activation>
+			<properties>
+				<global.properties.path>${user.home}/goss.south.properties</global.properties.path>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
@@ -118,111 +156,116 @@
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-security</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-server</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security-utils</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 
 			<!-- Powergrid -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-powergrid-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-powergrid.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-powergrid-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-powergrid.version}</version>
 			</dependency>
 
 			<!-- Gridpack -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-tool-gridpack-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-gridpack.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-tool-gridpack-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-gridpack.version}</version>
 			</dependency>
 
 			<!-- GridMw -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-gridmw-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-gridmw.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-gridmw-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-gridmw.version}</version>
 			</dependency>
 
 			<!-- Shared Perspective -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-tool-sharedperspective-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-sharedperspective.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-tool-sharedperspective-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-sharedperspective.version}</version>
 			</dependency>
 
 			<!-- Kairosdb -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-kairosdb-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-kariosdb.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-kairosdb-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-kariosdb.version}</version>
 			</dependency>
 
 			<!-- Fusion -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-fusiondb-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-fusion.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-fusiondb-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-fusion.version}</version>
 			</dependency>
 
 			<!-- MDART -->
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-tool-mdart-common</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-mdart.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-tool-mdart-server</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>${goss-mdart.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>pnnl.goss</groupId>
+				<artifactId>goss-tool-fncs-common</artifactId>
+				<version>${goss-fncs.version}</version>
 			</dependency>
 
 			<!-- Karaf specific -->
@@ -392,8 +435,9 @@
 	                           <goal>read-project-properties</goal>
 	                       </goals>
 	                       <configuration>
+	                       <!-- TODO add release profile and use file in git if release, set property up above -->
 			                   <files>
-			                       <file>${user.home}/goss.properties</file>
+			                       <file>${global.properties.path}</file>
 			                   </files>
 			               </configuration>
 	                   </execution>

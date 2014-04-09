@@ -44,7 +44,9 @@
 */
 package pnnl.goss.mdart.common.requests;
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 import pnnl.goss.core.Request;
 

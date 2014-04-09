@@ -50,15 +50,20 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mysql.jdbc.PreparedStatement;
 
 import pnnl.goss.powergrid.dao.PowergridDaoMySql;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
@@ -88,7 +93,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 		Topology topology = new Topology();
 		int powergridId = getPowergridId(powergridName);
 		Region region = getRegion(powergridId);
-		region.setSubstations(getSubstationList(powergridId));
+		region.setSubstations(getSubstationList(powergridId, timestamp));
 		topology.setRegion(region);
 		topology.setAcLineSegments(getACLineSegments(powergridId,timestamp));
 		return topology;
@@ -156,44 +161,57 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 		}
 		return region;
 	}
-
-	@Override
-	public List<Substation> getSubstationList(int powergridId) throws Exception{
-
+	
+	
+	/**
+	 * Get a list of substations using passed powergridId and timestamp.  If the timestamp
+	 * is null then the return value will be the initial value associated with the day in question.
+	 *   
+	 * @param powergridId
+	 * @param timestamp
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Substation> getSubstationList(int powergridId, Timestamp timestamp ) throws Exception{
+		
 		Connection connection= null;
-		List<Substation> substations = null;
-
+		List<Substation> substations = new ArrayList<Substation>();
+		
 		try{
-
 			connection = datasource.getConnection();
-			Statement stmt = connection.createStatement();
-			substations = new ArrayList<Substation>();
-			Substation substation = null;
-			Location location =null;
-			String dbQuery = "select c.mrid as rmrid , a.areaname, b.mrid, a.substationname, a.latitude, a.longitude from substations a, mridsubstations b, areas c "+
-					"where a.substationid = b.substationid "+
-					"and a.powergridid = b.powergridid "+
-					"and a.areaname = c.areaname "+
-					"and a.powergridid = "+powergridId;
-
-			log.debug(dbQuery);
-			ResultSet rs = stmt.executeQuery(dbQuery);
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement("{call proc_sp_GetSubstations(?, ?)}");
+			stmt.setInt(1, powergridId);
+			stmt.setTimestamp(2,  timestamp);
+			ResultSet rs = stmt.executeQuery();
+			
 			while(rs.next()){
-				substation = new Substation();
-				substation.setMrid(rs.getString("mrid"));
-				substation.setName(rs.getString("substationname"));
-				location = new Location();
+								
+				// Populate a Substation object.
+				Substation s = new Substation();
+				
+				s.setName(rs.getString("substationname"));
+				
+				s.setMrid(rs.getString("substationmrid"));
+				s.setName(rs.getString("substationname"));
+								
+				// Area and region are synonomous currently
+				s.setRegionMRID(rs.getString("areamrid"));
+				s.setRegionName(rs.getString("areaname"));
+				
+				// New fields for shared perspective.
+				s.setTotalPGen(rs.getDouble("sumpgen"));
+				s.setTotalQGen(rs.getDouble("sumqgen"));
+				s.setTotalPLoad(rs.getDouble("sumpload"));
+				s.setTotalQLoad(rs.getDouble("sumqload"));
+				s.setTotalMaxMva(rs.getDouble("totalmaxmvar"));				
+				
+				Location location = new Location();
 				location.setLatitude(rs.getDouble("latitude"));
 				location.setLongitude(rs.getDouble("longitude"));
-				//location.setMrid(newMrid);
-				//location.setName(newName);
-				substation.setLocation(location);
-				substation.setRegionMRID(rs.getString("rmrid"));
-				substation.setRegionName(rs.getString("areaname"));
-				//substation.setRegion(region);
-				substations.add(substation);
+				s.setLocation(location);
+				
+				substations.add(s);				
 			}
-			//substation.setRegion(newRegion);
 		}
 		catch(Exception e){
 			log.error(e.getMessage());
@@ -201,6 +219,39 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 			throw e;
 		}
 		return substations;
+	
+	}
+
+	public List<Substation> getSubstationList(int powergridId, String timestampStr) throws Exception{
+
+		Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestampStr);
+		return getSubstationList(powergridId, timestamp);
+	}
+	
+	private Timestamp convertPassedTimestampStringToTimestamp(String timestampStr) throws ParseException{
+		Timestamp timestamp;
+		if(timestampStr==null){
+			//Get current time -> set date to 2013-08-01 -> make sure that second value is multiple of 3
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new java.util.Date());
+			cal.set(2013, 7, 1);
+			cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) - cal.get(Calendar.SECOND) % 3);
+			cal.set(Calendar.MILLISECOND,  0);
+			timestamp = new Timestamp(cal.getTime().getTime());
+		}
+		else{
+			SimpleDateFormat sdf = new SimpleDateFormat("y-M-d H:m:s");
+			java.util.Date parsedDate = sdf.parse(timestampStr);
+			timestamp = new Timestamp(parsedDate.getTime());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date(timestamp.getTime()));
+			cal.set(2013, 7, 1);
+			cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) - cal.get(Calendar.SECOND) % 3);
+			cal.set(Calendar.MILLISECOND,  0);
+			timestamp = new Timestamp(cal.getTime().getTime());
+		}
+		
+		return timestamp;
 	}
 
 	@Override
@@ -213,27 +264,16 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 			connection = datasource.getConnection();
 			Statement stmt = connection.createStatement();
 
-			Timestamp timestamp;
-			if(timestampStr==null){
-				//Get current time -> set date to 2013-08-01 -> make sure that second value is multiple of 3
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(new java.util.Date());
-				cal.set(2013, 7, 1);
-				cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) - cal.get(Calendar.SECOND) % 3);
-				cal.set(Calendar.MILLISECOND,  0);
-				timestamp = new Timestamp(cal.getTime().getTime());
+			
+			Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestampStr);
+			
+			List<Substation> substations = getSubstationList(powergridId, timestamp);
+			// A map from mrid to substation.
+			HashMap<String, Substation> substationMap = new HashMap<String, Substation>();
+			for(Substation s: substations){
+				substationMap.put(s.getMrid(), s);
 			}
-			else{
-				SimpleDateFormat sdf = new SimpleDateFormat("y-M-d H:m:s");
-				java.util.Date parsedDate = sdf.parse(timestampStr);
-				timestamp = new Timestamp(parsedDate.getTime());
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(new Date(timestamp.getTime()));
-				cal.set(2013, 7, 1);
-				cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) - cal.get(Calendar.SECOND) % 3);
-				cal.set(Calendar.MILLISECOND,  0);
-				timestamp = new Timestamp(cal.getTime().getTime());
-			}
+			
 
 			String dbQuery = "select lt.timestep,l.lineid, br.branchid, mbr.mrid, bu.basekv, br.rating, br.status, lt.p, lt.q, br.frombusnumber, br.tobusnumber "+
 					"from mridbranches mbr, branches br, buses bu, linetimesteps lt, lines_ l "+
@@ -270,53 +310,59 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 				int fromBusNo = rs.getInt("frombusnumber");
 				int toBusNo = rs.getInt("tobusnumber");
 				List<Substation> substationList = new ArrayList<Substation>();
-				dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
+				// Because we have a map from substation mrid->substation we only need to figure out what substation mrid
+				// the from and to bus belong to.
+				dbQuery = "SELECT submrid.mrid " +
+						"FROM buses b, mridsubstations submrid " +
+						"where b.substationid = submrid.substationid " +
+						"and b.busnumber = " + fromBusNo;
+				
+				
+				/*dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
 						"where b.substationid = s.substationid "+
 						"and m.substationid = b.substationid "+
 						"and a.areaname = s.areaname "+
-						"and b.busnumber = "+fromBusNo;
+						"and b.busnumber = "+fromBusNo;*/
 				System.out.println(dbQuery);
 
 				Statement stmt1 = connection.createStatement();
 				ResultSet rs1 = stmt1.executeQuery(dbQuery);
 				if(rs1.next()){
-					acLineName += rs1.getString("substationname")+"_";
-					Substation substation = new Substation();
-					substation.setMrid(rs1.getString("mrid"));
-					substation.setName(rs1.getString("substationname"));
-					//substation.setRegion(region);
-					Location location = new Location();
-					location.setLatitude(rs1.getDouble("latitude"));
-					location.setLongitude(rs1.getDouble("longitude"));
-					substation.setLocation(location);
-					substation.setRegionMRID(rs1.getString("rmrid"));
-					substation.setRegionName(rs1.getString("areaname"));
-					substationList.add(substation);
+					Substation substation = substationMap.get(rs1.getString("mrid"));
+					if (substation == null){
+						log.error("Substation for bus: "+ fromBusNo +" not found in set of substations.");
+						
+					}
+					else{
+						acLineName += substation.getName() + "_";
+						substationList.add(substation);
+					}
 				}
 
-				dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
-						"where b.substationid = s.substationid "+
-						"and m.substationid = b.substationid "+
-						"and a.areaName = s.areaname "+
-						"and b.busnumber = "+toBusNo;
+				dbQuery = "SELECT submrid.mrid " +
+						"FROM buses b, mridsubstations submrid " +
+						"where b.substationid = submrid.substationid " +
+						"and b.busnumber = " + toBusNo;
+//				dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
+//						"where b.substationid = s.substationid "+
+//						"and m.substationid = b.substationid "+
+//						"and a.areaName = s.areaname "+
+//						"and b.busnumber = "+toBusNo;
 				System.out.println(dbQuery);
 				Statement stmt2 = connection.createStatement();
 				ResultSet rs2 = stmt2.executeQuery(dbQuery);
 				if(rs2.next()){
-					Substation substation = new Substation();
-					substation.setMrid(rs2.getString("mrid"));
-					substation.setName(rs2.getString("substationname"));
-					//substation.setRegion(region);
-					Location location = new Location();
-					location.setLatitude(rs2.getDouble("latitude"));
-					location.setLongitude(rs2.getDouble("longitude"));
-					substation.setLocation(location);
-					substation.setRegionMRID(rs2.getString("rmrid"));
-					substation.setRegionName(rs2.getString("areaname"));
-					substationList.add(substation);
-
-					acLineName += rs2.getString("substationname");
+					Substation substation = substationMap.get(rs2.getString("mrid"));
+					if (substation == null){
+						log.error("Substation for bus: "+ toBusNo + " not found in set of substations.");
+						
+					}
+					else{
+						acLineName += substation.getName();
+						substationList.add(substation);
+					}
 				}
+				
 				acLineSegment.setName(acLineName);		//SubstationFromName_SubstationToName from branch
 				acLineSegment.setSubstations(substationList);
 

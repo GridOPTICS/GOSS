@@ -105,16 +105,16 @@
         </transportConnectors>
         
         <plugins>
-		 	<!-- <jaasAuthenticationPlugin configuration="LDAPLogin" /> -->
-			<!-- <authorizationPlugin>
+		 <!-- 	 <jaasAuthenticationPlugin configuration="LDAPLogin" /> 
+			 <authorizationPlugin>
 		        <map>
 		          <bean id="lDAPAuthorizationMap" class="org.apache.activemq.security.LDAPAuthorizationMap"
 		                xmlns="http://www.springframework.org/schema/beans">
 		            <property name="initialContextFactory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
-		            <property name="connectionURL" value="ldap://localhost:10389"/>
+		            <property name="connectionURL" value="ldap://eioc-goss:10389"/>
 		            <property name="authentication" value="simple"/>
 		            <property name="connectionUsername" value="uid=admin,ou=system"/>
-		            <property name="connectionPassword" value="rootpass"/>
+		            <property name="connectionPassword" value="Ldp4Goss$"/>
 		            <property name="connectionProtocol" value=""/>
 		            <property name="topicSearchMatchingFormat"
 		                      value="cn={0},ou=Topic,ou=Destination,ou=goss,ou=system"/>
@@ -134,17 +134,17 @@
 		            <property name="writeAttribute" value="member"/>
 		          </bean>
 		        </map>
-	          </authorizationPlugin>
+	          </authorizationPlugin> 
 	           
-	          <bean xmlns="http://www.springframework.org/schema/beans" id="gossSecurityBroker" class="pnnl.goss.security.core.GossSecurityBroker">
-		    	</bean>
-		    	 -->  
+	          <bean xmlns="http://www.springframework.org/schema/beans" id="gossSecurityBroker" class="pnnl.goss.security.broker.GossSecurityBroker">
+		    	</bean>-->
+		    	  
  			</plugins>			
- 			<!-- <messageAuthorizationPolicy>
+ 			<!--  <messageAuthorizationPolicy>
 		    	<bean class="pnnl.goss.security.core.activemq.GossAuthPolicy"
 		          xmlns="http://www.springframework.org/schema/beans"/>
-			</messageAuthorizationPolicy>
-			 -->  
+			</messageAuthorizationPolicy> -->
+			 
 			
     </broker>
 

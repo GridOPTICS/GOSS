@@ -7,12 +7,12 @@
 	<packaging>pom</packaging>
 
 	<name>GOSS Core Feature</name>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -35,12 +35,12 @@
 	</modules>
 	<build>
 		<!-- resource required for property replacement on config files -->
-		 <resources>
-	      <resource>
+		<resources>
+			<resource>
 	        <directory>src/main/config</directory>
-	        <filtering>true</filtering>
-	      </resource>
-	    </resources>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
@@ -175,27 +175,27 @@
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-security</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-server</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security-utils</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
@@ -266,13 +266,17 @@
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.core</artifactId>
 				<version>${osgi.version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.fusesource.stompjms</groupId>
-				<artifactId>stompjms-client</artifactId>
-				<version>1.19</version>
-			</dependency>
+			<groupId>org.fusesource.stompjms</groupId>
+			<artifactId>stompjms-client</artifactId>
+			<version>1.19</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
