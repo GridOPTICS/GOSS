@@ -45,7 +45,7 @@
 package pnnl.goss.mdart.common.datamodel;
 
 import java.sql.Date;
-import java.util.List;
+import java.util.Map;
 
 import pnnl.goss.core.Data;
 
@@ -53,11 +53,9 @@ public class GeneratorData extends Data {
 
 	private static final long serialVersionUID = 4699971343576688318L;
 	
-	String plantName;
-	Date timestamp;
-	List<Float> wind_non_csgi;
-	List<Float> wind_csgi;
-	List<Float> non_wind_misc;
+	
+	String[] records; 
+	
 	
 	
 }

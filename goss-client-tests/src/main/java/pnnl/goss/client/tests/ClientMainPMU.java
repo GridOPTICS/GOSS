@@ -44,24 +44,25 @@
 */
 package pnnl.goss.client.tests;
 
+import java.io.FileWriter;
+
 import pnnl.goss.client.tests.util.ClientAuthHelper;
+import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.client.GossClient;
-import pnnl.goss.gridmw.requests.RequestGridMWTest;
-import pnnl.goss.gridmw.requests.RequestPMU;
 import pnnl.goss.gridmw.datamodel.GridMWTestData;
 import pnnl.goss.gridmw.datamodel.PMUData;
-
-import java.io.FileWriter;
+import pnnl.goss.gridmw.requests.RequestGridMWTest;
+import pnnl.goss.gridmw.requests.RequestPMU;
 
 
 public class ClientMainPMU {
 
 	public static void main(String args[]) {
 
-		//dataCleaningNew();
-		gridmwTest();
+		dataCleaningNew();
+		//gridmwTest();
 
 	}
 
@@ -88,10 +89,20 @@ public class ClientMainPMU {
 			long perfStartTime = System.currentTimeMillis();
 			DataResponse response = (DataResponse)main.getResponse(request);
 			logWriter.write(String.valueOf(System.currentTimeMillis()-perfStartTime)+"\n");
-			PMUData pmuData = (PMUData)response.getData();
-			for(int i=0;i<pmuData.getValues()[0].length;i++)
-				responseWriter.write(String.valueOf(pmuData.getValues()[0][i])+",");
-			responseWriter.write("\n");
+			
+			if(response.getData() instanceof PMUData){
+				PMUData pmuData = (PMUData)response.getData();
+				for(int i=0;i<pmuData.getValues()[0].length;i++){
+					for(int col=0;col<pmuData.getValues().length;col++)
+					responseWriter.write(String.valueOf(pmuData.getValues()[col][i])+",");
+				}
+				responseWriter.write("\n");
+			}
+			else if(response.getData() instanceof DataError){
+				DataError error = (DataError)response.getData();
+				System.out.println(error.getMessage());
+			}
+			
 		}
 		logWriter.close();
 		responseWriter.close();

@@ -58,6 +58,8 @@ import org.osgi.service.cm.ManagedService;
 
 import pnnl.goss.demo.security.util.DemoConstants;
 
+import pnnl.goss.demo.security.util.DemoConstants;
+
 
 public class GossSecurityDemoActivator implements BundleActivator, ManagedService{
 
@@ -69,6 +71,7 @@ public class GossSecurityDemoActivator implements BundleActivator, ManagedServic
 	private static final String CONFIG_PID = "pnnl.goss.demo.security";
 	private static final Log log = LogFactory.getLog(GossSecurityDemoActivator.class);
 
+	
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Starting the "+this.getClass().getName()+" Activator");
 		
@@ -89,6 +92,5 @@ public class GossSecurityDemoActivator implements BundleActivator, ManagedServic
 		//TODO it would be nice if this could be on the GOSS Client so that it closes and restarts the session when this happens
 		DemoConstants.setProperties(properties);
 	}
-	
 	
 }

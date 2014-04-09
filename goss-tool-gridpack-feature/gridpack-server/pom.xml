@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-tool-gridpack-feature</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -61,6 +61,10 @@
 							pnnl.goss.gridpack.service;version=${project.version}
 						</Export-Package>
 						<Import-Package>*</Import-Package>
+						<!-- Add resources directory in one go. -->
+						<Include-Resource>
+							src/main/resources
+						</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>

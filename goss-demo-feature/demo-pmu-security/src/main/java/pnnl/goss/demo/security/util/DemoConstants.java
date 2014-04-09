@@ -61,6 +61,7 @@ public class DemoConstants {
 	public static final String CONST_DEF_POLL_INC = "defaultPollInc";
 	public static final String CONST_DEF_POLL_TIME_SHOWN = "defaultPollTimeShown";
 	public static final String CONST_DEF_START = "defaultStart";
+	
 
 	public static String LOGIN_URL = "index.jsp";
 	public static String LOGIN_CHECK_URL = "checkLogin";

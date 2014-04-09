@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-tool-mdart-feature</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
@@ -45,6 +45,11 @@
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-server</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

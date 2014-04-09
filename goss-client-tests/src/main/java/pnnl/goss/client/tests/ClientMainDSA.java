@@ -41,7 +41,7 @@
     PACIFIC NORTHWEST NATIONAL LABORATORY
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
-*/
+ */
 package pnnl.goss.client.tests;
 
 import java.io.File;
@@ -54,9 +54,9 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.client.GossClient;
-import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
 import pnnl.goss.sharedperspective.common.datamodel.ContingencyResultList;
+import pnnl.goss.sharedperspective.common.datamodel.Substation;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
@@ -64,177 +64,165 @@ import pnnl.goss.sharedperspective.common.requests.RequestTopology;
 
 public class ClientMainDSA {
 
-	public static void main(String args[]){
-		
-		String regionName = "Greek-118-North"; //or Greek-118-South  
+	public static void main(String args[]) {
+
+		String regionName = "Greek-118-North"; // or Greek-118-South
 		String timestamp = "2013-08-01 10:12:12";
-		
-		//get base (full) topology
+
+		// get base (full) topology
 		getBaseTopology(regionName);
-		
-		//get base (full) topology in xml
+
+		// get base (full) topology in xml
 		getBaseTopologyXML(regionName);
-		
-		//get base (full) topology for given timestamp
+
+		// get base (full) topology for given timestamp
 		getBaseTopology(regionName, timestamp);
-		
-		//get topology update since given timestamp
-		getTopologyUpdate(regionName,timestamp, true);
-		
-		//get Line load data for given timestamp
-		getLineLoad(regionName,timestamp);
-		
-		//get latest CA results
+
+		// get topology update since given timestamp
+		getTopologyUpdate(regionName, timestamp, true);
+
+		// get Line load data for given timestamp
+		getLineLoad(regionName, timestamp);
+
+		// get latest CA results
 		getContingencyResults(regionName);
-		
-		//get CA result for given timestamp
-		getContingencyResults(regionName,timestamp);
-			
+
+		// get CA result for given timestamp
+		getContingencyResults(regionName, timestamp);
+
 	}
 
-	private static void getBaseTopology(String regionName){
-		GossClient client= new GossClient();
-		DataResponse response=null;
-		try{
+	private static void getBaseTopology(String regionName) {
+		GossClient client = new GossClient();
+		DataResponse response = null;
+		try {
 			Request request = new RequestTopology(regionName);
-			response = (DataResponse)client.getResponse(request);
-			Topology topology = (Topology)response.getData();
-			for(ACLineSegment ac: topology.getAcLineSegments())
-				System.out.println("from ss: " + ac.getSubstations().get(0).getName() + " to suss: " + ac.getSubstations().get(1).getName() + " ac name:" + ac.getName() + " " + ac.getSubstations().size());
-			client.close();
-			
-		}catch(ClassCastException e){
-			if(response!=null){
-				DataError error = (DataError)response.getData();
-				System.out.println(error.getMessage());
+			response = (DataResponse) client.getResponse(request);
+			Topology topology = (Topology) response.getData();
+			for (ACLineSegment ac : topology.getAcLineSegments()) {
+				System.out.println("Line seg: " + ac.getName());
+				for (Substation s : ac.getSubstations()) {
+					System.out.println("\tfrom ss: " + s.getName() + " to suss: " + s.getName() + " totalpload: " + s.getTotalPLoad() + " totalqload: " + s.getTotalQGen() + " totalpgen: " + s.getTotalPGen() + " totalqgen: " + s.getTotalQGen() + " totalmaxmva: " + s.getTotalMaxMva());
+				}
 			}
-			else 
+			client.close();
+
+		} catch (ClassCastException e) {
+			if (response != null) {
+				DataError error = (DataError) response.getData();
+				System.out.println(error.getMessage());
+			} else
 				throw e;
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void getBaseTopology(String regionName, String timestamp){
-		GossClient client= new GossClient();
-		DataResponse response=null;
-		try{
-			Request request = new RequestTopology(regionName,timestamp);
-			response = (DataResponse)client.getResponse(request);
-			Topology topology1 = (Topology)response.getData();
+
+	private static void getBaseTopology(String regionName, String timestamp) {
+		GossClient client = new GossClient();
+		DataResponse response = null;
+		try {
+			Request request = new RequestTopology(regionName, timestamp);
+			response = (DataResponse) client.getResponse(request);
+			Topology topology1 = (Topology) response.getData();
 			System.out.println(topology1.getRegion());
 			System.out.println(topology1.getAcLineSegments().get(0).getName());
 			System.out.println(topology1.getAcLineSegments().size());
 			client.close();
-		}
-		catch(ClassCastException e){
-			if(response!=null){
-				DataError error = (DataError)response.getData();
+		} catch (ClassCastException e) {
+			if (response != null) {
+				DataError error = (DataError) response.getData();
 				System.out.println(error.getMessage());
-			}
-			else 
+			} else
 				throw e;
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void getBaseTopologyXML(String regionName){
-		GossClient client= new GossClient();
-		try{
+
+	private static void getBaseTopologyXML(String regionName) {
+		GossClient client = new GossClient();
+		try {
 			Request request = new RequestTopology(regionName);
 			String topologyXML = client.getResponse(request, RESPONSE_FORMAT.XML).toString();
-			FileUtils.writeStringToFile(new File(regionName+".xml"), StringEscapeUtils.unescapeHtml(topologyXML));
-			//XStream xStream = new XStream();
-			//xStream.toXML(topologyXML, new FileOutputStream("north1.xml"));
+			FileUtils.writeStringToFile(new File(regionName + ".xml"), StringEscapeUtils.unescapeHtml(topologyXML));
+			// XStream xStream = new XStream();
+			// xStream.toXML(topologyXML, new FileOutputStream("north1.xml"));
 			client.close();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void getTopologyUpdate(String regionName, String timestamp, Boolean update){
-		GossClient client= new GossClient();
-		DataResponse response=null;
-		try{
-			Request request = new RequestTopology(regionName,timestamp, true);
-			response = (DataResponse)client.getResponse(request);
-			Topology topology = (Topology)response.getData();
+
+	private static void getTopologyUpdate(String regionName, String timestamp, Boolean update) {
+		GossClient client = new GossClient();
+		DataResponse response = null;
+		try {
+			Request request = new RequestTopology(regionName, timestamp, true);
+			response = (DataResponse) client.getResponse(request);
+			Topology topology = (Topology) response.getData();
 			System.out.println(topology.getAcLineSegments().get(0).getName());
 			System.out.println(topology.getAcLineSegments().size());
 			client.close();
-		}
-		catch(ClassCastException e){
-			if(response!=null){
-				DataError error = (DataError)response.getData();
+		} catch (ClassCastException e) {
+			if (response != null) {
+				DataError error = (DataError) response.getData();
 				System.out.println(error.getMessage());
-			}
-			else 
+			} else
 				throw e;
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void getLineLoad(String regionName, String timestamp){
-		GossClient client= new GossClient();
-		try{
-			Request request = new RequestLineLoad(regionName,timestamp);
+
+	private static void getLineLoad(String regionName, String timestamp) {
+		GossClient client = new GossClient();
+		try {
+			Request request = new RequestLineLoad(regionName, timestamp);
 			String topologyXML = client.getResponse(request, RESPONSE_FORMAT.XML).toString();
-			FileUtils.writeStringToFile(new File(regionName+"_lineLoad.xml"), StringEscapeUtils.unescapeHtml(topologyXML));
+			FileUtils.writeStringToFile(new File(regionName + "_lineLoad.xml"), StringEscapeUtils.unescapeHtml(topologyXML));
 			client.close();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void getContingencyResults(String regionName){
-		GossClient client= new GossClient();
-		DataResponse response=null;
-		try{
+
+	private static void getContingencyResults(String regionName) {
+		GossClient client = new GossClient();
+		DataResponse response = null;
+		try {
 			Request request = new RequestContingencyResult(regionName);
-			response = (DataResponse)client.getResponse(request);
-			ContingencyResultList resultList = (ContingencyResultList)response.getData();
+			response = (DataResponse) client.getResponse(request);
+			ContingencyResultList resultList = (ContingencyResultList) response.getData();
 			System.out.println(resultList.getResultList().size());
 			client.close();
-		}
-		catch(ClassCastException e){
-			if(response!=null){
-				DataError error = (DataError)response.getData();
+		} catch (ClassCastException e) {
+			if (response != null) {
+				DataError error = (DataError) response.getData();
 				System.out.println(error.getMessage());
-			}
-			else 
+			} else
 				throw e;
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void getContingencyResults(String regionName, String timestamp){
-		GossClient client= new GossClient();
-		DataResponse response=null;
-		try{
-			Request request = new RequestContingencyResult(regionName,timestamp);
-			response = (DataResponse)client.getResponse(request);
-			ContingencyResultList resultList = (ContingencyResultList)response.getData();
+
+	private static void getContingencyResults(String regionName, String timestamp) {
+		GossClient client = new GossClient();
+		DataResponse response = null;
+		try {
+			Request request = new RequestContingencyResult(regionName, timestamp);
+			response = (DataResponse) client.getResponse(request);
+			ContingencyResultList resultList = (ContingencyResultList) response.getData();
 			System.out.println(resultList.getResultList().size());
 			client.close();
-		}
-		catch(ClassCastException e){
-			if(response!=null){
-				DataError error = (DataError)response.getData();
+		} catch (ClassCastException e) {
+			if (response != null) {
+				DataError error = (DataError) response.getData();
 				System.out.println(error.getMessage());
-			}
-			else 
+			} else
 				throw e;
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

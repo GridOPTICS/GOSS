@@ -73,6 +73,55 @@ public class Substation extends IdentifiedObject {
 	 * @generated
 	 */
 	private String regionName = null;
+	
+	private double totalPLoad = 0.0;
+	private double totalQLoad = 0.0;
+	
+	private double totalPGen = 0.0;
+	private double totalQGen = 0.0;
+	
+	private double totalMaxMva = 0.0;
+	
+
+	public double getTotalPLoad() {
+		return totalPLoad;
+	}
+
+	public void setTotalPLoad(double totalPLoad) {
+		this.totalPLoad = totalPLoad;
+	}
+
+	public double getTotalQLoad() {
+		return totalQLoad;
+	}
+
+	public void setTotalQLoad(double totalQLoad) {
+		this.totalQLoad = totalQLoad;
+	}
+
+	public double getTotalPGen() {
+		return totalPGen;
+	}
+
+	public void setTotalPGen(double totalPGen) {
+		this.totalPGen = totalPGen;
+	}
+
+	public double getTotalQGen() {
+		return totalQGen;
+	}
+
+	public void setTotalQGen(double totalQGen) {
+		this.totalQGen = totalQGen;
+	}
+
+	public double getTotalMaxMva() {
+		return totalMaxMva;
+	}
+
+	public void setTotalMaxMva(double totalMaxMva) {
+		this.totalMaxMva = totalMaxMva;
+	}
 
 	/**
 	 * Returns the value of '<em><b>location</b></em>' feature.

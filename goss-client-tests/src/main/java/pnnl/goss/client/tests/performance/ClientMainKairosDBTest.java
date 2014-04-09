@@ -46,6 +46,7 @@ package pnnl.goss.client.tests.performance;
 
 import java.io.FileWriter;
 
+import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
@@ -59,7 +60,7 @@ public class ClientMainKairosDBTest {
 
 	public static void main(String args[]){
 
-		String typeOfCommunication = "a";
+		String typeOfCommunication = "s";
 		int noOfClients = 1;
 		int noOfChannels = 1; //max = 555
 		int dataPerResponse = 1;
@@ -78,7 +79,7 @@ public class ClientMainKairosDBTest {
 				public void run() {
 					DataResponse response=null;		
 					try{
-						GossClient client = new GossClient();
+						GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 						RequestKairosTest request = null;
 						FileWriter logWriter = new FileWriter("kairos_synchronous_client"+clientNum+".log",true);
 						logWriter.write("Kairos,Kairos+GOSS\n");
@@ -120,7 +121,7 @@ static void asynchronousTest(int noOfClients, int noOfChannels, int dataPerRespo
 			public void run() {
 				try{
 					final FileWriter logWriter = new FileWriter("kairos_asynchronous_client"+clientNum+".log",true);
-					final GossClient client = new GossClient();
+					final GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 					RequestKairosAsyncTest request = new RequestKairosAsyncTest("test", "flag", 1270105200, 1270105300,dataPerResp);
 					
 					GossResponseEvent event = new GossResponseEvent() {
@@ -155,9 +156,10 @@ static void asynchronousTest(int noOfClients, int noOfChannels, int dataPerRespo
 					};
 
 					for(int channel=1;channel<=numOfChannels;channel++){
-						logWriter.write(System.currentTimeMillis()+"\n");
+						logWriter.write("Before Sending Request=;"+System.currentTimeMillis()+"\n");
 						client.sendRequest(request, event, null);
-						logWriter.write(System.currentTimeMillis()+"\n");
+						logWriter.write("After sending Request=;"+System.currentTimeMillis()+"\n");
+						logWriter.write("Before Data Store Transanction;After Data Store Transaction;Response received at \n");
 					}
 					
 				}

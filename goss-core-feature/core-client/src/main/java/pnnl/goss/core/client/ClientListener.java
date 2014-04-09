@@ -44,12 +44,13 @@
 */
 package pnnl.goss.core.client;
 
-import pnnl.goss.core.Response;
-import pnnl.goss.core.client.GossResponseEvent;
-
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
+
+import pnnl.goss.core.DataResponse;
+import pnnl.goss.core.Response;
 
 public class ClientListener implements MessageListener {
 
@@ -62,14 +63,23 @@ public class ClientListener implements MessageListener {
 	public void onMessage(Message message) {
 		
 		try {
-			ObjectMessage objectMessage = (ObjectMessage) message;
-			
-			if(objectMessage.getObject() instanceof pnnl.goss.core.Response){
-				Response response = (Response) objectMessage.getObject();
-				responseEvent.onMessage(response);
-				
-				
+			if(message instanceof ObjectMessage){
+				ObjectMessage objectMessage = (ObjectMessage) message;
+					if(objectMessage.getObject() instanceof pnnl.goss.core.Response){
+						Response response = (Response) objectMessage.getObject();
+						responseEvent.onMessage(response);
+					}
+					else{
+						DataResponse response = new DataResponse(objectMessage.getObject());
+						responseEvent.onMessage(response);
+					}
 			}
+			else if(message instanceof TextMessage){
+				TextMessage textMessage = (TextMessage)message;
+				DataResponse response = new DataResponse(textMessage.getText());
+				responseEvent.onMessage(response);
+			}
+			
 			//Log file:client.log, Description: After getting PMUData from server, Timestamp:T8
 			//StatusLoggerFactory.getLogger(new File("client.log")).addLogEntry(getEntryString(pmuData.getRequestId(),System.currentTimeMillis(), "T8"));
 			//StatusLoggerFactory.getLogger(new File("client.log")).addLogEntry(getEntryString(System.currentTimeMillis(), "T8"));

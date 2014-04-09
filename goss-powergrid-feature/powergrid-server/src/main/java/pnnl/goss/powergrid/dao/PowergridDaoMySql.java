@@ -144,12 +144,13 @@ public class PowergridDaoMySql implements PowergridDao {
 	}
 
 	public Powergrid getPowergridById(int powergridId) {
-		String dbQuery = "select pg.PowergridId, pg.Name, a.mrid from pg.powergrids INNER INNER JOIN areas a ON pg.PowergridId=a.PowergridId where PowergridId = " + powergridId;
+		String dbQuery = "select pg.PowergridId, pg.Name, a.mrid from powergrids pg INNER JOIN areas a ON pg.PowergridId=a.PowergridId where pg.PowergridId = " + powergridId;
 		Powergrid grid = new Powergrid();
 		ResultSet rs = null;
 		Connection conn = null;
 
 		try {
+			log.debug(dbQuery);
 			conn = datasource.getConnection();
 			Statement stmt = conn.createStatement();
 			rs = stmt.executeQuery(dbQuery.toLowerCase());

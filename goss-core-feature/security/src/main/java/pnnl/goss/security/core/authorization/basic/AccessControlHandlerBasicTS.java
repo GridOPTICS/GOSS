@@ -82,7 +82,7 @@ public abstract class AccessControlHandlerBasicTS extends AbstractAccessControlH
 	
 	private static DataSource dataSourceConnection;
 	private static HashMap<String, CachedRoles> cachedRoleMappings = new HashMap<String, CachedRoles>();
-	private static final long EXPIRE_TIME = 3600000;
+	private static final long EXPIRE_TIME = 6000;
 	
 	
 	

@@ -47,6 +47,7 @@ package pnnl.goss.client.tests.performance;
 import java.io.FileWriter;
 import java.util.Random;
 
+import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
@@ -60,7 +61,7 @@ public class ClientMainGridMWTest {
 
 	public static void main(String args[]){
 
-		String typeOfCommunication = "a";
+		String typeOfCommunication = "s";
 		int noOfClients = 1;
 		int noOfChannels = 1; //max = 555
 		int dataPerResponse = 1;
@@ -79,7 +80,7 @@ public class ClientMainGridMWTest {
 					public void run() {
 						DataResponse response=null;		
 						try{
-							GossClient client = new GossClient();
+							GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 							RequestGridMWTest request = null;
 							FileWriter logWriter = new FileWriter("gridMW_synchronous_client"+clientNum+".log",true);
 							logWriter.write("GridMW,GridMW+GOSS\n");

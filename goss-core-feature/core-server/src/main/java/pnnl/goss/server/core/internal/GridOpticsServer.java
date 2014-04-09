@@ -146,7 +146,7 @@ public class GridOpticsServer {
 		Utilities.getInstance();
 		System.setProperty("activemq.base", System.getProperty("user.dir"));
 		System.out.println("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-		BrokerService broker = BrokerFactory.createBroker(Utilities.getProperty("brokerConfig"));
+		BrokerService broker = BrokerFactory.createBroker(Utilities.getProperty("brokerConfig"), true);
 		Utilities.setbrokerURI(broker.getTransportConnectors().get(0).getConnectUri());
 		broker.start();
 	}

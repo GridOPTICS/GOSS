@@ -3,9 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-karaf</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>karaf-assembly</packaging>
 	<name>GOSS :: Karaf Assemblies :: Distribution</name>
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-master-build</artifactId>
+		<version>0.1.1-SNAPSHOT</version>
+	</parent>
 
 	<dependencies>
 		<dependency>
@@ -29,13 +34,31 @@
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-feature</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>${goss-core.version}</version>
 			<classifier>features</classifier>
 			<type>xml</type>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.karaf.features</groupId> <artifactId>enterprise</artifactId> 
-			<version>3.0.0</version> </dependency> <dependency> <groupId>org.apache.servicemix.bundles</groupId> 
-			<artifactId>commons-io</artifactId> <version>1.4_3</version> </dependency> -->
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-powergrid-feature</artifactId>
+			<version>${goss-powergrid.version}</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-tool-sharedperspective-feature</artifactId>
+			<version>${goss-sharedperspective.version}</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-dsa</artifactId>
+			<version>${goss-dsa.version}</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+		</dependency>		
 	</dependencies>
 
 	<build>
@@ -63,11 +86,15 @@
 				</executions>
 				<configuration>
 					<!-- no startupFeatures -->
-					<bootFeatures>
+					<!-- no bootFeatures -->
+					<startupFeatures>
 						<feature>standard</feature>
 						<feature>management</feature>
 						<feature>goss-core-feature</feature>
-					</bootFeatures>
+						<feature>goss-powergrid-feature</feature>
+						<feature>goss-tool-sharedperspective-feature</feature>
+						<feature>goss-dsa</feature>
+					</startupFeatures>
 					<!-- no installedFeatures -->
 
 				</configuration>
