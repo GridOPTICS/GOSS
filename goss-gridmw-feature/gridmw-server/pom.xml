@@ -58,6 +58,7 @@
 						<Export-Package>
 							pnnl.goss.gridmw,
 							pnnl.goss.gridmw.handlers,
+							pnnl.goss.gridmw.datasources,
 							pnnl.goss.gridmw.security
 						</Export-Package>
 						<Import-Package>
