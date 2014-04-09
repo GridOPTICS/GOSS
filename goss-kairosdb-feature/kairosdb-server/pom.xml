@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-kairosdb-server</artifactId>
+	<packaging>bundle</packaging>
 
 	<name>GOSS kairosdb Server</name>
 
@@ -63,7 +64,14 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -78,6 +86,28 @@
 					</goals> </execution> <execution> <id>report</id> <phase>prepare-package</phase> 
 					<goals> <goal>report</goal> </goals> </execution> </executions> -->
 			</plugin>
+			<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>${maven-bundle-plugin.version}</version>
+					<extensions>true</extensions>
+					<configuration>
+						<instructions>
+							<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+							<Bundle-Version>${project.version}</Bundle-Version>
+							<Bundle-Activator>pnnl.goss.kairosdb.KairosDBServerActivator</Bundle-Activator>
+							<Export-Package>
+								pnnl.goss.kairosdb,
+								goss.pnnl.kairosdb,
+								goss.pnnl.kairosdb.handlers
+							</Export-Package>
+							<Import-Package>
+								com.mysql.jdbc,
+								*
+							</Import-Package>
+						</instructions>
+					</configuration>
+				</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -109,8 +139,9 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+				
 			</plugins>
 		</pluginManagement>
 	</build>
-	<packaging>jar</packaging>
+<!-- 	<packaging>jar</packaging> -->
 </project>

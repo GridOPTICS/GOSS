@@ -50,11 +50,11 @@ import org.osgi.framework.BundleContext;
 public class KairosDBActivator implements BundleActivator {
 
     public void start(BundleContext context) {
-        System.out.println("Starting the bundle");
+        System.out.println("Starting the KairosDB Common bundle");
     }
 
     public void stop(BundleContext context) {
-        System.out.println("Stopping the bundle");
+        System.out.println("Stopping the KairosDB Common bundle");
     }
 
 }
