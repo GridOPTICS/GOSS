@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+
+    <feature name="goss-tool-fncs-feature" version="${pom.version}">
+	
+		<feature>jdbc</feature>
+		<feature>goss-core-feature</feature>
+    	
+    	<bundle start-level="88" dependency="true">mvn:pnnl.goss/goss-tool-fncs-common/${pom.version}</bundle>
+    	<bundle start-level="89" dependency="true">mvn:pnnl.goss/goss-tool-fncs-server/${pom.version}</bundle>
+    	
+    </feature>
+ </features>
