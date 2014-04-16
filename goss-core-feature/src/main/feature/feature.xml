@@ -59,6 +59,7 @@
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${xstream.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${commons-io.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${commons-dbcp.version}</bundle>
+    	<bundle dependency="true">mvn:com.google.code.gson/gson/${gson.version}</bundle>
     	<bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql-connector.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${httpclient-osgi.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${httpclient-osgi.version}</bundle>

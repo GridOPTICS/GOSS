@@ -121,7 +121,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<global.properties.path>${user.home}/goss.properties</global.properties.path>
+				<global.properties.path>${user.home}/.goss/goss.properties</global.properties.path>
 			</properties>			
 		</profile>
 		<profile>
@@ -133,7 +133,7 @@
 				</property>				
 			</activation>
 			<properties>
-				<global.properties.path>${user.home}/goss.north.properties</global.properties.path>
+				<global.properties.path>${user.home}/.goss/goss.north.properties</global.properties.path>
 			</properties>
 		</profile>
 		<profile>
@@ -145,7 +145,7 @@
 				</property>				
 			</activation>
 			<properties>
-				<global.properties.path>${user.home}/goss.south.properties</global.properties.path>
+				<global.properties.path>${user.home}/.goss/goss.south.properties</global.properties.path>
 			</properties>
 		</profile>
 	</profiles>
