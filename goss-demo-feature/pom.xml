@@ -5,12 +5,12 @@
 
 	<artifactId>goss-demo-feature</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -92,11 +92,11 @@
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
-								<artifact>
+								<!-- <artifact>
 									<file>target/classes/pnnl.goss.demo.pmu.security.cfg</file>
 									<classifier>pmu-security-config</classifier>
 									<type>cfg</type>
-								</artifact>
+								</artifact> -->
 							</artifacts>
 						</configuration>
 					</execution>
@@ -127,12 +127,12 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.0</version>
+				<version>0.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-gridmw-common</artifactId>
-				<version>0.1.0</version>
+				<version>0.1.1</version>
 			</dependency>
 
 			<dependency>

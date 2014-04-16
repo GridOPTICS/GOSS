@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-tool-pmuevents-feature</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<dependencies>
@@ -44,7 +44,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Description>${project.description}</Bundle-Description>
-						<Bundle-Activator>pnnl.goss.gridpack.service.Activator</Bundle-Activator>
+						<Bundle-Activator>pnnl.goss.pmuevents.PMUEventsServerActivator</Bundle-Activator>
 						<Import-Package>
 							javax.wsdl,
 							javax.xml.bind,
@@ -55,7 +55,7 @@
 							*
 						</Import-Package>
 						<Export-Package>
-							pnnl.goss.gridpack.service*
+							nnl.goss.pmuevents*
 						</Export-Package>
 					</instructions>
 				</configuration>

@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-tool-mdart-feature</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 	
 	<dependencies>

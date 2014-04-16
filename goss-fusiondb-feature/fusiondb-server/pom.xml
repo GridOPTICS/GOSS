@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-fusiondb-feature</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<dependencies>
@@ -56,6 +56,22 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.6.2.201302030002</version>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							pnnl.goss.fusiondb.datasources;version=${project.version},
+							pnnl.goss.fusiondb.handlers;version=${project.version}
+						</Export-Package>
+						<Import-Package>
+							*
+						</Import-Package>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 

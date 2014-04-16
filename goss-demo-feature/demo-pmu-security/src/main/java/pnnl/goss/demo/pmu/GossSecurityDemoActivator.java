@@ -58,6 +58,8 @@ import org.osgi.service.cm.ManagedService;
 
 import pnnl.goss.demo.security.util.DemoConstants;
 
+import pnnl.goss.demo.security.util.DemoConstants;
+
 
 public class GossSecurityDemoActivator implements BundleActivator, ManagedService{
 

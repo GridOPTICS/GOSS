@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-tool-mdart-feature</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<packaging>pom</packaging>
 	<name>GOSS mdart Feature</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -43,21 +43,42 @@
 		<module>mdart-common</module>
 		<module>mdart-server</module>
 	</modules>
-	<distributionManagement>
-		<repository>
-			<id>PNNL Release Repository</id>
-			<name>PNNL Release Repository</name>
-			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>PNNL Snapshot Repository</id>
-			<name>PNNL Snapshot Repository</name>
-			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<build>
-			<plugins>
-				<plugin>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+
+				<configuration>
+					<startLevel>60</startLevel>
+					<aggregateFeatures>true</aggregateFeatures>
+					<resolver>(obr)</resolver>
+					<checkDependencyChange>true</checkDependencyChange>
+					<failOnDependencyChange>false</failOnDependencyChange>
+					<logDependencyChanges>true</logDependencyChanges>
+					<overwriteChangedDependencies>true</overwriteChangedDependencies>
+				</configuration>
+				<executions>
+					<execution>
+						<id>process-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-kars</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+						<configuration>
+							<addBundlesToPrimaryFeature>false</addBundlesToPrimaryFeature>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.8</version>
@@ -115,7 +136,7 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.0</version>
+				<version>0.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>

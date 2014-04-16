@@ -6,12 +6,12 @@
 	<artifactId>goss-tool-gridpack-feature</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS Gridpack Feature</name>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -23,6 +23,52 @@
 	<build>
 		<plugins>
 
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+
+				<configuration>
+					<startLevel>60</startLevel>
+					<aggregateFeatures>true</aggregateFeatures>
+					<resolver>(obr)</resolver>
+					<checkDependencyChange>true</checkDependencyChange>
+					<failOnDependencyChange>false</failOnDependencyChange>
+					<logDependencyChanges>true</logDependencyChanges>
+					<overwriteChangedDependencies>true</overwriteChangedDependencies>
+				</configuration>
+				<executions>
+					<execution>
+						<id>process-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-kars</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+						<configuration>
+							<addBundlesToPrimaryFeature>false</addBundlesToPrimaryFeature>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
@@ -83,7 +129,7 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>target/classes/feature/feature.xml</file>
+									<file>target/feature/feature.xml</file>
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
@@ -120,12 +166,12 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-powergrid-common</artifactId>
-				<version>0.1.0</version>
+				<version>0.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-powergrid-server</artifactId>
-				<version>0.1.0</version>
+				<version>0.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.woodstox</groupId>
