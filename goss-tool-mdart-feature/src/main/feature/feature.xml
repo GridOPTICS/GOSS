@@ -3,7 +3,7 @@
 
     <feature name="goss-tool-mdart-feature" version="${pom.version}">
     	
-		<feature>goss-tool-mdart-feature</feature>
+		<feature>goss-core-feature</feature>
     	    	
     	<bundle start-level="88" dependency="true">mvn:pnnl.goss/goss-tool-mdart-common/${pom.version}</bundle>
     	<bundle start-level="89" dependency="true">mvn:pnnl.goss/goss-tool-mdart-server/${pom.version}</bundle>
