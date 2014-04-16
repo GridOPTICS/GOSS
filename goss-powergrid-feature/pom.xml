@@ -97,11 +97,12 @@
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
+                                <!--
 								<artifact>
 									<file>target/classes/pnnl.goss.powergrid.server.cfg</file>
 									<type>cfg</type>
 									<classifier>config</classifier>
-								</artifact>
+								</artifact>-->
 							</artifacts>
 						</configuration>
 					</execution>

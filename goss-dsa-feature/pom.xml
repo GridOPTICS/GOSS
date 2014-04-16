@@ -92,11 +92,11 @@
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
-								<artifact>
+								<!-- <artifact>
 									<file>target/classes/pnnl.goss.dsa.cfg</file>
 									<classifier>config</classifier>
 									<type>cfg</type>
-								</artifact>
+								</artifact> -->
 							</artifacts>
 						</configuration>
 					</execution>

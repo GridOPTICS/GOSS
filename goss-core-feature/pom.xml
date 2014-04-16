@@ -106,7 +106,7 @@
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
-								<artifact>
+								<!--<artifact>
 									<file>target/classes/pnnl.goss.core.client.cfg</file>
 									<type>cfg</type>
 									<classifier>client-config</classifier>
@@ -146,6 +146,7 @@
 									<type>cfg</type>
 									<classifier>activemq</classifier>
 								</artifact>
+                                -->
 							</artifacts>
 						</configuration>
 					</execution>

@@ -13,6 +13,18 @@
 	<properties>
 		<goss.version>0.1.1-SNAPSHOT</goss.version>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>mvn-pnnl-releases</id>
+			<name>PNNL Release Repository</name>
+			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>mvn-pnnl-snapshots</id>
+			<name>PNNL Snapshot Repository</name>
+			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 	
 	<dependencies>
 		<dependency>
