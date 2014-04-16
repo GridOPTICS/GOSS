@@ -7,9 +7,9 @@
 <!-- 			databaseUser=root -->
 <!-- 			databasePassword=CHANGEME -->
 <!-- 		</config> -->
-		<configfile finalname="/etc/pnnl.goss.fusiondb.server.cfg">
+<!-- 		<configfile finalname="/etc/pnnl.goss.fusiondb.server.cfg">
 			mvn:pnnl.goss/goss-fusiondb-feature/${pom.version}/cfg/config
-		</configfile>
+		</configfile> -->
 		
 		<feature>jdbc</feature>
 		<feature>goss-core-feature</feature>
