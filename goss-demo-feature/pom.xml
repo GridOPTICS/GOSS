@@ -5,12 +5,12 @@
 
 	<artifactId>goss-demo-feature</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -127,12 +127,12 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-gridmw-common</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.1</version>
 			</dependency>
 
 			<dependency>

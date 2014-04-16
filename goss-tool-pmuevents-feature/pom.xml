@@ -5,13 +5,13 @@
 
 	<artifactId>goss-tool-pmuevents-feature</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 	<name>GOSS PMU Events Feature</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<modules>
@@ -102,7 +102,7 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-powergrid-common</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.woodstox</groupId>
