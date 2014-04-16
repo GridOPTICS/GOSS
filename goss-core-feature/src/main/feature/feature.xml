@@ -19,7 +19,7 @@
 <!-- 		<config name="pnnl.goss.core.client"> -->
 <!-- 			brokerURI=tcp://${activemq.host}:${activemq.port} -->
 <!-- 		</config> -->
-		<configfile finalname="/deploy/LDAPLogin.xml">
+<!-- 		<configfile finalname="/deploy/LDAPLogin.xml">
 			mvn:pnnl.goss/goss-core-feature/${pom.version}/xml/ldap-config
 		</configfile>
 		<configfile finalname="/etc/pnnl.goss.core.security.utils.cfg">
@@ -43,7 +43,7 @@
 
 		<configfile finalname="/etc/pnnl.goss.core.server.cfg">
 			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/server-config
-		</configfile>
+		</configfile> -->
 
 
     	<feature version="${cxf.version}">cxf</feature>
