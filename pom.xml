@@ -6,7 +6,7 @@
 
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-master-build</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GOSS Master Builder</name>
 
@@ -16,18 +16,18 @@
 
 		<!-- Goss properties that are listed below in the dependencymanagement 
 			section. -->
-		<goss-core.version>0.1.1-SNAPSHOT</goss-core.version>
-		<goss-demo.version>0.1.1-SNAPSHOT</goss-demo.version>
-		<goss-dsa.version>0.1.1-SNAPSHOT</goss-dsa.version>
-		<goss-fncs.version>0.1.1-SNAPSHOT</goss-fncs.version>
-		<goss-fusion.version>0.1.1-SNAPSHOT</goss-fusion.version>
-		<goss-gridmw.version>0.1.1-SNAPSHOT</goss-gridmw.version>
-		<goss-gridpack.version>0.1.1-SNAPSHOT</goss-gridpack.version>
-		<goss-kariosdb.version>0.1.1-SNAPSHOT</goss-kariosdb.version>
-		<goss-mdart.version>0.1.1-SNAPSHOT</goss-mdart.version>
-		<goss-pmuevents.version>0.1.1-SNAPSHOT</goss-pmuevents.version>
-		<goss-powergrid.version>0.1.1-SNAPSHOT</goss-powergrid.version>
-		<goss-sharedperspective.version>0.1.1-SNAPSHOT</goss-sharedperspective.version>
+		<goss-core.version>0.1.2-SNAPSHOT</goss-core.version>
+		<goss-demo.version>0.1.2-SNAPSHOT</goss-demo.version>
+		<goss-dsa.version>0.1.2-SNAPSHOT</goss-dsa.version>
+		<goss-fncs.version>0.1.2-SNAPSHOT</goss-fncs.version>
+		<goss-fusion.version>0.1.2-SNAPSHOT</goss-fusion.version>
+		<goss-gridmw.version>0.1.2-SNAPSHOT</goss-gridmw.version>
+		<goss-gridpack.version>0.1.2-SNAPSHOT</goss-gridpack.version>
+		<goss-kariosdb.version>0.1.2-SNAPSHOT</goss-kariosdb.version>
+		<goss-mdart.version>0.1.2-SNAPSHOT</goss-mdart.version>
+		<goss-pmuevents.version>0.1.2-SNAPSHOT</goss-pmuevents.version>
+		<goss-powergrid.version>0.1.2-SNAPSHOT</goss-powergrid.version>
+		<goss-sharedperspective.version>0.1.2-SNAPSHOT</goss-sharedperspective.version>
 		<goss-fncs.version>0.0.1</goss-fncs.version>
 
 

@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-tool-sharedperspective-feature</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GOSS Shared Perspective Feature</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -103,7 +103,7 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.2-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>

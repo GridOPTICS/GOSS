@@ -5,13 +5,13 @@
 	<artifactId>goss-client-tests</artifactId>
 	<name>GOSS Client Test Jar</name>
 	<packaging>jar</packaging>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	
 	<description>
 		A jar with multiple mains for testing output.
 	</description>
 	<properties>
-		<goss.version>0.1.1-SNAPSHOT</goss.version>
+		<goss.version>0.1.2-SNAPSHOT</goss.version>
 	</properties>
 	<distributionManagement>
 		<repository>
