@@ -6,7 +6,6 @@
 
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-tool-fncs-server</artifactId>
-	<version>0.0.1</version>
 	<packaging>bundle</packaging>
 
 	<name>GOSS fncs Server Bundle</name>

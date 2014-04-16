@@ -5,7 +5,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-tool-fncs-common</artifactId>
-	<version>0.0.1</version>
 	<packaging>bundle</packaging>
 
 	<name>GOSS fncs Common Bundle</name>
