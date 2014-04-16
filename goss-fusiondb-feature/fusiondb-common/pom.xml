@@ -48,8 +48,8 @@
 					<instructions>
 						<Bundle-Activator>pnnl.goss.fusiondb.FusionDBCommonActivator</Bundle-Activator>
 						<Export-Package>
-							pnnl.goss.fusiondb.datamodel*;version=${project.version}
-							pnnl.goss.fusiondb.requests**;version=${project.version}
+							pnnl.goss.fusiondb.datamodel;version=${project.version}
+							pnnl.goss.fusiondb.requests;version=${project.version}
 						</Export-Package>
 						<Import-Package>
 							javax.wsdl,
