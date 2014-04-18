@@ -57,40 +57,41 @@ import pnnl.goss.sharedperspective.common.datamodel.Topology;
 @WebService(serviceName = "GetTopologyService", portName = "TopologyPort", name = "Topology", targetNamespace = "http://topology.ws.dsa.fpgi.pnnl.gov/")
 public class GetTopologyService implements GetTopologySei {
 
-	GridOpticsServiceImpl gossService;
-
-	public GetTopologyService() {
-		this.gossService = new GridOpticsServiceImpl();
-		this.gossService.setPowerGridName(DsaActivator.getPowergridName());
-	}
-
 	@Override
 	public @WebResult(name = "powerGridName")
 	String getPowerGridName() {
-		return gossService.getPowerGridName();
+		return DsaActivator.getPowergridName(); // gossService.getPowerGridName();
 	}
 
 	@Override
 	public @WebResult(name = "topology")
 	Topology getDefaultTopology(@WebParam(name = "timestamp") String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getTopology(timestamp);
 	}
 
 	@Override
 	public @WebResult(name = "topology")
 	Topology getTopology(@WebParam(name = "powerGridName") String powerGridName, @WebParam(name = "timestamp") String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getTopology(powerGridName, timestamp);
 	}
 
 	@Override
 	public @WebResult(name = "currentTopology")
 	Topology getCurrentDefaultTopology() {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getCurrentTopology();
 	}
 
 	@Override
 	public @WebResult(name = "currentTopology")
 	Topology getCurrentTopology(@WebParam(name = "powerGridName") String powerGridName) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		Topology top = gossService.getCurrentTopology(powerGridName);
 		if (top == null) {
 			System.err.println("topology is NULL");
@@ -103,24 +104,32 @@ public class GetTopologyService implements GetTopologySei {
 	@Override
 	public @WebResult(name = "topologyChanges")
 	Topology getDefaultTopologyChanges(@WebParam(name = "timestamp") String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getTopologyChanges(timestamp);
 	}
 
 	@Override
 	public @WebResult(name = "topologyChanges")
 	Topology getTopologyChanges(@WebParam(name = "powerGridName") String powerGridName, @WebParam(name = "timestamp") String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getTopologyChanges(powerGridName, timestamp);
 	}
 
 	@Override
 	public @WebResult(name = "lineLoad")
 	Topology getDefaultLineLoad(@WebParam(name = "timestamp") String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getLineLoad(timestamp);
 	}
 
 	@Override
 	public @WebResult(name = "lineLoad")
 	Topology getLineLoad(@WebParam(name = "powerGridName") String powerGridName, @WebParam(name = "timestamp") String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getLineLoad(powerGridName, timestamp);
 	}
 

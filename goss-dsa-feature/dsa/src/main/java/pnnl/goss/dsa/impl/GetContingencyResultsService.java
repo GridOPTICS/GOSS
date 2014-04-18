@@ -60,32 +60,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 		targetNamespace="http://contingency.ws.dsa.fpgi.pnnl.gov/")
 public class GetContingencyResultsService implements GetContingencyResultsSei {
 
-	private pnnl.goss.dsa.impl.GridOpticsServiceImpl gossService;
-	
+	//private pnnl.goss.dsa.impl.GridOpticsServiceImpl gossService;
+	/*
 	public GetContingencyResultsService(){
 		this.gossService = new GridOpticsServiceImpl();
 		this.gossService.setPowerGridName(DsaActivator.getPowergridName());
-	}
+	}*/
 	
 	@Override
 	public @WebResult(name="contingencyResults")ContingencyResultList getDefaultContingencyResults(@WebParam(name="timestamp")String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getContingencyResults(timestamp);
 	}
 	
 	@Override
 	public @WebResult(name="contingencyResults")ContingencyResultList getContingencyResults(@WebParam(name="powerGridName")String powerGridName,
 			@WebParam(name="timestamp")String timestamp) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getContingencyResults(powerGridName, timestamp);
 	}
 	
 	@Override
 	public @WebResult(name="latestContingencyResults")ContingencyResultList getLatestDefaultContingencyResults() {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getLatestContingencyResults();
 	}
 
 	@Override
 	public @WebResult(name="latestContingencyResults")ContingencyResultList getLatestContingencyResults(
 			@WebParam(name="powerGridName")String powerGridName) {
+		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
+		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getLatestContingencyResults(powerGridName);
 	}
 
