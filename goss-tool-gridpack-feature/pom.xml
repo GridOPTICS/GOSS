@@ -6,12 +6,12 @@
 	<artifactId>goss-tool-gridpack-feature</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS Gridpack Feature</name>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.2</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.2-SNAPSHOT</version>
+		<version>0.1.2</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -166,12 +166,12 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-powergrid-common</artifactId>
-				<version>0.1.2-SNAPSHOT</version>
+				<version>0.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-powergrid-server</artifactId>
-				<version>0.1.2-SNAPSHOT</version>
+				<version>0.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.woodstox</groupId>

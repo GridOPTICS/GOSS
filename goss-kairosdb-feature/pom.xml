@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-kairosdb-feature</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.2</version>
 	<packaging>pom</packaging>
 
 	<name>GOSS KairosDB Feature</name>
@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.2-SNAPSHOT</version>
+		<version>0.1.2</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -123,17 +123,17 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.2-SNAPSHOT</version>
+				<version>0.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security</artifactId>
-				<version>0.1.2-SNAPSHOT</version>
+				<version>0.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-server</artifactId>
-				<version>0.1.2-SNAPSHOT</version>
+				<version>0.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
