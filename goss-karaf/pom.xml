@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-karaf</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<packaging>karaf-assembly</packaging>
 	<name>GOSS :: Karaf Assemblies :: Distribution</name>
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1</version>
+		<version>0.1.2</version>
 	</parent>
 
 	<dependencies>

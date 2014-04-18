@@ -60,6 +60,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.activemq.transport.tcp.ExceededMaximumConnectionsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,24 +165,23 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 	
 	
 	/**
-	 * Get a list of substations using passed powergridId and timestamp.  If the timestamp
-	 * is null then the return value will be the initial value associated with the day in question.
+	 * Get a list of substations using passed timestamp.  If the timestamp
+	 * is null then the return value will be the initial value associated with the simulated day at 
+	 * the current time.
 	 *   
-	 * @param powergridId
 	 * @param timestamp
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Substation> getSubstationList(int powergridId, Timestamp timestamp ) throws Exception{
+	public List<Substation> getSubstationList(Timestamp timestamp ) throws Exception{
 		
 		Connection connection= null;
 		List<Substation> substations = new ArrayList<Substation>();
 		
 		try{
 			connection = datasource.getConnection();
-			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement("{call proc_sp_GetSubstations(?, ?)}");
-			stmt.setInt(1, powergridId);
-			stmt.setTimestamp(2,  timestamp);
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement("{call proc_GetSubstations(?)}");
+			stmt.setTimestamp(1, timestamp);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
@@ -225,7 +225,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 	public List<Substation> getSubstationList(int powergridId, String timestampStr) throws Exception{
 
 		Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestampStr);
-		return getSubstationList(powergridId, timestamp);
+		return getSubstationList(timestamp);
 	}
 	
 	private Timestamp convertPassedTimestampStringToTimestamp(String timestampStr) throws ParseException{
@@ -253,52 +253,52 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 		
 		return timestamp;
 	}
-
+	
 	@Override
 	public List<ACLineSegment> getACLineSegments(int powergridId, String timestampStr) throws Exception {
+		Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestampStr);				
+		return getACLineSegments(powergridId, timestamp, getMridSubstationMap(timestamp));
+	}
+	
+	@Override
+	public List<ACLineSegment> getACLineSegmentsUpdate(int powergridId,String timestampStr) throws Exception {
+		Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestampStr);
+		return getACLineSegmentsUpdate(powergridId, timestamp, getMridSubstationMap(timestamp));
+	}
+	
+	private HashMap<String, Substation> getMridSubstationMap(Timestamp timestamp) throws Exception{
+		List<Substation> substations = getSubstationList(timestamp);
+		// A map from mrid to substation.
+		HashMap<String, Substation> substationMap = new HashMap<String, Substation>();
+		for(Substation s: substations){
+			substationMap.put(s.getMrid(), s);
+		}
+		return substationMap;
+	}
 
+	
+	private List<ACLineSegment> getACLineSegments(int powergridId, Timestamp timestamp, HashMap<String, Substation> substationMap) throws Exception {
 		Connection connection = null;
 		List<ACLineSegment> acLineSegments = null;
-
+		
 		try{
 			connection = datasource.getConnection();
 			Statement stmt = connection.createStatement();
 
+			log.debug("query: proc_GetAcLineSegments("+ timestamp + ")");
+			// proc_GetAcLineSegments requires a timestamp parameter.
+			PreparedStatement prepStmt = (PreparedStatement) connection.prepareStatement("{call proc_GetAcLineSegments(?)}");
+			prepStmt.setTimestamp(1, timestamp);
+			ResultSet rs = prepStmt.executeQuery();
 			
-			Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestampStr);
-			
-			List<Substation> substations = getSubstationList(powergridId, timestamp);
-			// A map from mrid to substation.
-			HashMap<String, Substation> substationMap = new HashMap<String, Substation>();
-			for(Substation s: substations){
-				substationMap.put(s.getMrid(), s);
-			}
-			
-
-			String dbQuery = "select lt.timestep,l.lineid, br.branchid, mbr.mrid, bu.basekv, br.rating, br.status, lt.p, lt.q, br.frombusnumber, br.tobusnumber "+
-					"from mridbranches mbr, branches br, buses bu, linetimesteps lt, lines_ l "+
-					"where br.branchid = mbr.branchid "+
-					"and br.frombusnumber = bu.busnumber "+
-					"and l.lineid = lt.lineid "+
-					"and l.branchid = br.branchid "+
-					"and mbr.powergridid = br.powergridid "+
-					"and bu.powergridid = br.powergridid "+
-					"and lt.powergridid = br.powergridid "+
-					"and l.powergridid = br.powergridid "+
-					"and br.powergridid = "+powergridId+" "+
-					"and lt.timestep ='"+ timestamp+"'";
-
-
-			System.out.println(dbQuery);
-			ResultSet rs=stmt.executeQuery(dbQuery);
-			//System.out.println(dbQuery);
+			// Create list of segments.
 			acLineSegments = new ArrayList<ACLineSegment>();
 			ACLineSegment acLineSegment;
 
 			while(rs.next()){
 				String acLineName = "";
 				acLineSegment = new ACLineSegment();
-				acLineSegment.setMrid(rs.getString("mrid"));					//Branch's Mrid
+				acLineSegment.setMrid(rs.getString("branchmrid"));					//Branch's Mrid
 				acLineSegment.setKvlevel(rs.getDouble("basekv")); 			//Base KV from buses 
 				acLineSegment.setRating(rs.getDouble("rating")); 				//branch
 				acLineSegment.setStatus(rs.getInt("status"));				//line timestep
@@ -306,63 +306,38 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 				if(rs.getDouble("p")<0)
 					mvaFlow = -mvaFlow;
 				acLineSegment.setMvaFlow(mvaFlow); 			//sqrt(P^2+Q^2), if P is + then positive , if Q is - then negative value.
-
-				int fromBusNo = rs.getInt("frombusnumber");
-				int toBusNo = rs.getInt("tobusnumber");
+				
+				String fromSubMrid = rs.getString("fromsubstationmrid");
+				String toSubMrid = rs.getString("tosubstationmrid");
+				
 				List<Substation> substationList = new ArrayList<Substation>();
-				// Because we have a map from substation mrid->substation we only need to figure out what substation mrid
-				// the from and to bus belong to.
-				dbQuery = "SELECT submrid.mrid " +
-						"FROM buses b, mridsubstations submrid " +
-						"where b.substationid = submrid.substationid " +
-						"and b.busnumber = " + fromBusNo;
 				
+				substationList.add(substationMap.get(fromSubMrid));
+				substationList.add(substationMap.get(toSubMrid));
 				
-				/*dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
-						"where b.substationid = s.substationid "+
-						"and m.substationid = b.substationid "+
-						"and a.areaname = s.areaname "+
-						"and b.busnumber = "+fromBusNo;*/
-				System.out.println(dbQuery);
-
-				Statement stmt1 = connection.createStatement();
-				ResultSet rs1 = stmt1.executeQuery(dbQuery);
-				if(rs1.next()){
-					Substation substation = substationMap.get(rs1.getString("mrid"));
-					if (substation == null){
-						log.error("Substation for bus: "+ fromBusNo +" not found in set of substations.");
-						
+				int subNumber = 0;
+				// Create the acLineSegmentName and look for invalid line mappings.
+				for(Substation s:substationList){
+					if(s == null){
+						log.error("Invalid substation reference at linesegment "+acLineSegment.getMrid());
 					}
 					else{
-						acLineName += substation.getName() + "_";
-						substationList.add(substation);
+						if (subNumber==0){
+							acLineName = s.getName();
+						}
+						else{
+							// Make sure the name isn't null in ordere to append.
+							if(acLineName != null){
+								acLineName += "_" + s.getName();
+							}
+							else{
+								acLineName = "_" + s.getName();
+							}
+						}
 					}
 				}
 
-				dbQuery = "SELECT submrid.mrid " +
-						"FROM buses b, mridsubstations submrid " +
-						"where b.substationid = submrid.substationid " +
-						"and b.busnumber = " + toBusNo;
-//				dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
-//						"where b.substationid = s.substationid "+
-//						"and m.substationid = b.substationid "+
-//						"and a.areaName = s.areaname "+
-//						"and b.busnumber = "+toBusNo;
-				System.out.println(dbQuery);
-				Statement stmt2 = connection.createStatement();
-				ResultSet rs2 = stmt2.executeQuery(dbQuery);
-				if(rs2.next()){
-					Substation substation = substationMap.get(rs2.getString("mrid"));
-					if (substation == null){
-						log.error("Substation for bus: "+ toBusNo + " not found in set of substations.");
-						
-					}
-					else{
-						acLineName += substation.getName();
-						substationList.add(substation);
-					}
-				}
-				
+								
 				acLineSegment.setName(acLineName);		//SubstationFromName_SubstationToName from branch
 				acLineSegment.setSubstations(substationList);
 
@@ -379,152 +354,41 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 		return acLineSegments;
 	}
 
-	@Override
-	public List<ACLineSegment> getACLineSegmentsUpdate(int powergridId,String timestampStr) throws Exception {
-		Connection connection = null;
-		List<ACLineSegment> acLineSegments = null;
-		try{
-			connection = datasource.getConnection();
-			Statement stmt = connection.createStatement();
-
-			Calendar cal = Calendar.getInstance();
-			cal.set(2013, 7, 1);
-			cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) - cal.get(Calendar.SECOND) % 3);
-			SimpleDateFormat sdf = new SimpleDateFormat("y-M-d H:m:s");
-			java.util.Date parsedDate = sdf.parse(timestampStr);
-			Timestamp timestamp = new Timestamp(parsedDate.getTime());
-
-			//get current timestamp
-			/*Calendar cal = Calendar.getInstance();
-	    	SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
-	    	String currentTime = sdf.format(cal.getTime()).toString();
-	    	//System.out.println("Current Time = "+currentTime);
-	    	sec = Integer.parseInt(currentTime.substring(6, 8));
-	    	sec = sec - sec%3;
-	    	String currentTimestep = currentTime.replace(currentTime.substring(6, 8), sec.toString());*/
-			Calendar cal1 = Calendar.getInstance();
-			cal1.setTime(new java.util.Date());
-			cal1.set(2013, 7, 1);
-			cal1.set(Calendar.SECOND, cal1.get(Calendar.SECOND) - cal1.get(Calendar.SECOND) % 3);
-			cal1.set(Calendar.MILLISECOND,  0);
-			Timestamp currentTimestamp = new Timestamp(cal1.getTime().getTime());
-
-
-			//get passed timeStamp data from DB
-			String dbQuery = "select lt.timestep,l.lineid, br.branchid, mbr.mrid, bu.basekv, br.rating, br.status, lt.p, lt.q, br.frombusnumber, br.tobusnumber "+
-					"from mridbranches mbr, branches br, buses bu, linetimesteps lt, lines_ l "+
-					"where br.branchId = mbr.branchId "+
-					"and br.frombusnumber = bu.busnumber "+
-					"and l.lineid = lt.lineid "+
-					"and l.branchid = br.branchid "+
-					"and mbr.powergridid = br.powergridid "+
-					"and bu.powergridid = br.powergridid "+
-					"and lt.powergridid = br.powergridid "+
-					"and l.powergridid = br.powergridid "+
-					"and br.powergridid = "+powergridId+" "+
-					"and lt.timestep  ='"+ timestamp+"'";
-			ResultSet rs=stmt.executeQuery(dbQuery);
-
-			dbQuery = "select lt.timestep,l.lineid, br.branchid, mbr.mrid, bu.basekv, br.rating, br.status, lt.p, lt.q, br.frombusnumber, br.tobusnumber "+
-					"from mridbranches mbr, branches br, buses bu, linetimesteps lt, lines_ l "+
-					"where br.branchId = mbr.branchId "+
-					"and br.frombusnumber = bu.busnumber "+
-					"and l.lineid = lt.lineid "+
-					"and l.branchid = br.branchid "+
-					"and mbr.powergridid = br.powergridid "+
-					"and bu.powergridid = br.powergridid "+
-					"and lt.powergridid = br.powergridid "+
-					"and l.powergridid = br.powergridid "+
-					"and br.powergridid = "+powergridId+" "+
-					"and lt.timestep  ='"+ currentTimestamp+"'";
-
-			Statement stmt1 = connection.createStatement();
-			ResultSet rs1=stmt1.executeQuery(dbQuery);
-
-			acLineSegments = new ArrayList<ACLineSegment>();
-			List<Substation> substationList = new ArrayList<Substation>();
-			Substation substation = null;
-			Location location =null;
-			ACLineSegment acLineSegment;
-
-			while(rs.next() && rs1.next()){
-				double mvaFlow  = Math.sqrt((rs.getDouble("p")*rs.getDouble("p"))+ (rs.getDouble("q")*rs.getDouble("q")));
-				double mvaFlow1  = Math.sqrt((rs1.getDouble("p")*rs1.getDouble("p"))+ (rs1.getDouble("q")*rs1.getDouble("q")));
-				if(!(rs.getInt("status")==rs1.getInt("status") && mvaFlow==mvaFlow1))
-				{
-					acLineSegment = new ACLineSegment();
-					String acLineName = "";
-					acLineSegment.setMrid(rs1.getString("mrid"));					//Branch's Mrid
-					acLineSegment.setKvlevel(rs1.getDouble("basekv")); 			//Base KV from buses 
-					acLineSegment.setRating(rs1.getDouble("rating")); 				//branch
-					acLineSegment.setStatus(rs1.getInt("status"));				//line timestep
-					acLineSegment.setMvaFlow(mvaFlow1); 			//sqrt(P^2+Q^2), if P is + then positive , if Q is - then negative value.
-					int fromBusNo = rs1.getInt("frombusnumber");
-					int toBusNo = rs1.getInt("tobusnumber");
-					substationList = new ArrayList<Substation>();
-					dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
-							"where b.substationid = s.substationid "+
-							"and m.substationid = b.substationid "+
-							"and a.areaname = s.areaname "+
-							"and b.busnumber = "+fromBusNo;
-					//System.out.println(dbQuery);
-
-					Statement stmt2 = connection.createStatement();
-					ResultSet rs2 = stmt2.executeQuery(dbQuery);
-					if(rs2.next()){
-						acLineName += rs2.getString("substationname")+"_";
-						substation = new Substation();
-						substation.setMrid(rs2.getString("mrid"));
-						substation.setName(rs2.getString("substationname"));
-						//substation.setRegion(region);
-						location = new Location();
-						location.setLatitude(rs2.getDouble("latitude"));
-						location.setLongitude(rs2.getDouble("longitude"));
-						substation.setLocation(location);
-						substation.setRegionMRID(rs2.getString("rmrid"));
-						substation.setRegionName(rs2.getString("areaname"));
-						substationList.add(substation);
-					}
-
-					dbQuery = "select a.mrid as rmrid, a.areaname,m.mrid, s.substationname,s.latitude,s.longitude  from buses b, substations s, mridsubstations m , areas a "+
-							"where b.substationid = s.substationid "+
-							"and m.substationid = b.substationid "+
-							"and a.areaname = s.areaname "+
-							"and b.busnumber = "+toBusNo;
-					//System.out.println(dbQuery);
-					Statement stmt3 = connection.createStatement();
-					ResultSet rs3 = stmt3.executeQuery(dbQuery);
-					if(rs3.next()){
-
-						substation = new Substation();
-						substation.setMrid(rs3.getString("mrid"));
-						substation.setName(rs3.getString("substationname"));
-						//substation.setRegion(region);
-						location = new Location();
-						location.setLatitude(rs3.getDouble("latitude"));
-						location.setLongitude(rs3.getDouble("longitude"));
-						substation.setLocation(location);
-						substation.setRegionMRID(rs3.getString("rmrid"));
-						substation.setRegionName(rs3.getString("areaname"));
-						substationList.add(substation);
-						acLineName += rs3.getString("substationname");
-					}
-					acLineSegment.setName(acLineName);		//SubstationFromName_SubstationToName from branch
-					acLineSegment.setSubstations(substationList);
-
-					acLineSegments.add(acLineSegment);
-				}
-
+	private List<ACLineSegment> getACLineSegmentsUpdate(int powergridId, Timestamp timestamp, HashMap<String, Substation> substationMap) throws Exception {
+		List<ACLineSegment> acLineSegments = new ArrayList<ACLineSegment>();
+		
+		// Line segments for the original timestamp passed.
+		List<ACLineSegment> ls1 = getACLineSegments(powergridId, timestamp, substationMap);
+		
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(new java.util.Date());
+		cal1.set(2013, 7, 1);
+		cal1.set(Calendar.SECOND, cal1.get(Calendar.SECOND) - cal1.get(Calendar.SECOND) % 3);
+		cal1.set(Calendar.MILLISECOND,  0);
+		
+		Timestamp currentTimestamp = new Timestamp(cal1.getTime().getTime());		
+		HashMap<String, Substation> currentSubstationMap = getMridSubstationMap(currentTimestamp);
+		// Line segments for the original timestamp passed.
+		List<ACLineSegment> currentACLineSegments = getACLineSegments(powergridId, currentTimestamp, currentSubstationMap);
+		
+		if (currentACLineSegments.size() != ls1.size()){
+			throw new Exception("The aclinesegments must have the same number of elements in them in order to compare them.");
+		}
+		
+		for(int i = 0; i<currentACLineSegments.size(); i++){
+			ACLineSegment orig = ls1.get(i);
+			ACLineSegment current = currentACLineSegments.get(i);
+			// Sanity check to make sure we aren't comparing two different line segment's data.
+			if (!orig.getName().equals(current.getName())){
+				throw new Exception("Ordering of aclinesegments is probably messed up!");
 			}
-
-
+			if(!(orig.getStatus() == current.getStatus() && 
+					Math.abs(orig.getMvaFlow() - current.getMvaFlow()) < 0.00001)){
+				
+				acLineSegments.add(current);
+			}
 		}
-		catch(Exception e){
-			log.error(e.getMessage());
-			if(connection!=null)
-				connection.close();
-			throw e;
-		}
+		
 		return acLineSegments;
 	}
 

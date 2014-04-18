@@ -5,13 +5,13 @@
 	<artifactId>goss-client-tests</artifactId>
 	<name>GOSS Client Test Jar</name>
 	<packaging>jar</packaging>
-	<version>0.1.1</version>
-	
+	<version>0.1.2</version>
+
 	<description>
 		A jar with multiple mains for testing output.
 	</description>
 	<properties>
-		<goss.version>0.1.1</goss.version>
+		<goss.version>0.1.2</goss.version>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -25,7 +25,7 @@
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
@@ -83,6 +83,15 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 </project>
