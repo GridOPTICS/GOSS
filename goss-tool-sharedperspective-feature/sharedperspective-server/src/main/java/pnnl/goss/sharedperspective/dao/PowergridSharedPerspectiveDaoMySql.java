@@ -289,7 +289,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 					"and lt.timestep ='"+ timestamp+"'";
 
 
-			System.out.println(dbQuery);
+			log.debug(dbQuery);
 			ResultSet rs=stmt.executeQuery(dbQuery);
 			//System.out.println(dbQuery);
 			acLineSegments = new ArrayList<ACLineSegment>();
