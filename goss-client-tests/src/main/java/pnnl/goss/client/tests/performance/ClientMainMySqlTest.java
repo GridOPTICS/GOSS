@@ -68,7 +68,7 @@ public class ClientMainMySqlTest {
 	public static void main(String args[]){
 		try{
 		String typeOfCommunication = "s";
-		int noOfClients = 200;
+		int noOfClients = 400;
 		int noOfLines = 10;
 		String startTime = "2013-08-01 10:00:00";
 		String endTime = "2013-08-01 10:05:00";
@@ -162,7 +162,7 @@ public class ClientMainMySqlTest {
 									DataResponse dataResponse = (DataResponse)response;
 									if(dataResponse.getData() instanceof ACLineSegmentTest){
 										ACLineSegmentTest data  = (ACLineSegmentTest)(dataResponse).getData();
-										logWriter.write(data.getBeforetime()+";"+data.getTime()+";"+time+"\n");
+										//logWriter.write(data.getBeforetime()+";"+data.getTime()+";"+time+"\n");
 										//System.out.println(response.sizeof());
 										if(dataResponse.isResponseComplete()==true){
 											logWriter.close();
