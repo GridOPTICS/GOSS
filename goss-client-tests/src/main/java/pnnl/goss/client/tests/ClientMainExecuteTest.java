@@ -51,7 +51,7 @@ public class ClientMainExecuteTest {
 	
 	public static void main(String[] args){
 		try{
-		ExecuteRequest request = new ExecuteRequest("MCA_olympus");
+		ExecuteRequest request = new ExecuteRequest("MCA","olympus");
 		GossClient client = new GossClient();
 		client.getResponse(request);
 		
