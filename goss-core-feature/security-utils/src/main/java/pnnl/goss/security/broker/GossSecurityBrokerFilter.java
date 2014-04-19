@@ -45,6 +45,7 @@
 package pnnl.goss.security.broker;
 
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashSet;
@@ -78,6 +79,8 @@ public class GossSecurityBrokerFilter extends BrokerFilter {
 	public void send(ProducerBrokerExchange producerExchange,
 			Message messageSend) throws Exception {
 		
+		//FileWriter logWriter = new FileWriter("filter.log",true);
+		//logWriter.write(System.nanoTime()+";");
 		Message m = messageSend.getMessage();
 		try {
 			Set<Principal> groupPrincipals = new HashSet<Principal>();
@@ -102,6 +105,8 @@ public class GossSecurityBrokerFilter extends BrokerFilter {
 			e.printStackTrace();
 		}
 		super.send(producerExchange, messageSend);
+		//logWriter.write(System.nanoTime()+"\n");
+		//logWriter.close();
 	}
 	
 
