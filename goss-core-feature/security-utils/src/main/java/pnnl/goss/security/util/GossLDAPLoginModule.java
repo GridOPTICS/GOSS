@@ -1,5 +1,6 @@
 package pnnl.goss.security.util;
 
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -14,32 +15,69 @@ import org.apache.activemq.jaas.LDAPLoginModule;
 public class GossLDAPLoginModule extends LDAPLoginModule {
 
 	@Override
-	protected boolean authenticate(String username, String password)
-			throws LoginException {
-		System.out.println("LOGIN MODULE: AUTHENTICATE");
-		return super.authenticate(username, password);
+	protected boolean authenticate(String username, String password) throws LoginException {
+		boolean isValid = false;
+		try{
+			FileWriter logWriter = new FileWriter("GossLDAPLoginModule_authenticate.log",true);
+			logWriter.write(System.nanoTime()+";");
+			isValid = super.authenticate(username, password);
+			logWriter.write(System.nanoTime()+"\n");
+			logWriter.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return isValid;
 	}
 	
 	
 	@Override
 	public boolean login() throws LoginException {
-		System.out.println("LOGIN MODULE: LOGIN");
-		return super.login();
+		boolean login = false;
+		try{
+			FileWriter logWriter = new FileWriter("GossLDAPLoginModule_login.log",true);
+			logWriter.write(System.nanoTime()+";");
+			login = super.login();
+			logWriter.write(System.nanoTime()+"\n");
+			logWriter.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return login;
 	}
 
 	
 @Override
-	protected List<String> getRoles(DirContext context, String dn,
-			String username, List<String> currentRoles) throws NamingException {
-		System.out.println("LOGIN MODULE: GET ROLES");
-		return super.getRoles(context, dn, username, currentRoles);
+	protected List<String> getRoles(DirContext context, String dn, String username, List<String> currentRoles) throws NamingException {
+		List<String> roles = null;
+		try{
+			FileWriter logWriter = new FileWriter("GossLDAPLoginModule_getRoles.log",true);
+			logWriter.write(System.nanoTime()+";");
+			roles = super.getRoles(context, dn, username, currentRoles);
+			logWriter.write(System.nanoTime()+"\n");
+			logWriter.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return roles;
 	}
 
 	@Override
-	protected boolean bindUser(DirContext context, String dn, String password)
-			throws NamingException {
-		System.out.println("LOGIN MODULE: BIND USER");
-		return super.bindUser(context, dn, password);
+	protected boolean bindUser(DirContext context, String dn, String password) throws NamingException {
+		boolean bindUser = false;
+		try{
+			FileWriter logWriter = new FileWriter("GossLDAPLoginModule_bindUser.log",true);
+			logWriter.write(System.nanoTime()+";");
+			bindUser = super.bindUser(context, dn, password);
+			logWriter.write(System.nanoTime()+"\n");
+			logWriter.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return bindUser;
 	}
 
 
