@@ -137,9 +137,6 @@ static void asynchronousTest(int noOfClients, int noOfChannels, int dataPerRespo
 								dataresponse = (DataResponse)response;
 								KairosTestData data  = (KairosTestData)(dataresponse).getData();
 								
-								if(dataresponse.getBeforeSecurity()!=0)
-									logWriter.write(+data.getDS1()+";"+data.getDS2()+";"+dataresponse.getBeforeSecurity()+";"+dataresponse.getAfterSecurity()+";"+res+"\n");
-								else
 									logWriter.write(+data.getDS1()+";"+data.getDS2()+";;;"+res+"\n");
 								//System.out.println(data.getValues().length);
 								//System.out.println(response.sizeof());
