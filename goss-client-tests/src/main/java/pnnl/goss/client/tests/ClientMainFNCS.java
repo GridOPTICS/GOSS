@@ -1,5 +1,7 @@
 package pnnl.goss.client.tests;
 
+import org.apache.http.auth.UsernamePasswordCredentials;
+
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
@@ -19,12 +21,11 @@ public class ClientMainFNCS {
 			//Publish SimEvent
 			byte[] byteArray = new byte[10];
 			SimEvent simEvent = new SimEvent("testName", byteArray);
-			GossClient client = new GossClient(PROTOCOL.STOMP);
+			GossClient client = new GossClient(new UsernamePasswordCredentials("pmu_user","password"), PROTOCOL.STOMP);
 			client.publish("SimEvent", simEvent, RESPONSE_FORMAT.JSON);
 			
 			//Subcribe to SteerEvent
 			GossResponseEvent event = new GossResponseEvent() {
-				@Override
 				public void onMessage(Response response) {
 					String message = (String)((DataResponse)response).getData(); 
 					System.out.println(message);
