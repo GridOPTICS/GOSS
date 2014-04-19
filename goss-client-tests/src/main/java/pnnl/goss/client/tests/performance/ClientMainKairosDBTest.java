@@ -82,14 +82,19 @@ public class ClientMainKairosDBTest {
 						GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 						RequestKairosTest request = null;
 						FileWriter logWriter = new FileWriter("kairos_synchronous_client"+clientNum+".log",true);
-						logWriter.write("Kairos,Kairos+GOSS\n");
+						logWriter.write("KairosDB;KairosDB+GOSS\n");
 						for(int channel=1;channel<=numOfChannels;channel++){
 							for(long time = 1270105200; time<1270105300; time++){
-								request = new RequestKairosTest("test","flag", 1270105200, 1270105201);
-								long perfStartTime = System.currentTimeMillis();
+								request = new RequestKairosTest("test","flag", time, time+5);
+								long perfStartTime = System.nanoTime();
 								response = (DataResponse)client.getResponse(request,null);
+								long res = System.nanoTime();
 								KairosTestData data  = (KairosTestData)(response).getData();
-								logWriter.write(data.getTime()+";"+String.valueOf(System.currentTimeMillis()-perfStartTime)+"\n");
+								long dbTime = data.getDS2()-data.getDS1();
+								long total = res-perfStartTime;
+								logWriter.write(dbTime+";"+total+"\n");
+								//System.out.println(data.getValues().length);
+								//System.out.println(response.sizeof());
 							}
 						}
 						logWriter.close();
@@ -126,15 +131,17 @@ static void asynchronousTest(int noOfClients, int noOfChannels, int dataPerRespo
 					
 					GossResponseEvent event = new GossResponseEvent() {
 						public void onMessage(Response response) {
+							long res = System.nanoTime();
 							DataResponse dataresponse=null;
 							try{
 								dataresponse = (DataResponse)response;
 								KairosTestData data  = (KairosTestData)(dataresponse).getData();
-								logWriter.write(data.getBeforetime()+";"+data.getTime()+";"+System.currentTimeMillis()+"\n");
-								/*for(int i=0;i<data.getValues().length;i++){
-									System.out.print(data.getValues()[i]);
-								}*/
-								//System.out.println(";");
+								
+								if(dataresponse.getBeforeSecurity()!=0)
+									logWriter.write(+data.getDS1()+";"+data.getDS2()+";"+dataresponse.getBeforeSecurity()+";"+dataresponse.getAfterSecurity()+";"+res+"\n");
+								else
+									logWriter.write(+data.getDS1()+";"+data.getDS2()+";;;"+res+"\n");
+								//System.out.println(data.getValues().length);
 								//System.out.println(response.sizeof());
 								if(dataresponse.isResponseComplete()){
 									logWriter.close();
@@ -156,10 +163,9 @@ static void asynchronousTest(int noOfClients, int noOfChannels, int dataPerRespo
 					};
 
 					for(int channel=1;channel<=numOfChannels;channel++){
-						logWriter.write("Before Sending Request=;"+System.currentTimeMillis()+"\n");
 						client.sendRequest(request, event, null);
-						logWriter.write("After sending Request=;"+System.currentTimeMillis()+"\n");
-						logWriter.write("Before Data Store Transanction;After Data Store Transaction;Response received at \n");
+						logWriter.write("Req;"+System.currentTimeMillis()+"\n");
+						logWriter.write("DS1;DS2;Sec1;Sec2;Res\n");
 					}
 					
 				}
