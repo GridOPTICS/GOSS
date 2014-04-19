@@ -108,11 +108,22 @@ public class Utilities {
 		return xStream;
 	}
 	
+	/**
+	 * Create a dictionary of properties from the passed properties file.  The evaluation of
+	 * relative path is as follows.
+	 * 
+	 *  if ${user.home}/.goss/path.${hostname} exists use it
+	 *  else if ${user.home}/.goss/path if exist us it
+	 *  else if path exists use it
+	 *  else throw configuration exception.
+	 * 
+	 */
 	@SuppressWarnings("rawtypes")
 	public static Dictionary loadProperties(String path){
 		Properties props = new Properties();
 		try{
 			String hostname = getHostname();
+			String userDir = System.getProperty("user.home");
 			if(path!=null){
 				InputStream input = Utilities.class.getClassLoader().getResourceAsStream(path+"."+hostname);
 				if (input!=null){

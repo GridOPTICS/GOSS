@@ -6,7 +6,7 @@
 
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-master-build</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GOSS Master Builder</name>
 
@@ -16,18 +16,18 @@
 
 		<!-- Goss properties that are listed below in the dependencymanagement 
 			section. -->
-		<goss-core.version>0.1.1-SNAPSHOT</goss-core.version>
-		<goss-demo.version>0.1.1-SNAPSHOT</goss-demo.version>
-		<goss-dsa.version>0.1.1-SNAPSHOT</goss-dsa.version>
-		<goss-fncs.version>0.1.1-SNAPSHOT</goss-fncs.version>
-		<goss-fusion.version>0.1.1-SNAPSHOT</goss-fusion.version>
-		<goss-gridmw.version>0.1.1-SNAPSHOT</goss-gridmw.version>
-		<goss-gridpack.version>0.1.1-SNAPSHOT</goss-gridpack.version>
-		<goss-kariosdb.version>0.1.1-SNAPSHOT</goss-kariosdb.version>
-		<goss-mdart.version>0.1.1-SNAPSHOT</goss-mdart.version>
-		<goss-pmuevents.version>0.1.1-SNAPSHOT</goss-pmuevents.version>
-		<goss-powergrid.version>0.1.1-SNAPSHOT</goss-powergrid.version>
-		<goss-sharedperspective.version>0.1.1-SNAPSHOT</goss-sharedperspective.version>
+		<goss-core.version>0.1.3-SNAPSHOT</goss-core.version>
+		<goss-demo.version>0.1.3-SNAPSHOT</goss-demo.version>
+		<goss-dsa.version>0.1.3-SNAPSHOT</goss-dsa.version>
+		<goss-fncs.version>0.1.3-SNAPSHOT</goss-fncs.version>
+		<goss-fusion.version>0.1.3-SNAPSHOT</goss-fusion.version>
+		<goss-gridmw.version>0.1.3-SNAPSHOT</goss-gridmw.version>
+		<goss-gridpack.version>0.1.3-SNAPSHOT</goss-gridpack.version>
+		<goss-kariosdb.version>0.1.3-SNAPSHOT</goss-kariosdb.version>
+		<goss-mdart.version>0.1.3-SNAPSHOT</goss-mdart.version>
+		<goss-pmuevents.version>0.1.3-SNAPSHOT</goss-pmuevents.version>
+		<goss-powergrid.version>0.1.3-SNAPSHOT</goss-powergrid.version>
+		<goss-sharedperspective.version>0.1.3-SNAPSHOT</goss-sharedperspective.version>
 		<goss-fncs.version>0.0.1</goss-fncs.version>
 
 
@@ -104,12 +104,12 @@
 	</scm>
 	<distributionManagement>
 		<repository>
-			<id>PNNL Release Repository</id>
+			<id>mvn-pnnl-releases</id>
 			<name>PNNL Release Repository</name>
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>PNNL Snapshot Repository</id>
+			<id>mvn-pnnl-snapshots</id>
 			<name>PNNL Snapshot Repository</name>
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
 		</snapshotRepository>
@@ -121,7 +121,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<global.properties.path>${user.home}/goss.properties</global.properties.path>
+				<global.properties.path>${user.home}/.goss/goss.properties</global.properties.path>
 			</properties>			
 		</profile>
 		<profile>
@@ -133,7 +133,7 @@
 				</property>				
 			</activation>
 			<properties>
-				<global.properties.path>${user.home}/goss.north.properties</global.properties.path>
+				<global.properties.path>${user.home}/.goss/goss.north.properties</global.properties.path>
 			</properties>
 		</profile>
 		<profile>
@@ -145,7 +145,7 @@
 				</property>				
 			</activation>
 			<properties>
-				<global.properties.path>${user.home}/goss.south.properties</global.properties.path>
+				<global.properties.path>${user.home}/.goss/goss.south.properties</global.properties.path>
 			</properties>
 		</profile>
 	</profiles>

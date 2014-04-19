@@ -19,7 +19,7 @@
 <!-- 		<config name="pnnl.goss.core.client"> -->
 <!-- 			brokerURI=tcp://${activemq.host}:${activemq.port} -->
 <!-- 		</config> -->
-		<configfile finalname="/deploy/LDAPLogin.xml">
+<!-- 		<configfile finalname="/deploy/LDAPLogin.xml">
 			mvn:pnnl.goss/goss-core-feature/${pom.version}/xml/ldap-config
 		</configfile>
 		<configfile finalname="/etc/pnnl.goss.core.security.utils.cfg">
@@ -43,7 +43,7 @@
 
 		<configfile finalname="/etc/pnnl.goss.core.server.cfg">
 			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/server-config
-		</configfile>
+		</configfile> -->
 
 
     	<feature version="${cxf.version}">cxf</feature>
@@ -59,6 +59,7 @@
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${xstream.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${commons-io.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${commons-dbcp.version}</bundle>
+    	<bundle dependency="true">mvn:com.google.code.gson/gson/${gson.version}</bundle>
     	<bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql-connector.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${httpclient-osgi.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${httpclient-osgi.version}</bundle>

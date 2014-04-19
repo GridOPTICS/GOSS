@@ -6,9 +6,9 @@
 <!--     	<config name="pnnl.goss.dsa"> -->
 <!--     		pnnl.goss.dsa.powergridname = north -->
 <!--     	</config> -->
-		<configfile finalname="/etc/pnnl.goss.dsa.cfg">
+		<!-- <configfile finalname="/etc/pnnl.goss.dsa.cfg">
 			mvn:pnnl.goss/goss-dsa-feature/${pom.version}/cfg/config
-		</configfile>
+		</configfile> -->
 
 		<!-- <feature>war</feature> -->
 		<feature version="${goss-core.version}">goss-core-feature</feature>		

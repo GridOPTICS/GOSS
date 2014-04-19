@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-dsa-feature</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>GOSS DSA Feature</name>
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -92,11 +92,11 @@
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
-								<artifact>
+								<!-- <artifact>
 									<file>target/classes/pnnl.goss.dsa.cfg</file>
 									<classifier>config</classifier>
 									<type>cfg</type>
-								</artifact>
+								</artifact> -->
 							</artifacts>
 						</configuration>
 					</execution>
@@ -134,17 +134,17 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.3-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-tool-sharedperspective-common</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.3-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.1-SNAPSHOT</version>
+				<version>0.1.3-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>

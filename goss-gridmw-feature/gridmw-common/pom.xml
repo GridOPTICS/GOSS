@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-gridmw-feature</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.3-SNAPSHOT</version>
 	</parent>
 
 	<properties>

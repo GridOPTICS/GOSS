@@ -6,12 +6,12 @@
 	<artifactId>goss-tool-fncs-feature</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS fncs Feature</name>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -42,18 +42,6 @@
 		<module>fncs-common</module>
 		<module>fncs-server</module>
 	</modules>
-	<distributionManagement>
-		<repository>
-			<id>PNNL Release Repository</id>
-			<name>PNNL Release Repository</name>
-			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>PNNL Snapshot Repository</id>
-			<name>PNNL Snapshot Repository</name>
-			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -79,6 +67,25 @@
 					<logDependencyChanges>true</logDependencyChanges>
 					<overwriteChangedDependencies>true</overwriteChangedDependencies>
 				</configuration>
+				<executions>
+					<execution>
+						<id>process-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>install-kars</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+						<configuration>
+							<addBundlesToPrimaryFeature>false</addBundlesToPrimaryFeature>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

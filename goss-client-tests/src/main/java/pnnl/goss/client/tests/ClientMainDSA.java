@@ -102,6 +102,9 @@ public class ClientMainDSA {
 			Topology topology = (Topology) response.getData();
 			for (ACLineSegment ac : topology.getAcLineSegments()) {
 				System.out.println("Line seg: " + ac.getName());
+				if (ac.getSubstations().size() != 2){
+					System.err.println("Invalid number of substations for: "+ ac.getName() + " ("+ac.getMrid()+ ")");
+				}
 				for (Substation s : ac.getSubstations()) {
 					System.out.println("\tfrom ss: " + s.getName() + " to suss: " + s.getName() + " totalpload: " + s.getTotalPLoad() + " totalqload: " + s.getTotalQGen() + " totalpgen: " + s.getTotalPGen() + " totalqgen: " + s.getTotalQGen() + " totalmaxmva: " + s.getTotalMaxMva());
 				}
