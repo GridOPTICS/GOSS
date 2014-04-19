@@ -55,16 +55,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.activemq.transport.tcp.ExceededMaximumConnectionsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mysql.jdbc.PreparedStatement;
 
 import pnnl.goss.powergrid.dao.PowergridDaoMySql;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
@@ -75,6 +71,8 @@ import pnnl.goss.sharedperspective.common.datamodel.Location;
 import pnnl.goss.sharedperspective.common.datamodel.Region;
 import pnnl.goss.sharedperspective.common.datamodel.Substation;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
+
+import com.mysql.jdbc.PreparedStatement;
 
 public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql implements PowergridSharedPerspectiveDao{
 
@@ -143,7 +141,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 		Region region = null;
 		try{
 			connection = datasource.getConnection();
-			System.out.println(connection);
+			log.debug(connection.toString());
 			Statement stmt = connection.createStatement();
 			String dbQuery= "select a.mrid, a.areaName, p.name from areas a, powergrids p where a.powergridid = p.powergridid and a.powergridid = "+powergridId;
 			log.debug(dbQuery);
@@ -438,7 +436,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 					"and br.powergridid = "+powergridId+" "+
 					"and lt.timestep ='"+ timestamp_+"'";
 
-			System.out.println(dbQuery);
+			log.debug(dbQuery);
 
 			rs=stmt.executeQuery(dbQuery);
 			acLineSegments = new ArrayList<ACLineSegment>();
@@ -520,7 +518,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 					"and br.powergridid = "+powergridId+" "+
 					"and lt.timestep ='"+ timestamp_+"'";
 
-			System.out.println(dbQuery);
+			log.debug(dbQuery);
 
 			rs=stmt.executeQuery(dbQuery);
 
