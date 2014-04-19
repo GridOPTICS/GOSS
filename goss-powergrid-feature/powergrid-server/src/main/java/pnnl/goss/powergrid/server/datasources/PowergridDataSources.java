@@ -325,7 +325,7 @@ public class PowergridDataSources {
 		properties.setProperty("url", url);
 		properties.setProperty("username", username);
 		properties.setProperty("password", password);
-		
+		properties.setProperty("max-connections", "10");
 		properties.setProperty("maxOpenPreparedStatements", "10");
 		
 		MysqlConnectionPoolDataSource pooledDs = new MysqlConnectionPoolDataSource();
@@ -333,7 +333,7 @@ public class PowergridDataSources {
 		pooledDs.setUser(username);
 		pooledDs.setPassword(password);
 		pooledDs.setUrl(url);
-		pooledDs.setConnectTimeout(300);
+		pooledDs.setConnectTimeout(32000);
 		pooledDs.setAllowMultiQueries(true);
 		
 		datasources.put(key, pooledDs); 
