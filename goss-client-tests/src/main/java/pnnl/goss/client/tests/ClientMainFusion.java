@@ -47,6 +47,8 @@ package pnnl.goss.client.tests;
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
 
+import org.apache.http.auth.UsernamePasswordCredentials;
+
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.UploadRequest;
@@ -69,7 +71,7 @@ public class ClientMainFusion {
 	static String startTimestamp = "2013-1-21 00:00:00";
 	static String endTimestamp = "2013-1-23 00:00:00";
 	static int interval = 12;
-	static GossClient client = new GossClient();
+	static GossClient client = new GossClient(new UsernamePasswordCredentials("pmu_user","password"));
 	
 
 	public static void main(String[] args) {
