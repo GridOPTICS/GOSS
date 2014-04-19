@@ -57,7 +57,7 @@
 		<httpclient-osgi.version>4.3.1</httpclient-osgi.version>
 		<httpcore.version>4.3.2</httpcore.version>
 		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
-		<mysql-connector.version>5.1.25</mysql-connector.version>
+		<mysql-connector.version>5.1.28</mysql-connector.version>
 		<org-reflections.version>0.9.8</org-reflections.version>
 		<osgi.version>4.2.0</osgi.version>
 		
