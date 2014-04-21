@@ -52,21 +52,20 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import pnnl.goss.core.DataError;
+import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
+import pnnl.goss.gridpack.service.GridpackService;
 import pnnl.goss.gridpack.service.impl.GridpackUtils;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 
-@Path("/")
-@Produces({"application/json", "application/xml"})
-public class GridpackServiceImpl {
-	
-	@GET
-    @Path("/{powergridName}")
-	public Object getGridpackGrid(
+
+public class GridpackServiceImpl implements GridpackService {
+		
+	public GridpackPowergrid getGridpackGrid(
 			@PathParam(value = "powergridName") String powergridName){
 		
 		GridpackPowergrid pg = null;
@@ -74,38 +73,30 @@ public class GridpackServiceImpl {
 		RequestPowergrid request = new RequestPowergrid(powergridName);
 		RequestPowergridHandler handler = new RequestPowergridHandler();
 		
-		Response response = handler.getResponse(request);
+		DataResponse response = handler.getResponse(request);
+
+		// Make sure the response didn't throw an error.
 		GridpackUtils.throwDataError(response);
 		
-		Object retObj = (PowergridModel)handler.getResponse(request).getData();
-		
-		if(retObj instanceof DataError){
-			return (DataError)retObj;
-		}
-		
-		PowergridModel powergrid = (PowergridModel)handler.getResponse(request).getData();
+		PowergridModel powergrid = (PowergridModel)response.getData(); //handler.getResponse(request).getData();
 					
 		pg = new GridpackPowergrid(powergrid);
 		
 		return pg;
 	}
 	
-	
-	@GET
-	@Path("/{powergridName}/Bus/Count")
-	@Produces("application/xml")
-	public Object getNumberOfBuses(
+	public int getNumberOfBuses(
 			@PathParam(value = "powergridName") String powergridName)
 	{
 		RequestPowergrid request = new RequestPowergrid(powergridName);
 		RequestPowergridHandler handler = new RequestPowergridHandler();
-		Object retObj = (PowergridModel)handler.getResponse(request).getData();
+		DataResponse response = handler.getResponse(request);
 		
-		if(retObj instanceof DataError){
-			return (DataError)retObj;
-		}
+		// Make sure the response didn't throw an error.
+		GridpackUtils.throwDataError(response);
 		
-		PowergridModel model = (PowergridModel)retObj;
+		PowergridModel model = (PowergridModel)response.getData();
+		
 		return new Integer(model.getBuses().size());
 		
 	}
