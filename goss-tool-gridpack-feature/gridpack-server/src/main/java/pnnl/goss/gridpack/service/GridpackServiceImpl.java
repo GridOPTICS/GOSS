@@ -52,14 +52,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import pnnl.goss.core.DataError;
+import pnnl.goss.core.Response;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
+import pnnl.goss.gridpack.service.impl.GridpackUtils;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 
 @Path("/")
-@Produces("application/xml")
+@Produces({"application/json", "application/xml"})
 public class GridpackServiceImpl {
 	
 	@GET
@@ -71,6 +73,10 @@ public class GridpackServiceImpl {
 		
 		RequestPowergrid request = new RequestPowergrid(powergridName);
 		RequestPowergridHandler handler = new RequestPowergridHandler();
+		
+		Response response = handler.getResponse(request);
+		GridpackUtils.throwDataError(response);
+		
 		Object retObj = (PowergridModel)handler.getResponse(request).getData();
 		
 		if(retObj instanceof DataError){
