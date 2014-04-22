@@ -7,6 +7,10 @@ import pnnl.goss.powergrid.server.WebDataException;
 
 public class GridpackUtils {
 
+	public static void throwInputError(String errorMessageForClient){
+		throw new WebDataException(errorMessageForClient);
+	}
+	
 	public static void throwDataError(Response response) {
 		DataResponse dataRes = null;
 		if (response instanceof DataResponse) {
