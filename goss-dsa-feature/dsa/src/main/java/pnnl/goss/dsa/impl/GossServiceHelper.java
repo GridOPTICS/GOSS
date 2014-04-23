@@ -44,11 +44,11 @@
 */
 package pnnl.goss.dsa.impl;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.jaxws.context.WebServiceContextImpl;
-import org.apache.cxf.transport.http.HTTPSession;
 import org.apache.http.auth.UsernamePasswordCredentials;
 
 import pnnl.goss.dsa.security.GossLoginInterceptor;
@@ -60,7 +60,7 @@ public class GossServiceHelper {
 		try{
 			WebServiceContext ws = new WebServiceContextImpl();
 			MessageContext mc = ws.getMessageContext();
-	        HTTPSession session = ((javax.servlet.http.HttpServletRequest)mc.get(MessageContext.SERVLET_REQUEST)).getSession();
+	        HttpSession session = ((javax.servlet.http.HttpServletRequest)mc.get(MessageContext.SERVLET_REQUEST)).getSession();
 			System.out.println("GOT SESSION "+session);
 	        
 	        
