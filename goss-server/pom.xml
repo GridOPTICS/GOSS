@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-server</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<name>GOSS Server Jar</name>
 	
 	<properties>
 		<felix.framework.version>4.4.0</felix.framework.version>
-		<goss.version>0.1.2-SNAPSHOT</goss.version>
+		<goss.version>0.1.3-SNAPSHOT</goss.version>
 		<activemq.version>5.9.0</activemq.version>
 		<org-reflections.version>0.9.8</org-reflections.version>
 		<servicemix-commons-io.version>1.4_3</servicemix-commons-io.version>

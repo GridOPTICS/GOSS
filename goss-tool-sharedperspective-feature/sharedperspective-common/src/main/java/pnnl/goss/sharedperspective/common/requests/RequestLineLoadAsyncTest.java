@@ -42,25 +42,68 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.client.tests;
+package pnnl.goss.sharedperspective.common.requests;
 
-import pnnl.goss.core.ExecuteRequest;
-import pnnl.goss.core.client.GossClient;
+import java.util.Date;
 
-public class ClientMainExecuteTest {
+import pnnl.goss.core.Request;
+import pnnl.goss.core.RequestAsync;
+
+public class RequestLineLoadAsyncTest extends RequestAsync{
+
+	private static final long serialVersionUID = 8678982202712404193L;
+	private Date startTime=null;
+	private Date endTime=null;
+	private String powergridName=null;
+	private int lineId;
+	private int segment = 0;
 	
-	public static void main(String[] args){
-		try{
-		ExecuteRequest request = new ExecuteRequest("MCA","olympus");
-		GossClient client = new GossClient();
-		client.getResponse(request);
-		
-		client.close();
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		
+	public int getLineId() {
+		return lineId;
+	}
+
+	public void setLineId(int lineId) {
+		this.lineId = lineId;
+	}
+
+	public RequestLineLoadAsyncTest(String powergridName, int lineId, Date startTime, Date endTime, int segment){
+		this.powergridName = powergridName;
+		this.lineId = lineId;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.segment = segment;
+	}
+
+	public int getSegment() {
+		return segment;
+	}
+
+	public void setSegment(int segment) {
+		this.segment = segment;
+	}
+
+	public String getPowergridName() {
+		return powergridName;
+	}
+
+	public void setPowergridName(String powergridName) {
+		this.powergridName = powergridName;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 }

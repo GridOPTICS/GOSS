@@ -66,7 +66,6 @@ import pnnl.goss.gridmw.handlers.RequestPMUHandler;
 import pnnl.goss.gridmw.requests.RequestGridMWAsyncTest;
 import pnnl.goss.gridmw.requests.RequestGridMWTest;
 import pnnl.goss.gridmw.requests.RequestPMU;
-import pnnl.goss.gridmw.security.AccessControlHandlerPMU;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 //import pnnl.goss.hpc.handlers.ExecuteHPCHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
@@ -83,6 +82,7 @@ import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
 import pnnl.goss.server.core.internal.GridOpticsServer;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
+import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
 import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandler;
@@ -93,7 +93,7 @@ import pnnl.goss.util.Utilities;
 
 public class ServerMain {
 
-	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg"; 
+	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg.WE22743"; 
 
 	public void attachShutdownHook(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -125,20 +125,21 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestGridMWAsyncTest.class, RequestGridMWTestHandler.class);
 		handlers.addHandlerMapping(RequestKairosTest.class, RequestKairosTestHandler.class);
 		handlers.addHandlerMapping(RequestKairosAsyncTest.class, RequestKairosTestHandler.class);
-		
+		handlers.addHandlerMapping(RequestLineLoadTest.class, RequestLineLoadTestHandler.class);
+		handlers.addHandlerMapping(RequestLineLoadAsyncTest.class, RequestLineLoadTestHandler.class);
+				
 		//---------------------------Performance Testing Security-----------------------------------
-		handlers.addSecurityMapping(RequestKairosTest.class, AccessControlHandlerAllowAll.class);
-		//handlers.addSecurityMapping(RequestKairosAsyncTest.class, AccessControlHandlerAllowAll.class);
-		
-		//--------------------------------Performance Security---------------------------------------
 		handlers.addSecurityMapping(RequestGridMWTest.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestGridMWAsyncTest.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestKairosTest.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestKairosAsyncTest.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestLineLoadAsyncTest.class, AccessControlHandlerAllowAll.class);
 
 		//-------------------------------------PMU(GridMW)-----------------------------------------
 		handlers.addHandlerMapping(RequestPMU.class, RequestPMUHandler.class);
 		//handlers.addSecurityMapping(RequestPMU.class, AccessControlHandlerPMU.class);
 		
-		
-
 		//--------------------------------Shared Perspective---------------------------------------
 		handlers.addHandlerMapping(RequestTopology.class, RequestTopologyHandler.class);
 		handlers.addHandlerMapping(RequestLineLoadTest.class, RequestLineLoadTestHandler.class);
@@ -159,6 +160,15 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestHAInterchangeSchedule.class, RequestHAInterchangeScheduleHandler.class);
 		handlers.addHandlerMapping(RequestRTEDSchedule.class, RequestRTEDScheduleHandler.class);		
 		handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
+		
+		//-------------------------------------Fusion Security----------------------------------------------
+		handlers.addSecurityMapping(RequestActualTotal.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestCapacityRequirement.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestForecastTotal.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestHAInterchangeSchedule.class, AccessControlHandlerAllowAll.class);
+		handlers.addSecurityMapping(RequestRTEDSchedule.class, AccessControlHandlerAllowAll.class);		
+		handlers.addSecurityMapping(RequestPowergrid.class, AccessControlHandlerAllowAll.class);
+				
 		
 		//-------------------------------------MDART----------------------------------------------
 		handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);

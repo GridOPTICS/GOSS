@@ -49,6 +49,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
+import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
@@ -93,7 +94,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getBaseTopology(String regionName) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		DataResponse response = null;
 		try {
 			Request request = new RequestTopology(regionName);
@@ -101,6 +102,9 @@ public class ClientMainDSA {
 			Topology topology = (Topology) response.getData();
 			for (ACLineSegment ac : topology.getAcLineSegments()) {
 				System.out.println("Line seg: " + ac.getName());
+				if (ac.getSubstations().size() != 2){
+					System.err.println("Invalid number of substations for: "+ ac.getName() + " ("+ac.getMrid()+ ")");
+				}
 				for (Substation s : ac.getSubstations()) {
 					System.out.println("\tfrom ss: " + s.getName() + " to suss: " + s.getName() + " totalpload: " + s.getTotalPLoad() + " totalqload: " + s.getTotalQGen() + " totalpgen: " + s.getTotalPGen() + " totalqgen: " + s.getTotalQGen() + " totalmaxmva: " + s.getTotalMaxMva());
 				}
@@ -119,7 +123,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getBaseTopology(String regionName, String timestamp) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		DataResponse response = null;
 		try {
 			Request request = new RequestTopology(regionName, timestamp);
@@ -141,7 +145,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getBaseTopologyXML(String regionName) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		try {
 			Request request = new RequestTopology(regionName);
 			String topologyXML = client.getResponse(request, RESPONSE_FORMAT.XML).toString();
@@ -155,7 +159,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getTopologyUpdate(String regionName, String timestamp, Boolean update) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		DataResponse response = null;
 		try {
 			Request request = new RequestTopology(regionName, timestamp, true);
@@ -176,7 +180,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getLineLoad(String regionName, String timestamp) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		try {
 			Request request = new RequestLineLoad(regionName, timestamp);
 			String topologyXML = client.getResponse(request, RESPONSE_FORMAT.XML).toString();
@@ -188,7 +192,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getContingencyResults(String regionName) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		DataResponse response = null;
 		try {
 			Request request = new RequestContingencyResult(regionName);
@@ -208,7 +212,7 @@ public class ClientMainDSA {
 	}
 
 	private static void getContingencyResults(String regionName, String timestamp) {
-		GossClient client = new GossClient();
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 		DataResponse response = null;
 		try {
 			Request request = new RequestContingencyResult(regionName, timestamp);

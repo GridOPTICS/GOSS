@@ -69,9 +69,12 @@ import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
+import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
+import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
 import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadHandler;
+import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestTopologyHandler;
 
 public class SharedPerspectiveServerActivator implements BundleActivator, ManagedService{
@@ -140,10 +143,15 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 			registrationService.addHandlerMapping(RequestTopology.class, RequestTopologyHandler.class);
 			registrationService.addHandlerMapping(RequestContingencyResult.class, RequestContingencyResultHandler.class);
 			registrationService.addHandlerMapping(RequestLineLoad.class, RequestLineLoadHandler.class);
+			registrationService.addHandlerMapping(RequestLineLoadTest.class, RequestLineLoadTestHandler.class);
+			registrationService.addHandlerMapping(RequestLineLoadAsyncTest.class, RequestLineLoadTestHandler.class);
 						
 			registrationService.addSecurityMapping(RequestTopology.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoad.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestContingencyResult.class, AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestLineLoadAsyncTest.class, AccessControlHandlerAllowAll.class);
+			
 		}
 		else{
 			log.debug(GossRequestHandlerRegistrationService.class.getName()+" not found!");

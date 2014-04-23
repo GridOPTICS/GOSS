@@ -45,9 +45,13 @@
 package pnnl.goss.client.tests.performance;
 
 import java.io.FileWriter;
-import java.sql.Timestamp;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+
+import org.apache.http.auth.UsernamePasswordCredentials;
 
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
@@ -55,55 +59,67 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossResponseEvent;
-import pnnl.goss.gridmw.datamodel.GridMWTestData;
-import pnnl.goss.gridmw.requests.RequestGridMWTest;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegmentTest;
+import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 
 public class ClientMainMySqlTest {
 
 	public static void main(String args[]){
-
+		try{
 		String typeOfCommunication = "s";
-		int noOfClients = 1;
-		int noOfLines = 1;
-		int dataPerResponse = 1;
+		int noOfClients = 400;
+		int noOfLines = 10;
+		String startTime = "2013-08-01 10:00:00";
+		String endTime = "2013-08-01 10:05:00";
+		int segment = 3;
 
 		if(typeOfCommunication.equals("s"))
 			synchronousTest(noOfClients, noOfLines);
-		
+		else
+			asynchronousTest(noOfClients, noOfLines, startTime, endTime, segment);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
+//50 - 4793
+//100 - 13154
+//200 - 19309
+//300 - 35504
 
-	static void synchronousTest(int noOfClients, int noOfChannels){
+	static void synchronousTest(int noOfClients, int noOfChannels) throws IOException{
 		for(int clientNo=1;clientNo<=noOfClients;clientNo++){
-			final int clientNum = clientNo;
-			//final int numOfChannels = noOfChannels;
-			//final String powergridName = "south";
-			//final String startTime = "8/1/2013 12:00:00 AM"; //min = 8/1/2013 12:00:00 AM
-			//final String endTime = "8/1/2013 11:59:00 PM"; //max = 8/1/2013 11:59:00 PM
-			
-			//java.util.Date date= new java.util.Date();
-			//Timestamp timestamp  = new Timestamp(date.getTime());
-			
+			final int noOfLines = noOfChannels;
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
 					DataResponse response=null;		
 					try{
-						GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
+						System.out.println("Start="+System.currentTimeMillis());
+						GossClient client = new GossClient();
 						RequestLineLoadTest request = null;
-						FileWriter logWriter = new FileWriter("mysql_synchronous_client"+clientNum+".log",true);
-						logWriter.write("MySQL,MySQL+GOSS\n");
-						for(int i=0;i<3600;i++){
-								System.out.println(i);
-								request = new RequestLineLoadTest("south",null,38);
-								long perfStartTime = System.currentTimeMillis();
+						//FileWriter logWriter = new FileWriter("mysql_synchronous_client"+clientNum+".log",true);
+						//logWriter.write("MySQL;MySQL+GOSS\n");
+						for(int i=1;i<=noOfLines;i++){
+								//System.out.println("Client="+clientNum+" Request=+"+i);
+								request = new RequestLineLoadTest("Greek-118-North",null,i);
+								//long perfStartTime = System.currentTimeMillis();
 								response = (DataResponse)client.getResponse(request,null);
-								//ACLineSegmentTest data  = (ACLineSegmentTest)(response).getData();
+								if (response.getData() instanceof DataError){
+									DataError error = (DataError)response.getData();
+									System.out.println(error.getMessage());
+									break;
+								}
+								
+								ACLineSegmentTest data  = (ACLineSegmentTest)(response).getData();
 								//logWriter.write(data.getTime()+";"+String.valueOf(System.currentTimeMillis()-perfStartTime)+"\n");
-								//System.out.println(data.getKvlevel());
+								//System.out.println(response.sizeof());
+								System.out.println(data.getKvlevel());
+								//System.out.println(response.sizeof());
 						}
-						logWriter.close();
+						//logWriter.close();
 						client.close();
+						System.out.println("Stops="+System.currentTimeMillis());
 					}
 					catch(ClassCastException cce){
 						cce.printStackTrace();
@@ -126,6 +142,56 @@ public class ClientMainMySqlTest {
 		}	
 	}
 	
+	static void asynchronousTest(int noOfClients, int noOfChannels, String startTime, String endTime, int segment) throws ParseException {
+		for(int clientNo=1;clientNo<=noOfClients;clientNo++){
+			final int clientNum = clientNo;
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			final Date startDate = formatter.parse(startTime);
+			final Date endDate = formatter.parse(endTime);
+			final int segment_ = segment;
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					try{
+						final GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
+						final FileWriter logWriter = new FileWriter("mysql_asynchronous_client"+clientNum+".log",true);
+						RequestLineLoadAsyncTest request = new RequestLineLoadAsyncTest("Greek-118-South",38, startDate, endDate, segment_);
+						GossResponseEvent event = new GossResponseEvent() {
+							public void onMessage(Response response) {
+								try{
+									long time = System.currentTimeMillis();
+									DataResponse dataResponse = (DataResponse)response;
+									if(dataResponse.getData() instanceof ACLineSegmentTest){
+										ACLineSegmentTest data  = (ACLineSegmentTest)(dataResponse).getData();
+										//logWriter.write(data.getBeforetime()+";"+data.getTime()+";"+time+"\n");
+										//System.out.println(response.sizeof());
+										if(dataResponse.isResponseComplete()==true){
+											logWriter.close();
+											client.close();
+										}
+									}
+									else if(dataResponse.getData() instanceof DataError){
+											DataError error = (DataError)dataResponse.getData();
+											System.out.println(error.getMessage());
+									}
+								}
+								catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+							
+						};
+						client.sendRequest(request, event, null);
+						logWriter.write("Req; "+System.currentTimeMillis()+"\n");
+						logWriter.write("DS1;DS2;Res;\n");
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			});
+			thread.start();
+		}	
+	}
 
 	
 	private static int randInt(int min, int max) {

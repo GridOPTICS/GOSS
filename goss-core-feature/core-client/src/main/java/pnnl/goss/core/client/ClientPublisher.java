@@ -51,6 +51,9 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pnnl.goss.core.Data;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
@@ -61,6 +64,7 @@ public class ClientPublisher {
 	private transient MessageProducer producer;
 	private transient MessageProducer publishingProducer;
 	Destination destination;
+	private static Logger log = LoggerFactory.getLogger(ClientPublisher.class);
 
 	public ClientPublisher(Session session){
 		try{
@@ -88,19 +92,19 @@ public class ClientPublisher {
 		message.setJMSReplyTo(replyDestination);
 		if(responseFormat!=null)
 			message.setStringProperty("RESPONSE_FORMAT", responseFormat.toString());
-		System.out.println("Sending: "+ request.getClass()+ " on destination: " + destination);
+		log.debug("Sending: "+ request.getClass()+ " on destination: " + destination);
 		producer.send(destination, message);
 	}
 	
 	public void publishTo(Destination destination, Data data) throws JMSException {
 		ObjectMessage message = session.createObjectMessage(data);
-		System.out.println("Publishing: "+ data.getClass()+ " on destination: " + destination);
+		log.debug("Publishing: "+ data.getClass()+ " on destination: " + destination);
 		publishingProducer.send(destination, message);
 	}
 	
 	public void publishTo(Destination destination, String data) throws JMSException {
 		TextMessage message = session.createTextMessage(data);
-		System.out.println("Publishing on destination: " + destination);
+		log.debug("Publishing on destination: " + destination);
 		publishingProducer.send(destination, message);
 	}
 	

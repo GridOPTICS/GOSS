@@ -44,16 +44,20 @@
 */
 package pnnl.goss.core;
 
+import pnnl.goss.util.Utilities;
+
 public class ExecuteRequest extends Request {
 
 	private static final long serialVersionUID = 3599179114722683296L;
 	
 	String jobId;
-
+	String machineName;
+	String remotePassword;
 	
-	public ExecuteRequest(String jobId) {
+	public ExecuteRequest(String jobId, String machineName) {
 		this.jobId = jobId;
-		
+		this.machineName = machineName;
+		this.remotePassword = Utilities.getProperty(machineName);
 	}
 
 	public String getJobId() {
@@ -62,6 +66,18 @@ public class ExecuteRequest extends Request {
 
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
+	}
+
+	public String getMachineName() {
+		return machineName;
+	}
+
+	public void setMachineName(String machineName) {
+		this.machineName = machineName;
+	}
+
+	public String getRemotePassword() {
+		return remotePassword;
 	}
 	
 }

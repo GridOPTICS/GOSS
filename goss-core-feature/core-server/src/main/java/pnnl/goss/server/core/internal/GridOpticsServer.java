@@ -184,7 +184,7 @@ public class GridOpticsServer {
 	@Override
 	protected void finalize() throws Throwable {
 		//Make really sure that the connection gets closed
-		close();
+		//close();
 		super.finalize();
 	}
 	

@@ -25,7 +25,6 @@ public class ClientMainFNCS {
 			
 			//Subcribe to SteerEvent
 			GossResponseEvent event = new GossResponseEvent() {
-				@Override
 				public void onMessage(Response response) {
 					String message = (String)((DataResponse)response).getData(); 
 					System.out.println(message);

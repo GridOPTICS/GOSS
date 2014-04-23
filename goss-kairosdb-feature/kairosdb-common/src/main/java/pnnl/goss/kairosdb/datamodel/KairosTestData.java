@@ -43,42 +43,19 @@
     under Contract DE-AC05-76RL01830
 */
 package pnnl.goss.kairosdb.datamodel;
+import pnnl.goss.core.PerformanceData;
 
-import pnnl.goss.core.Data;
-
-public class KairosTestData extends Data {
+public class KairosTestData extends PerformanceData {
 	
 	private static final long serialVersionUID = -6842988438208247766L;
-	Float[] values;
-	long time;
-	long beforetime;
+	Object[] values;
 	
-	public Float[] getValues() {
+	public Object[] getValues() {
 		return values;
 	}
 
-	public void setValues(Float[] values) {
+	public void setValues(Object[] values) {
 		this.values = values;
 	}
 
-	public long getTime() {
-		return time;
-	}
-
-	public void setTime(long time) {
-		this.time = time;
-	}
-
-	public long getBeforetime() {
-		return beforetime;
-	}
-
-	public void setBeforetime(long beforetime) {
-		this.beforetime = beforetime;
-	}
-	
-	
-	
-	
-	
 }

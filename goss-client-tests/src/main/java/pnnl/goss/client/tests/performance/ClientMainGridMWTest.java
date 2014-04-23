@@ -85,16 +85,16 @@ public class ClientMainGridMWTest {
 							FileWriter logWriter = new FileWriter("gridMW_synchronous_client"+clientNum+".log",true);
 							logWriter.write("GridMW,GridMW+GOSS\n");
 							for(int channel=1;channel<=numOfChannels;channel++){
-								for(long time = 1270105200; time<1270108798; time++){
-									request = new RequestGridMWTest(channel, 1270105200, 1270105201);
+								for(long time = 1270105200; time<1270105300; time++){
+									request = new RequestGridMWTest(channel, time, time+1);
 									long perfStartTime = System.currentTimeMillis();
 									response = (DataResponse)client.getResponse(request,null);
 									GridMWTestData data  = (GridMWTestData)(response).getData();
 									logWriter.write(data.getTime()+";"+String.valueOf(System.currentTimeMillis()-perfStartTime)+"\n");
-									for(int i=0;i<data.getValues().length;i++){
-										System.out.print(data.getValues()[i]);
-									}
-									System.out.println(";");
+									//for(int i=0;i<data.getValues().length;i++){
+										//System.out.print(data.getValues()[i]);
+									//}
+									System.out.print(response.sizeof());
 								}
 							}
 							logWriter.close();
