@@ -155,6 +155,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 		
 		
 		try {
+			
 			GossClient gridOptics = new GossClient(getMessageCredentials());
 			DataResponse response = (DataResponse) gridOptics.getResponse(request);
 			data = response.getData();
