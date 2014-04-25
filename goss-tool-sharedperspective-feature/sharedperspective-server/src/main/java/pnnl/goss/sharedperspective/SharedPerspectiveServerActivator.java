@@ -67,11 +67,14 @@ import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
+import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
+import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
+import pnnl.goss.sharedperspective.server.handlers.RequestAlertHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
@@ -145,12 +148,17 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 			registrationService.addHandlerMapping(RequestLineLoad.class, RequestLineLoadHandler.class);
 			registrationService.addHandlerMapping(RequestLineLoadTest.class, RequestLineLoadTestHandler.class);
 			registrationService.addHandlerMapping(RequestLineLoadAsyncTest.class, RequestLineLoadTestHandler.class);
+			registrationService.addHandlerMapping(RequestAlerts.class,  RequestAlertHandler.class);
+			registrationService.addHandlerMapping(RequestAlertContext.class,  RequestAlertHandler.class);
 						
 			registrationService.addSecurityMapping(RequestTopology.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoad.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestContingencyResult.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoadAsyncTest.class, AccessControlHandlerAllowAll.class);
+			registrationService.addHandlerMapping(RequestAlerts.class,  AccessControlHandlerAllowAll.class);
+			registrationService.addHandlerMapping(RequestAlertContext.class,  AccessControlHandlerAllowAll.class);
+			
 			
 		}
 		else{
