@@ -48,22 +48,14 @@ import java.util.List;
 
 import javax.jms.JMSException;
 
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Service;
-
-
-
-
-
-import pnnl.goss.core.client.GossClient;
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.stereotype.Service;
+import pnnl.goss.core.client.GossClient;
 import pnnl.goss.dsa.GridOpticsService;
-
-
-import pnnl.goss.sharedperspective.common.datamodel.Alert;
-import pnnl.goss.sharedperspective.common.datamodel.AlertContext;
+import pnnl.goss.powergrid.datamodel.Alert;
+import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.sharedperspective.common.datamodel.ContingencyResultList;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
 import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
@@ -164,11 +156,11 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 		return (AlertContext) sendGridOpticsRequest(new RequestAlertContext());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Alert> getAlerts(String timestamp) {
-		RequestAlerts request = new RequestAlerts(powergridName);
-		
-		return null;
+		RequestAlerts request = new RequestAlerts(powergridName, timestamp);
+		return (List<Alert>) sendGridOpticsRequest(request);
 	}
 
 
