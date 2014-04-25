@@ -2,6 +2,7 @@ package pnnl.goss.dsa.impl;
 
 import java.util.List;
 
+import javax.jws.WebResult;
 import javax.jws.WebService;
 
 import pnnl.goss.dsa.DsaActivator;
@@ -16,14 +17,14 @@ targetNamespace="http://alerts.ws.dsa.fpgi.pnnl.gov/")
 public class GetAlertService implements GetAlertsSei {
 
 	@Override
-	public AlertContext getAlertContext() {
+	public @WebResult(name = "alertContext") AlertContext getAlertContext() {
 		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
 		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getAlertContext();
 	}
 
 	@Override
-	public List<Alert> getAlerts(String timestep) {
+	public @WebResult(name = "alerts") List<Alert> getAlerts(String timestep) {
 		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
 		gossService.setPowerGridName(DsaActivator.getPowergridName());
 		return gossService.getAlerts(timestep);

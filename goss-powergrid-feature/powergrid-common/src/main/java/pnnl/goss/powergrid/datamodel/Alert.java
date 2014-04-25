@@ -8,9 +8,16 @@ public class Alert implements Serializable{
 	final AlertType alertType;
 	final AlertSeverity alertSeverity;
 	final String violatingMrid;
-	final double violatingValue;
+	final Double violatingValue;
 	final String contingencyName;
 	
+	public Alert(){
+		this.alertType = null;
+		this.alertSeverity = null;
+		this.violatingMrid = null;
+		this.violatingValue = null;
+		this.contingencyName = null;	
+	}
 
 	public Alert(AlertType alertType, AlertSeverity alertSeverity, String violatingMrid, double violationValue, String contingencyName){
 		this.alertType = alertType;
