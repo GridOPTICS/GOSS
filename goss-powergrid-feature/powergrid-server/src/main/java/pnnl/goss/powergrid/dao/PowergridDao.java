@@ -87,5 +87,4 @@ public interface PowergridDao {
 	List<Substation> getSubstations(int powergridId);
 	List<Transformer> getTransformers(int powergridId);
 	List<Zone> getZones(int powergridId);
-	
 }

@@ -61,6 +61,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.powergrid.PowergridModel;
+import pnnl.goss.powergrid.datamodel.AlertContext;
+import pnnl.goss.powergrid.datamodel.AlertSeverity;
+import pnnl.goss.powergrid.datamodel.AlertType;
 import pnnl.goss.powergrid.datamodel.Area;
 import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Bus;
@@ -78,14 +81,34 @@ public class PowergridDaoMySql implements PowergridDao {
 
 	private static Logger log = LoggerFactory.getLogger(PowergridDaoMySql.class);
 	protected DataSource datasource;
-	
+	private final AlertContext alertContext;
+
 	public PowergridDaoMySql() {
 		log.debug("Creating " + PowergridDaoMySql.class);
+		alertContext = new AlertContext();
+		initializeAlertContext();
+		
 	}
 	
 	public PowergridDaoMySql(DataSource datasource) {
 		log.debug("Creating " + PowergridDaoMySql.class);
-		this.datasource = datasource; 
+		this.datasource = datasource;
+		alertContext = new AlertContext();
+		initializeAlertContext();
+	}
+	
+	public AlertContext getAlertContext(){
+		return alertContext;
+	}
+	
+	private void initializeAlertContext(){
+		
+		
+		alertContext.setAlertContext(AlertType.ALERTTYPE_BRANCH, AlertSeverity.SEVERITY_HIGH, 95.5 , "mvar");
+		alertContext.setAlertContext(AlertType.ALERTTYPE_BRANCH, AlertSeverity.SEVERITY_WARN, 90.0, "mvar");
+		
+		alertContext.setAlertContext(AlertType.ALERTTYPE_SUBSTATION, AlertSeverity.SEVERITY_HIGH, 0.1, "+- % nominal bus");
+		alertContext.setAlertContext(AlertType.ALERTTYPE_SUBSTATION, AlertSeverity.SEVERITY_WARN, 0.05, "+- % nominal bus");
 	}
 	
 	public void setDatasource(DataSource datasource){
@@ -227,17 +250,23 @@ public class PowergridDaoMySql implements PowergridDao {
 	 * then use the powergrid model passed back as it's datasource.
 	 */
 	public PowergridModel getPowergridModel(int powergridId) {
-		PowergridModel model = new PowergridModel();
+		PowergridModel model = new PowergridModel(alertContext);
 
 		model.setAreas(getAreas(powergridId));
 		model.setBranches(getBranches(powergridId));
-		model.setBuses(getBuses(powergridId));
+		model.setSubstations(getSubstations(powergridId));
+		try {
+			model.setBuses(getBuses(powergridId));
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			e.printStackTrace();
+		}
 		model.setLines(getLines(powergridId));
 		model.setLoads(getLoads(powergridId));
 		model.setMachines(getMachines(powergridId));
 		model.setPowergrid(getPowergridById(powergridId));
 
-		model.setSubstations(getSubstations(powergridId));
+
 		model.setSwitchedShunts(getSwitchedShunts(powergridId));
 		// model.setTimesteps(getTimeSteps(powergridId));
 		model.setTransformers(getTransformers(powergridId));
@@ -607,6 +636,7 @@ public class PowergridDaoMySql implements PowergridDao {
 				substation.setSubstationId(rs.getInt(1));
 				substation.setSubstationName(rs.getString(5));
 				substation.setZoneName(rs.getString(4));
+				substation.setMrid(rs.getString("mrid"));
 				items.add(substation);
 			}
 		} catch (SQLException e) {
