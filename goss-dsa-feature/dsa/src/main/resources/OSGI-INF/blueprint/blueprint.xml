@@ -24,6 +24,16 @@
 		 </jaxws:inInterceptors>	
 	</jaxws:endpoint>
 	
+	<jaxws:endpoint
+		id="AlertEndpoint"
+		implementor="pnnl.goss.dsa.impl.GetTopologyService"
+		address="/GetTopology"
+		>
+		 <jaxws:inInterceptors>
+			<ref component-id="gossAuthenticationInterceptor" />
+		 </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
 	
 	<jaxws:endpoint
 		id="TopologyEndpoint"

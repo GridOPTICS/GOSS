@@ -80,11 +80,14 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.server.core.InvalidDatasourceException;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
 import pnnl.goss.server.core.internal.GridOpticsServer;
+import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
+import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
+import pnnl.goss.sharedperspective.server.handlers.RequestAlertHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
@@ -93,7 +96,7 @@ import pnnl.goss.util.Utilities;
 
 public class ServerMain {
 
-	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg.WE22743"; 
+	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg.superfly"; 
 
 	public void attachShutdownHook(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -146,6 +149,8 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestContingencyResult.class, RequestContingencyResultHandler.class);
 		handlers.addHandlerMapping(RequestLineLoad.class, RequestLineLoadHandler.class);
 		handlers.addHandlerMapping(RequestContingencyResult.class, RequestContingencyResultHandler.class);
+		handlers.addHandlerMapping(RequestAlertContext.class, RequestAlertHandler.class);
+		handlers.addHandlerMapping(RequestAlerts.class, RequestAlertHandler.class);
 		
 		//--------------------------------Shared Perspective Security---------------------------------------
 		//handlers.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
