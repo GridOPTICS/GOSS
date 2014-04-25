@@ -166,10 +166,10 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 
 	private Object sendGridOpticsRequest(Request request) {
 		Object data = null;
-		
+		GossClient gridOptics = null;
 		
 		try {
-			GossClient gridOptics = new GossClient(getMessageCredentials());
+			gridOptics = new GossClient(getMessageCredentials());
 			DataResponse response = (DataResponse) gridOptics.getResponse(request);
 			data = response.getData();
 			if (data == null) {
@@ -180,6 +180,10 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 		} catch (JMSException e) {
 			System.err.println(e.getMessage());
 			data = null;
+		}
+		finally{
+			// Close connection after request is done.
+			gridOptics.close();
 		}
 		return data;
 	}
