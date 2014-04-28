@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>dsa</module>
+		<module>dsa-web</module>
 	</modules>
 	
 	<build>
@@ -216,7 +217,12 @@
 				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
+			
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${javax.servlet.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
