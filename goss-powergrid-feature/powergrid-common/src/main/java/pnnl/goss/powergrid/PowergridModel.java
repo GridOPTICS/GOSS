@@ -361,7 +361,7 @@ public class PowergridModel extends Data {
 				branchAlerts.add(newAlert);
 				addToMap(BRANCH_ALERTS, branch.getBranchId(), newAlert);
 			}
-			else if(ratedPq > oldAlert.getValue()){
+			else if(ratedPq > oldAlert.getViolationValue()){
 				branchAlerts.remove(oldAlert);
 				Alert newAlert = new Alert(AlertType.ALERTTYPE_BRANCH, AlertSeverity.SEVERITY_HIGH, branch.getMrid(), ratedPq, null);
 				branchAlerts.add(newAlert);
@@ -375,7 +375,7 @@ public class PowergridModel extends Data {
 				branchAlerts.add(newAlert);
 				addToMap(BRANCH_ALERTS, branch.getBranchId(), newAlert);
 			}
-			else if(ratedPq > oldAlert.getValue()){
+			else if(ratedPq > oldAlert.getViolationValue()){
 				branchAlerts.remove(oldAlert);
 				Alert newAlert = new Alert(AlertType.ALERTTYPE_BRANCH, AlertSeverity.SEVERITY_WARN, branch.getMrid(), ratedPq, null);
 				branchAlerts.add(newAlert);
@@ -411,7 +411,7 @@ public class PowergridModel extends Data {
 				addToMap(SUBSTATION_ALERTS, substation.getSubstationId(), newAlert);
 			}
 			// If the new value is further from 1 than the old value.
-			else if (Math.abs(1 - busPercentValue) > Math.abs(1 - oldAlert.getValue())) {
+			else if (Math.abs(1 - busPercentValue) > Math.abs(1 - oldAlert.getViolationValue())) {
 				Alert newAlert = new Alert(AlertType.ALERTTYPE_SUBSTATION, AlertSeverity.SEVERITY_HIGH, substation.getMrid(), busPercentValue, null);
 				substationAlerts.remove(oldAlert);
 				substationAlerts.add(newAlert);
@@ -424,7 +424,7 @@ public class PowergridModel extends Data {
 				addToMap(SUBSTATION_ALERTS, substation.getSubstationId(), newAlert);
 			}
 			// If the new value is further from 1 than the old value.
-			else if (Math.abs(1 - busPercentValue) > Math.abs(1 - oldAlert.getValue())) {
+			else if (Math.abs(1 - busPercentValue) > Math.abs(1 - oldAlert.getViolationValue())) {
 				substationAlerts.remove(oldAlert);
 				Alert newAlert = new Alert(AlertType.ALERTTYPE_SUBSTATION, AlertSeverity.SEVERITY_WARN, substation.getMrid(), busPercentValue, null);
 				substationAlerts.add(newAlert);

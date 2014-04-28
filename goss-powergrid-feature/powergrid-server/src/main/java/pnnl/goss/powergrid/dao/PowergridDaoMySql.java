@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
 
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.datamodel.AlertContext;
+import pnnl.goss.powergrid.datamodel.AlertContextItem;
 import pnnl.goss.powergrid.datamodel.AlertSeverity;
 import pnnl.goss.powergrid.datamodel.AlertType;
 import pnnl.goss.powergrid.datamodel.Area;
@@ -102,13 +103,11 @@ public class PowergridDaoMySql implements PowergridDao {
 	}
 	
 	private void initializeAlertContext(){
+		alertContext.addContextElement(new AlertContextItem(AlertSeverity.SEVERITY_HIGH, AlertType.ALERTTYPE_BRANCH, 95.5, "mvar"));
+		alertContext.addContextElement(new AlertContextItem(AlertSeverity.SEVERITY_WARN, AlertType.ALERTTYPE_BRANCH, 90.0, "mvar"));
 		
-		
-		alertContext.setAlertContext(AlertType.ALERTTYPE_BRANCH, AlertSeverity.SEVERITY_HIGH, 95.5 , "mvar");
-		alertContext.setAlertContext(AlertType.ALERTTYPE_BRANCH, AlertSeverity.SEVERITY_WARN, 90.0, "mvar");
-		
-		alertContext.setAlertContext(AlertType.ALERTTYPE_SUBSTATION, AlertSeverity.SEVERITY_HIGH, 0.1, "+- % nominal bus");
-		alertContext.setAlertContext(AlertType.ALERTTYPE_SUBSTATION, AlertSeverity.SEVERITY_WARN, 0.05, "+- % nominal bus");
+		alertContext.addContextElement(new AlertContextItem(AlertSeverity.SEVERITY_HIGH, AlertType.ALERTTYPE_SUBSTATION, 0.1, "+- % nominal buses"));
+		alertContext.addContextElement(new AlertContextItem(AlertSeverity.SEVERITY_WARN, AlertType.ALERTTYPE_SUBSTATION, 0.05, "+- % nominal buses"));
 	}
 	
 	public void setDatasource(DataSource datasource){

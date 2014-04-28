@@ -156,8 +156,8 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 			registrationService.addSecurityMapping(RequestContingencyResult.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoadAsyncTest.class, AccessControlHandlerAllowAll.class);
-			registrationService.addHandlerMapping(RequestAlerts.class,  AccessControlHandlerAllowAll.class);
-			registrationService.addHandlerMapping(RequestAlertContext.class,  AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestAlerts.class,  AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestAlertContext.class,  AccessControlHandlerAllowAll.class);
 			
 			
 		}

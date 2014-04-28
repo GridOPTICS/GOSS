@@ -61,6 +61,7 @@ import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.powergrid.datamodel.Alert;
 import pnnl.goss.powergrid.datamodel.AlertContext;
+import pnnl.goss.powergrid.datamodel.AlertContextItem;
 import pnnl.goss.powergrid.datamodel.AlertType;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
 import pnnl.goss.sharedperspective.common.datamodel.ContingencyResultList;
@@ -116,7 +117,7 @@ public class ClientMainDSA {
 			response = (DataResponse) client.getResponse(request);
 			List<Alert> alerts = (List<Alert>) response.getData();
 			for(Alert a:alerts){
-				System.out.println(a.getMrid()+","+a.getValue()+","+a.getAlertType()+","+a.getAlertSeverity());
+				System.out.println(a.getViolationMrid()+","+a.getViolationValue()+","+a.getAlertType()+","+a.getAlertSeverity());
 			}
 
 		} catch (JMSException e) {
@@ -135,7 +136,9 @@ public class ClientMainDSA {
 			Request request = new RequestAlertContext();
 			response = (DataResponse) client.getResponse(request);
 			AlertContext context = (AlertContext)response.getData();
-			System.out.println(context.getSeverityLevels(AlertType.ALERTTYPE_BRANCH));
+			for(AlertContextItem item:context.getContextItems()){
+				System.out.println(item.getAlertLevel()+" "+item.getAlertType()+" "+item.getAlertLevel()+ " "+item.getMeasuredProperty());
+			}
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

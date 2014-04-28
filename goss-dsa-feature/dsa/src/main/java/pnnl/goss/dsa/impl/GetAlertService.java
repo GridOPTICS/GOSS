@@ -2,6 +2,7 @@ package pnnl.goss.dsa.impl;
 
 import java.util.List;
 
+import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
@@ -24,10 +25,10 @@ public class GetAlertService implements GetAlertsSei {
 	}
 
 	@Override
-	public @WebResult(name = "alerts") List<Alert> getAlerts(String timestep) {
+	public @WebResult(name = "alerts") List<Alert> getAlerts(@WebParam(name = "timestamp")String timestamp) {
 		GridOpticsServiceImpl gossService = new GridOpticsServiceImpl();
 		gossService.setPowerGridName(DsaActivator.getPowergridName());
-		return gossService.getAlerts(timestep);
+		return gossService.getAlerts(timestamp);
 	}
 
 }
