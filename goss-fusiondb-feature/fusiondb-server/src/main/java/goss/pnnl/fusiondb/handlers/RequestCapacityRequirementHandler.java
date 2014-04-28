@@ -57,6 +57,7 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
+import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
 import pnnl.goss.server.core.GossRequestHandler;
 
 public class RequestCapacityRequirementHandler extends GossRequestHandler{
@@ -73,8 +74,21 @@ public class RequestCapacityRequirementHandler extends GossRequestHandler{
 			ResultSet rs = null;
 			
 			String query = "select * from capacity_requirements where `timestamp` = '"+request1.getTimestamp()+"'";
-			if(request1.getIntervalId()!=0)
-					query += " and interval_id = "+request1.getIntervalId();
+			
+			//If no Parameter is given
+			if(request1.getParameter()==null)
+				query += " order by interval_id";
+			
+			
+			//If interval is given:
+			if(request1.getParameter()==Parameter.INTERVAL && request1.getValue()!=0)
+					query += " and interval_id = "+request1.getValue();
+			
+			
+			//If confidence is given:
+			if(request1.getParameter()==Parameter.CONFIDENCE && request1.getValue()!=0)
+				query += " and confidence = "+request1.getValue()+" order by interval_id";
+		
 			
 			System.out.println(query);
 			rs = stmt.executeQuery(query);
