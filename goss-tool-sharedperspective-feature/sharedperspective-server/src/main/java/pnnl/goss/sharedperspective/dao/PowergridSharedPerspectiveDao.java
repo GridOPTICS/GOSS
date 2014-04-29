@@ -47,6 +47,7 @@ package pnnl.goss.sharedperspective.dao;
 import java.sql.Timestamp;
 import java.util.List;
 
+import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.dao.PowergridDao;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegmentTest;
@@ -74,5 +75,9 @@ public interface PowergridSharedPerspectiveDao  extends PowergridDao{
 	List<Substation> getSubstationList(int powergridId, String timestampStr) throws Exception;
 	
 	ContingencyResultList getContingencyResults(Timestamp timestamp) throws Exception;
+	
+	Timestamp convertTimestepToTimestamp(String timestep, int minuteInterval);
+	
+	PowergridModel getPowergridModelAtTime(int powergridId, String timestep);
 	
 }

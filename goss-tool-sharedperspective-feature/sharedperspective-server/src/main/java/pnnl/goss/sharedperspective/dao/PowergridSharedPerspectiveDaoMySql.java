@@ -62,6 +62,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.dao.PowergridDaoMySql;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegmentTest;
@@ -631,6 +632,27 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 				connection.close();
 		}
 		return resultList;
+	}
+
+	@Override
+	public Timestamp convertTimestepToTimestamp(String timestep, int minuteInterval) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PowergridModel getPowergridModelAtTime(int powergridId, String timestep) {
+
+		PowergridModel model = null;
+		try {
+			Timestamp timestamp = convertPassedTimestampStringToTimestamp(timestep);
+			model = getPowergridModelAtTime(powergridId, timestamp);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return model;
 	}
 
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
+import pnnl.goss.gridpack.service.GridpackServiceImpl;
 
 public class TestGridpackService {
 

@@ -44,64 +44,99 @@
 */
 package pnnl.goss.gridpack.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import pnnl.goss.core.DataError;
+import pnnl.goss.core.DataResponse;
+import pnnl.goss.core.Response;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
+import pnnl.goss.gridpack.service.impl.GridpackUtils;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 
 @Path("/")
-@Produces("application/xml")
 public class GridpackServiceImpl {
 	
 	@GET
+	@Path("/{powergridName}/buses/{numberOfBuses}")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Collection<GridpackBus> getBuses0ToN(
+			@PathParam(value = "powergridName") String powergridName, 
+			@PathParam(value = "numberOfBuses") int numberOfBuses){
+		
+		return getBusesNToM(powergridName, 0, numberOfBuses);
+	}
+	
+	@GET
+	@Path("/{powergridName}/buses/{startAtIndex}/{numberOfBuses}")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Collection<GridpackBus> getBusesNToM(
+			@PathParam(value = "powergridName") String powergridName, 
+			@PathParam(value = "startAtIndex") int startAtIndex,
+			@PathParam(value = "numberOfBuses") int numberOfBuses){
+		
+		GridpackPowergrid grid = getGridpackGrid(powergridName);
+		List<GridpackBus> buses = new ArrayList<GridpackBus>(grid.getBuses());
+		
+		if (buses.size() > startAtIndex + numberOfBuses){
+			return buses.subList(startAtIndex, startAtIndex+numberOfBuses);
+		}
+		else if(buses.size() > startAtIndex){
+			return buses.subList(startAtIndex, buses.size());
+		}
+		
+		return null;
+	}
+	
+	@GET
     @Path("/{powergridName}")
-	public Object getGridpackGrid(
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public GridpackPowergrid getGridpackGrid(
 			@PathParam(value = "powergridName") String powergridName){
 		
 		GridpackPowergrid pg = null;
 		
 		RequestPowergrid request = new RequestPowergrid(powergridName);
 		RequestPowergridHandler handler = new RequestPowergridHandler();
-		Object retObj = (PowergridModel)handler.getResponse(request).getData();
 		
-		if(retObj instanceof DataError){
-			return (DataError)retObj;
-		}
+		DataResponse response = handler.getResponse(request);
+
+		// Make sure the response didn't throw an error.
+		GridpackUtils.throwDataError(response);
 		
-		PowergridModel powergrid = (PowergridModel)handler.getResponse(request).getData();
+		PowergridModel powergrid = (PowergridModel)response.getData(); //handler.getResponse(request).getData();
 					
 		pg = new GridpackPowergrid(powergrid);
 		
 		return pg;
 	}
 	
-	
 	@GET
-	@Path("/{powergridName}/Bus/Count")
-	@Produces("application/xml")
-	public Object getNumberOfBuses(
+	@Path("/{powergridName}/bus/count")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Integer getNumberOfBuses(
 			@PathParam(value = "powergridName") String powergridName)
 	{
 		RequestPowergrid request = new RequestPowergrid(powergridName);
 		RequestPowergridHandler handler = new RequestPowergridHandler();
-		Object retObj = (PowergridModel)handler.getResponse(request).getData();
+		DataResponse response = handler.getResponse(request);
 		
-		if(retObj instanceof DataError){
-			return (DataError)retObj;
-		}
+		// Make sure the response didn't throw an error.
+		GridpackUtils.throwDataError(response);
 		
-		PowergridModel model = (PowergridModel)retObj;
-		return new Integer(model.getBuses().size());
+		PowergridModel model = (PowergridModel)response.getData();
 		
+		return model.getBuses().size();
 	}
 
 	public Collection<GridpackBus> getBusesTimesteps(String powergridId,

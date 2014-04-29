@@ -44,21 +44,22 @@
 */
 package pnnl.goss.dsa.impl;
 
+import java.util.List;
+
 import javax.jms.JMSException;
 
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Service;
-
-
-import pnnl.goss.core.client.GossClient;
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.stereotype.Service;
+import pnnl.goss.core.client.GossClient;
 import pnnl.goss.dsa.GridOpticsService;
-
-
+import pnnl.goss.powergrid.datamodel.Alert;
+import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.sharedperspective.common.datamodel.ContingencyResultList;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
+import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
+import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
@@ -68,7 +69,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 //	private GossClient gridOptics;
 
 	//@Value("${gridoptics.powergridname}")
-	private String powerGridName;
+	private String powergridName;
 	
 	
 	public GridOpticsServiceImpl() {
@@ -77,15 +78,15 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 	
 	public String getPowerGridName() {
-		return powerGridName;
+		return powergridName;
 	}
 	
 	public void setPowerGridName(String powerGridName) {
-		this.powerGridName = powerGridName;
+		this.powergridName = powerGridName;
 	}
 		
 	public Topology getLineLoad(String timestamp) {
-		return getLineLoad(this.powerGridName, timestamp);
+		return getLineLoad(this.powergridName, timestamp);
 	}
 	
 	public Topology getLineLoad(String powerGridName, String timestamp) {
@@ -95,7 +96,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 
 	public Topology getCurrentTopology() {
 
-		return getCurrentTopology(this.powerGridName);
+		return getCurrentTopology(this.powergridName);
 	}
 	
 	
@@ -104,7 +105,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 	
 	public Topology getTopologyChanges(String timestamp) {
-		return getTopologyChanges(this.powerGridName, timestamp);
+		return getTopologyChanges(this.powergridName, timestamp);
 	}
 
 	public Topology getTopologyChanges(String powerGridName, String timestamp) {
@@ -112,7 +113,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 
 	public Topology getTopology(String timestamp) {
-		return getTopology(this.powerGridName, timestamp);
+		return getTopology(this.powergridName, timestamp);
 	}
 	
 	public Topology getTopology(String powerGridName, String timestamp) {
@@ -133,7 +134,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 	
 	public ContingencyResultList getLatestContingencyResults() {
-		return getLatestContingencyResults(this.powerGridName);
+		return getLatestContingencyResults(this.powergridName);
 	}
 	
 	public ContingencyResultList getLatestContingencyResults(String powerGridName) {
@@ -142,21 +143,33 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 	
 	public ContingencyResultList getContingencyResults(String timestamp) {
-		return getContingencyResults(this.powerGridName, timestamp);
+		return getContingencyResults(this.powergridName, timestamp);
 	}
 	
 	public ContingencyResultList getContingencyResults(String powerGridName, String timestamp) {
 		Request request = new RequestContingencyResult(powerGridName, timestamp);
 		return (ContingencyResultList)sendGridOpticsRequest(request);
 	}
+	
+	@Override
+	public AlertContext getAlertContext() {		
+		return (AlertContext) sendGridOpticsRequest(new RequestAlertContext());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Alert> getAlerts(String timestamp) {
+		RequestAlerts request = new RequestAlerts(powergridName, timestamp);
+		return (List<Alert>) sendGridOpticsRequest(request);
+	}
+
 
 	private Object sendGridOpticsRequest(Request request) {
 		Object data = null;
-		
+		GossClient gridOptics = null;
 		
 		try {
-			
-			GossClient gridOptics = new GossClient(getMessageCredentials());
+			gridOptics = new GossClient(getMessageCredentials());
 			DataResponse response = (DataResponse) gridOptics.getResponse(request);
 			data = response.getData();
 			if (data == null) {
@@ -168,9 +181,14 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 			System.err.println(e.getMessage());
 			data = null;
 		}
+		finally{
+			// Close connection after request is done.
+			gridOptics.close();
+		}
 		return data;
 	}
-	
+
+		
 /*	
 	private String currentTimestamp() {
 		Date now = new Date();
