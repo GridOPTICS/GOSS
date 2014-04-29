@@ -18,7 +18,8 @@
     	<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${httpcore.version}</bundle>
     	 -->
 		<!-- <bundle start-level="92" dependency="true">mvn:pnnl.goss/goss-core-client/${goss-core.version}</bundle>-->
-    	<bundle start-level="94">mvn:pnnl.goss/goss-dsa/${pom.version}</bundle>
+    	<bundle start-level="94" dependency="true">mvn:pnnl.goss/goss-dsa/${pom.version}</bundle>
+    	<bundle start-level="95" dependency="true">mvn:pnnl.goss/goss-dsa-web/${pom.version}</bundle>
     	
     	
     </feature>
