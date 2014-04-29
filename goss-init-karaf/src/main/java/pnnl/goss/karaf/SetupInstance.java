@@ -84,19 +84,11 @@ public class SetupInstance {
 		}
 		
 		
-		// Only install the first 4 by default.  That gives me access to
-		// all the dsa stuff.
-		for(int i=0; i<4; i++){
-			String cmd = String.format(FEATURE_INSTALL, toinstall.get(i));
+		for(String install:toinstall){
+			String cmd = String.format(FEATURE_INSTALL, install);
 			pipedIn.write(cmd.getBytes());
 			pipedIn.flush();
 		}
-		
-//		for(String install:toinstall){
-//			String cmd = String.format(FEATURE_INSTALL, install);
-//			pipedIn.write(cmd.getBytes());
-//			pipedIn.flush();
-//		}
 	}
 	
 
