@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>goss-dsa-web</artifactId>
+	<packaging>bundle</packaging>
+	<name>GOSS DSA Web UI</name>
+
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-dsa-feature</artifactId>
+		<version>0.1.3-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-gridmw-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${maven-bundle-plugin.version}</version>
+				<extensions>true</extensions>
+
+				<configuration>
+					<instructions>
+						<_wab>src/main/webapp</_wab>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Web-ContextPath>dsa</Web-ContextPath>
+						<Webapp-Context>dsa</Webapp-Context>
+						<Bundle-Activator>pnnl.goss.dsa.web.bundle.GossDsaWebActivator</Bundle-Activator>
+                        <Export-Package>
+                            pnnl.goss.dsa.web
+                        </Export-Package>
+						<Import-Package>
+							*
+						</Import-Package>
+						<!-- Add resources directory in one go. -->
+						<!-- <Include-Resource>
+							src/main/resources
+						</Include-Resource> -->
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
