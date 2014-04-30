@@ -44,6 +44,7 @@
 */
 package pnnl.goss.dsa.impl;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
@@ -59,15 +60,19 @@ public class GossServiceHelper {
 		try{
 			WebServiceContext ws = new WebServiceContextImpl();
 			MessageContext mc = ws.getMessageContext();
+	        HttpSession session = ((javax.servlet.http.HttpServletRequest)mc.get(MessageContext.SERVLET_REQUEST)).getSession();
+			System.out.println("GOT SESSION "+session);
+	        
+	        
 			Object name = mc.get(GossLoginInterceptor.CONST_NAME);
 			Object pw = mc.get(GossLoginInterceptor.CONST_PW);
 			if(name!=null && pw!=null)
 				return new UsernamePasswordCredentials(name.toString(), pw.toString());
-		
+		 
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
-		System.out.println("WARNING: NO USERNAME/PW FOUND IN GOSS SERVICCE HELPER");
+		System.out.println("WARNING: NO USERNAME/PW FOUND IN GOSS SERVICE HELPER");
 		return null;
 	}
 	
