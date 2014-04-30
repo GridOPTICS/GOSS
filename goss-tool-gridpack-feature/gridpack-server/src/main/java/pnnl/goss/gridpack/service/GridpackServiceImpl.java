@@ -57,6 +57,7 @@ import javax.ws.rs.core.MediaType;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
+import pnnl.goss.gridpack.common.datamodel.GridpackBranch;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
 import pnnl.goss.gridpack.service.impl.GridpackUtils;
@@ -138,6 +139,58 @@ public class GridpackServiceImpl {
 		
 		return model.getBuses().size();
 	}
+	
+	@GET
+	@Path("/{powergridName}/branch/count")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Integer getNumberOfBranches(
+			@PathParam(value = "powergridName") String powergridName)
+	{
+		RequestPowergrid request = new RequestPowergrid(powergridName);
+		RequestPowergridHandler handler = new RequestPowergridHandler();
+		DataResponse response = handler.getResponse(request);
+		
+		// Make sure the response didn't throw an error.
+		GridpackUtils.throwDataError(response);
+		
+		PowergridModel model = (PowergridModel)response.getData();
+		
+		return model.getBranches().size();
+	}
+	
+	@GET
+	@Path("/{powergridName}/branches/{numberOfBranches}")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Collection<GridpackBranch> getBranches0ToN(
+			@PathParam(value = "powergridName") String powergridName, 
+			@PathParam(value = "numberOfBranches") int numberOfBranches){
+		
+		Collection<GridpackBranch> branches = getBranchesNToM(powergridName, 0, numberOfBranches);
+		return branches;
+	}
+	
+	@GET
+	@Path("/{powergridName}/branches/{startAtIndex}/{numberOfBuses}")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Collection<GridpackBranch> getBranchesNToM(
+			@PathParam(value = "powergridName") String powergridName, 
+			@PathParam(value = "startAtIndex") int startAtIndex,
+			@PathParam(value = "numberOfBranches") int numberOfBranches){
+		
+		GridpackPowergrid grid = getGridpackGrid(powergridName);
+		List<GridpackBranch> branches = new ArrayList<GridpackBranch>(grid.getBranches());
+		
+		if (branches.size() > startAtIndex + numberOfBranches){
+			return branches.subList(startAtIndex, startAtIndex+numberOfBranches);
+		}
+		else if(branches.size() > startAtIndex){
+			return branches.subList(startAtIndex, branches.size());
+		}
+		
+		return null;
+	}
+	
+	
 
 	public Collection<GridpackBus> getBusesTimesteps(String powergridId,
 			String timestep) {

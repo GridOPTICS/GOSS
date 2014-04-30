@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import pnnl.goss.powergrid.PowergridModel;
+import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Bus;
 import pnnl.goss.powergrid.datamodel.Load;
 import pnnl.goss.powergrid.datamodel.Machine;
@@ -62,6 +63,7 @@ import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 public class GridpackPowergrid {
 	PowergridModel grid;
 	List<GridpackBus> buses = new ArrayList<GridpackBus>();
+	List<GridpackBranch> branches = new ArrayList<GridpackBranch>();
 	
 	HashMap<Integer, List<GridpackShunt>> busShuntMap = new HashMap<Integer, List<GridpackShunt>>();
 	HashMap<Integer, List<GridpackGenerator>> busGeneratorMap = new HashMap<Integer, List<GridpackGenerator>>();
@@ -119,11 +121,22 @@ public class GridpackPowergrid {
 			
 			buses.add(newBus);
 		}
+		
+		for(Branch branch:this.grid.getBranches()){
+			GridpackBranch newBranch = GridpackBranch.buildFromObject(this.grid, branch);
+			branches.add(newBranch);	
+		}
 	}
 	
 	@XmlElementWrapper(name="Buses")
 	@XmlElement(name="Bus", type=GridpackBus.class)
 	public Collection<GridpackBus> getBuses(){
 		return this.buses;
+	}
+	
+	@XmlElementWrapper(name="Branches")
+	@XmlElement(name="Branch", type=GridpackBranch.class)
+	public Collection<GridpackBranch> getBranches(){
+		return this.branches;
 	}
 }
