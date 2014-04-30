@@ -20,10 +20,6 @@ public class GossDsaServlet extends HttpServlet {
 	public static final String PARAM_TIME_OFFSET = "offset";
 	public static final String PARAM_STATIC_TIME = "staticTimeValue";
 	
-	public static final String TIME_OPTION_CURRENT = "currentTime";
-	public static final String TIME_OPTION_OFFSET = "currentTimeOffset";
-	public static final String TIME_OPTION_STATIC = "staticTime";
-	
 	
 	public static final String SESSION_TIME_OPTIONS = "SESSION_TIME_OPTIONS";
 	
@@ -56,7 +52,7 @@ public class GossDsaServlet extends HttpServlet {
 		String timingOption = req.getParameter(PARAM_TIME_OPTION);
 		String timingArgument= req.getParameter(PARAM_TIME_OFFSET);
 		
-		if(timingOption.equals(TIME_OPTION_STATIC)){
+		if(timingOption.equals(PowergridTimingOptions.TIME_OPTION_STATIC)){
 			timingArgument = req.getParameter(PARAM_STATIC_TIME);
 		}
 		

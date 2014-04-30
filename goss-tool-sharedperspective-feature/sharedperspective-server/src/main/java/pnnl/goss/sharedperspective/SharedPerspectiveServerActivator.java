@@ -52,6 +52,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -62,6 +63,7 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridList;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
+import pnnl.goss.powergrid.server.PowergridContextService;
 import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
@@ -102,6 +104,21 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 	 * </p>
 	 */
 	private ServiceTracker registrationTracker;
+	
+	private static BundleContext bundleContext;
+	
+	public static PowergridContextService getPowergridContextService(){
+		ServiceReference ref = bundleContext.getServiceReference(PowergridContextService.class.getName());
+		if(ref != null){
+			return (PowergridContextService)bundleContext.getService(ref);
+		}
+		
+		return null;
+	}
+	
+	public void setBundleContext(BundleContext context){
+		bundleContext = context;
+	}
 
 	@SuppressWarnings("rawtypes")
 	public void start(BundleContext context) {

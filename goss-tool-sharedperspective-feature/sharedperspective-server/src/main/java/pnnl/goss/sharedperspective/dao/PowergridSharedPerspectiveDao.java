@@ -45,6 +45,7 @@
 package pnnl.goss.sharedperspective.dao;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.List;
 
 import pnnl.goss.powergrid.PowergridModel;
@@ -76,7 +77,19 @@ public interface PowergridSharedPerspectiveDao  extends PowergridDao{
 	
 	ContingencyResultList getContingencyResults(Timestamp timestamp) throws Exception;
 	
-	Timestamp convertTimestepToTimestamp(String timestep, int minuteInterval);
+	/**
+	 * Convert the timestep passed as a string into a standard java.sql.Timestamp.  This
+	 * timestamp will be used to query against multiple tables in the database.  The minuteInterval
+	 * and second interval assures that the minute and seconds passed will be rounded to the nearest
+	 * divisible unit.
+
+	 * @param timestep
+	 * @param minuteInterval
+	 * @param secondInterval
+	 * @return
+	 * @throws ParseException 
+	 */
+	Timestamp convertTimestepToTimestamp(String timestep, int minuteInterval, int secondInterval) throws ParseException;
 	
 	PowergridModel getPowergridModelAtTime(int powergridId, String timestep);
 	

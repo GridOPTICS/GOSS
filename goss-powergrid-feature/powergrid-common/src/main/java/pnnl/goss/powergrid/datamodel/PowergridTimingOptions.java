@@ -1,7 +1,10 @@
 package pnnl.goss.powergrid.datamodel;
 
 public class PowergridTimingOptions {
-
+	public static final String TIME_OPTION_CURRENT = "currentTime";
+	public static final String TIME_OPTION_OFFSET = "currentTimeOffset";
+	public static final String TIME_OPTION_STATIC = "staticTime";
+	
 	private String timingOption;
 	private String timingOptionArgument;
 	
