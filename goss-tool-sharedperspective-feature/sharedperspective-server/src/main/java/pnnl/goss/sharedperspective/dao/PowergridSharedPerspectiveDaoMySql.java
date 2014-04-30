@@ -124,7 +124,7 @@ public class PowergridSharedPerspectiveDaoMySql  extends PowergridDaoMySql imple
 
 		}
 		catch(Exception e){
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 			if(connection!=null)
 				connection.close();
 			throw e;

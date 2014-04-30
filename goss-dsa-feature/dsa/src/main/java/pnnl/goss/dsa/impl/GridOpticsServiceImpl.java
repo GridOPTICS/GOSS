@@ -48,6 +48,8 @@ import java.util.List;
 
 import javax.jms.JMSException;
 
+import org.apache.log4j.Logger;
+
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 //import org.springframework.beans.factory.annotation.Value;
@@ -66,15 +68,13 @@ import pnnl.goss.sharedperspective.common.requests.RequestTopology;
 
 public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpticsService  {
 
-//	private GossClient gridOptics;
+	protected Logger log = Logger.getLogger(GridOpticsServiceImpl.class);
 
 	//@Value("${gridoptics.powergridname}")
 	private String powergridName;
 	
 	
 	public GridOpticsServiceImpl() {
-//		this.gridOptics= new GossClient(new UsernamePasswordCredentials("goss", "manager"));
-		//this.gridOptics = new GossClient();
 	}
 	
 	public String getPowerGridName() {
@@ -125,9 +125,11 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 		Request gridOpticsRequest = null;
 		if (timestamp == null) {
 			System.err.println("Creating a plain-jane RequestTopology with no timestamp");
+			log.info("Creating a plain-jane RequestTopology with no timestamp");
 			gridOpticsRequest = new RequestTopology(powerGridName);
 		} else {
 			System.err.println("Creating a fancy-pants RequestTopology with a timestamp and all the trappings");
+			log.info("Creating a fancy-pants RequestTopology with a timestamp and all the trappings");
 			gridOpticsRequest = new RequestTopology(powerGridName, timestamp, changesOnly);
 		}
 		return (Topology) sendGridOpticsRequest(gridOpticsRequest);
@@ -167,23 +169,29 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	private Object sendGridOpticsRequest(Request request) {
 		Object data = null;
 		GossClient gridOptics = null;
-		
 		try {
-			gridOptics = new GossClient(getMessageCredentials());
+			gridOptics = getGOSSClient();
 			DataResponse response = (DataResponse) gridOptics.getResponse(request);
 			data = response.getData();
+
 			if (data == null) {
+				log.warn("Response data is NULL");
 				System.err.println("Response data is NULL");
 			} else {
+				log.info("Response data class: " + data.getClass().toString());
 				System.err.println("Response data class: " + data.getClass().toString());
 			}
 		} catch (JMSException e) {
+			log.error(e.getMessage(), e);
 			System.err.println(e.getMessage());
 			data = null;
+		} catch (Throwable t){
+			log.error(t.getMessage(), t);
+			t.printStackTrace();
 		}
 		finally{
 			// Close connection after request is done.
-			gridOptics.close();
+			//gridOptics.close();  If using session based client, don't close it here
 		}
 		return data;
 	}
