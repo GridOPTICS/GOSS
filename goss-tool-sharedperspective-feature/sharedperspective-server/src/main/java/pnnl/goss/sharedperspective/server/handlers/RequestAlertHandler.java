@@ -9,6 +9,7 @@ import pnnl.goss.core.Response;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.dao.PowergridDaoMySql;
 import pnnl.goss.powergrid.datamodel.Alert;
+import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.server.core.GossRequestHandler;
 import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
@@ -26,6 +27,13 @@ public class RequestAlertHandler extends GossRequestHandler {
 		return model.getAlerts();	
 	}
 	
+	private AlertContext getAlertContext(RequestAlertContext request) throws Exception{
+		String dsName = PowergridDataSources.instance().getDatasourceKeyWherePowergridName(new PowergridDaoMySql(), request.getPowergridName());
+		PowergridSharedPerspectiveDaoMySql dao = new PowergridSharedPerspectiveDaoMySql(PowergridDataSources.instance().getConnectionPool(dsName));
+		
+		int pgid =dao.getPowergridId(request.getPowergridName());
+		return dao.getAlertContext(pgid);
+	}
 	
 		
 	@Override
@@ -33,7 +41,7 @@ public class RequestAlertHandler extends GossRequestHandler {
 		DataResponse dataResponse = new DataResponse();
 		try{
 			if (request instanceof RequestAlertContext){
-				dataResponse.setData(new PowergridDaoMySql().getAlertContext());
+				dataResponse.setData(getAlertContext((RequestAlertContext)request));
 			}
 			else if (request instanceof RequestAlerts){
 				dataResponse.setData(getAlerts((RequestAlerts)request));

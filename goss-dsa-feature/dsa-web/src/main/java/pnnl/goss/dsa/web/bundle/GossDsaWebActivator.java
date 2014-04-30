@@ -51,8 +51,11 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+
+import pnnl.goss.powergrid.server.PowergridContextService;
 
 @SuppressWarnings("rawtypes")
 public class GossDsaWebActivator implements BundleActivator, ManagedService {
@@ -61,14 +64,27 @@ public class GossDsaWebActivator implements BundleActivator, ManagedService {
 	protected static final String CONFIG_PID = "pnnl.goss.dsa";
 	protected static final String POWERGRID_NAME_KEY = "pnnl.goss.dsa.powergridname";
 	protected static String powergridName = "";
-
+	
+	private static BundleContext bundleContext;
+	
+	public static PowergridContextService getPowergridContextService(){
+		ServiceReference ref = bundleContext.getServiceReference(PowergridContextService.class.getName());
+		if(ref != null){
+			return (PowergridContextService)bundleContext.getService(ref);
+		}
+		
+		return null;
+	}
+	
+	
 	public static String getPowergridName() {
 		return powergridName;
 	}
 
 	public void start(BundleContext context) {
 		log.info("Starting the Dsa bundle");
-
+		
+		bundleContext = context;
 		// Register for updates to the pnnl.goss.goss.core.security.utils config
 		// file.
 		Hashtable<String, Object> properties = new Hashtable<String, Object>();

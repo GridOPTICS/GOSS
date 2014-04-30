@@ -48,6 +48,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import pnnl.goss.powergrid.PowergridModel;
+import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.powergrid.datamodel.Area;
 import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Bus;
@@ -71,6 +72,13 @@ public interface PowergridDao {
 
 	Powergrid getPowergridByName(String powergridName);
 	Powergrid getPowergridById(int powergridId);
+	/**
+	 * Returns the context of an alert.
+	 * 
+	 * @param powergridId
+	 * @return
+	 */
+	AlertContext getAlertContext(int powergridId);
 
 	PowergridModel getPowergridModel(int powergridId);
 	PowergridModel getPowergridModelAtTime(int powergridId, Timestamp timestep);

@@ -72,6 +72,7 @@ import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Load;
 import pnnl.goss.powergrid.datamodel.Machine;
 import pnnl.goss.powergrid.datamodel.Powergrid;
+import pnnl.goss.powergrid.datamodel.PowergridTimingOptions;
 import pnnl.goss.powergrid.datamodel.Substation;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
@@ -83,6 +84,7 @@ public class PowergridDaoMySql implements PowergridDao {
 	private static Logger log = LoggerFactory.getLogger(PowergridDaoMySql.class);
 	protected DataSource datasource;
 	private final AlertContext alertContext;
+	private PowergridTimingOptions powergridTimingOptions;
 
 	public PowergridDaoMySql() {
 		log.debug("Creating " + PowergridDaoMySql.class);
@@ -98,11 +100,20 @@ public class PowergridDaoMySql implements PowergridDao {
 		initializeAlertContext();
 	}
 	
-	public AlertContext getAlertContext(){
+	public AlertContext getAlertContext(int powergridId){
 		return alertContext;
 	}
 	
+	public void setPowergridTimingOptions(PowergridTimingOptions timingOptions){
+		this.powergridTimingOptions = timingOptions;
+	}
+	
+	public PowergridTimingOptions getPowergridTimingOptions(){
+		return this.powergridTimingOptions;
+	}
+	
 	private void initializeAlertContext(){
+		
 		alertContext.addContextElement(new AlertContextItem(AlertSeverity.SEVERITY_HIGH, AlertType.ALERTTYPE_BRANCH, 95.5, "mvar"));
 		alertContext.addContextElement(new AlertContextItem(AlertSeverity.SEVERITY_WARN, AlertType.ALERTTYPE_BRANCH, 90.0, "mvar"));
 		

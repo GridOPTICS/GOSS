@@ -25,6 +25,10 @@
 			<artifactId>goss-core-client</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-powergrid-server</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>

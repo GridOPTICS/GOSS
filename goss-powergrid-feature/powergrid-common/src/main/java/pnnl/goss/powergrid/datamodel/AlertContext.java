@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * An <code>AlertContext</code> is used to determine what level of violation/near violation
+ * are listed.  Each <code>AlertContextItem</code> will be unique for a given powergrid.
+ */
 public class AlertContext implements Serializable {
 	
 	private static final long serialVersionUID = 941584033189627086L;
