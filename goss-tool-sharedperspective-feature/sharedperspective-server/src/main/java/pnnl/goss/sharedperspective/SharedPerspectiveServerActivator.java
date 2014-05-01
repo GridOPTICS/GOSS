@@ -122,6 +122,7 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 
 	@SuppressWarnings("rawtypes")
 	public void start(BundleContext context) {
+		bundleContext = context;
 		System.out.println("Starting bundle"+this.getClass().getName());
 		log.info("Starting bundle: " + this.getClass().getName());
 		try {
