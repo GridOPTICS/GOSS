@@ -146,6 +146,7 @@ public class GossClient {
 		}
 		catch(Exception e){
 			log.error("Error creating goss-client session", e);
+			e.printStackTrace();
 		}
 	}
 	
