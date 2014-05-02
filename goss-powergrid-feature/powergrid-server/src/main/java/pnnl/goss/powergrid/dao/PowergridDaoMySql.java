@@ -781,8 +781,13 @@ public class PowergridDaoMySql implements PowergridDao {
 
 				if (!doneMachines.contains(id)) {
 					Machine item = model.getMachine(id);
-					item.setPgen(Double.valueOf(rs.getDouble("mts.PGen")));
-					item.setQgen(Double.valueOf(rs.getDouble("mts.QGen")));
+					
+					if (item == null){
+						log.error("Machine is null can't update it! for id " + id);
+						continue;
+					}
+					item.setPgen(rs.getDouble("mts.PGen"));
+					item.setQgen(rs.getDouble("mts.QGen"));
 					item.setStatus(rs.getInt("mts.Status"));
 
 					doneMachines.add(id);
@@ -797,6 +802,10 @@ public class PowergridDaoMySql implements PowergridDao {
 
 				if (!doneLoads.contains(id)) {
 					Load item = model.getLoad(id);
+					if (item == null){
+						log.error("Load is null can't update it! for id " + id);
+						continue;
+					}
 					item.setPload(rs.getDouble("lts.PLoad"));
 					item.setQload(rs.getDouble("lts.QLoad"));
 
