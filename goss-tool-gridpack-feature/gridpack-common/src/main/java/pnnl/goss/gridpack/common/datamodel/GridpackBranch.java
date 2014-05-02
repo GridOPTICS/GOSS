@@ -1,18 +1,24 @@
 package pnnl.goss.gridpack.common.datamodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.datamodel.Branch;
+import pnnl.goss.powergrid.datamodel.Bus;
 import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Transformer;
 
 @XmlRootElement(name="Branch")
 public class GridpackBranch {
+	static Logger log = LoggerFactory.getLogger(GridpackBranch.class);
 	
 	/**
 	 * Field buses - A list of buses connected to this branch (from, to)
@@ -65,6 +71,21 @@ public class GridpackBranch {
 		branchId = branch.getBranchId();
 		fromBusNumber = branch.getFromBusNumber();
 		toBusNumber = branch.getToBusNumber();
+		buses = new ArrayList<GridpackBus>();
+		
+		log.debug("from-to bus numbers: "+fromBusNumber+ "-"+toBusNumber);
+		Bus pgBusFrom = gridModel.getBus(fromBusNumber);
+		if(pgBusFrom != null){
+			GridpackBus fromBus = GridpackBus.buildFromObject(gridModel.getBus(fromBusNumber));
+			buses.add(fromBus);
+		}
+		
+		Bus pgBusTo = gridModel.getBus(toBusNumber);
+		if(pgBusTo != null){
+			GridpackBus toBus = GridpackBus.buildFromObject(gridModel.getBus(toBusNumber));
+			buses.add(toBus);
+		}
+		
 		indexNum = branch.getIndexNum();
 		// TODO Determine ckt true type.
 		//ckt = Integer.parseInt() branch.getCkt();
@@ -78,7 +99,7 @@ public class GridpackBranch {
 		p = branch.getP();
 		q = branch.getQ();
 		mrid = branch.getMrid();
-		
+				
 		// This is a transformer
 		if(transformer != null){
 			ratio = transformer.getRatio();
@@ -120,6 +141,7 @@ public class GridpackBranch {
 	}
 
 	public static GridpackBranch buildFromObject(PowergridModel gridModel, Branch branch) {
+		log.debug("Building GridpackBranch from branchid: ", branch.getBranchId());
 		Line line = findLine(gridModel.getLines(), branch.getBranchId());
 		Transformer transformer = findTransformer(gridModel.getTransformers(), branch.getBranchId());
 		return new GridpackBranch(gridModel, branch, transformer, line); 
@@ -129,7 +151,7 @@ public class GridpackBranch {
 	 * @return the buses
 	 */
 	@XmlElementWrapper(name = "ConnectedBuses")
-	@XmlElement(name = "ConnectedBuses", type = GridpackBus.class)
+	@XmlElement(name = "ConnectedBus", type = GridpackBus.class)
 	public List<GridpackBus> getBuses() {
 		return buses;
 	}
@@ -144,7 +166,7 @@ public class GridpackBranch {
 	/**
 	 * @return the branchId
 	 */
-	@XmlElement(name = "BRANCH_INDEX")
+	@XmlElement(name = "BRANCH_ID")
 	public int getBranchId() {
 		return branchId;
 	}
@@ -159,7 +181,7 @@ public class GridpackBranch {
 	/**
 	 * @return the isTransformer
 	 */
-	@XmlElement(name = "")
+	@XmlElement(name = "IS_TRANSFORMER")
 	public boolean isTransformer() {
 		return isTransformer;
 	}
@@ -205,7 +227,7 @@ public class GridpackBranch {
 	/**
 	 * @return the indexNum
 	 */
-	@XmlElement(name = "")
+	@XmlElement(name = "BRANCH_INDEX")
 	public int getIndexNum() {
 		return indexNum;
 	}
@@ -280,7 +302,7 @@ public class GridpackBranch {
 	/**
 	 * @return the rateA
 	 */
-	@XmlElement(name = "BRANCH_RATING_A'")
+	@XmlElement(name = "BRANCH_RATING_A")
 	public double getRateA() {
 		return rateA;
 	}

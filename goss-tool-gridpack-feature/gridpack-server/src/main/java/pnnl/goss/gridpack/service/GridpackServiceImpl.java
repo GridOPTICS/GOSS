@@ -54,9 +54,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.core.Response;
 import pnnl.goss.gridpack.common.datamodel.GridpackBranch;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
@@ -160,7 +158,7 @@ public class GridpackServiceImpl {
 	
 	@GET
 	@Path("/{powergridName}/branches/{numberOfBranches}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({MediaType.APPLICATION_JSON})
 	public Collection<GridpackBranch> getBranches0ToN(
 			@PathParam(value = "powergridName") String powergridName, 
 			@PathParam(value = "numberOfBranches") int numberOfBranches){
@@ -170,7 +168,7 @@ public class GridpackServiceImpl {
 	}
 	
 	@GET
-	@Path("/{powergridName}/branches/{startAtIndex}/{numberOfBuses}")
+	@Path("/{powergridName}/branches/{startAtIndex}/{numberOfBranches}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Collection<GridpackBranch> getBranchesNToM(
 			@PathParam(value = "powergridName") String powergridName, 
@@ -192,10 +190,10 @@ public class GridpackServiceImpl {
 	
 	
 
-	public Collection<GridpackBus> getBusesTimesteps(String powergridId,
-			String timestep) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public Collection<GridpackBus> getBusesTimesteps(String powergridId,
+//			String timestep) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 }
