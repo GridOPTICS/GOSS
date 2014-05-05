@@ -78,21 +78,23 @@ public class GossSecurityBrokerFilter extends BrokerFilter {
 	@Override
 	public void send(ProducerBrokerExchange producerExchange,
 			Message messageSend) throws Exception {
-		
+		long overallStart = System.nanoTime();
+		long end, diff;
 		//FileWriter logWriter = new FileWriter("filter.log",true);
 		//logWriter.write(System.nanoTime()+";");
 		Message m = messageSend.getMessage();
 		try {
-			Set<Principal> groupPrincipals = new HashSet<Principal>();
-			for(Principal p: producerExchange.getConnectionContext().getSecurityContext().getPrincipals()){
+			StringBuilder sb = new StringBuilder();
+			Set<Principal> principals = producerExchange.getConnectionContext().getSecurityContext().getPrincipals();
+			for(Principal p: principals){
 				if(p instanceof GroupPrincipal){
-					groupPrincipals.add(p);
+					sb.append(p.getName()+",");
 				}
 			}
 			
-			m.setProperty(GossSecurityConstants.ROLE_CREDENTIALS, groupPrincipals.toString());
-//			System.out.println("SETTING CREDENTIAL PROPERTY IN BROKER "+ groupPrincipals.toString());
-			log.info("Setting "+GossSecurityConstants.ROLE_CREDENTIALS+" property in broker to:"+ groupPrincipals.toString());
+			m.setProperty(GossSecurityConstants.ROLE_CREDENTIALS, sb.toString());
+			//Warning this adds quite a bit of extra time if performance is an issue
+			log.debug("Setting "+GossSecurityConstants.ROLE_CREDENTIALS+" property in broker to:"+ sb.toString());
 			
 			//Get temp queue to add to mapping, this is needed by the activemq auth policy
 			String tempDestination = null;
@@ -100,9 +102,12 @@ public class GossSecurityBrokerFilter extends BrokerFilter {
 				tempDestination = m.getReplyTo().getQualifiedName();
 				m.setProperty(GossSecurityConstants.TEMP_DESTINATION, tempDestination);
 			}
+			end = System.nanoTime();
+			diff = end-overallStart;
+			System.out.println("TOTAL TIME "+diff);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			log.error("Error: "+e.getMessage(), e);
 		}
 		super.send(producerExchange, messageSend);
 		//logWriter.write(System.nanoTime()+"\n");
