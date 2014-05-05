@@ -78,8 +78,6 @@ public class GossSecurityBrokerFilter extends BrokerFilter {
 	@Override
 	public void send(ProducerBrokerExchange producerExchange,
 			Message messageSend) throws Exception {
-		long overallStart = System.nanoTime();
-		long end, diff;
 		//FileWriter logWriter = new FileWriter("filter.log",true);
 		//logWriter.write(System.nanoTime()+";");
 		Message m = messageSend.getMessage();
@@ -102,9 +100,6 @@ public class GossSecurityBrokerFilter extends BrokerFilter {
 				tempDestination = m.getReplyTo().getQualifiedName();
 				m.setProperty(GossSecurityConstants.TEMP_DESTINATION, tempDestination);
 			}
-			end = System.nanoTime();
-			diff = end-overallStart;
-			System.out.println("TOTAL TIME "+diff);
 		} catch (IOException e) {
 			e.printStackTrace();
 			log.error("Error: "+e.getMessage(), e);
