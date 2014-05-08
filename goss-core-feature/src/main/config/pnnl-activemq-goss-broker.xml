@@ -83,6 +83,7 @@
 			<authorizationPlugin>
 			
 		        <map>
+		          <!--  OLD VERSION
 		          <bean id="lDAPAuthorizationMap" class="org.apache.activemq.security.LDAPAuthorizationMap"
 		                xmlns="http://www.springframework.org/schema/beans">
 		            <property name="initialContextFactory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
@@ -107,6 +108,28 @@
 		            <property name="readAttribute" value="member"/>
 		            <property name="writeBase" value="(cn=write)"/>
 		            <property name="writeAttribute" value="member"/>
+		          </bean>
+		           -->
+		           
+		           <!--  BETTER VERSION THAT USES CACHING -->
+		           <bean id="lDAPAuthorizationMap" class="pnnl.goss.security.util.GossLDAPAuthorizationMap"
+		                xmlns="http://www.springframework.org/schema/beans">
+		            <property name="connectionURL" value="ldap://${ldap.host}:${ldap.port}"/>
+		            <property name="authentication" value="simple"/>
+		            <property name="connectionUsername" value="${ldap.connection.user}"/>
+		            <property name="connectionPassword" value="${ldap.connection.pw}"/>
+		            <property name="connectionProtocol" value=""/>
+					 <property name="topicSearchBase"
+		                      value="ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="queueSearchBase"
+		                      value="ou=Queue,ou=Destination,${ldap.goss.base}"/>
+				   <property name="advisoryBase"
+		                      value="ActiveMQ.Advisory"/>
+		            <property name="tempSearchBase"
+		                      value="cn=ActiveMQ.Temp,ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="adminPermissionGroupSearchFilter" value="(cn=admin)"/>
+		            <property name="readPermissionGroupSearchFilter" value="(cn=read)"/>
+		            <property name="writePermissionGroupSearchFilter" value="(cn=write)"/>
 		          </bean>
 		        </map>
 	          </authorizationPlugin> 
