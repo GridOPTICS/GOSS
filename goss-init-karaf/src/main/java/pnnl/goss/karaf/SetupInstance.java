@@ -94,7 +94,7 @@ public class SetupInstance {
 
 	public static void main(String[] args) {
 		if (args.length != 3){
-			System.err.println("Invalid arguments must have host,  port and goss version number specified! To find port type instance:list in the karaf console, default is 8101");
+			System.err.println("Invalid arguments must have host, port and goss version number specified! To find port type instance:list in the karaf console, default is 8101");
 			System.exit(500);
 		}
 		String host = args[0];
