@@ -155,7 +155,9 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	
 	@Override
 	public AlertContext getAlertContext() {		
-		return (AlertContext) sendGridOpticsRequest(new RequestAlertContext());
+		RequestAlertContext request = new RequestAlertContext();
+		request.setPowergridName(powergridName);
+		return (AlertContext) sendGridOpticsRequest(request);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -192,6 +194,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 		finally{
 			// Close connection after request is done.
 			//gridOptics.close();  If using session based client, don't close it here
+			gridOptics.close();
 		}
 		return data;
 	}
