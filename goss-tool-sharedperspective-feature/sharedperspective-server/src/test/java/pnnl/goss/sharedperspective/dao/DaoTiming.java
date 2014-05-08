@@ -134,6 +134,10 @@ public class DaoTiming {
 			mysqlDao.getTopologyUpdate("Greek-118-South", timestamp);
 			timing.stopAndLogTime("getTopologyUpdate");
 			
+			timing.startTime();
+			mysqlDao.getSubstationList(ts);
+			timing.stopAndLogTime("getSubstationList");
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
