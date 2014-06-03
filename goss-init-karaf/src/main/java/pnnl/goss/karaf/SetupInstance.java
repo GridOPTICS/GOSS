@@ -34,7 +34,7 @@ public class SetupInstance {
 		repositories.add("activemq 5.9.0");
 		repositories.add("cxf 2.7.10");
 		
-		toinstall.add("activemq-broker");
+		//toinstall.add("activemq-broker");
 		toinstall.add("war");
 		toinstall.add("cxf");
 				
