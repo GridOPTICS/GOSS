@@ -45,6 +45,7 @@
 package pnnl.goss.client.tests;
 
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
@@ -55,14 +56,17 @@ import pnnl.goss.gridmw.datamodel.GridMWTestData;
 import pnnl.goss.gridmw.datamodel.PMUData;
 import pnnl.goss.gridmw.requests.RequestGridMWTest;
 import pnnl.goss.gridmw.requests.RequestPMU;
+import pnnl.goss.kairosdb.requests.RequestPMUKairos;
+import pnnl.goss.kairosdb.requests.RequestPMUMetaData;
 
 
 public class ClientMainPMU {
 
 	public static void main(String args[]) {
 
-		dataCleaningNew();
+		//dataCleaningNew();
 		//gridmwTest();
+		kairos();
 
 	}
 
@@ -82,7 +86,7 @@ public class ClientMainPMU {
 		RequestPMU request = new RequestPMU("PMU_RAW",startTime, endTime);
 		request.setPmuNo(pmuNo);
 		request.setResponsefor(responsefor);
-		
+				
 		GossClient main = new GossClient(ClientAuthHelper.getPMUCredentials());
 		
 		for(int channel=1;channel<=100;channel++){
@@ -146,6 +150,47 @@ public class ClientMainPMU {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	private static void kairos(){
+		
+		
+		DataResponse response=null;
+		try{
+		
+			//pmu data available for time from 1270105200 to 1270108799
+			long startTime = 1270105200;
+			long endTime = 1270105201;
+			
+			//1. get all available pmu channels
+			RequestPMUMetaData request = new RequestPMUMetaData();
+			GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
+			response = (DataResponse)client.getResponse(request);
+			ArrayList<String> channels = (ArrayList)response.getData();
+			
+			//2. iterate over pmu channels
+			for(String channel: channels){
+				System.out.println(channel);
+				
+				//3. Get pmu values for given time range
+				RequestPMUKairos requestPmu = new RequestPMUKairos(channel,startTime,endTime);
+				response = (DataResponse)client.getResponse(requestPmu);
+				ArrayList<Float> values = (ArrayList)response.getData();
+				for(int i=0; i<values.size(); i++)
+					System.out.print(values.get(i)+" , ");
+				System.out.print("\n");
+			}
+			
+			client.close();
+		
+		}
+		catch(Exception e){
+			DataError error = (DataError)response.getData();
+			System.out.println(error.getMessage());
+			e.printStackTrace();
+		}
+			
+			
 	}
 
 }
