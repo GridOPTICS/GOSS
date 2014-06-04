@@ -374,6 +374,7 @@ public class GossUserRoleMgmt {
 				attrs = new BasicAttributes();
 				attrs.put(new BasicAttribute("objectClass", "groupOfNames"));
 				attrs.put(new BasicAttribute("member", "cn=gossServer"));
+				attrs.put(new BasicAttribute("member", "cn=gossUsers"));
 				//attrs.put(new BasicAttribute("cn", "admin"));?
 				getLDAPContext().createSubcontext("cn=admin, "+ouName, attrs);
 				
