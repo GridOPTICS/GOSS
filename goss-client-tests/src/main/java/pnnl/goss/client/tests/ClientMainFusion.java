@@ -51,9 +51,11 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
+import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.client.GossClient;
+import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.fusiondb.datamodel.ActualTotal;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
@@ -62,6 +64,7 @@ import pnnl.goss.fusiondb.datamodel.HAInterchangeSchedule;
 import pnnl.goss.fusiondb.datamodel.RTEDSchedule;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
+import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
@@ -77,12 +80,29 @@ public class ClientMainFusion {
 	public static void main(String[] args) {
 		try{
 			
-			getActualTotal();
-			getForecastTotal();
-			getHAInterchageSchedule();
+			//getActualTotal();
+			//getForecastTotal();
+			//getHAInterchageSchedule();
 			getRTEDSchedule();
 			//uploadCapacityRequirements();
-			requestCapacityRequirement();
+			//requestCapacityRequirement();
+			
+			
+			GossResponseEvent event = new GossResponseEvent() {
+				
+				@Override
+				public void onMessage(Response response) {
+					System.out.println(response);
+					
+				}
+			};
+			
+			client.subscribeTo("FUSION/RESULTS", event);
+			
+			client.publish("FUSION/RESULTS", "This is fusion test result");
+			
+			
+			
 			
 			client.close();
 		
@@ -136,11 +156,11 @@ public class ClientMainFusion {
 		Request request = new RequestRTEDSchedule(startTimestamp, interval,endTimestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
 		RTEDSchedule data = (RTEDSchedule)response.getData();
-		System.out.println(data.getTimestamps().length);
-		System.out.println(data.getIntervals().length);
-		System.out.println(data.getGenValues().length);
-		System.out.println(data.getMaxValues().length);
-		System.out.println(data.getMinValues().length);
+		System.out.println(data.getTimestamps()[0]);
+		System.out.println(data.getIntervals()[0]);
+		System.out.println(data.getGenValues()[0]);
+		System.out.println(data.getMaxValues()[0]);
+		System.out.println(data.getMinValues()[0]);
 	}
 	
 	static void uploadCapacityRequirements() throws JMSException,IllegalStateException{
@@ -164,6 +184,20 @@ public class ClientMainFusion {
 		RequestCapacityRequirement request = new RequestCapacityRequirement(timestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
 		CapacityRequirementValues data  = (CapacityRequirementValues)response.getData();
+		if(data.getTimestamp().length>0){
+			System.out.println(data.getTimestamp()[0]);
+		}
+		
+		request = new RequestCapacityRequirement(timestamp,Parameter.CONFIDENCE,95);
+		response = (DataResponse)client.getResponse(request);
+		data  = (CapacityRequirementValues)response.getData();
+		if(data.getTimestamp().length>0){
+			System.out.println(data.getTimestamp()[0]);
+		}
+		
+		request = new RequestCapacityRequirement(timestamp,Parameter.INTERVAL,1);
+		response = (DataResponse)client.getResponse(request);
+		data  = (CapacityRequirementValues)response.getData();
 		if(data.getTimestamp().length>0){
 			System.out.println(data.getTimestamp()[0]);
 		}
