@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+	 
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -41,12 +41,16 @@
     PACIFIC NORTHWEST NATIONAL LABORATORY
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
-*/
+ */
 package goss.pnnl.kairosdb;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,94 +69,136 @@ public class App
 {
 	public static void main(String[] args) throws IOException, URISyntaxException, ParseException{
 		//testPush();
-		//transfer();
-		query();
+		transfer();
+		//query();
 	}
-	
-	
+
+
 	public static void testPush() throws IOException, URISyntaxException{
-	   MetricBuilder builder = MetricBuilder.getInstance();
-   		builder.addMetric("test50_metric")
-   		.addTag("test_tag2", "0");
-   	   	builder.getMetrics().get(0).addDataPoint(1270105200001L, 30);
+		MetricBuilder builder = MetricBuilder.getInstance();
+		builder.addMetric("test50_metric")
+		.addTag("test_tag2", "0");
+		builder.getMetrics().get(0).addDataPoint(1270105200001L, 30);
 		HttpClient client = new HttpClient("we22743", 8080);
 		Response response = client.pushMetrics(builder);
 		System.out.println(response.getStatusCode());
 		client.shutdown();
-   
-   }
-	
+
+	}
+
 	public static void transfer() throws URISyntaxException, IOException
-    {
-    	int timeSeriesId = 0;
-		long startTime = 1270107623;
-		long endTime = 1270107624;
-		long finalEndTime = 1270107624;
-		int count = (int) (endTime - startTime ) * 30;
-		
-		GridMW gridMW = GridMW.getInstance();
-		HttpClient client = new HttpClient("we22743", 8080);
-		
-		while(endTime<=finalEndTime){
-		
-			float[] data = gridMW.get(timeSeriesId, startTime, endTime, count);
-			startTime = startTime*1000;
-	    	endTime = endTime*1000;
-			
-	    	MetricBuilder builder = MetricBuilder.getInstance();
-	    	builder.addMetric("test_flag")
-	    		.addTag("pmuNo", "0")
-	    		.addTag("pmuName", "Grand_Coulee")
-	    		.addTag("pmuId", "GC50")
-	    		.addTag("channel","flag");
-	    	
-	    	System.out.println("Adding = "+startTime+" : "+data[0]);
-	    	builder.getMetrics().get(0).addDataPoint(startTime, data[0]);
-	    	for(int i=2;i<=29;i++){
-	    		startTime = startTime+35;
-	    		System.out.println("Adding = "+startTime+" : "+data[i-1]);
-	    		builder.getMetrics().get(0).addDataPoint(startTime,data[i-1]);
-	    	}
-	    	System.out.println("Adding = "+endTime+" : "+data[data.length-1]);
-	    	builder.getMetrics().get(0).addDataPoint(endTime, data[data.length-1]);
-	    	
-	    	
-	    	Response response = client.pushMetrics(builder);
-	    	System.out.println(response.getStatusCode());
-	    	
-	    	startTime = endTime/1000;
-	    	endTime = startTime+1;
-	    	
+	{
+		try{
+
+			//get gridmw instance
+			GridMW gridMW = GridMW.getInstance();
+			HttpClient client = new HttpClient("eioc-goss", 8020);
+
+			//get mysql connection
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Connection connection = DriverManager.getConnection("jdbc:mysql://we22743:3306/gridopticsdb", "root", "rootpass");
+			System.out.println("Successfully connected to mysql database");
+			Statement statement =connection.createStatement();	
+			String query;
+			ResultSet rs;
+			String metric_name;
+			//439
+			//443
+			//446 : 
+			//450
+			//456
+			boolean stop = false;
+			for(int timeSeriesId = 510; timeSeriesId<=555; timeSeriesId++ ){
+				
+				if(stop == true)
+					break;
+				
+				long startTime = 1270105200;
+				long endTime = 1270105201;
+				long finalEndTime = 1270108799;
+				int count = (int) (endTime - startTime ) * 30;
+
+				query = "select TimeSeriesId, concat(PMUName,'.phasor',PhasorNo,'.',Channel) FROM griddb_map where TimeSeriesId = "+timeSeriesId;
+				rs = statement.executeQuery(query);
+				rs.next();
+				metric_name = rs.getString(2);
+				
+				System.out.println("Transferring data for timeseriesId = "+timeSeriesId+" and metric_name = "+metric_name);
+
+				while(endTime<=finalEndTime){
+
+					float[] data = gridMW.get(timeSeriesId, startTime, endTime, count);
+					startTime = startTime*1000;
+					endTime = endTime*1000;
+ 
+					MetricBuilder builder = MetricBuilder.getInstance();
+					builder.addMetric(metric_name) 
+					.addTag("status", "raw");
+
+					//System.out.println("Adding 1 = "+startTime+" : "+data[0]);
+					//System.out.print(data[0]);
+					builder.getMetrics().get(0).addDataPoint(startTime, data[0]);
+					for(int i=1;i<=28;i++){
+						startTime = startTime+35;
+						int j=i+1;
+						//System.out.println("Adding "+j+"= "+startTime+" : "+data[i]);
+						//System.out.print(", "+data[i]);
+						builder.getMetrics().get(0).addDataPoint(startTime,data[i]);
+					}
+					//System.out.println("Adding 30 = "+endTime+" : "+data[data.length-1]);
+					//System.out.println(", "+data[data.length-1]);
+					builder.getMetrics().get(0).addDataPoint(endTime, data[data.length-1]);
+					
+
+					Response response = client.pushMetrics(builder);
+					if(response.getStatusCode()!=204){
+						System.out.println("\n"+response.getStatusCode()+" for "+metric_name+" at startTime  = "+startTime+" endTime = "+endTime+" and id = "+timeSeriesId+" for value = "+ data[0]);
+						stop= true;
+					}
+					else{
+						DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+				    	Date startDate = new Date((long)startTime);
+				    	System.out.println("Done for "+timeSeriesId+" , "+metric_name+" , "+ df.format(startDate));
+				    	startTime = endTime/1000;
+				    	endTime = startTime+1;
+					}
+
+				}
+				//System.out.println("\n");
+			}
+			client.shutdown();
 		}
-    	client.shutdown();
-    	
-    }
-    
-    
-    public static void query() throws IOException, URISyntaxException, ParseException{
-    	
-    	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    	
-    	Date startTime = new Date((long)1270105200*1000);
-    	Date endTime = new Date((long)1270105202*1000);
-    	
-    	QueryBuilder builder = QueryBuilder.getInstance();
-    	builder.setStart(df.parse(df.format(startTime)))
-    			.setEnd(df.parse(df.format(endTime)))
-    			.addMetric("test_flag");
-    	HttpClient client1 = new HttpClient("we22743", 8080);
-    	QueryResponse response = client1.query(builder);
-    	if(response.getErrors().size()>0)
-    		System.out.println(response.getErrors().get(0));
-    	for(DataPoint dataPoint : response.getQueries().get(0).getResults().get(0).getDataPoints()){
-    	LongDataPoint point = (LongDataPoint)dataPoint;
-    		System.out.println(point.getTimestamp()+" : "+point.getValue());
-    	}
-    	
-   
-    	client1.shutdown();
-    	
-    }
-    
-    
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
+
+	public static void query() throws IOException, URISyntaxException, ParseException{
+
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+		Date startTime = new Date((long)1270105200*1000);
+		Date endTime = new Date((long)1270105202*1000);
+
+		QueryBuilder builder = QueryBuilder.getInstance();
+		builder.setStart(df.parse(df.format(startTime)))
+		.setEnd(df.parse(df.format(endTime)))
+		.addMetric("GC50.phasor0.flag");
+		HttpClient client1 = new HttpClient("we22743", 8080);
+		QueryResponse response = client1.query(builder);
+		if(response.getErrors().size()>0)
+			System.out.println(response.getErrors().get(0));
+		for(DataPoint dataPoint : response.getQueries().get(0).getResults().get(0).getDataPoints()){
+			LongDataPoint point = (LongDataPoint)dataPoint;
+			System.out.println(point.getTimestamp()+" : "+point.getValue());
+		}
+
+
+		client1.shutdown();
+
+	}
+
+
 }
