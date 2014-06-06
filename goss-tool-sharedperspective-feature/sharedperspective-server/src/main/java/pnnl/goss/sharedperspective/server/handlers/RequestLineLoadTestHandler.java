@@ -98,7 +98,7 @@ public class RequestLineLoadTestHandler extends GossRequestHandler {
 			PowergridSharedPerspectiveDaoMySql dao = new PowergridSharedPerspectiveDaoMySql(PowergridDataSources.instance().getConnectionPool(dsName));
 			int powergridId = dao.getPowergridId(request.getPowergridName());
 			data = dao.getLineLoadTest(powergridId, formatter.format(startTime),request.getLineId());
-			data.setTime(System.currentTimeMillis());
+			data.setTime(System.currentTimeMillis()-time);
 			dataResponse.setData(data);
 		}
 		catch(Exception e){
@@ -123,7 +123,8 @@ public class RequestLineLoadTestHandler extends GossRequestHandler {
 			PowergridSharedPerspectiveDaoMySql dao = new PowergridSharedPerspectiveDaoMySql(PowergridDataSources.instance().getConnectionPool(dsName));
 			int powergridId = dao.getPowergridId(request.getPowergridName());
 			data = dao.getLineLoadTest(powergridId, request.getStartTime(),request.getLineId());
-			data.setTime(System.currentTimeMillis()-time);
+			data.setBeforeTime(time);
+			data.setTime(System.currentTimeMillis());
 			dataResponse.setData(data);
 
 			//PowergridDataSources.instance().shutdown();
