@@ -44,30 +44,61 @@
 */
 package pnnl.goss.dsa.impl;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.jaxws.context.WebServiceContextImpl;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.log4j.Logger;
 
+import pnnl.goss.core.client.GossClient;
 import pnnl.goss.dsa.security.GossLoginInterceptor;
 
 public class GossServiceHelper {
+	private static final String GOSS_CLIENT_PARAM = "GOSS_CLIENT";
+	protected Logger log = Logger.getLogger(GossServiceHelper.class);
+
 	
+	public GossClient getGOSSClient(){
+		GossClient client = null;
+		WebServiceContext ws = new WebServiceContextImpl();
+		MessageContext mc = ws.getMessageContext();
+		HttpSession session = ((javax.servlet.http.HttpServletRequest)mc.get(MessageContext.SERVLET_REQUEST)).getSession();
+		if(session!=null) {
+			Object clientObj = session.getAttribute(GOSS_CLIENT_PARAM);
+	        if(clientObj!=null){
+	        	client = (GossClient)clientObj;
+	        	log.info("Session: "+session.getId()+"  Client already exists");
+	        }  else {
+	        	log.info("Session: "+session.getId()+"  No client, creating new");
+	        	client = new GossClient(getMessageCredentials());
+	        	session.setAttribute(GOSS_CLIENT_PARAM, client);
+	        }
+		}
+        
+        
+       
+        return client;
+	}
 	
 	public UsernamePasswordCredentials getMessageCredentials(){
 		try{
+			
 			WebServiceContext ws = new WebServiceContextImpl();
 			MessageContext mc = ws.getMessageContext();
+	        
 			Object name = mc.get(GossLoginInterceptor.CONST_NAME);
 			Object pw = mc.get(GossLoginInterceptor.CONST_PW);
 			if(name!=null && pw!=null)
 				return new UsernamePasswordCredentials(name.toString(), pw.toString());
-		
+	        
+	        
 		}catch(Exception e){
-			
+			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
-		System.out.println("WARNING: NO USERNAME/PW FOUND IN GOSS SERVICCE HELPER");
+		log.warn("WARNING: NO USERNAME/PW FOUND IN GOSS SERVICE HELPER");
 		return null;
 	}
 	

@@ -45,6 +45,10 @@
 package pnnl.goss.client.tests;
 
 import java.io.File;
+import java.util.List;
+
+import javax.jms.IllegalStateException;
+import javax.jms.JMSException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -55,10 +59,16 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.client.GossClient;
+import pnnl.goss.powergrid.datamodel.Alert;
+import pnnl.goss.powergrid.datamodel.AlertContext;
+import pnnl.goss.powergrid.datamodel.AlertContextItem;
+import pnnl.goss.powergrid.datamodel.AlertType;
 import pnnl.goss.sharedperspective.common.datamodel.ACLineSegment;
 import pnnl.goss.sharedperspective.common.datamodel.ContingencyResultList;
 import pnnl.goss.sharedperspective.common.datamodel.Substation;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
+import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
+import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
@@ -69,6 +79,12 @@ public class ClientMainDSA {
 
 		String regionName = "Greek-118-North"; // or Greek-118-South
 		String timestamp = "2013-08-01 10:12:12";
+		
+		// Tests the getAlertContext functionality
+		getAlertContext();
+		
+		// Tests the getAlerts() functionality
+		getAlerts(regionName, timestamp);
 
 		// get base (full) topology
 		getBaseTopology(regionName);
@@ -91,6 +107,46 @@ public class ClientMainDSA {
 		// get CA result for given timestamp
 		getContingencyResults(regionName, timestamp);
 
+	}
+	
+	private static void getAlerts(String powergrid, String timestep){
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
+		DataResponse response = null;
+		try {
+			Request request = new RequestAlerts(powergrid, timestep);
+			response = (DataResponse) client.getResponse(request);
+			List<Alert> alerts = (List<Alert>) response.getData();
+			for(Alert a:alerts){
+				System.out.println(a.getViolationMrid()+","+a.getViolationValue()+","+a.getAlertType()+","+a.getAlertSeverity());
+			}
+
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			client.close();
+		}
+	}
+	
+	private static void getAlertContext(){
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
+		DataResponse response = null;
+		try {
+			Request request = new RequestAlertContext();
+			response = (DataResponse) client.getResponse(request);
+			AlertContext context = (AlertContext)response.getData();
+			for(AlertContextItem item:context.getContextItems()){
+				System.out.println(item.getAlertLevel()+" "+item.getAlertType()+" "+item.getAlertLevel()+ " "+item.getMeasuredProperty());
+			}
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			client.close();
+		}
+		
 	}
 
 	private static void getBaseTopology(String regionName) {

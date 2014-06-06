@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>dsa</module>
+		<module>dsa-web</module>
 	</modules>
 	
 	<build>
@@ -138,6 +139,11 @@
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
+				<artifactId>goss-powergrid-server</artifactId>
+				<version>0.1.3-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-tool-sharedperspective-common</artifactId>
 				<version>0.1.3-SNAPSHOT</version>
 			</dependency>
@@ -216,7 +222,12 @@
 				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
+			
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${javax.servlet.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

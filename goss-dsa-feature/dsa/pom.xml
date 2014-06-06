@@ -26,6 +26,10 @@
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-powergrid-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-sharedperspective-common</artifactId>
 		</dependency>
 		<dependency>
@@ -65,7 +69,11 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 		</dependency>
-
+		<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<scope>provided</scope>
+			</dependency>	
 	</dependencies>
 	<build>
 		<plugins>

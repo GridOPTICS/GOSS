@@ -5,25 +5,6 @@
                     http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.0.0.xsd
                     http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/jaxws.xsd
                     http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
-
-
-<!-- 
-	<cm:property-placeholder persistent-id="com.example.myservice">
-		<cm:default-properties>
-			<cm:property name="schema-validation-enabled" value="true" />
-		</cm:default-properties>
-	</cm:property-placeholder>-->
-	
-	<jaxws:endpoint 
-		id="ContingencyResultsEndpoint"
-		implementor="pnnl.goss.dsa.impl.GetContingencyResultsService"
-		address="/GetContingencyResults"
-		>	
-		 <jaxws:inInterceptors>
-			<ref component-id="gossAuthenticationInterceptor" />
-		 </jaxws:inInterceptors>	
-	</jaxws:endpoint>
-	
 	
 	<jaxws:endpoint
 		id="TopologyEndpoint"
@@ -34,7 +15,26 @@
 			<ref component-id="gossAuthenticationInterceptor" />
 		 </jaxws:inInterceptors>
 	</jaxws:endpoint>
+		
+	<jaxws:endpoint 
+		id="ContingencyResultsEndpoint"
+		implementor="pnnl.goss.dsa.impl.GetContingencyResultsService"
+		address="/GetContingencyResults"
+		>	
+		 <jaxws:inInterceptors>
+			<ref component-id="gossAuthenticationInterceptor" />
+		 </jaxws:inInterceptors>	
+	</jaxws:endpoint>
 	
+	<jaxws:endpoint
+		id="AlertEndpoint"
+		implementor="pnnl.goss.dsa.impl.GetAlertService"
+		address="/GetAlert"
+		>
+		 <jaxws:inInterceptors>
+			<ref component-id="gossAuthenticationInterceptor" />
+		 </jaxws:inInterceptors>
+	</jaxws:endpoint>	
 	
  	<bean id="gossAuthenticationInterceptor" class="pnnl.goss.dsa.security.GossLoginInterceptor">
  		<property name="contextName" value="LDAPLogin"/>

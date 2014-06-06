@@ -44,9 +44,17 @@
 */
 package pnnl.goss.dsa;
 
+import java.util.List;
+
+import pnnl.goss.powergrid.datamodel.Alert;
+import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
 
 public interface GridOpticsService {
+	
+	AlertContext getAlertContext();
+	
+	List<Alert> getAlerts(String timestamp);
 
 	Topology getLineLoad(String timestamp);	
 	

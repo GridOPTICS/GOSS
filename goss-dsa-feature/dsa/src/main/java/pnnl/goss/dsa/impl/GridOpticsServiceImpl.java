@@ -44,48 +44,49 @@
 */
 package pnnl.goss.dsa.impl;
 
+import java.util.List;
+
 import javax.jms.JMSException;
 
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Service;
+import org.apache.log4j.Logger;
 
-
-import pnnl.goss.core.client.GossClient;
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.stereotype.Service;
+import pnnl.goss.core.client.GossClient;
 import pnnl.goss.dsa.GridOpticsService;
-
-
+import pnnl.goss.powergrid.datamodel.Alert;
+import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.sharedperspective.common.datamodel.ContingencyResultList;
 import pnnl.goss.sharedperspective.common.datamodel.Topology;
+import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
+import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
 
 public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpticsService  {
 
-//	private GossClient gridOptics;
+	protected Logger log = Logger.getLogger(GridOpticsServiceImpl.class);
 
 	//@Value("${gridoptics.powergridname}")
-	private String powerGridName;
+	private String powergridName;
 	
 	
 	public GridOpticsServiceImpl() {
-//		this.gridOptics= new GossClient(new UsernamePasswordCredentials("goss", "manager"));
-		//this.gridOptics = new GossClient();
 	}
 	
 	public String getPowerGridName() {
-		return powerGridName;
+		return powergridName;
 	}
 	
 	public void setPowerGridName(String powerGridName) {
-		this.powerGridName = powerGridName;
+		this.powergridName = powerGridName;
 	}
 		
 	public Topology getLineLoad(String timestamp) {
-		return getLineLoad(this.powerGridName, timestamp);
+		return getLineLoad(this.powergridName, timestamp);
 	}
 	
 	public Topology getLineLoad(String powerGridName, String timestamp) {
@@ -95,7 +96,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 
 	public Topology getCurrentTopology() {
 
-		return getCurrentTopology(this.powerGridName);
+		return getCurrentTopology(this.powergridName);
 	}
 	
 	
@@ -104,7 +105,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 	
 	public Topology getTopologyChanges(String timestamp) {
-		return getTopologyChanges(this.powerGridName, timestamp);
+		return getTopologyChanges(this.powergridName, timestamp);
 	}
 
 	public Topology getTopologyChanges(String powerGridName, String timestamp) {
@@ -112,7 +113,7 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 
 	public Topology getTopology(String timestamp) {
-		return getTopology(this.powerGridName, timestamp);
+		return getTopology(this.powergridName, timestamp);
 	}
 	
 	public Topology getTopology(String powerGridName, String timestamp) {
@@ -124,16 +125,18 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 		Request gridOpticsRequest = null;
 		if (timestamp == null) {
 			System.err.println("Creating a plain-jane RequestTopology with no timestamp");
+			log.info("Creating a plain-jane RequestTopology with no timestamp");
 			gridOpticsRequest = new RequestTopology(powerGridName);
 		} else {
 			System.err.println("Creating a fancy-pants RequestTopology with a timestamp and all the trappings");
+			log.info("Creating a fancy-pants RequestTopology with a timestamp and all the trappings");
 			gridOpticsRequest = new RequestTopology(powerGridName, timestamp, changesOnly);
 		}
 		return (Topology) sendGridOpticsRequest(gridOpticsRequest);
 	}
 	
 	public ContingencyResultList getLatestContingencyResults() {
-		return getLatestContingencyResults(this.powerGridName);
+		return getLatestContingencyResults(this.powergridName);
 	}
 	
 	public ContingencyResultList getLatestContingencyResults(String powerGridName) {
@@ -142,34 +145,61 @@ public class GridOpticsServiceImpl extends GossServiceHelper implements GridOpti
 	}
 	
 	public ContingencyResultList getContingencyResults(String timestamp) {
-		return getContingencyResults(this.powerGridName, timestamp);
+		return getContingencyResults(this.powergridName, timestamp);
 	}
 	
 	public ContingencyResultList getContingencyResults(String powerGridName, String timestamp) {
 		Request request = new RequestContingencyResult(powerGridName, timestamp);
 		return (ContingencyResultList)sendGridOpticsRequest(request);
 	}
+	
+	@Override
+	public AlertContext getAlertContext() {		
+		RequestAlertContext request = new RequestAlertContext();
+		request.setPowergridName(powergridName);
+		return (AlertContext) sendGridOpticsRequest(request);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Alert> getAlerts(String timestamp) {
+		RequestAlerts request = new RequestAlerts(powergridName, timestamp);
+		return (List<Alert>) sendGridOpticsRequest(request);
+	}
+
 
 	private Object sendGridOpticsRequest(Request request) {
 		Object data = null;
-		
-		
+		GossClient gridOptics = null;
 		try {
-			GossClient gridOptics = new GossClient(getMessageCredentials());
+			gridOptics = getGOSSClient();
 			DataResponse response = (DataResponse) gridOptics.getResponse(request);
 			data = response.getData();
+
 			if (data == null) {
+				log.warn("Response data is NULL");
 				System.err.println("Response data is NULL");
 			} else {
+				log.info("Response data class: " + data.getClass().toString());
 				System.err.println("Response data class: " + data.getClass().toString());
 			}
 		} catch (JMSException e) {
+			log.error(e.getMessage(), e);
 			System.err.println(e.getMessage());
 			data = null;
+		} catch (Throwable t){
+			log.error(t.getMessage(), t);
+			t.printStackTrace();
+		}
+		finally{
+			// Close connection after request is done.
+			//gridOptics.close();  If using session based client, don't close it here
+			gridOptics.close();
 		}
 		return data;
 	}
-	
+
+		
 /*	
 	private String currentTimestamp() {
 		Date now = new Date();

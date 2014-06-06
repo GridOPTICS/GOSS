@@ -66,6 +66,7 @@ import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestAvailableDatasourcesHandler;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
+import pnnl.goss.powergrid.server.impl.PowergridContextServiceImpl;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.server.core.InvalidDatasourceException;
@@ -106,9 +107,28 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 	 * </p>
 	 */
 	private ServiceTracker registrationTracker;
-
+	
+	/**
+	 * Keep a reference to the bundle context for unregistering services.
+	 */
+	private static BundleContext bundleContext;
+	
+	/**
+	 * Tracks the registration of the PowergridUpdateService
+	 */
+	private ServiceRegistration contextServiceRegistration;
+	
+	
+	public static BundleContext getBundleContext(){
+		return bundleContext;
+	}
+	
+	
+	
 	@SuppressWarnings("rawtypes")
 	public void start(BundleContext context) {
+		bundleContext = context;
+		
 		System.out.println("Starting bundle"+this.getClass().getName());
 		log.info("Starting bundle: " + this.getClass().getName());
 		try {
@@ -128,8 +148,11 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 		registration = context.registerService(ManagedService.class.getName(), this, getDefaults());
 		
 		
+		
 		PowergridServerActivator.powergridDatasources = PowergridDataSources.instance();
 		context.registerService(PowergridDataSources.class.getName(), PowergridServerActivator.powergridDatasources, new Hashtable());
+		
+		contextServiceRegistration = bundleContext.registerService(PowergridContextService.class.getName(), new PowergridContextServiceImpl(), null);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -184,9 +207,14 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 			if (powergridDatasources  != null){
 				powergridDatasources.shutdown();
 			}
+			
+			if (contextServiceRegistration != null){
+				contextServiceRegistration.unregister();
+			}
 
 			
 		} catch (Exception e) {
+			log.error(e.getStackTrace().toString());
 			e.printStackTrace();
 		}
 	}

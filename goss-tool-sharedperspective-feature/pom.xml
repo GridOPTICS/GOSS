@@ -103,12 +103,17 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.3-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-tool-sharedperspective-common</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>pnnl.goss</groupId>
+				<artifactId>goss-powergrid-server</artifactId>
+				<version>${goss-powergrid.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>

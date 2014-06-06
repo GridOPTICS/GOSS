@@ -83,13 +83,8 @@
 					<overwriteChangedDependencies>true</overwriteChangedDependencies>
 				</configuration>
 				<executions>
-					<execution>
-						<id>process-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>install-kars</goal>
-						</goals>
-					</execution>
+					<!-- <execution> <id>process-resources</id> <phase>process-resources</phase> 
+						<goals> <goal>install-kars</goal> </goals> </execution> -->
 					<execution>
 						<id>compile</id>
 						<phase>compile</phase>
@@ -244,7 +239,7 @@
 				<version>${osgi.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.apache.servicemix.specs</groupId>
 				<artifactId>org.apache.servicemix.specs.jaxb-api-2.2</artifactId>
 				<version>${servicemix-specs.version}</version>
@@ -253,6 +248,11 @@
 				<groupId>org.apache.servicemix.specs</groupId>
 				<artifactId>org.apache.servicemix.specs.jsr311-api-1.1.1</artifactId>
 				<version>${servicemix-specs.version}</version>
+			</dependency> -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<version>${cxf.version}</version>
 			</dependency>
 
 		</dependencies>

@@ -52,6 +52,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -62,16 +63,20 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridList;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
+import pnnl.goss.powergrid.server.PowergridContextService;
 import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
+import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
+import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
 import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
 import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 import pnnl.goss.sharedperspective.common.requests.RequestTopology;
+import pnnl.goss.sharedperspective.server.handlers.RequestAlertHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
@@ -99,9 +104,25 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 	 * </p>
 	 */
 	private ServiceTracker registrationTracker;
+	
+	private static BundleContext bundleContext;
+	
+	public static PowergridContextService getPowergridContextService(){
+		ServiceReference ref = bundleContext.getServiceReference(PowergridContextService.class.getName());
+		if(ref != null){
+			return (PowergridContextService)bundleContext.getService(ref);
+		}
+		
+		return null;
+	}
+	
+	public void setBundleContext(BundleContext context){
+		bundleContext = context;
+	}
 
 	@SuppressWarnings("rawtypes")
 	public void start(BundleContext context) {
+		bundleContext = context;
 		System.out.println("Starting bundle"+this.getClass().getName());
 		log.info("Starting bundle: " + this.getClass().getName());
 		try {
@@ -145,12 +166,17 @@ public class SharedPerspectiveServerActivator implements BundleActivator, Manage
 			registrationService.addHandlerMapping(RequestLineLoad.class, RequestLineLoadHandler.class);
 			registrationService.addHandlerMapping(RequestLineLoadTest.class, RequestLineLoadTestHandler.class);
 			registrationService.addHandlerMapping(RequestLineLoadAsyncTest.class, RequestLineLoadTestHandler.class);
+			registrationService.addHandlerMapping(RequestAlerts.class,  RequestAlertHandler.class);
+			registrationService.addHandlerMapping(RequestAlertContext.class,  RequestAlertHandler.class);
 						
 			registrationService.addSecurityMapping(RequestTopology.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoad.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestContingencyResult.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoadTest.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestLineLoadAsyncTest.class, AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestAlerts.class,  AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestAlertContext.class,  AccessControlHandlerAllowAll.class);
+			
 			
 		}
 		else{
