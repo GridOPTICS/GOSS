@@ -91,11 +91,11 @@ public class RequestRTEDScheduleHandler extends GossRequestHandler{
 			List<Double> maxList = new ArrayList<Double>();
 			
 			while (rs.next()) {
-				timestampsList.add(rs.getString(1));
-				intervalList.add(rs.getInt(2));
-				genList.add(rs.getDouble(3));
-				minList.add(rs.getDouble(4));
-				maxList.add(rs.getDouble(5));
+				timestampsList.add(rs.getString("TimeStamp"));
+				intervalList.add(rs.getInt("IntervalID"));
+				genList.add(rs.getDouble("Gen"));
+				minList.add(rs.getDouble("Min"));
+				maxList.add(rs.getDouble("Max"));
 			}
 
 			RTEDSchedule rtedSchedule = new RTEDSchedule();
