@@ -94,7 +94,7 @@ public class ACLineSegmentTest extends Data {
 	private double mvaFlow = 0.0;
 
 	private long time;
-	
+	private long beforeTime;
 	
 	public long getTime() {
 		return time;
@@ -102,6 +102,16 @@ public class ACLineSegmentTest extends Data {
 
 	public void setTime(long time) {
 		this.time = time;
+	}
+	
+	
+
+	public long getBeforeTime() {
+		return beforeTime;
+	}
+
+	public void setBeforeTime(long beforeTime) {
+		this.beforeTime = beforeTime;
 	}
 
 	/**
