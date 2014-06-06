@@ -45,16 +45,21 @@
 package pnnl.goss.server;
 
 //import goss.pnnl.fusiondb.handlers.RequestUploadTestHandler;
+import goss.pnnl.fusiondb.handlers.FusionUploadHandler;
 import goss.pnnl.fusiondb.handlers.RequestActualTotalHandler;
 import goss.pnnl.fusiondb.handlers.RequestCapacityRequirementHandler;
 import goss.pnnl.fusiondb.handlers.RequestForecastTotalHandler;
 import goss.pnnl.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
 import goss.pnnl.fusiondb.handlers.RequestRTEDScheduleHandler;
 import goss.pnnl.kairosdb.handlers.RequestKairosTestHandler;
+import goss.pnnl.kairosdb.handlers.RequestPMUKairosHandler;
+import goss.pnnl.kairosdb.handlers.RequestPMUMetadataHandler;
 
 import java.sql.SQLException;
 import java.util.Dictionary;
 
+import pnnl.goss.core.UploadRequest;
+import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
@@ -69,6 +74,8 @@ import pnnl.goss.gridmw.requests.RequestPMU;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 //import pnnl.goss.hpc.handlers.ExecuteHPCHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
+import pnnl.goss.kairosdb.requests.RequestPMUKairos;
+import pnnl.goss.kairosdb.requests.RequestPMUMetaData;
 import pnnl.goss.mdart.common.requests.RequestPIRecords;
 import pnnl.goss.mdart.server.handlers.RequestPIRecordsHandler;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
@@ -139,6 +146,9 @@ public class ServerMain {
 		//-------------------------------------PMU(GridMW)-----------------------------------------
 		handlers.addHandlerMapping(RequestPMU.class, RequestPMUHandler.class);
 		//handlers.addSecurityMapping(RequestPMU.class, AccessControlHandlerPMU.class);
+		handlers.addHandlerMapping(RequestPMUMetaData.class, RequestPMUMetadataHandler.class);
+		handlers.addHandlerMapping(RequestPMUKairos.class, RequestPMUKairosHandler.class);
+		
 		
 		//--------------------------------Shared Perspective---------------------------------------
 		handlers.addHandlerMapping(RequestTopology.class, RequestTopologyHandler.class);
@@ -160,6 +170,7 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestHAInterchangeSchedule.class, RequestHAInterchangeScheduleHandler.class);
 		handlers.addHandlerMapping(RequestRTEDSchedule.class, RequestRTEDScheduleHandler.class);		
 		handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
+		handlers.addHandlerMapping(UploadRequest.class, FusionUploadHandler.class);
 		
 		//-------------------------------------Fusion Security----------------------------------------------
 		handlers.addSecurityMapping(RequestActualTotal.class, AccessControlHandlerAllowAll.class);
@@ -168,6 +179,7 @@ public class ServerMain {
 		handlers.addSecurityMapping(RequestHAInterchangeSchedule.class, AccessControlHandlerAllowAll.class);
 		handlers.addSecurityMapping(RequestRTEDSchedule.class, AccessControlHandlerAllowAll.class);		
 		handlers.addSecurityMapping(RequestPowergrid.class, AccessControlHandlerAllowAll.class);
+		
 				
 		
 		//-------------------------------------MDART----------------------------------------------
