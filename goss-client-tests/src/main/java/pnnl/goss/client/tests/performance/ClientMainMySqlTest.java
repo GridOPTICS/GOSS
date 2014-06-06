@@ -51,7 +51,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
@@ -65,10 +66,12 @@ import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
 
 public class ClientMainMySqlTest {
 
+	private static Logger log = LoggerFactory.getLogger(ClientMainMySqlTest.class);
+	
 	public static void main(String args[]){
 		try{
 		String typeOfCommunication = "s";
-		int noOfClients = 400;
+		int noOfClients =375;
 		int noOfLines = 10;
 		String startTime = "2013-08-01 10:00:00";
 		String endTime = "2013-08-01 10:05:00";
@@ -89,37 +92,48 @@ public class ClientMainMySqlTest {
 //300 - 35504
 
 	static void synchronousTest(int noOfClients, int noOfChannels) throws IOException{
+		System.out.println("Client_No,Request_No,StartTime,EndTime,TotalTime,StartTimeDB,EndTimeDB,TimeTakenByDB,TimeTakenByGOSS");
 		for(int clientNo=1;clientNo<=noOfClients;clientNo++){
 			final int noOfLines = noOfChannels;
+			final int clientNum = clientNo;
+			//final int totalClients = noOfClients;
 			Thread thread = new Thread(new Runnable() {
 				public void run() {
 					DataResponse response=null;		
 					try{
-						System.out.println("Start="+System.currentTimeMillis());
-						GossClient client = new GossClient();
+						//FileWriter timeWriter = new FileWriter("mysql_synchronous_client"+clientNum+".log",true);
+						//System.out.println("Start,"+System.currentTimeMillis());
+						long startTime = System.currentTimeMillis();
+						GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
 						RequestLineLoadTest request = null;
 						//FileWriter logWriter = new FileWriter("mysql_synchronous_client"+clientNum+".log",true);
 						//logWriter.write("MySQL;MySQL+GOSS\n");
 						for(int i=1;i<=noOfLines;i++){
 								//System.out.println("Client="+clientNum+" Request=+"+i);
-								request = new RequestLineLoadTest("Greek-118-North",null,i);
-								//long perfStartTime = System.currentTimeMillis();
+								request = new RequestLineLoadTest("Greek-118-North",null,noOfLines);
+								long perfStartTime = System.currentTimeMillis();
 								response = (DataResponse)client.getResponse(request,null);
 								if (response.getData() instanceof DataError){
 									DataError error = (DataError)response.getData();
 									System.out.println(error.getMessage());
 									break;
 								}
-								
 								ACLineSegmentTest data  = (ACLineSegmentTest)(response).getData();
 								//logWriter.write(data.getTime()+";"+String.valueOf(System.currentTimeMillis()-perfStartTime)+"\n");
-								//System.out.println(response.sizeof());
-								System.out.println(data.getKvlevel());
+								//long gossTime = System.currentTimeMillis()-perfStartTime-data.getTime();
+								long endTime = System.currentTimeMillis();
+								long total = endTime-perfStartTime;
+								long startTimeDB = data.getBeforeTime();
+								long endTimeDB = data.getTime();
+								long totalTimeDB = endTimeDB-startTimeDB;
+								long timeTakneByGoss = total-totalTimeDB;
+								System.out.println("Client_"+clientNum+",Request_"+i+","+perfStartTime+","+endTime+","+total+","+startTimeDB+","+endTimeDB+","+totalTimeDB+","+timeTakneByGoss);
+								//System.out.println(data.getKvlevel());
 								//System.out.println(response.sizeof());
 						}
 						//logWriter.close();
 						client.close();
-						System.out.println("Stops="+System.currentTimeMillis());
+						//System.out.println("Client"+clientNum+","+startTime+","+System.currentTimeMillis());
 					}
 					catch(ClassCastException cce){
 						cce.printStackTrace();
