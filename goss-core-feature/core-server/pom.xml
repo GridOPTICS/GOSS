@@ -20,10 +20,6 @@
 		</dependency>
 		<dependency>
 			<groupId>${goss.groupId}</groupId>
-			<artifactId>goss-core-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${goss.groupId}</groupId>
 			<artifactId>goss-core-security</artifactId>
 		</dependency>
 		<dependency>
