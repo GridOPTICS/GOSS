@@ -47,6 +47,9 @@ package pnnl.goss.server.core.internal;
 import java.util.Dictionary;
 import java.util.HashMap;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +64,9 @@ import pnnl.goss.server.core.GossRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @SuppressWarnings("rawtypes")
+@Component(immediate=true)
+@Instantiate
+@Provides
 public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerRegistrationService {
 
 	private static final Logger log = LoggerFactory.getLogger(GossRequestHandlerRegistrationImpl.class);
@@ -68,6 +74,10 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	private GossSecurityHandlerImpl securityHandler = new GossSecurityHandlerImpl();
 	private Dictionary coreServerConfig = null;
 
+	public GossRequestHandlerRegistrationImpl(){
+		System.out.println("CONSTRUCTING "+getClass());
+	}
+	
 	public void addHandlerMapping(String request, String handler) {
 		if (request == null || handler == null) {
 			log.error("request and handler must not be null!");

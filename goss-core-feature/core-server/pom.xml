@@ -39,6 +39,7 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId>
 		</dependency>
+<!--  TODO verify with security on -->
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections-maven</artifactId>
@@ -64,6 +65,13 @@
 			<artifactId>stompjms-client</artifactId>
 			<version>1.19</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>1.12.0</version>
+		</dependency>
+				
 	</dependencies>
 
 	<build>
@@ -77,7 +85,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator>pnnl.goss.server.core.GossServerActivator</Bundle-Activator>
+<!-- 						<Bundle-Activator>pnnl.goss.server.core.GossServerActivator</Bundle-Activator> -->
 						<Export-Package>
 							pnnl.goss.server.core
 						</Export-Package>
@@ -95,6 +103,18 @@
 						</DynamicImport-Package>
 					</instructions>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

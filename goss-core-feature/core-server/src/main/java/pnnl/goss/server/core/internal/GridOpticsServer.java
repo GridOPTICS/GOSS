@@ -78,7 +78,7 @@ public class GridOpticsServer {
 			
 			//Needed for standalone server instance
 			if(startBroker){
-				startBroker();
+				startBroker(config);
 			}
 			
 			makeActiveMqConnection(uri, user, pw);
@@ -142,11 +142,11 @@ public class GridOpticsServer {
 //		}
 //	}
 	
-	private void startBroker() throws Exception {
+	private void startBroker(Dictionary config) throws Exception {
 		Utilities.getInstance();
 		System.setProperty("activemq.base", System.getProperty("user.dir"));
 		System.out.println("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-		BrokerService broker = BrokerFactory.createBroker(Utilities.getProperty("brokerConfig"), true);
+		BrokerService broker = BrokerFactory.createBroker(config.get("brokerConfig").toString(), true);
 		Utilities.setbrokerURI(broker.getTransportConnectors().get(0).getConnectUri());
 		broker.start();
 	}
