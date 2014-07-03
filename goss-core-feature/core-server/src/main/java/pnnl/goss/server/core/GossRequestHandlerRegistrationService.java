@@ -68,6 +68,10 @@ public interface GossRequestHandlerRegistrationService {
 	
 	void addHandlerMapping(String request, String handler);
 	
+	void addUploadHandlerMapping(String dataType, String handler);
+	
+	void addUploadHandlerMapping(String dataType, Class handler);
+	
 	void removeHandlerMapping(Class request);	
 	
 	boolean checkAccess(Request request, String userPrincipals, String tempDestination);

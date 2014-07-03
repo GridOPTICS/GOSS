@@ -95,6 +95,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		}
 	}
 	
+	
 	public void addHandlerMapping(Class request, Class handler) {
 		if (request == null || handler == null) {
 			log.error("request and handler must not be null!");
@@ -150,7 +151,80 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			log.error("AddHandlerMapping Exception ", e);
 		}
 	}
+	
+	/**
+	 * Creates mapping between upload data type and corresponding RequestHandler class.
+	 * @param dataType 
+	 * 				String representing upload data type
+	 * @param handler
+	 * 				RequestHandler class name
+	 */
+	//TODO: complete data type and handler mapping.
+	public void addUploadHandlerMapping(String dataType, String handler) {
+		if (handler == null || dataType==null) {
+			log.error("data type and handler must not be null!");
+			return;
+		}
+		
+		try {
+			Class handlerCls = Class.forName(handler);
+			addUploadHandlerMapping(dataType, handlerCls);
+			
+		} catch (ClassNotFoundException e) {
+			log.error("Error with class not found", e);
+		}
+	}
+	
+	
+	/**
+	 * Creates mapping between upload data type and corresponding RequestHandler class.
+	 * @param dataType 
+	 * 				String representing upload data type
+	 * @param handler
+	 * 				RequestHandler class
+	 */
+	//TODO: complete data type and handler mapping.
+	public void addUploadHandlerMapping(String dataType, Class handler) {
+		if (handler == null || dataType==null) {
+			log.error("data type and handler must not be null!");
+			return;
+		}
+		
+		try {
+			
+			// Attempt to instantiate class before adding the string
+			handler.newInstance();
+			
+			Class superClassTester = handler.getSuperclass();
+			boolean foundSuperClassHandler = false;
+			
+			while(superClassTester != null){
+				
+				if(superClassTester.equals(GossRequestHandler.class)){
+					foundSuperClassHandler = true;
+					break;
+				}
+				superClassTester = superClassTester.getSuperclass();
+			}
+			
+			if(!foundSuperClassHandler){
+				throw new Exception("Invalid handler, must be subclass of "+GossRequestHandler.class.toString());
+			}
+			
+			// Keep the string of the class.
+			handlerMap.put(dataType, handler.getName());
 
+			
+		} catch (ClassNotFoundException e) {
+			log.error("Error with class not found", e);
+		} catch (IllegalAccessException e) {
+			log.error("Access error couldn't instantiate " + handler.getName(), e);
+		} catch (Exception e) {
+			log.error("AddUploadHandlerMapping Exception ", e);
+		}
+	}
+	
+	
 	public void removeHandlerMapping(Class request) {
 		if (request != null) {
 			log.debug("removing mapping for: " + request.getName());
