@@ -44,6 +44,8 @@
 */
 package pnnl.goss.core.client;
 
+import java.io.Serializable;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -264,7 +266,7 @@ public class GossClient {
 		}
 	}
 	
-	public void publish(String topicName, Data data, RESPONSE_FORMAT responseFormat) throws NullPointerException{
+	public void publish(String topicName, Serializable data, RESPONSE_FORMAT responseFormat) throws NullPointerException{
 		try{
 			if(data==null)
 				throw new NullPointerException("event cannot be null");
