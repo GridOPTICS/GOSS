@@ -44,6 +44,8 @@
 */
 package pnnl.goss.core.client;
 
+import java.io.Serializable;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -96,7 +98,7 @@ public class ClientPublisher {
 		producer.send(destination, message);
 	}
 	
-	public void publishTo(Destination destination, Data data) throws JMSException {
+	public void publishTo(Destination destination, Serializable data) throws JMSException {
 		ObjectMessage message = session.createObjectMessage(data);
 		log.debug("Publishing: "+ data.getClass()+ " on destination: " + destination);
 		publishingProducer.send(destination, message);
