@@ -33,10 +33,13 @@ public class SetupInstance {
 		
 		repositories.add("activemq 5.9.0");
 		repositories.add("cxf 2.7.10");
+		repositories.add("http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.ipojo.features/1.12.0/org.apache.felix.ipojo.features-1.12.0.xml");
+		
 		
 		//toinstall.add("activemq-broker");
 		toinstall.add("war");
 		toinstall.add("cxf");
+		toinstall.add("ipojo-all");
 				
 		for(String repo:repositories){
 			String cmd = String.format(FEATURE_REPO_ADD, repo);

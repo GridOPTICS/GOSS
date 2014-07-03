@@ -74,6 +74,7 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 public class ServerListener implements MessageListener {
 
+
 	private GossRequestHandlerRegistrationService handlerService;
 	private static final Logger log = LoggerFactory.getLogger(ServerListener.class);
 	
@@ -118,7 +119,7 @@ public class ServerListener implements MessageListener {
 					
 										
 					//If you wish to disable authentication and authorization you must remove any authentication plugins from
-					//  the activemq.xml file and set the useAuthorization property in config.properties to false
+					//  the activemq.xml file and set the useAuthorization property in config properties to false
 					if(useAuth){
 						String creds = objectMessage.getStringProperty(GossSecurityConstants.ROLE_CREDENTIALS);
 						String tempDestination = objectMessage.getStringProperty(GossSecurityConstants.TEMP_DESTINATION);
