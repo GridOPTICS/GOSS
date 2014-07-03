@@ -51,6 +51,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
+import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
@@ -164,16 +165,19 @@ public class ClientMainFusion {
 	}
 	
 	static void uploadCapacityRequirements() throws JMSException,IllegalStateException{
+		
 		UploadRequest request = new UploadRequest();
 		String timestamp = "2013-1-21 01:01:01";
-		int confidence =1;
+		int confidence =200;
 		int intervalId=1;
 		int up=1;
 		int down=1;
 		CapacityRequirement data = new CapacityRequirement(timestamp,confidence,intervalId,up,down);
 		request.setData(data);
 		UploadResponse response  = (UploadResponse)client.getResponse(request);
-		System.out.println(response.isSuccess());
+		
+		if(response.isSuccess())
+				client.publish("/topic/goss/fusion/capacity", data,RESPONSE_FORMAT.JSON);
 		if(response.getMessage()!=null)
 			System.out.println(response.getMessage());
 		
