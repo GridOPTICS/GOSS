@@ -76,7 +76,7 @@ import pnnl.goss.core.client.internal.ClientConfiguration;
 
 import com.google.gson.Gson;
 
-public class GossClient {
+public class GossClient implements Client{
 
 	private static final Log log = LogFactory.getLog(GossClient.class);
 	private static final String BROKER_URI_PROPERTY = "brokerURI";
@@ -245,7 +245,7 @@ public class GossClient {
 				new ClientConsumer(new ClientListener(event),session,destination);
 			}
 			else if(this.protocol.equals(PROTOCOL.STOMP)){
-				 destination = new StompJmsDestination(topicName);
+				destination = new StompJmsDestination(topicName);
 				ClientConsumer consumer  = new ClientConsumer(session,destination);
 				//TODO change this
 				 while(true) {
@@ -307,6 +307,26 @@ public class GossClient {
 		}
 	}
 	
+	@Override
+	public void publish(String topicName, Data data,
+			RESPONSE_FORMAT responseFormat) throws NullPointerException {
+		try{
+			if(data==null)
+				throw new NullPointerException("event cannot be null");
+			Destination destination = null;
+			if(this.protocol.equals(PROTOCOL.OPENWIRE))
+				destination = session.createTopic(topicName);
+			else if(this.protocol.equals(PROTOCOL.STOMP))
+				destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
+
+			clientPublisher.publishTo(destination, data);
+		}
+		catch(JMSException e){
+			log.error(e);
+		}
+		
+	}
+	
 	/**
 	 * Closes the GossClient connection with server.
 	 */
@@ -324,6 +344,8 @@ public class GossClient {
 		}
 		
 	}
+
+
 	
 	
 
