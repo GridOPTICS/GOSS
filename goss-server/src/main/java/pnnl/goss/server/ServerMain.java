@@ -59,7 +59,6 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
@@ -71,6 +70,7 @@ import pnnl.goss.gridmw.handlers.RequestPMUHandler;
 import pnnl.goss.gridmw.requests.RequestGridMWAsyncTest;
 import pnnl.goss.gridmw.requests.RequestGridMWTest;
 import pnnl.goss.gridmw.requests.RequestPMU;
+import pnnl.goss.handlers.TutorialDesktopHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 //import pnnl.goss.hpc.handlers.ExecuteHPCHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
@@ -103,7 +103,7 @@ import pnnl.goss.util.Utilities;
 
 public class ServerMain {
 
-	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg.superfly"; 
+	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg"; 
 
 	public void attachShutdownHook(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -190,6 +190,9 @@ public class ServerMain {
 		//-------------------------------------MDART----------------------------------------------
 		handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
 		//handlers.addSecurityMapping(RequestPIRecords.class, AccessControlHandlerAllowAll.class);
+		
+		//-------------------------------------Tutorial----------------------------------------------
+		handlers.addUploadHandlerMapping("Tutorial", TutorialDesktopHandler.class);
 		
 
 		try {
