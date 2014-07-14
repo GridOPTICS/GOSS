@@ -50,6 +50,12 @@ public class UploadRequest extends Request implements Serializable {
 
 	private static final long serialVersionUID = -2734493164985227464L;
 	Serializable data;
+	String dataType;
+	
+	public UploadRequest(Serializable data, String dataType){
+		this.data = data;
+		this.dataType = dataType;
+	}
 
 	public String getId() {
 		return id;
@@ -63,4 +69,14 @@ public class UploadRequest extends Request implements Serializable {
 		this.data = data;
 	}
 
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+	
+	
 }
