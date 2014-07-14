@@ -66,6 +66,7 @@ import org.fusesource.stomp.jms.StompJmsDestination;
 import org.fusesource.stomp.jms.StompJmsTempQueue;
 import org.fusesource.stomp.jms.StompJmsTopic;
 import org.fusesource.stomp.jms.message.StompJmsBytesMessage;
+import org.fusesource.stomp.jms.message.StompJmsTextMessage;
 
 import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
@@ -252,6 +253,13 @@ public class GossClient implements Client{
 			            Message msg = consumer.getMessageConsumer().receive();
 			            if(msg instanceof StompJmsBytesMessage){
 			            	StompJmsBytesMessage stompMessage = (StompJmsBytesMessage)msg;
+			            	org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
+			            	//System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+			            	String message = buffer.toString().substring(buffer.toString().indexOf(":")+1);
+			            	event.onMessage(new DataResponse(message));
+			            }
+			            if(msg instanceof StompJmsTextMessage){
+			            	StompJmsTextMessage stompMessage = (StompJmsTextMessage)msg;
 			            	org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
 			            	//System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
 			            	String message = buffer.toString().substring(buffer.toString().indexOf(":")+1);
