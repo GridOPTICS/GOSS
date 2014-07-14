@@ -279,6 +279,41 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		return response;
 	}
 	
+	@Override
+	public Response handle(Request request, String dataType) {
+		Response response = null;
+		GossRequestHandler handler = null;
+		if (dataType != null) {
+			log.debug("handling request for: " + dataType);
+			if (handlerMap.containsKey(dataType)) {
+				try {
+					Class handlerClass = Class.forName(handlerMap.get(dataType));
+					handler = (GossRequestHandler) handlerClass.newInstance();
+					if(handler!=null){
+						response = handler.handle(request);
+					}
+					/*
+					 * String handlerStr =
+					 * handlerMap.get(request.getClass().getName());
+					 * GossRequestHandler handler = (GossRequestHandler)
+					 * Class.forName(handlerStr).newInstance(); response =
+					 * handler.handle(request);
+					 */
+				} catch (Exception e) {
+					log.error("Handle error exception", e);
+				}
+				/*
+				 * catch (InstantiationException e) { log.error(e, e);
+				 * e.printStackTrace(); } catch (IllegalAccessException e) {
+				 * log.error(e, e); e.printStackTrace(); } catch
+				 * (ClassNotFoundException e) { log.error(e, e);
+				 * e.printStackTrace(); }
+				 */
+			}
+		}
+		return response;
+	}
+	
 	public boolean checkAccess(Request request, String userPrincipals, String tempDestination) {
 		return securityHandler.checkAccess(request, userPrincipals, tempDestination);
 	}

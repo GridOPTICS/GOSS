@@ -141,9 +141,11 @@ public class ServerListener implements MessageListener {
 					if (request instanceof UploadRequest) {
 						try {
 							UploadRequest uploadRequest = (UploadRequest) objectMessage.getObject();
+							
+							String dataType = uploadRequest.getDataType(); 
 							Serializable data = uploadRequest.getData();
 
-							UploadResponse response = (UploadResponse) handlerService.handle(request);
+							UploadResponse response = (UploadResponse) handlerService.handle(uploadRequest, dataType);
 							response.setId(request.getId());
 							serverPublisher.sendResponse(response, message.getJMSReplyTo());
 							
