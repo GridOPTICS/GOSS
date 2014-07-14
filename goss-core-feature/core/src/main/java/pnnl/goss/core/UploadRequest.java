@@ -49,17 +49,17 @@ import java.io.Serializable;
 public class UploadRequest extends Request implements Serializable {
 
 	private static final long serialVersionUID = -2734493164985227464L;
-	Data data;
+	Serializable data;
 
 	public String getId() {
 		return id;
 	}
 
-	public Data getData() {
+	public Serializable getData() {
 		return data;
 	}
 
-	public void setData(Data data) {
+	public void setData(Serializable data) {
 		this.data = data;
 	}
 
