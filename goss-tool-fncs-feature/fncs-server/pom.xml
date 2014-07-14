@@ -4,7 +4,6 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-tool-fncs-server</artifactId>
 	<packaging>bundle</packaging>
 
@@ -29,7 +28,6 @@
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-fncs-common</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
