@@ -44,6 +44,7 @@
 */
 package pnnl.goss.server.core.internal;
 
+import java.io.Serializable;
 import java.util.Dictionary;
 
 import javax.jms.InvalidDestinationException;
@@ -140,7 +141,7 @@ public class ServerListener implements MessageListener {
 					if (request instanceof UploadRequest) {
 						try {
 							UploadRequest uploadRequest = (UploadRequest) objectMessage.getObject();
-							Data data = uploadRequest.getData();
+							Serializable data = uploadRequest.getData();
 
 							UploadResponse response = (UploadResponse) handlerService.handle(request);
 							response.setId(request.getId());
