@@ -83,7 +83,7 @@ import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
-import pnnl.goss.request.TutorialDownloadRequestAsync;
+import pnnl.goss.tutorial.request.TutorialDownloadRequestSync;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.server.core.InvalidDatasourceException;
@@ -103,6 +103,7 @@ import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestTopologyHandler;
 import pnnl.goss.tutorial.launchers.AggregatorLauncher;
 import pnnl.goss.tutorial.launchers.GeneratorLauncher;
+import pnnl.goss.tutorial.launchers.PythonJavaGatewayLauncher;
 import pnnl.goss.util.Utilities;
 
 public class ServerMain {
@@ -197,7 +198,7 @@ public class ServerMain {
 		
 		//-------------------------------------Tutorial----------------------------------------------
 		handlers.addUploadHandlerMapping("Tutorial", TutorialDesktopHandler.class);
-		handlers.addHandlerMapping(TutorialDownloadRequestAsync.class, TutorialDesktopDownloadHandler.class);
+		handlers.addHandlerMapping(TutorialDownloadRequestSync.class, TutorialDesktopDownloadHandler.class);
 		//Start launcher and aggregators
 		String[] arguments = new String[] {};
 		//Start aggregator and generator listening so they can be started by web ui
@@ -218,6 +219,7 @@ public class ServerMain {
 			//Launch the generator and aggregator listeners
 			new AggregatorLauncher().start();
 		    new GeneratorLauncher().start();
+		    new PythonJavaGatewayLauncher().start();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

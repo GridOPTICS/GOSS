@@ -210,8 +210,9 @@ public class GossClient implements Client{
 	 * To upload data, request object should extend gov.pnnl.goss.communication.RequestUpload.
 	 * @param request gov.pnnl.goss.communication.Request.
 	 * @param instance of GossResponseEvent
+	 * @return the replyDestination topic
 	 */
-	public void sendRequest(Request request,GossResponseEvent event,RESPONSE_FORMAT responseFormat) throws NullPointerException{
+	public String sendRequest(Request request,GossResponseEvent event,RESPONSE_FORMAT responseFormat) throws NullPointerException{
 		try{
 			Destination replyDestination=null;
 			if(this.protocol.equals(PROTOCOL.OPENWIRE))
@@ -224,10 +225,14 @@ public class GossClient implements Client{
 			else
 				throw new NullPointerException("event cannot be null");
 			clientPublisher.sendMessage(request,replyDestination,responseFormat);
+			if(replyDestination!=null){
+				return replyDestination.toString();
+			}
 		}
 		catch(JMSException e){
 			log.error(e);
 		}
+		return null;
 	}
 
 	/**

@@ -35,8 +35,9 @@ public interface Client {
 	 * To upload data, request object should extend gov.pnnl.goss.communication.RequestUpload.
 	 * @param request gov.pnnl.goss.communication.Request.
 	 * @param instance of GossResponseEvent
+	 * @return the replyDestination topic
 	 */
-	public abstract void sendRequest(Request request, GossResponseEvent event,
+	public abstract String sendRequest(Request request, GossResponseEvent event,
 			RESPONSE_FORMAT responseFormat) throws NullPointerException;
 
 	/**
