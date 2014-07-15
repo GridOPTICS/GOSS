@@ -70,6 +70,7 @@ import pnnl.goss.gridmw.handlers.RequestPMUHandler;
 import pnnl.goss.gridmw.requests.RequestGridMWAsyncTest;
 import pnnl.goss.gridmw.requests.RequestGridMWTest;
 import pnnl.goss.gridmw.requests.RequestPMU;
+import pnnl.goss.handlers.TutorialDesktopDownloadHandler;
 import pnnl.goss.handlers.TutorialDesktopHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 //import pnnl.goss.hpc.handlers.ExecuteHPCHandler;
@@ -82,6 +83,7 @@ import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
+import pnnl.goss.request.TutorialDownloadRequestAsync;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.server.core.InvalidDatasourceException;
@@ -99,6 +101,8 @@ import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandl
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
 import pnnl.goss.sharedperspective.server.handlers.RequestTopologyHandler;
+import pnnl.goss.tutorial.launchers.AggregatorLauncher;
+import pnnl.goss.tutorial.launchers.GeneratorLauncher;
 import pnnl.goss.util.Utilities;
 
 public class ServerMain {
@@ -193,8 +197,15 @@ public class ServerMain {
 		
 		//-------------------------------------Tutorial----------------------------------------------
 		handlers.addUploadHandlerMapping("Tutorial", TutorialDesktopHandler.class);
+		handlers.addHandlerMapping(TutorialDownloadRequestAsync.class, TutorialDesktopDownloadHandler.class);
+		//Start launcher and aggregators
+		String[] arguments = new String[] {};
+		//Start aggregator and generator listening so they can be started by web ui
+	    
 		
-
+		
+		
+		
 		try {
 			Dictionary config = Utilities.loadProperties(powergridDatasourceConfig);
 
@@ -203,6 +214,10 @@ public class ServerMain {
 			handlers.setCoreServerConfig(coreConfig);
 			@SuppressWarnings("unused")
 			GridOpticsServer server = new GridOpticsServer(handlers, true);
+			
+			//Launch the generator and aggregator listeners
+			new AggregatorLauncher().start();
+		    new GeneratorLauncher().start();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
