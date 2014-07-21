@@ -16,9 +16,16 @@
 	<properties>
 		<jena-libs.version>2.11.1</jena-libs.version>
         <maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
+        <ipojo.version>1.12.0</ipojo.version>
+        <goss-powergrid.version>0.1.3-SNAPSHOT</goss-powergrid.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>goss.pnnl</groupId>
+				<artifactId>goss-powergrid-server</artifactId>
+				<version>${goss-powergrid.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.jena</groupId>
 				<artifactId>apache-jena-libs</artifactId>
@@ -35,6 +42,17 @@
 				<artifactId>jena-maven-tools</artifactId>
 				<version>0.5-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+				<version>1.12.0</version>
+			</dependency>
+			<dependency>
+            	<groupId>junit</groupId>
+            	<artifactId>junit</artifactId>
+            	<version>4.11</version>
+            	<scope>test</scope>
+        	</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
