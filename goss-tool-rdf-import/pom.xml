@@ -9,7 +9,7 @@
 
 	<modules>
 		<module>rdf-import-common</module>
-        <!--<module>rdf-import-server</module>-->
+        <module>rdf-import-server</module>
         <module>rdf-import-features</module>
 	</modules>
 
