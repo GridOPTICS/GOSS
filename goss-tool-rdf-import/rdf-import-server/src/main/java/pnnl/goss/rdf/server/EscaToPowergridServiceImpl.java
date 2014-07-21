@@ -6,6 +6,8 @@ import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Property;
 import org.apache.felix.ipojo.annotations.Provides;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import pnnl.goss.powergrid.dao.PowergridDao;
 import pnnl.goss.powergrid.datamodel.Powergrid;
 import pnnl.goss.rdf.DuplicatePowergridException;
@@ -23,7 +25,7 @@ public class EscaToPowergridServiceImpl implements EscaToPowergridService {
 	}
 	
 	@Override
-	public Powergrid createPowergrid(String pgName, File esca60File)
+	public Powergrid createPowergrid(String pgName, Model esca60Model)
 			throws DuplicatePowergridException {
 		// TODO Auto-generated method stub
 		return null;
