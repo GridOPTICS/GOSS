@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-tool-fncs-feature</artifactId>
-		<version>0.1.3-SNAPSHOT</version>
+		<version>0.1.4-SNAPSHOT</version>
 	</parent>
 
 	<!-- <properties> <goss-powergrid.version>0.1.3-SNAPSHOT</goss-powergrid.version> 
