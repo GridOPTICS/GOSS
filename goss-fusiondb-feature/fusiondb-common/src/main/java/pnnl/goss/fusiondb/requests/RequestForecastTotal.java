@@ -70,6 +70,12 @@ public class RequestForecastTotal extends Request {
 		this.endTimeStamp = endTimestamp;
 	}
 	
+	public RequestForecastTotal(Type type, String startTimestamp, String endTimestamp){
+		this.type = type;
+		this.startTimestamp = startTimestamp;
+		this.endTimeStamp = endTimestamp;
+	}
+	
 	public Type getType() {
 		return type;
 	}

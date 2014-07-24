@@ -64,6 +64,11 @@ public class RequestRTEDSchedule extends Request {
 		this.interval = interval;
 	}
 	
+	public RequestRTEDSchedule(String startTimestamp, String endTiemstamp){
+		this.startTimestamp = startTimestamp;
+		this.endTimeStamp = endTiemstamp;
+	}
+	
 	
 	public String getStartTimestamp() {
 		return startTimestamp;
