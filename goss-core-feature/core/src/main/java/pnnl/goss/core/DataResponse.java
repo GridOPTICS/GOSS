@@ -49,7 +49,7 @@ import java.io.Serializable;
 public class DataResponse extends Response implements Serializable {
 
 	private static final long serialVersionUID = 3555288982317165831L;
-	Object data;
+	Serializable data;
 	
 	boolean responseComplete;
 	
@@ -57,7 +57,7 @@ public class DataResponse extends Response implements Serializable {
 		
 	}
 	
-	public DataResponse(Object data){
+	public DataResponse(Serializable data){
 		setData(data);
 	}
 
@@ -65,7 +65,7 @@ public class DataResponse extends Response implements Serializable {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(Serializable data) {
 		this.data = data;
 	}
 	
