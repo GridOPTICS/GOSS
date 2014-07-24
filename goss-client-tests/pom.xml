@@ -11,7 +11,7 @@
 		A jar with multiple mains for testing output.
 	</description>
 	<properties>
-		<goss.version>0.1.3-SNAPSHOT</goss.version>
+		<goss.version>0.1.4-SNAPSHOT</goss.version>
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -35,37 +35,37 @@
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-sharedperspective-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-kairosdb-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-fusiondb-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-mdart-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-fncs-common</artifactId>
-			<version>${goss.version}</version>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
