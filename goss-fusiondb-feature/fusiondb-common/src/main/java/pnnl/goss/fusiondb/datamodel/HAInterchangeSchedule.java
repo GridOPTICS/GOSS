@@ -42,11 +42,12 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
+
 package pnnl.goss.fusiondb.datamodel;
 
-import pnnl.goss.core.Data;
+import java.io.Serializable;
 
-public class HAInterchangeSchedule extends Data {
+public class HAInterchangeSchedule implements Serializable{
 	
 	private static final long serialVersionUID = 2479470836796049584L;
 	

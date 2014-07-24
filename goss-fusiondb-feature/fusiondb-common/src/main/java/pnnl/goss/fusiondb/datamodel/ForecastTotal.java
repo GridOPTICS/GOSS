@@ -44,9 +44,10 @@
 */
 package pnnl.goss.fusiondb.datamodel;
 
-import pnnl.goss.core.Data;
+import java.io.Serializable;
 
-public class ForecastTotal extends Data {
+
+public class ForecastTotal implements Serializable {
 	
 	private static final long serialVersionUID = 1061685296002226689L;
 	

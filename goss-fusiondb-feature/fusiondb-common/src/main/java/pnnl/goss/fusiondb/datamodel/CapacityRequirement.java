@@ -44,9 +44,10 @@
 */
 package pnnl.goss.fusiondb.datamodel;
 
-import pnnl.goss.core.Data;
+import java.io.Serializable;
 
-public class CapacityRequirement extends Data{
+
+public class CapacityRequirement implements Serializable{
 	
 	private static final long serialVersionUID = -1005838362555128081L;
 	

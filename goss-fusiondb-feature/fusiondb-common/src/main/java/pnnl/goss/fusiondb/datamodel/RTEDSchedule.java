@@ -44,9 +44,10 @@
 */
 package pnnl.goss.fusiondb.datamodel;
 
-import pnnl.goss.core.Data;
+import java.io.Serializable;
 
-public class RTEDSchedule extends Data {
+
+public class RTEDSchedule implements Serializable{
 	
 	private static final long serialVersionUID = 1832939099908215667L;
 	
