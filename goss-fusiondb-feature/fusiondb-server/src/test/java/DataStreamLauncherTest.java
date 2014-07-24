@@ -13,7 +13,7 @@ public class DataStreamLauncherTest {
 	public static void main(String[] args){
 		
 		DataStreamLauncher launcher = new DataStreamLauncher();
-		launcher.launch();
+		launcher.startLauncher();
 		
 	}
 

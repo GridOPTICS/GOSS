@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Validate;
+
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
@@ -34,10 +39,12 @@ import scala.annotation.meta.setter;
 
 import com.google.gson.Gson;
 
+@Component
+@Instantiate
 public class DataStreamLauncher {
-
+	
 	private volatile boolean isRunning = false;
-
+	
 	Client client = new GossClient(PROTOCOL.STOMP);
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -65,7 +72,7 @@ public class DataStreamLauncher {
 	String currentForecastLoadTopic = currentTopic+"/forecast/load";
 	String currentForecastSolarTopic = currentTopic+"/forecast/solar";
 	String currentForecastWindTopic = currentTopic+"/forecast/wind";
-
+	DataStreamLauncher launcher ;
 	/**
 	 * Receives request from Fusion project's web based visualization on controlTopic.
 	 * Published data stream for historic and current data.
@@ -86,8 +93,21 @@ public class DataStreamLauncher {
 	 * "stop stream"
 	 * 
 	 */
+	
+	@Validate
+	public void startLauncher(){
+		if(launcher==null){
+			launcher = new DataStreamLauncher();
+		}
+		launcher.launch();
+	}
+	
+	@Invalidate
+	public void stopLauncher(){
+		launcher.isRunning = false;
+	}
 
-	public void launch() {
+	private void launch() {
 		GossResponseEvent event =  new GossResponseEvent() {
 			@Override
 			public void onMessage(Response response) {
