@@ -1,5 +1,7 @@
 package pnnl.goss.core.client;
 
+import java.io.Serializable;
+
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
 
@@ -51,8 +53,11 @@ public interface Client {
 
 	public abstract void publish(String topicName, Data data,
 			RESPONSE_FORMAT responseFormat) throws NullPointerException;
+	
+	public abstract void publish(String topicName, Serializable data,
+			RESPONSE_FORMAT responseFormat) throws NullPointerException;
 
-	public abstract void publish(String topicName, String data)
+	public abstract void publish(String topicName, Serializable data)
 			throws NullPointerException;
 
 	/**
