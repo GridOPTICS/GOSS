@@ -46,24 +46,27 @@ package goss.pnnl.fusiondb.handlers;
 
 import goss.pnnl.fusiondb.datasources.FusionDataSource;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.RTEDSchedule;
+import pnnl.goss.fusiondb.datamodel.RTEDScheduleData;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
 import pnnl.goss.server.core.GossRequestHandler;
 
 public class RequestRTEDScheduleHandler extends GossRequestHandler{
 	
+	public boolean viz = false;
+	
 	public DataResponse handle(Request request) {
 
-		Data data = null;
+		Serializable data = null;
 
 		try {
 			String dbQuery = "";
@@ -84,6 +87,8 @@ public class RequestRTEDScheduleHandler extends GossRequestHandler{
 			System.out.println(dbQuery);
 			rs = stmt.executeQuery(dbQuery);
 			
+			
+			if(viz=false){
 			List<String> timestampsList = new ArrayList<String>();
 			List<Integer> intervalList = new ArrayList<Integer>();
 			List<Double> genList = new ArrayList<Double>();
@@ -104,9 +109,27 @@ public class RequestRTEDScheduleHandler extends GossRequestHandler{
 			rtedSchedule.setGenValues(genList.toArray(new Double[genList.size()]));
 			rtedSchedule.setMinValues(minList.toArray(new Double[minList.size()]));
 			rtedSchedule.setMaxValues(maxList.toArray(new Double[maxList.size()]));
+			data = rtedSchedule;
+			
+			}
+			else{
+				
+				ArrayList<RTEDScheduleData> list = new ArrayList<RTEDScheduleData>();
+				RTEDScheduleData rtedScheduleData=null;
+				while (rs.next()) {
+					rtedScheduleData = new RTEDScheduleData();
+					rtedScheduleData.setGenValue(rs.getDouble("Gen"));
+					rtedScheduleData.setInterval(rs.getInt("IntervalID"));
+					rtedScheduleData.setMaxValue(rs.getDouble("Max"));
+					rtedScheduleData.setMinValue(rs.getDouble("Min"));
+					rtedScheduleData.setTimestamp(rs.getString("TimeStamp"));
+					list.add(rtedScheduleData);
+				}
+				data = list;
+				
+			}
 			
 			connection.close();
-			data = rtedSchedule;
 			
 		} catch (Exception e) {
 			e.printStackTrace();

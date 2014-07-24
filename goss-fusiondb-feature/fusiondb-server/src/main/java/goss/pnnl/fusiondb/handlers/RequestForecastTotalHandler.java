@@ -46,24 +46,27 @@ package goss.pnnl.fusiondb.handlers;
 
 import goss.pnnl.fusiondb.datasources.FusionDataSource;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.ForecastTotal;
+import pnnl.goss.fusiondb.datamodel.ForecastTotalData;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.server.core.GossRequestHandler;
 
 public class RequestForecastTotalHandler extends GossRequestHandler{
 
+	public boolean viz= false;
+	
 	public DataResponse handle(Request request) {
 
-		Data data = null;
+		Serializable data = null;
 
 		try {
 			String dbQuery = "";
@@ -86,24 +89,41 @@ public class RequestForecastTotalHandler extends GossRequestHandler{
 			System.out.println(dbQuery);
 			rs = stmt.executeQuery(dbQuery);
 			
-			List<Double> valuesList = new ArrayList<Double>();
-			List<String> timestampsList = new ArrayList<String>();
-			List<Integer> intervalsList = new ArrayList<Integer>();
-			
-			while (rs.next()) {
-				timestampsList.add(rs.getString(1));
-				intervalsList.add(rs.getInt(2));
-				valuesList.add(rs.getDouble(3));
+			if(viz==true){
+				List<Double> valuesList = new ArrayList<Double>();
+				List<String> timestampsList = new ArrayList<String>();
+				List<Integer> intervalsList = new ArrayList<Integer>();
 				
+				while (rs.next()) {
+					timestampsList.add(rs.getString(1));
+					intervalsList.add(rs.getInt(2));
+					valuesList.add(rs.getDouble(3));
+					
+				}
+	
+				ForecastTotal forecastTotal = new ForecastTotal();
+				forecastTotal.setType(request1.getType().toString());
+				forecastTotal.setTimestamps(timestampsList.toArray(new String[timestampsList.size()]));
+				forecastTotal.setValues(valuesList.toArray(new Double[valuesList.size()]));
+				forecastTotal.setIntervals(intervalsList.toArray(new Integer[intervalsList.size()]));
+				
+				data = forecastTotal;
 			}
-
-			ForecastTotal forecastTotal = new ForecastTotal();
-			forecastTotal.setType(request1.getType().toString());
-			forecastTotal.setTimestamps(timestampsList.toArray(new String[timestampsList.size()]));
-			forecastTotal.setValues(valuesList.toArray(new Double[valuesList.size()]));
-			forecastTotal.setIntervals(intervalsList.toArray(new Integer[intervalsList.size()]));
+			else{
+				ArrayList<ForecastTotalData> list = new ArrayList<ForecastTotalData>();
+				ForecastTotalData forecastTotal=null;
+				while (rs.next()) {
+					forecastTotal = new ForecastTotalData();
+					forecastTotal.setTimestamp(rs.getString(1));
+					forecastTotal.setType(request1.getType().toString());
+					forecastTotal.setValue(rs.getDouble(3));
+					forecastTotal.setInterval(rs.getInt(2));
+					list.add(forecastTotal);
+				}
+				data = list;
+			}
 			
-			data = forecastTotal;
+			stmt.close();
 			connection.close();
 			
 		} catch (Exception e) {

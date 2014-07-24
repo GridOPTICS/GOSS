@@ -55,12 +55,16 @@ import java.util.List;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
+import pnnl.goss.fusiondb.datamodel.ActualTotalData;
+import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
 import pnnl.goss.server.core.GossRequestHandler;
 
 public class RequestCapacityRequirementHandler extends GossRequestHandler{
+	
+	public boolean viz=false;
 	
 	public DataResponse handle(Request request) {
 		
@@ -73,7 +77,13 @@ public class RequestCapacityRequirementHandler extends GossRequestHandler{
 			Statement stmt = connection.createStatement();
 			ResultSet rs = null;
 			
-			String query = "select * from capacity_requirements where `timestamp` = '"+request1.getTimestamp()+"'";
+			String query = "select * from capacity_requirements ";
+					
+			//if no end timestamp is given 
+			if(request1.getEndTimestamp()==null)		
+				query+="where `timestamp` = '"+request1.getTimestamp()+"'";
+			else
+				query+="where `timeStamp` between '"+request1.getTimestamp() + "' and '"+request1.getEndTimestamp()+"'";
 			
 			//If no Parameter is given
 			if(request1.getParameter()==null)
@@ -93,29 +103,49 @@ public class RequestCapacityRequirementHandler extends GossRequestHandler{
 			System.out.println(query);
 			rs = stmt.executeQuery(query);
 			
-			List<String> timestampsList = new ArrayList<String>();
-			List<Integer> confidenceList = new ArrayList<Integer>();
-			List<Integer> intervalIdList = new ArrayList<Integer>();
-			List<Integer> upList = new ArrayList<Integer>();
-			List<Integer> downList = new ArrayList<Integer>();
-			
-			while (rs.next()) {
-				timestampsList.add(rs.getString(1));
-				confidenceList.add(rs.getInt(2));
-				intervalIdList.add(rs.getInt(3));
-				upList.add(rs.getInt(4));
-				downList.add(rs.getInt(5));
+			if(viz==false){
+				List<String> timestampsList = new ArrayList<String>();
+				List<Integer> confidenceList = new ArrayList<Integer>();
+				List<Integer> intervalIdList = new ArrayList<Integer>();
+				List<Integer> upList = new ArrayList<Integer>();
+				List<Integer> downList = new ArrayList<Integer>();
 				
+				while (rs.next()) {
+					timestampsList.add(rs.getString(1));
+					confidenceList.add(rs.getInt(2));
+					intervalIdList.add(rs.getInt(3));
+					upList.add(rs.getInt(4));
+					downList.add(rs.getInt(5));
+					
+				}
+	
+				CapacityRequirementValues data = new CapacityRequirementValues();
+				data.setTimestamp(timestampsList.toArray(new String[timestampsList.size()]));
+				data.setConfidence(confidenceList.toArray(new Integer[confidenceList.size()]));
+				data.setIntervalId(intervalIdList.toArray(new Integer[intervalIdList.size()]));
+				data.setUp(upList.toArray(new Integer[upList.size()]));
+				data.setDown(downList.toArray(new Integer[downList.size()]));
+				response.setData(data);
 			}
-
-			CapacityRequirementValues data = new CapacityRequirementValues();
-			data.setTimestamp(timestampsList.toArray(new String[timestampsList.size()]));
-			data.setConfidence(confidenceList.toArray(new Integer[confidenceList.size()]));
-			data.setIntervalId(intervalIdList.toArray(new Integer[intervalIdList.size()]));
-			data.setUp(upList.toArray(new Integer[upList.size()]));
-			data.setDown(downList.toArray(new Integer[downList.size()]));
+			else{
+				
+				ArrayList<CapacityRequirement> list = new ArrayList<CapacityRequirement>();
+				CapacityRequirement capacityRequirement=null;
+				while (rs.next()) {
+					int confidence = rs.getInt(2);
+					int down = rs.getInt(5);
+					int interval = rs.getInt(3);
+					String timestamp = rs.getString(1);
+					int up = rs.getInt(4);
+					capacityRequirement = new CapacityRequirement(timestamp,confidence,interval, up, down);
+					list.add(capacityRequirement);
+				}
+				response.setData(list);
+			}
 			
-			response.setData(data);
+			
+			
+			
 			connection.close();
 		
 		}
@@ -128,6 +158,4 @@ public class RequestCapacityRequirementHandler extends GossRequestHandler{
 		return response;
 	}
 	
-	
-
 }

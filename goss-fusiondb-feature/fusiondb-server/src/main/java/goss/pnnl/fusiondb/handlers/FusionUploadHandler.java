@@ -53,9 +53,13 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
+import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.server.core.GossRequestHandler;
 
 public class FusionUploadHandler extends GossRequestHandler {
+	
+	Connection connection;
+	Statement statement;
 	
 	public UploadResponse handle(Request request) {
 		
@@ -64,18 +68,15 @@ public class FusionUploadHandler extends GossRequestHandler {
 		try{
 			UploadRequest uploadrequest = (UploadRequest)request;
 			
-			Connection connection = FusionDataSource.getInstance().getConnection();
+			connection = FusionDataSource.getInstance().getConnection();
 			System.out.println(connection);
-			Statement statement = connection.createStatement();
+			statement = connection.createStatement();
 			
-			CapacityRequirement data1 = (CapacityRequirement)uploadrequest.getData();
-			String queryString = "replace into capacity_requirements(`timestamp`,confidence,interval_id,up,down) values "+
-									"('"+data1.getTimestamp()+"',"+data1.getConfidence()+","+data1.getIntervalId()+","+data1.getUp()+","+data1.getDown()+")";
-			System.out.println(queryString);
-			int rows =  statement.executeUpdate(queryString);
-			System.out.println(rows);
-			connection.commit();
-			connection.close();
+			if(uploadrequest.getData() instanceof CapacityRequirement)
+				uploadCapacityRequirement((CapacityRequirement)uploadrequest.getData());
+			else if(uploadrequest.getData() instanceof GeneratorData)
+				uploadGeneratorData((GeneratorData)uploadrequest.getData());
+				
 		}
 		catch(Exception e){
 			response = new UploadResponse(false);
@@ -85,6 +86,52 @@ public class FusionUploadHandler extends GossRequestHandler {
 		}
 		response = new UploadResponse(true);
 		return response;
+	}
+	
+	private void uploadCapacityRequirement(CapacityRequirement data) throws Exception{
+		
+		String queryString = "replace into capacity_requirements(`timestamp`,confidence,interval_id,up,down) values "+
+								"('"+data.getTimestamp()+"',"+data.getConfidence()+","+data.getIntervalId()+","+data.getUp()+","+data.getDown()+")";
+		System.out.println(queryString);
+		int rows =  statement.executeUpdate(queryString);
+		System.out.println(rows);
+		if(connection.getAutoCommit()==false)
+			connection.commit();
+		connection.close();
+		
+	}
+	
+	private void uploadGeneratorData(GeneratorData data) throws Exception{
+		
+		String queryString = "replace into generator("
+							+ "busnum,"
+							+ "genmw,"
+							+ "gen_mvr,"
+							+ "gen_mvr_max,"
+							+ "gen_mvr_min,"
+							+ "gen_volt_set,"
+							+ "gen_id,"
+							+ "gen_status,"
+							+ "gen_mw_max,"
+							+ "gen_mw_min) values ("+
+							+data.getBusNum()+","
+							+data.getGenMW()+","
+							+data.getGenMVR()+","
+							+data.getGenMVRMax()+","
+							+data.getGenMVRMin()+","
+							+data.getGenVoltSet()+","
+							+data.getGenId()+",'"
+							+data.getGenStatus()+"',"
+							+data.getGenMWMax()+","
+							+data.getGenMWMin()+")";
+		System.out.println(queryString);
+		int rows =  statement.executeUpdate(queryString);
+		System.out.println(rows);
+		if(connection.getAutoCommit()==false)
+		connection.commit();
+		connection.close();
+		
+		
 	}
 
 }
