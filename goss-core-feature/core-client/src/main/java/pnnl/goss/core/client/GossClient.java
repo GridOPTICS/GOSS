@@ -358,6 +358,26 @@ public class GossClient implements Client{
 		
 	}
 
+	@Override
+	public void publish(String topicName, Serializable data)
+			throws NullPointerException {
+		try{
+			if(data==null)
+				throw new NullPointerException("data cannot be null");
+			Destination destination = null;
+			if(this.protocol.equals(PROTOCOL.OPENWIRE))
+				destination = session.createTopic(topicName);
+			else if(this.protocol.equals(PROTOCOL.STOMP))
+				destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
+
+			clientPublisher.publishTo(destination, data);
+		}
+		catch(JMSException e){
+			log.error(e);
+		}
+		
+	}
+
 
 	
 	
