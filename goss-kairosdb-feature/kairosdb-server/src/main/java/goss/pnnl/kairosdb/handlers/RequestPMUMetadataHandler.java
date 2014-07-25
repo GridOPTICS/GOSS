@@ -1,7 +1,6 @@
 package goss.pnnl.kairosdb.handlers;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.kairosdb.client.HttpClient;
 import org.kairosdb.client.response.GetResponse;
@@ -17,12 +16,13 @@ public class RequestPMUMetadataHandler  extends GossRequestHandler{
 	@Override
 	public Response handle(Request request) {
 		
-		List<String> channels = new ArrayList<String>();
+		ArrayList<String> channels = new ArrayList<String>();
 		DataResponse dataResponse = new DataResponse();
 		
 		try{
 		
-			HttpClient client = new HttpClient("eioc-goss", 8020);
+			//HttpClient client = new HttpClient("eioc-goss", 8020);
+			HttpClient client = new HttpClient("localhost", 8080);
 			GetResponse response = client.getMetricNames();
 	
 			for (String name : response.getResults())

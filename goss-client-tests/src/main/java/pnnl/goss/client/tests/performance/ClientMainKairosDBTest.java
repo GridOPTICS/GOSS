@@ -70,6 +70,17 @@ public class ClientMainKairosDBTest {
 		if(typeOfCommunication.equals("a"))
 			asynchronousTest(noOfClients, noOfChannels, dataPerResponse);
 	}
+	
+	static void simpleTest(int noOfClients, int noOfChannels){
+		
+		GossClient client = new GossClient(ClientAuthHelper.getPMUCredentials());
+		RequestKairosTest request = null;
+		request = new RequestKairosTest("test","flag", 1388570400, 1388570401);
+		DataResponse response = (DataResponse)client.getResponse(request,null);
+		KairosTestData data  = (KairosTestData)(response).getData();
+		client.close();
+			
+	}
 
 	static void synchronousTest(int noOfClients, int noOfChannels){
 		for(int clientNo=1;clientNo<=noOfClients;clientNo++){

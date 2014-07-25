@@ -26,11 +26,12 @@ public class RequestPMUKairosHandler extends GossRequestHandler{
 	public Response handle(Request request) {
 		DataResponse dataResponse =null;
 		RequestPMUKairos request_ = (RequestPMUKairos) request;
-		HttpClient client = new HttpClient("eioc-goss", 8020);
+		//HttpClient client = new HttpClient("eioc-goss", 8020);
+		HttpClient client = new HttpClient("localhost", 8080);
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     	Date startTime = new Date((long)request_.getStartTime()*1000);
     	Date endTime = new Date((long)request_.getEndTime()*1000);
-    	List<Float> values = new ArrayList<Float>();
+    	ArrayList<Float> values = new ArrayList<Float>();
 		try{
 			QueryBuilder builder = QueryBuilder.getInstance();
 	    	builder.setStart(df.parse(df.format(startTime)))
