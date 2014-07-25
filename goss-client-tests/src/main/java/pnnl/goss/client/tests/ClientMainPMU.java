@@ -158,9 +158,11 @@ public class ClientMainPMU {
 		DataResponse response=null;
 		try{
 		
-			//pmu data available for time from 1270105200 to 1270108799
-			long startTime = 1270105200;
-			long endTime = 1270105201;
+			//pmu data available for time from 1270105200 to 1270108799 in gridmw
+			//pmu data available for time from 1388570400 to 1388570401 in kairos sample data store
+			
+			long startTime = 1388570400;
+			long endTime = 1388570401;
 			
 			//1. get all available pmu channels
 			RequestPMUMetaData request = new RequestPMUMetaData();
