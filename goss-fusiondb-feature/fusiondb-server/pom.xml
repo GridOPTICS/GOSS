@@ -78,6 +78,18 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.6.2.201302030002</version>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			
 			<plugin>
 				<groupId>org.apache.felix</groupId>
