@@ -34,73 +34,38 @@
 
 	</modules>
 	<build>
-		<!-- resource required for property replacement on config files -->
 		<resources>
-			<resource>
-	        <directory>src/main/config</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.karaf.tooling</groupId>
-				<artifactId>karaf-maven-plugin</artifactId>
-
-				<configuration>
-					<startLevel>60</startLevel>
-					<aggregateFeatures>true</aggregateFeatures>
-					<resolver>(obr)</resolver>
-					<checkDependencyChange>true</checkDependencyChange>
-					<failOnDependencyChange>false</failOnDependencyChange>
-					<logDependencyChanges>true</logDependencyChanges>
-					<overwriteChangedDependencies>true</overwriteChangedDependencies>
-				</configuration>
-				<executions>
-					<execution>
-						<id>process-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>install-kars</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>features-generate-descriptor</goal>
-						</goals>
-						<configuration>
-							<addBundlesToPrimaryFeature>false</addBundlesToPrimaryFeature>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>filter</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<id>attach-artifacts</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<configuration>
-							<artifacts>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <executions>
+             <execution>
+                <id>filter</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+             </execution>
+          </executions>
+        </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
 								<artifact>
 									<file>target/classes/features/features.xml</file>
 									<classifier>features</classifier>
@@ -149,27 +114,10 @@
                                 -->
 							</artifacts>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.4.0</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<!-- Assumes import of all packages when the bundle is loaded. Overwrite 
-							in dependent poms for different behaviour. -->
-						<Import-Package>
-							*
-						</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 	</build>
 	<dependencyManagement>
 		<dependencies>
