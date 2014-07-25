@@ -88,7 +88,7 @@
 		<module>goss-tool-sharedperspective-feature</module>
 		<module>goss-kairosdb-feature</module>
 		<!--<module>goss-hpc-server</module> -->
-		<module>goss-fusiondb-feature</module>
+		<module>goss-fusiondb</module>
 		<module>goss-dsa-feature</module>
 		<module>goss-tool-mdart-feature</module>
 
@@ -418,15 +418,18 @@
 						<target>1.7</target>
 					</configuration>
 				</plugin>
-				
+                <plugin>
+	               <groupId>org.codehaus.mojo</groupId>
+	               <artifactId>properties-maven-plugin</artifactId>
+	               <version>1.0-alpha-2</version>
+                </plugin>				
 			</plugins>
 		</pluginManagement>
-		
+		<!--
 		<plugins>
 			<plugin>
 	               <groupId>org.codehaus.mojo</groupId>
 	               <artifactId>properties-maven-plugin</artifactId>
-	               <version>1.0-alpha-2</version>
 	               <executions>
 	                   <execution>
 	                       <id>read-properties</id>
@@ -434,8 +437,9 @@
 	                       <goals>
 	                           <goal>read-project-properties</goal>
 	                       </goals>
-	                       <configuration>
+	                       <configuration>-->
 	                       <!-- TODO add release profile and use file in git if release, set property up above -->
+                           <!--
 			                   <files>
 			                       <file>${global.properties.path}</file>
 			                   </files>
@@ -443,7 +447,7 @@
 	                   </execution>
 	               </executions>
 	     	</plugin>
-	     </plugins>
+	     </plugins>-->
 	</build>
 
 </project>

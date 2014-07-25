@@ -4,41 +4,17 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>goss-core-security-utils</artifactId>
+	<artifactId>goss-core-security</artifactId>
 	<packaging>bundle</packaging>
-	<name>GOSS Security Utils</name>
+	<name>GOSS Core Security Bundle</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-core-feature</artifactId>
+		<artifactId>goss-core-parent</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
-		<slf4j.version>1.7.5</slf4j.version>
-	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.karaf.jaas</groupId>
-			<artifactId>org.apache.karaf.jaas.modules</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.karaf.jaas</groupId>
-			<artifactId>org.apache.karaf.jaas.boot</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-jaas</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-all</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
@@ -48,8 +24,24 @@
 			<artifactId>org.osgi.compendium</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-   			<artifactId>spring-beans</artifactId>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-jaas</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -58,23 +50,25 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${maven-bundle-plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator>pnnl.goss.security.util.GossSecurityUtilActivator</Bundle-Activator>
+						<Bundle-Activator>pnnl.goss.security.core.GossSecurityActivator</Bundle-Activator>
 						<Export-Package>
-							pnnl.goss.security.util,
-							pnnl.goss.security.broker
+							pnnl.goss.security.core,
+							pnnl.goss.security.core.authorization,
+							pnnl.goss.security.core.authorization.basic
 						</Export-Package>
 						<Import-Package>
+							com.mysql.jdbc;version=5.1.28,
 							*
 						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
+
 	</build>
 </project>

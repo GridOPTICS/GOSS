@@ -13,6 +13,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <properties>
         <karaf.version>3.0.1</karaf.version>
         <goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
+        <goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
     </properties>
 
 	<build>
@@ -73,7 +74,10 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <!--<descriptor>http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.ipojo.features/1.12.0/org.apache.felix.ipojo.features-1.12.0.xml</descriptor>-->
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/5.9.0/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/2.7.10/xml/features</descriptor>
+                                <!-- this will change to the other way -->
                                 <descriptor>mvn:pnnl.goss/goss-core-feature/${goss-core.version}/xml/features</descriptor>                                
+                                <!-- This is the other way! -->
+                                <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor>
 							</descriptors>
 							
 							<features>
@@ -91,7 +95,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>activemq</feature>
                                 <feature>cxf</feature>
                                 <feature>goss-ipojo-wrapper</feature>
-                                <feature>goss-core-feature</feature>
+                                <feature>goss-core-features</feature>
+                                <feature>goss-fusiondb-features</feature>
 							</features>
 							<repository>${basedir}/target/assembly/system</repository>
 						</configuration>
@@ -176,10 +181,18 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         </dependency>
         <dependency>
             <groupId>pnnl.goss</groupId>
-            <artifactId>goss-core-feature</artifactId>
+            <artifactId>goss-core-features</artifactId>
             <classifier>features</classifier>
             <scope>runtime</scope>
             <version>${goss-core.version}</version>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>pnnl.goss</groupId>
+            <artifactId>goss-fusiondb-features</artifactId>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+            <version>${goss-fusiondb.version}</version>
             <type>xml</type>
         </dependency>
         <dependency>
