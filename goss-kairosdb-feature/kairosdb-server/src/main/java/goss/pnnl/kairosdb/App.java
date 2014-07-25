@@ -52,8 +52,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import org.kairosdb.client.HttpClient;
 import org.kairosdb.client.builder.DataPoint;
@@ -69,8 +71,9 @@ public class App
 {
 	public static void main(String[] args) throws IOException, URISyntaxException, ParseException{
 		//testPush();
-		transfer();
+		//transfer();
 		//query();
+		pushSampleData();
 	}
 
 
@@ -89,7 +92,12 @@ public class App
 	public static void transfer() throws URISyntaxException, IOException
 	{
 		try{
-
+			
+			//frequency -  
+			//phase angle
+			//magnitude
+			
+			
 			//get gridmw instance
 			GridMW gridMW = GridMW.getInstance();
 			HttpClient client = new HttpClient("eioc-goss", 8020);
@@ -102,11 +110,6 @@ public class App
 			String query;
 			ResultSet rs;
 			String metric_name;
-			//439
-			//443
-			//446 : 
-			//450
-			//456
 			boolean stop = false;
 			for(int timeSeriesId = 510; timeSeriesId<=555; timeSeriesId++ ){
 				
@@ -197,6 +200,76 @@ public class App
 
 
 		client1.shutdown();
+
+	}
+	
+	public static void pushSampleData() throws URISyntaxException, IOException
+	{
+		try{
+			
+			//frequency -  
+			//phase angle
+			//magnitude
+			
+			HttpClient client = new HttpClient("localhost", 8080);
+			client.setRetryCount(3);
+			String metric_name = "pmu2.phasor1.mod";
+			long startTime = 1388570400;
+			long endTime = 1388570401;
+			long finalEndTime = 1388574000;
+			int count = (int) (endTime - startTime ) * 30;
+
+			float[] data  = new float[count];
+			Random random = new Random();
+			DecimalFormat decimalFormat = new DecimalFormat("#.##");
+			float min = 0.9f;
+			float max = 1.1f;
+			//.9-1.1
+			for(int i=0; i<count;i++){
+				data[i] = Float.valueOf(decimalFormat.format(min + (max - min) * random.nextDouble()));
+			}
+			
+			while(endTime<=finalEndTime){
+
+					startTime = startTime*1000;
+					endTime = endTime*1000;
+ 
+					MetricBuilder builder = MetricBuilder.getInstance();
+					builder.addMetric(metric_name) 
+					.addTag("status", "raw");
+
+					//System.out.println("Adding 1 = "+startTime+" : "+data[0]);
+					builder.getMetrics().get(0).addDataPoint(startTime, data[0]);
+					for(int i=1;i<=28;i++){
+						startTime = startTime+35;
+						int j=i+1;
+						//System.out.println("Adding "+j+"= "+startTime+" : "+data[i]);
+						builder.getMetrics().get(0).addDataPoint(startTime,data[i]);
+					}
+					//System.out.println("Adding 30 = "+endTime+" : "+data[data.length-1]);
+					builder.getMetrics().get(0).addDataPoint(endTime, data[data.length-1]);
+					
+
+					Response response = client.pushMetrics(builder);
+					if(response.getStatusCode()!=204){
+						System.out.println("\n"+response.getStatusCode()+" for "+metric_name+" at startTime  = "+startTime+" endTime = "+endTime+" and metric = "+metric_name+" for value = "+ data[0]);
+						break;
+					}
+					else{
+						DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+				    	Date startDate = new Date((long)startTime);
+				    	System.out.println("Done for "+metric_name+" , "+ df.format(startDate));
+				    	startTime = endTime/1000;
+				    	endTime = startTime+1;
+					}
+
+				}
+			
+			client.shutdown();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 
 	}
 
