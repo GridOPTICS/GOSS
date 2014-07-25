@@ -12,10 +12,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<packaging>karaf-assembly</packaging>	
     <properties>
         <karaf.version>3.0.1</karaf.version>
-        <goss-core.version>0.1.3-SNAPSHOT</goss-core.version>
+        <goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
     </properties>
 
 	<build>
+        <outputDirectory>target/assembly</outputDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -68,9 +69,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>							
                                 <descriptor>mvn:org.apache.karaf.features/enterprise/${karaf.version}/xml/features</descriptor>
+                                <!--<descriptor>mvn:org.apache.felix/org.apache.felix.ipojo.features/1.12.0/xml/features</descriptor> -->
+                                <!--<descriptor>http://repo1.maven.org/maven2/org/apache/felix/org.apache.felix.ipojo.features/1.12.0/org.apache.felix.ipojo.features-1.12.0.xml</descriptor>-->
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/5.9.0/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/2.7.10/xml/features</descriptor>
-                                <descriptor>mvn:pnnl.goss/goss-core-feature/${goss-core.version}/xml/features</descriptor>
+                                <descriptor>mvn:pnnl.goss/goss-core-feature/${goss-core.version}/xml/features</descriptor>                                
 							</descriptors>
 							
 							<features>
@@ -87,6 +90,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 								<feature>jdbc</feature>
                                 <feature>activemq</feature>
                                 <feature>cxf</feature>
+                                <feature>goss-ipojo-wrapper</feature>
                                 <feature>goss-core-feature</feature>
 							</features>
 							<repository>${basedir}/target/assembly/system</repository>
@@ -105,14 +109,16 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 						<feature>kar</feature>
 						<feature>http</feature>
 						<feature>jdbc</feature>
-                        <feature>goss-core-feature</feature>
+                        <feature>goss-ipojo-wrapper</feature>
+                        <!-- <feature>goss-core-feature</feature>-->
 					</bootFeatures>
 					<installedFeatures>
-                        <feature>activemq</feature>
-                        <feature>cxf</feature>
 						<feature>wrapper</feature>
                         <feature>http</feature>
-                        
+                        <feature>jdbc</feature>
+                        <feature>goss-ipojo-wrapper</feature>
+                        <feature>activemq</feature>
+                        <feature>cxf</feature>
 					</installedFeatures>
 				</configuration>
 			</plugin>
@@ -175,6 +181,13 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <scope>runtime</scope>
             <version>${goss-core.version}</version>
             <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.features</artifactId>
+            <version>1.12.0</version>
+            <scope>runtime</scope>
+			<type>xml</type>
         </dependency>
 	</dependencies>
 
