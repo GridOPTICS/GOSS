@@ -6,8 +6,7 @@
 	<artifactId>goss-core-parent</artifactId>
 	<packaging>pom</packaging>
 
-	<name>GOSS Core</name>
-	<version>0.1.4-SNAPSHOT</version>
+	<name>GOSS Core Parent</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
@@ -30,6 +29,7 @@
 		<module>goss-security</module>
 		<module>goss-core-server</module>
 		<module>goss-core-client</module>
+		<module>goss-core-features</module>
 
 	</modules>
 	<dependencyManagement>
