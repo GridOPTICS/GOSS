@@ -51,11 +51,17 @@ public class RequestCapacityRequirement extends Request {
 	private static final long serialVersionUID = -4814639638753423247L;
 	public enum Parameter {INTERVAL,CONFIDENCE};
 	String timestamp;
+	String endTimestamp;
 	Parameter parameter=null;
 	int value=0;
 	
 	public RequestCapacityRequirement(String timestamp){
 		this.timestamp = timestamp;
+	}
+	
+	public RequestCapacityRequirement(String timestamp, String endTimestamp){
+		this.timestamp = timestamp;
+		this.endTimestamp = endTimestamp;
 	}
 	
 	public RequestCapacityRequirement(String timestamp, Parameter parameter, int value){
@@ -66,6 +72,10 @@ public class RequestCapacityRequirement extends Request {
 	
 	public String getTimestamp() {
 		return timestamp;
+	}
+	
+	public String getEndTimestamp() {
+		return endTimestamp;
 	}
 
 	public int getValue() {

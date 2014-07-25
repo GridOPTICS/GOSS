@@ -42,56 +42,53 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.fusiondb.requests;
+package pnnl.goss.fusiondb.datamodel;
 
-import pnnl.goss.core.Request;
+import java.io.Serializable;
 
-public class RequestRTEDSchedule extends Request {
-	
-	private static final long serialVersionUID = 6683972527896293428L;
-	
-	public String startTimestamp;
-	public String endTimeStamp;
-	public int interval;
-	
-	public RequestRTEDSchedule(String startTimestamp){
-		this.startTimestamp = startTimestamp;
-	}
-	
-	public RequestRTEDSchedule(String startTimestamp, int interval, String endTiemstamp){
-		this.startTimestamp = startTimestamp;
-		this.endTimeStamp = endTiemstamp;
-		this.interval = interval;
-	}
-	
-	public RequestRTEDSchedule(String startTimestamp, String endTiemstamp){
-		this.startTimestamp = startTimestamp;
-		this.endTimeStamp = endTiemstamp;
-	}
-	
-	
-	public String getStartTimestamp() {
-		return startTimestamp;
-	}
-	public void setStartTimestamp(String startTimestamp) {
-		this.startTimestamp = startTimestamp;
-	}
-	public String getEndTimeStamp() {
-		return endTimeStamp;
-	}
-	public void setEndTimeStamp(String endTimeStamp) {
-		this.endTimeStamp = endTimeStamp;
-	}
 
-	public int getInterval() {
+public class RTEDScheduleData implements Serializable{
+	
+	private static final long serialVersionUID = 5132994958726963316L;
+	
+	String timestamp;
+	Integer interval;
+	Double genValue;
+	Double minValue;
+	Double maxValue;
+	public String getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+	public Integer getInterval() {
 		return interval;
 	}
-
-	public void setInterval(int interval) {
+	public void setInterval(Integer interval) {
 		this.interval = interval;
+	}
+	public Double getGenValue() {
+		return genValue;
+	}
+	public void setGenValue(Double genValue) {
+		this.genValue = genValue;
+	}
+	public Double getMinValue() {
+		return minValue;
+	}
+	public void setMinValue(Double minValue) {
+		this.minValue = minValue;
+	}
+	public Double getMaxValue() {
+		return maxValue;
+	}
+	public void setMaxValue(Double maxValue) {
+		this.maxValue = maxValue;
 	}
 	
 	
-
+	
+	
 
 }

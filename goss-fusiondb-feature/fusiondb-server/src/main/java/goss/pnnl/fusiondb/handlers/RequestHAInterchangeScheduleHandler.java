@@ -46,13 +46,13 @@ package goss.pnnl.fusiondb.handlers;
 
 import goss.pnnl.fusiondb.datasources.FusionDataSource;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.HAInterchangeSchedule;
@@ -63,7 +63,7 @@ public class RequestHAInterchangeScheduleHandler extends GossRequestHandler{
 	
 	public DataResponse handle(Request request) {
 
-		Data data = null;
+		Serializable data = null;
 
 		try {
 			

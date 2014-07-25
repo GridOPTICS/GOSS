@@ -51,7 +51,6 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
-import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
@@ -61,12 +60,14 @@ import pnnl.goss.fusiondb.datamodel.ActualTotal;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.datamodel.ForecastTotal;
+import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.fusiondb.datamodel.HAInterchangeSchedule;
 import pnnl.goss.fusiondb.datamodel.RTEDSchedule;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
+import pnnl.goss.fusiondb.requests.RequestGeneratorData;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
 
@@ -84,10 +85,11 @@ public class ClientMainFusion {
 			//getActualTotal();
 			//getForecastTotal();
 			//getHAInterchageSchedule();
-			getRTEDSchedule();
+			//getRTEDSchedule();
 			//uploadCapacityRequirements();
 			//requestCapacityRequirement();
-			
+			uploadGeneratorData();
+			requestGeneratorData();
 			
 			GossResponseEvent event = new GossResponseEvent() {
 				
@@ -166,18 +168,17 @@ public class ClientMainFusion {
 	
 	static void uploadCapacityRequirements() throws JMSException,IllegalStateException{
 		
-		UploadRequest request = new UploadRequest();
 		String timestamp = "2013-1-21 01:01:01";
 		int confidence =200;
 		int intervalId=1;
 		int up=1;
 		int down=1;
 		CapacityRequirement data = new CapacityRequirement(timestamp,confidence,intervalId,up,down);
-		request.setData(data);
+		UploadRequest request = new UploadRequest(data, "CapacityRequirement");
 		UploadResponse response  = (UploadResponse)client.getResponse(request);
 		
-		if(response.isSuccess())
-				client.publish("/topic/goss/fusion/capacity", data,RESPONSE_FORMAT.JSON);
+		/*if(response.isSuccess())
+				client.publish("/topic/goss/fusion/capacity", data,RESPONSE_FORMAT.JSON);*/
 		if(response.getMessage()!=null)
 			System.out.println(response.getMessage());
 		
@@ -206,6 +207,36 @@ public class ClientMainFusion {
 			System.out.println(data.getTimestamp()[0]);
 		}
 	}
+	
+	static void uploadGeneratorData() throws JMSException,IllegalStateException{
+		
+		// GeneratorData(busNum, genMW, genMVR, genMVRMax, genMVRMin, genVoltSet, genId, genStatus, genMWMax, genMWMin)
+		GeneratorData data = new GeneratorData(-1, 0.0, 0.0, 0.0, 0.0, 0.0, "-1", "Closed", 0.0, 0.0);
+		UploadRequest request = new UploadRequest(data, "fusion_GeneratorData");
+		UploadResponse response  = (UploadResponse)client.getResponse(request);
+		if(response.getMessage()!=null)
+			System.out.println(response.getMessage());
+		
+	}
+	
+	static void requestGeneratorData() throws JMSException,IllegalStateException{
+		
+		//RequestGeneratorData(busNum, genId)
+		RequestGeneratorData request = new RequestGeneratorData(-1, -1);
+		DataResponse response  = (DataResponse)client.getResponse(request);
+		GeneratorData data = (GeneratorData)response.getData();
+		System.out.println(data.getBusNum());
+		data.getGenId();
+		data.getGenMVR();
+		data.getGenMVRMax();
+		data.getGenMVRMin();
+		data.getGenMW();
+		data.getGenMWMax();
+		data.getGenMWMin();
+		data.getGenStatus();
+	}
+	
+	
 
 }
 

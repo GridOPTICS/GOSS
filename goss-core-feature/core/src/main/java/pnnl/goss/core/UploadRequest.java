@@ -52,9 +52,6 @@ public class UploadRequest extends Request implements Serializable {
 	Serializable data;
 	String dataType;
 	
-	public UploadRequest(){
-	}
-	
 	public UploadRequest(Serializable data, String dataType){
 		this.data = data;
 		this.dataType = dataType;

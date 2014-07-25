@@ -42,56 +42,39 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.fusiondb.requests;
+package pnnl.goss.fusiondb.datamodel;
 
-import pnnl.goss.core.Request;
+import java.io.Serializable;
 
-public class RequestRTEDSchedule extends Request {
-	
-	private static final long serialVersionUID = 6683972527896293428L;
-	
-	public String startTimestamp;
-	public String endTimeStamp;
-	public int interval;
-	
-	public RequestRTEDSchedule(String startTimestamp){
-		this.startTimestamp = startTimestamp;
-	}
-	
-	public RequestRTEDSchedule(String startTimestamp, int interval, String endTiemstamp){
-		this.startTimestamp = startTimestamp;
-		this.endTimeStamp = endTiemstamp;
-		this.interval = interval;
-	}
-	
-	public RequestRTEDSchedule(String startTimestamp, String endTiemstamp){
-		this.startTimestamp = startTimestamp;
-		this.endTimeStamp = endTiemstamp;
-	}
+public class ActualTotalData implements Serializable {
 	
 	
-	public String getStartTimestamp() {
-		return startTimestamp;
+	private static final long serialVersionUID = -4578077260007053920L;
+	
+	String type;
+	String timestamp;
+	Double value;
+	
+	public String getType() {
+		return type;
 	}
-	public void setStartTimestamp(String startTimestamp) {
-		this.startTimestamp = startTimestamp;
+	public void setType(String type) {
+		this.type = type;
 	}
-	public String getEndTimeStamp() {
-		return endTimeStamp;
+	public Double getValue() {
+		return value;
 	}
-	public void setEndTimeStamp(String endTimeStamp) {
-		this.endTimeStamp = endTimeStamp;
+	public void setValue(Double value) {
+		this.value = value;
 	}
-
-	public int getInterval() {
-		return interval;
+	public String getTimestamp() {
+		return timestamp;
 	}
-
-	public void setInterval(int interval) {
-		this.interval = interval;
+	public void setTimestamps(String timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 	
-
+	
 
 }

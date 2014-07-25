@@ -49,6 +49,7 @@ import goss.pnnl.fusiondb.handlers.FusionUploadHandler;
 import goss.pnnl.fusiondb.handlers.RequestActualTotalHandler;
 import goss.pnnl.fusiondb.handlers.RequestCapacityRequirementHandler;
 import goss.pnnl.fusiondb.handlers.RequestForecastTotalHandler;
+import goss.pnnl.fusiondb.handlers.RequestGeneratorDataHandler;
 import goss.pnnl.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
 import goss.pnnl.fusiondb.handlers.RequestRTEDScheduleHandler;
 import goss.pnnl.kairosdb.handlers.RequestKairosTestHandler;
@@ -62,6 +63,7 @@ import pnnl.goss.core.UploadRequest;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
+import pnnl.goss.fusiondb.requests.RequestGeneratorData;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
 //import pnnl.goss.fusiondb.requests.RequestUploadTest;
@@ -180,7 +182,10 @@ public class ServerMain {
 		handlers.addHandlerMapping(RequestHAInterchangeSchedule.class, RequestHAInterchangeScheduleHandler.class);
 		handlers.addHandlerMapping(RequestRTEDSchedule.class, RequestRTEDScheduleHandler.class);		
 		handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
-		handlers.addHandlerMapping(UploadRequest.class, FusionUploadHandler.class);
+		handlers.addHandlerMapping(RequestGeneratorData.class, RequestGeneratorDataHandler.class);
+		handlers.addUploadHandlerMapping("CapacityRequirement", FusionUploadHandler.class);
+		handlers.addUploadHandlerMapping("fusion_GeneratorData", FusionUploadHandler.class);
+		
 		
 		//-------------------------------------Fusion Security----------------------------------------------
 		handlers.addSecurityMapping(RequestActualTotal.class, AccessControlHandlerAllowAll.class);
@@ -189,8 +194,7 @@ public class ServerMain {
 		handlers.addSecurityMapping(RequestHAInterchangeSchedule.class, AccessControlHandlerAllowAll.class);
 		handlers.addSecurityMapping(RequestRTEDSchedule.class, AccessControlHandlerAllowAll.class);		
 		handlers.addSecurityMapping(RequestPowergrid.class, AccessControlHandlerAllowAll.class);
-		
-				
+		handlers.addSecurityMapping(RequestGeneratorData.class, AccessControlHandlerAllowAll.class);
 		
 		//-------------------------------------MDART----------------------------------------------
 		handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
@@ -203,10 +207,6 @@ public class ServerMain {
 		String[] arguments = new String[] {};
 		//Start aggregator and generator listening so they can be started by web ui
 	    
-		
-		
-		
-		
 		try {
 			Dictionary config = Utilities.loadProperties(powergridDatasourceConfig);
 
