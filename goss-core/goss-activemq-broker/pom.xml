@@ -9,7 +9,7 @@
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-core-feature</artifactId>
+		<artifactId>goss-core-parent</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
 	</parent>
 
