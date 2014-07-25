@@ -49,6 +49,7 @@ import javax.jms.JMSException;
 
 import org.apache.http.auth.UsernamePasswordCredentials;
 
+import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
@@ -82,16 +83,16 @@ public class ClientMainFusion {
 	public static void main(String[] args) {
 		try{
 			
-			//getActualTotal();
-			//getForecastTotal();
-			//getHAInterchageSchedule();
-			//getRTEDSchedule();
-			//uploadCapacityRequirements();
-			//requestCapacityRequirement();
+			getActualTotal();
+			getForecastTotal();
+			getHAInterchageSchedule();
+			getRTEDSchedule();
+			uploadCapacityRequirements();
+			requestCapacityRequirement();
 			uploadGeneratorData();
-			requestGeneratorData();
+			//requestGeneratorData();
 			
-			GossResponseEvent event = new GossResponseEvent() {
+		/*	GossResponseEvent event = new GossResponseEvent() {
 				
 				@Override
 				public void onMessage(Response response) {
@@ -103,7 +104,7 @@ public class ClientMainFusion {
 			client.subscribeTo("FUSION/RESULTS", event);
 			
 			client.publish("FUSION/RESULTS", "This is fusion test result");
-			
+			*/
 			
 			
 			
@@ -121,6 +122,12 @@ public class ClientMainFusion {
 		for(int i=0; i<10;i++){
 		Request request = new RequestActualTotal(RequestActualTotal.Type.SOLAR, startTimestamp, endTimestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
+		
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
+		
 		ActualTotal data = (ActualTotal)response.getData();
 		System.out.println("Solar = "+ data.getValues()[0]);
 		
@@ -128,11 +135,13 @@ public class ClientMainFusion {
 		response = (DataResponse)client.getResponse(request);
 		data = (ActualTotal)response.getData();
 		
-		if(data!=null)
-			//System.out.println("Wind = "+ data.getValues()[0]);
+		if(data!=null){
+			System.out.println("Wind = "+ data.getValues()[0]);
 			data=null;
+		}
 		else
 			System.out.println("it's null"+i);
+		}
 		}
 		
 	}
@@ -141,29 +150,45 @@ public class ClientMainFusion {
 	static void getForecastTotal() throws JMSException{
 		Request request = new RequestForecastTotal(RequestForecastTotal.Type.LOAD, startTimestamp, interval, endTimestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
+		
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
 		ForecastTotal data = (ForecastTotal)response.getData();
 		System.out.println(data.getTimestamps().length);
 		System.out.println(data.getValues().length);
 		System.out.println(data.getIntervals().length);
+		}
 	}
 	
 	static void getHAInterchageSchedule() throws JMSException{
 		Request request = new RequestHAInterchangeSchedule(startTimestamp, endTimestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
 		HAInterchangeSchedule data = (HAInterchangeSchedule)response.getData();
 		System.out.println(data.getTimestamps().length);
 		System.out.println(data.getValues().length);
+		}
 	}
 	
 	static void getRTEDSchedule() throws JMSException{
 		Request request = new RequestRTEDSchedule(startTimestamp, interval,endTimestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
 		RTEDSchedule data = (RTEDSchedule)response.getData();
 		System.out.println(data.getTimestamps()[0]);
 		System.out.println(data.getIntervals()[0]);
 		System.out.println(data.getGenValues()[0]);
 		System.out.println(data.getMaxValues()[0]);
 		System.out.println(data.getMinValues()[0]);
+		}
 	}
 	
 	static void uploadCapacityRequirements() throws JMSException,IllegalStateException{
@@ -179,6 +204,7 @@ public class ClientMainFusion {
 		
 		/*if(response.isSuccess())
 				client.publish("/topic/goss/fusion/capacity", data,RESPONSE_FORMAT.JSON);*/
+		System.out.println(response.getMessage());
 		if(response.getMessage()!=null)
 			System.out.println(response.getMessage());
 		
@@ -188,23 +214,39 @@ public class ClientMainFusion {
 		String timestamp = "2013-1-21 01:01:01";
 		RequestCapacityRequirement request = new RequestCapacityRequirement(timestamp);
 		DataResponse response = (DataResponse)client.getResponse(request);
-		CapacityRequirementValues data  = (CapacityRequirementValues)response.getData();
-		if(data.getTimestamp().length>0){
-			System.out.println(data.getTimestamp()[0]);
-		}
+		CapacityRequirementValues data =null;
 		
-		request = new RequestCapacityRequirement(timestamp,Parameter.CONFIDENCE,95);
-		response = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
 		data  = (CapacityRequirementValues)response.getData();
 		if(data.getTimestamp().length>0){
 			System.out.println(data.getTimestamp()[0]);
+		}
+		}
+		request = new RequestCapacityRequirement(timestamp,Parameter.CONFIDENCE,95);
+		response = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
+		data  = (CapacityRequirementValues)response.getData();
+		if(data.getTimestamp().length>0){
+			System.out.println(data.getTimestamp()[0]);
+		}
 		}
 		
 		request = new RequestCapacityRequirement(timestamp,Parameter.INTERVAL,1);
 		response = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
 		data  = (CapacityRequirementValues)response.getData();
 		if(data.getTimestamp().length>0){
 			System.out.println(data.getTimestamp()[0]);
+		}
 		}
 	}
 	
@@ -224,6 +266,10 @@ public class ClientMainFusion {
 		//RequestGeneratorData(busNum, genId)
 		RequestGeneratorData request = new RequestGeneratorData(-1, -1);
 		DataResponse response  = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			((DataError)response.getData()).getMessage();
+		}
+		else{
 		GeneratorData data = (GeneratorData)response.getData();
 		System.out.println(data.getBusNum());
 		data.getGenId();
@@ -234,6 +280,7 @@ public class ClientMainFusion {
 		data.getGenMWMax();
 		data.getGenMWMin();
 		data.getGenStatus();
+		}
 	}
 	
 	
