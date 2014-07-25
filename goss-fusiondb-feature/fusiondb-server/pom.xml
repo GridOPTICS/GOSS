@@ -85,8 +85,8 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							pnnl.goss.fusiondb.datasources;version=${project.version},
-							pnnl.goss.fusiondb.handlers;version=${project.version}
+							goss.pnnl.fusiondb.datasources;version=${project.version},
+							goss.pnnl.fusiondb.handlers;version=${project.version}
 						</Export-Package>
 						<Import-Package>
 							*
