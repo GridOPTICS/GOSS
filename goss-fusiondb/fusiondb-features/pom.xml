@@ -49,7 +49,7 @@
                             <artifacts>
                                 <artifact>
                                     <file>target/classes/features/features.xml</file>
-                                    <classifier>feature</classifier>
+                                    <classifier>features</classifier>
                                     <type>xml</type>
                                 </artifact>
                             </artifacts>

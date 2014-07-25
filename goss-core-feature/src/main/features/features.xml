@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="goss-core-${project.version}" >
+
+    <feature name="goss-ipojo-wrapper" version="1.12.0">
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/1.12.0</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/1.12.0</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/1.12.0</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.composite/1.12.0</bundle>
+        
+        <!--<bundle>mvn:org.apache.felix/org.apache.felix.ipojo.webconsole/1.7.0</bundle>-->
+    </feature>
 
     <feature name="goss-core-feature" version="${pom.version}">
 <!--     	<config name="pnnl.goss.core.server"> -->
@@ -45,7 +54,7 @@
 			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/server-config
 		</configfile> -->
 
-
+        <feature>goss-ipojo-wrapper</feature>
     	<feature version="${cxf.version}">cxf</feature>
     	<!-- Installs all the necessary activemq info for the broker and web-console -->
 <!-- 		<feature version="${pom.version}">goss-activemq-broker-feature</feature> -->

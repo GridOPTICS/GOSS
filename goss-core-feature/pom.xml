@@ -102,7 +102,7 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>target/classes/feature/feature.xml</file>
+									<file>target/classes/features/features.xml</file>
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
