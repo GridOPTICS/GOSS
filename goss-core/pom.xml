@@ -15,7 +15,6 @@
 	</parent>
 
 	<modules>
-		<module>goss-activemq-broker</module>
 		<module>goss-core</module>
 		<module>goss-security-utils</module>
 		<module>goss-security</module>
