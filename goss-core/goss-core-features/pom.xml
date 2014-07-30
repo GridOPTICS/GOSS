@@ -49,6 +49,21 @@
                                     <classifier>features</classifier>
                                     <type>xml</type>
                                 </artifact>
+                                <artifact>
+                                	<file>target/classes/pnnl-goss-activemq-broker-nosecurity.xml</file>
+                                	<classifier>goss-broker-nosecurity</classifier>
+                                	<type>xml</type>
+                                </artifact>
+                                <artifact>
+                                	<file>target/classes/pnnl-goss-activemq-broker.xml</file>
+                                	<classifier>goss-broker</classifier>
+                                	<type>xml</type>
+                                </artifact>
+                                <artifact>
+                                	<file>target/classes/pnnl.goss.activemq.server-default.cfg</file>
+                                	<classifier>goss-broker-config</classifier>
+                                	<type>cfg</type>
+                                </artifact>
                             </artifacts>
                         </configuration>
                     </execution>

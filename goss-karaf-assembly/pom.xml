@@ -115,7 +115,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 						<feature>jdbc</feature>
                         <feature>goss-ipojo</feature>
                         <feature>goss-activemq-broker-nosecurity</feature>
-                        
+                        <feature>goss-core-feature</feature>
 					</bootFeatures>
 					<installedFeatures>
 						<feature>wrapper</feature>
@@ -124,7 +124,6 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                         <feature>goss-ipojo</feature>
                         <feature>activemq</feature>
                         <feature>cxf</feature>
-                        <feature>goss-core-feature</feature>
 					</installedFeatures>
 				</configuration>
 			</plugin>
