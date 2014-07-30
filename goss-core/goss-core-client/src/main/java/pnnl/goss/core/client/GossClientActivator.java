@@ -71,7 +71,7 @@ public class GossClientActivator implements BundleActivator, ManagedService {
 	 * The configuration file in $SMX_HOME/etc will be CONFIG_PID.cfg
 	 * </p>
 	 */
-	public static final String CONFIG_PID = "pnnl.goss.core.client";
+	public static final String CONFIG_PID = "pnnl.goss.core";
 
 	
     public void start(BundleContext context) {

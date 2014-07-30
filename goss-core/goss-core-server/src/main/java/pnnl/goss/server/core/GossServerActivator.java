@@ -66,7 +66,7 @@ public class GossServerActivator {
 	private static final Logger log = LoggerFactory.getLogger(GossServerActivator.class);
 //	private static BundleContext bundleContext;
 	
-	protected static final String CONFIG_PID = "pnnl.goss.core.server";
+	protected static final String CONFIG_PID = "pnnl.goss.core";
 	
 
 	private GridOpticsServer gossServer;
