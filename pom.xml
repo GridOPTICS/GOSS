@@ -79,7 +79,8 @@
 	</properties>
 
 	<modules>
-		<module>goss-core-feature</module>
+		<module>goss-core</module>
+        <module>goss-fusiondb</module>
 		<module>goss-powergrid-feature</module>
 		<module>goss-gridmw-feature</module>
 		<module>goss-tool-gridpack-feature</module>
@@ -88,7 +89,7 @@
 		<module>goss-tool-sharedperspective-feature</module>
 		<module>goss-kairosdb-feature</module>
 		<!--<module>goss-hpc-server</module> -->
-		<module>goss-fusiondb</module>
+		
 		<module>goss-dsa-feature</module>
 		<module>goss-tool-mdart-feature</module>
 
@@ -294,12 +295,17 @@
 				<version>${activemq.version}</version>
 			</dependency>
 
-			<!-- Servicemix Commons -->
+			<!-- Servicemix  -->
 			<dependency>
 				<groupId>org.apache.servicemix.bundles</groupId>
 				<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
 				<version>${servicemix-commons-io.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.servicemix.bundles</groupId>
+				<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
+				<version>${servicemix-xstream.version}</version>
+		    </dependency>
 
 			<!-- http -->
 			<dependency>

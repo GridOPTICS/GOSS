@@ -75,7 +75,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/5.9.0/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/2.7.10/xml/features</descriptor>
                                 <!-- this will change to the other way -->
-                                <descriptor>mvn:pnnl.goss/goss-core-feature/${goss-core.version}/xml/features</descriptor>                                
+                                <descriptor>mvn:pnnl.goss/goss-core-features/${goss-core.version}/xml/features</descriptor>                                
                                 <!-- This is the other way! -->
                                 <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor>
 							</descriptors>
@@ -114,16 +114,18 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 						<feature>kar</feature>
 						<feature>http</feature>
 						<feature>jdbc</feature>
-                        <feature>goss-ipojo-wrapper</feature>
-                        <!-- <feature>goss-core-feature</feature>-->
+                        <feature>goss-ipojo</feature>
+                        <feature>goss-activemq-broker-nosecurity</feature>
+                        
 					</bootFeatures>
 					<installedFeatures>
 						<feature>wrapper</feature>
                         <feature>http</feature>
                         <feature>jdbc</feature>
-                        <feature>goss-ipojo-wrapper</feature>
+                        <feature>goss-ipojo</feature>
                         <feature>activemq</feature>
                         <feature>cxf</feature>
+                        <feature>goss-core-feature</feature>
 					</installedFeatures>
 				</configuration>
 			</plugin>
