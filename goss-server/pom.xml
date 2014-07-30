@@ -11,6 +11,9 @@
 		<goss.version>0.1.4-SNAPSHOT</goss.version>
 		<activemq.version>5.9.0</activemq.version>
 		<org-reflections.version>0.9.8</org-reflections.version>
+		
+		<servicemix-xstream.version>1.4.6_1</servicemix-xstream.version>
+		<servicemix-commons-io.version>1.4_3</servicemix-commons-io.version>
 		<servicemix-specs.version>2.4.0</servicemix-specs.version>
 		<apacheds.version>2.0.0-M15</apacheds.version>
 		<spring.version>3.1.2.RELEASE</spring.version>
