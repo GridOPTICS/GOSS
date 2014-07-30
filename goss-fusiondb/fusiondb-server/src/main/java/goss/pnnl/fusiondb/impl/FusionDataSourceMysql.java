@@ -53,7 +53,11 @@ import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Provides;
 
+@Component
+@Provides
 public class FusionDataSourceMysql implements FusionDataSource {
 
 	private BasicDataSource connectionPool = null; 
