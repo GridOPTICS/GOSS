@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="goss-core-${project.version}" >
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="goss-core-features-${project.version}" >
 
-    <feature name="goss-ipojo-wrapper" version="1.12.0">
+    <feature name="goss-ipojo" version="1.12.0">
+    	<feature>goss-dependencies</feature>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/1.12.0</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/1.12.0</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/1.12.0</bundle>
@@ -10,11 +11,33 @@
         <!--<bundle>mvn:org.apache.felix/org.apache.felix.ipojo.webconsole/1.7.0</bundle>-->
     </feature>
     
+    <feature name="goss-activemq-broker-nosecurity">
+    	<feature version="${activemq.version}" >activemq</feature>
+    	<feature version="${activemq.version}" >activemq-web-console</feature>
+    </feature>
+    
+    <feature name="goss-activemq-broker">
+    	<feature version="${activemq.version}" >activemq</feature>
+    	<feature version="${activemq.version}" >activemq-web-console</feature>    	
+    </feature>
+    
     <feature name="goss-dependencies" version="${project.version}">
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${servicemix-xstream.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${servicemix-commons-io.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix-commons-dbcp.version}</bundle>
+    	<bundle dependency="true">mvn:com.google.code.gson/gson/${gson.version}</bundle>
+    	<bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql-connector.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${httpclient-osgi.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${httpclient-osgi.version}</bundle>
     	
+    	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/1.19</bundle>
+  		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/1.20</bundle>
+    	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/1.20</bundle>
+  		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/1.9</bundle>
     </feature>
 
     <feature name="goss-core-feature" version="${pom.version}">
+    	
 <!--     	<config name="pnnl.goss.core.server"> -->
 <!--   			brokerURI=tcp://${activemq.host}:${activemq.port} -->
 <!--   			systemUser=goss -->
@@ -58,29 +81,18 @@
 			mvn:pnnl.goss/goss-core-feature/${pom.version}/cfg/server-config
 		</configfile> -->
 
-        <feature>goss-ipojo-wrapper</feature>
+        
+    	
+    	<feature>goss-dependencies</feature>
+    	<feature>goss-ipojo</feature>
     	<feature version="${cxf.version}">cxf</feature>
-    	<!-- Installs all the necessary activemq info for the broker and web-console -->
-<!-- 		<feature version="${pom.version}">goss-activemq-broker-feature</feature> -->
-    	<feature version="${activemq.version}" >activemq</feature>
-    	<feature version="${activemq.version}" >activemq-web-console</feature>
+    	
     	
     	<!-- Installs all the necessary activemq info for the broker and web-console -->
     	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/${pom.version}</bundle>
     	<bundle start-level="81" dependency="true">mvn:pnnl.goss/goss-activemq-broker/${pom.version}</bundle>
     	
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${servicemix-xstream.version}</bundle>
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${servicemix-commons-io.version}</bundle>
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${servicemix-commons-dbcp.version}</bundle>
-    	<bundle dependency="true">mvn:com.google.code.gson/gson/${gson.version}</bundle>
-    	<bundle dependency="true">mvn:mysql/mysql-connector-java/${mysql-connector.version}</bundle>
-    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${httpclient-osgi.version}</bundle>
-    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${httpclient-osgi.version}</bundle>
     	
-    	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/1.19</bundle>
-  		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/1.20</bundle>
-    	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/1.20</bundle>
-  		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/1.9</bundle>
     	
     	<bundle start-level="84" dependency="true">mvn:pnnl.goss/goss-core/${pom.version}</bundle>
     	<bundle start-level="85" dependency="true">mvn:pnnl.goss/goss-core-client/${pom.version}</bundle>    	    	
