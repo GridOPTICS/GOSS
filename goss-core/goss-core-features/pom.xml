@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>goss-core-features</artifactId>
 	<parent>
@@ -7,68 +8,71 @@
 		<artifactId>goss-core-parent</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
 	</parent>
-	
+
 	<packaging>pom</packaging>
 	<name>GOSS Core Features</name>
 
 	<build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <executions>
-             <execution>
-                <id>filter</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>resources</goal>
-                </goals>
-             </execution>
-          </executions>
-        </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>target/classes/features.xml</file>
-                                    <classifier>features</classifier>
-                                    <type>xml</type>
-                                </artifact>
-                                <artifact>
-                                	<file>target/classes/pnnl-goss-activemq-broker-nosecurity.xml</file>
-                                	<classifier>goss-broker-nosecurity</classifier>
-                                	<type>xml</type>
-                                </artifact>
-                                <artifact>
-                                	<file>target/classes/pnnl-goss-activemq-broker.xml</file>
-                                	<classifier>goss-broker</classifier>
-                                	<type>xml</type>
-                                </artifact>
-                                <artifact>
-                                	<file>target/classes/pnnl.goss.activemq.server-default.cfg</file>
-                                	<classifier>goss-broker-config</classifier>
-                                	<type>cfg</type>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<filters>
+        	<filter>${goss.properties.file}</filter>
+        </filters>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>target/classes/features.xml</file>
+									<classifier>features</classifier>
+									<type>xml</type>
+								</artifact>
+								<artifact>
+									<file>target/classes/pnnl-goss-activemq-broker-nosecurity.xml</file>
+									<classifier>goss-broker-nosecurity</classifier>
+									<type>xml</type>
+								</artifact>
+								<artifact>
+									<file>target/classes/pnnl-goss-activemq-broker.xml</file>
+									<classifier>goss-broker</classifier>
+									<type>xml</type>
+								</artifact>
+								<artifact>
+									<file>target/classes/pnnl.goss.activemq.server-default.cfg</file>
+									<classifier>goss-broker-config</classifier>
+									<type>cfg</type>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
