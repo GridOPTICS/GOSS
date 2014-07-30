@@ -7,7 +7,6 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>pnnl.goss.karaf.standalone.build</groupId>
-	<artifactId>karaf</artifactId>
     <version>0.1-SNAPSHOT</version>
 	<packaging>karaf-assembly</packaging>	
     <properties>
@@ -206,4 +205,5 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         </dependency>
 	</dependencies>
 
+	<artifactId>goss-karaf</artifactId>
 </project>
