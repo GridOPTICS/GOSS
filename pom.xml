@@ -11,6 +11,16 @@
 	<name>GOSS Master Builder</name>
 
 	<properties>
+		<!-- 
+			The location of the goss properties file for replacing placeholders
+			during the compilation phase of maven.  Because this file is used
+			in multiple layers of poms this needs to be a static reference here
+			
+			By default it is in the current user's home directory.
+		 -->
+		<goss.properties.file>${user.home}/goss.properties</goss.properties.file>
+		
+		
 		<!-- The groupId of all of our bundles. -->
 		<goss.groupId>pnnl.goss</goss.groupId>
 
@@ -30,7 +40,7 @@
 		<goss-sharedperspective.version>0.1.3-SNAPSHOT</goss-sharedperspective.version>
 		<goss-fncs.version>0.1.3-SNAPSHOT</goss-fncs.version>
 
-
+		
 		
 		<maven-dependency-plugin.version>2.3.7</maven-dependency-plugin.version>
 		
