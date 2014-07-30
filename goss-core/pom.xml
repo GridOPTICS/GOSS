@@ -16,7 +16,6 @@
 
 	<properties>
 		<!-- Apache Wrapper bundles. -->
-		<xstream.version>1.3_3</xstream.version>
 		<commons-dbcp.version>1.4_3</commons-dbcp.version>
 		<commons-io.version>1.4_3</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
@@ -87,7 +86,7 @@
 			<dependency>
 				<groupId>org.apache.servicemix.bundles</groupId>
 				<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
-				<version>${xstream.version}</version>
+				<version>${servicemix-xstream.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.servicemix.bundles</groupId>

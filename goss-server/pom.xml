@@ -13,7 +13,6 @@
 		<org-reflections.version>0.9.8</org-reflections.version>
 		<servicemix-commons-io.version>1.4_3</servicemix-commons-io.version>
 		<servicemix-specs.version>2.4.0</servicemix-specs.version>
-		<servicemix-xstream.version>1.4.6_1</servicemix-xstream.version>
 		<apacheds.version>2.0.0-M15</apacheds.version>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<slf4j.version>1.7.5</slf4j.version>

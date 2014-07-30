@@ -9,6 +9,10 @@
         
         <!--<bundle>mvn:org.apache.felix/org.apache.felix.ipojo.webconsole/1.7.0</bundle>-->
     </feature>
+    
+    <feature name="goss-dependencies" version="${project.version}">
+    	
+    </feature>
 
     <feature name="goss-core-feature" version="${pom.version}">
 <!--     	<config name="pnnl.goss.core.server"> -->
@@ -65,7 +69,7 @@
     	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/${pom.version}</bundle>
     	<bundle start-level="81" dependency="true">mvn:pnnl.goss/goss-activemq-broker/${pom.version}</bundle>
     	
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${xstream.version}</bundle>
+    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${servicemix-xstream.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${commons-io.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/${commons-dbcp.version}</bundle>
     	<bundle dependency="true">mvn:com.google.code.gson/gson/${gson.version}</bundle>
