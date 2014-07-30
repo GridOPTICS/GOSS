@@ -1,6 +1,6 @@
 package goss.pnnl.fusiondb.handlers;
 
-import goss.pnnl.fusiondb.datasources.FusionDataSource;
+import goss.pnnl.fusiondb.impl.FusionDataSourceMysql;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,7 +25,7 @@ public class RequestGeneratorDataHandler extends GossRequestHandler {
 	public Response handle(Request request) {
 		
 		DataResponse response = new DataResponse();
-		Connection connection = FusionDataSource.getInstance().getConnection();
+		Connection connection = FusionDataSourceMysql.getInstance().getConnection();
 		
 		try{
 			

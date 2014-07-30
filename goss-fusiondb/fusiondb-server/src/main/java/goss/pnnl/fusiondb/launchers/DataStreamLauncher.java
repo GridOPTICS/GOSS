@@ -41,7 +41,7 @@ import com.google.gson.Gson;
 
 @Component
 @Instantiate
-public class DataStreamLauncher {
+public class DataStreamLauncher implements Runnable {
 	
 	private volatile boolean isRunning = false;
 	
@@ -96,18 +96,20 @@ public class DataStreamLauncher {
 	
 	@Validate
 	public void startLauncher(){
-		if(launcher==null){
-			launcher = new DataStreamLauncher();
-		}
-		launcher.launch();
+		Thread thread = new Thread(new DataStreamLauncher());
+		thread.start();
 	}
 	
 	@Invalidate
 	public void stopLauncher(){
-		launcher.isRunning = false;
+		isRunning = false;
+		if (client != null){
+			client.close();
+		}
 	}
-
-	private void launch() {
+	
+	@Override
+	public void run() {
 		GossResponseEvent event =  new GossResponseEvent() {
 			@Override
 			public void onMessage(Response response) {

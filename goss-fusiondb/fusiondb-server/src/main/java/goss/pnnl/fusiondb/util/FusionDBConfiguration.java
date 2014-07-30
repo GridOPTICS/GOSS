@@ -44,7 +44,7 @@
 */
 package goss.pnnl.fusiondb.util;
 
-import goss.pnnl.fusiondb.datasources.FusionDataSource;
+import goss.pnnl.fusiondb.impl.FusionDataSourceMysql;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +85,7 @@ public class FusionDBConfiguration {
 		Properties configProperties = new Properties();
 		
 		// Grabs the config file from the resources path which is on the class path.
-		InputStream input = FusionDataSource.class.getResourceAsStream(CONFIG_FILENAME);
+		InputStream input = FusionDataSourceMysql.class.getResourceAsStream(CONFIG_FILENAME);
 		try {
 			configProperties.load(input);
 		} catch (IOException e) {

@@ -42,8 +42,9 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package goss.pnnl.fusiondb.datasources;
+package goss.pnnl.fusiondb.impl;
 
+import goss.pnnl.fusiondb.FusionDataSource;
 import goss.pnnl.fusiondb.util.FusionDBConfiguration;
 
 import java.sql.Connection;
@@ -53,12 +54,12 @@ import java.util.Properties;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 
-public class FusionDataSource {
+public class FusionDataSourceMysql implements FusionDataSource {
 
 	private BasicDataSource connectionPool = null; 
-	private static FusionDataSource instance;
+	private static FusionDataSourceMysql instance;
 
-	private FusionDataSource(){
+	private FusionDataSourceMysql(){
 		try{
 			System.out.println("Connecting to GOSS Metadata store");
 			System.out.println("Using GOSS Metadata store at "+FusionDBConfiguration.getProperty(FusionDBConfiguration.CONFIG_DB_URI));
@@ -85,7 +86,7 @@ public class FusionDataSource {
 		try{
 			if(instance == null){
 				System.out.println("Creating new data store connection");
-				instance  = new FusionDataSource();
+				instance  = new FusionDataSourceMysql();
 			}
 			return instance;
 		}
@@ -95,6 +96,10 @@ public class FusionDataSource {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see goss.pnnl.fusiondb.impl.FusionDataSource#getConnection()
+	 */
+	@Override
 	public Connection getConnection(){
 		try{
 
@@ -106,11 +111,10 @@ public class FusionDataSource {
 		}
 	}
 
-	/**
-	 * <p>
-	 * Adds a poolable connection using the passed parameters to connect to the datasource.
-	 * </p>
+	/* (non-Javadoc)
+	 * @see goss.pnnl.fusiondb.impl.FusionDataSource#getDataSourceConnection(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public BasicDataSource getDataSourceConnection(String url, String username, String password, String driver) throws Exception {
 		Properties properties = new Properties();
 

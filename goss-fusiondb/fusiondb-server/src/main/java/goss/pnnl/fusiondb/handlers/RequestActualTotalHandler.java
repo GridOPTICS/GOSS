@@ -44,7 +44,7 @@
 */
 package goss.pnnl.fusiondb.handlers;
 
-import goss.pnnl.fusiondb.datasources.FusionDataSource;
+import goss.pnnl.fusiondb.impl.FusionDataSourceMysql;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -70,7 +70,7 @@ public class RequestActualTotalHandler extends GossRequestHandler {
 		
 		try {
 			String dbQuery = "";
-			Connection connection = FusionDataSource.getInstance().getConnection();
+			Connection connection = FusionDataSourceMysql.getInstance().getConnection();
 			Statement stmt = connection.createStatement();
 			ResultSet rs = null;
 			

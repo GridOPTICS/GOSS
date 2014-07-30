@@ -44,7 +44,7 @@
 */
 package goss.pnnl.fusiondb.handlers;
 
-import goss.pnnl.fusiondb.datasources.FusionDataSource;
+import goss.pnnl.fusiondb.impl.FusionDataSourceMysql;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -68,7 +68,7 @@ public class FusionUploadHandler extends GossRequestHandler {
 		try{
 			UploadRequest uploadrequest = (UploadRequest)request;
 			
-			connection = FusionDataSource.getInstance().getConnection();
+			connection = FusionDataSourceMysql.getInstance().getConnection();
 			System.out.println(connection);
 			statement = connection.createStatement();
 			
