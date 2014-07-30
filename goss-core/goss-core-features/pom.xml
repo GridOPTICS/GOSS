@@ -68,6 +68,16 @@
 									<classifier>goss-broker-config</classifier>
 									<type>cfg</type>
 								</artifact>
+								<artifact>
+									<file>target/classes/pnnl.goss.core.cfg</file>
+									<classifier>goss-core</classifier>
+									<type>cfg</type>
+								</artifact>
+								<artifact>
+									<file>target/classes/pnnl.goss.datasources.cfg</file>
+									<classifier>goss-datasources</classifier>
+									<type>cfg</type>
+								</artifact>
 							</artifacts>
 						</configuration>
 					</execution>

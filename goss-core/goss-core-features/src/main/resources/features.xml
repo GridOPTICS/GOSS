@@ -51,7 +51,12 @@
     </feature>
 
     <feature name="goss-core-feature" version="${pom.version}">
-    	
+    	<configfile finalname="/etc/pnnl.goss.core.cfg">
+        	mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/goss-core
+        </configfile>
+        <configfile finalname="/etc/pnnl.goss.datasources.cfg">
+        	mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/goss-datasources
+        </configfile>
     	<feature>goss-dependencies</feature>
     	<feature>goss-ipojo</feature>
     	<feature version="${cxf.version}">cxf</feature>
