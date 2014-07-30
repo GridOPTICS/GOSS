@@ -1,5 +1,8 @@
-package pnnl.goss.server.core;
+package pnnl.goss.core;
 
+import org.apache.felix.ipojo.annotations.Component;
+
+@Component
 public class GossCoreContants {
 	
 	// Confguration file to use
