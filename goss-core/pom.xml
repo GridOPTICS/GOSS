@@ -14,13 +14,6 @@
 		<version>0.1.4-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<!-- Apache Wrapper bundles. -->
-		<commons-dbcp.version>1.4_3</commons-dbcp.version>
-		<commons-io.version>1.4_3</commons-io.version>
-		<commons-lang.version>2.6</commons-lang.version>
-	</properties>
-
 	<modules>
 		<module>goss-activemq-broker</module>
 		<module>goss-core</module>

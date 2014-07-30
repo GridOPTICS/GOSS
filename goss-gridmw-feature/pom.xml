@@ -27,7 +27,6 @@
 
 		<javax-persist.version>1.0.2</javax-persist.version>
 		<woodstox.version>4.2.0</woodstox.version>
-		<commons-dbcp.version>1.4_3</commons-dbcp.version>
 	</properties>
 
 	<modules>
@@ -228,7 +227,7 @@
 			<dependency>
 				<groupId>org.apache.servicemix.bundles</groupId>
 				<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
-				<version>${commons-dbcp.version}</version>
+				<version>${servicemix-commons-dbcp.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.servicemix.bundles</groupId>
