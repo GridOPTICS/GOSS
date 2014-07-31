@@ -46,22 +46,63 @@ package goss.pnnl.fusiondb.impl;
 
 import goss.pnnl.fusiondb.FusionDataSource;
 import goss.pnnl.fusiondb.util.FusionDBConfiguration;
+import static pnnl.goss.core.GossCoreContants.*;
+import static goss.pnnl.fusiondb.FusionDataSource.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Dictionary;
 import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
 import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Updated;
 
-@Component
+
+@Component(managedservice=PROP_DATASOURCES_CONFIG)
 @Provides
+@Instantiate
 public class FusionDataSourceMysql implements FusionDataSource {
 
-	private BasicDataSource connectionPool = null; 
+	private BasicDataSource connectionPool = null;
+	private final Properties properties = new Properties();
 	private static FusionDataSourceMysql instance;
+	
+	@SuppressWarnings("unused")
+	@Updated
+	private void update(Dictionary config){
+		
+		if(requiresUpdateToDatasource(config)){
+			
+			properties.setProperty(PROP_FUSIONDB_URI, (String) config.get(PROP_FUSIONDB_URI));
+			properties.setProperty(PROP_FUSIONDB_USER, (String) config.get(PROP_FUSIONDB_USER));
+			properties.setProperty(PROP_FUSIONDB_PASSWORD, (String) config.get(PROP_FUSIONDB_PASSWORD));
+			
+			try {
+				// Note currently checked out connections are not affected by this
+				connectionPool.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally{
+				connectionPool = null;
+			}
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private boolean requiresUpdateToDatasource(Dictionary config){
+		if(properties.getProperty(PROP_FUSIONDB_URI) == config.get(PROP_FUSIONDB_URI) &&
+				properties.getProperty(PROP_FUSIONDB_USER) == config.get(PROP_FUSIONDB_USER) &&
+				properties.getProperty(PROP_FUSIONDB_PASSWORD) == config.get(PROP_FUSIONDB_PASSWORD)){
+			return true;
+		}
+		return false;
+	}
 
 	private FusionDataSourceMysql(){
 		try{

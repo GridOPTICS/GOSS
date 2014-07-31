@@ -5,6 +5,10 @@ import java.sql.Connection;
 import org.apache.commons.dbcp.BasicDataSource;
 
 public interface FusionDataSource {
+	
+	public static String PROP_FUSIONDB_USER = "fusiondb.user";
+	public static String PROP_FUSIONDB_PASSWORD = "fusiondb.password";
+	public static String PROP_FUSIONDB_URI = "fusiondb.uri";
 
 	public abstract Connection getConnection();
 

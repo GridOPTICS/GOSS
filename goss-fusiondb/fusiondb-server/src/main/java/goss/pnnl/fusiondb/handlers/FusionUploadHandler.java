@@ -44,10 +44,14 @@
 */
 package goss.pnnl.fusiondb.handlers;
 
+import goss.pnnl.fusiondb.FusionDataSource;
 import goss.pnnl.fusiondb.impl.FusionDataSourceMysql;
 
 import java.sql.Connection;
 import java.sql.Statement;
+
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Requires;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.UploadRequest;
@@ -56,10 +60,15 @@ import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.server.core.GossRequestHandler;
 
+@Component
 public class FusionUploadHandler extends GossRequestHandler {
 	
 	Connection connection;
 	Statement statement;
+	
+	@Requires(nullable=false)
+	private FusionDataSource datasource;
+	
 	
 	public UploadResponse handle(Request request) {
 		
