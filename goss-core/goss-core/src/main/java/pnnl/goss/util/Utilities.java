@@ -50,7 +50,9 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -123,7 +125,11 @@ public class Utilities {
 		Properties props = new Properties();
 		try{
 			String hostname = getHostname();
-			String userDir = System.getProperty("user.home");
+			String karafBase = System.getProperty("karaf.base");
+			
+			if (karafBase != null){
+				path = Paths.get(karafBase, "etc", path+".cfg").toString();
+			}
 			if(path!=null){
 				InputStream input = Utilities.class.getClassLoader().getResourceAsStream(path+"."+hostname);
 				if (input!=null){
@@ -135,7 +141,14 @@ public class Utilities {
 					if(input!=null){
 						System.out.println("Uploading configuration file = "+ path);
 						props.load(input);
-					}								
+					}
+					else{
+						input = new FileInputStream(new File(path));
+						if(input != null){
+							System.out.println("Uploading configuration file = "+ path);
+							props.load(input);
+						}
+					}
 				}
 			}
 			else
@@ -145,6 +158,23 @@ public class Utilities {
 			e.printStackTrace();
 		}
 		return props;
+	}
+	
+	/**
+	 * Converts a Dictionary object to a new Properties object.
+	 * @param dict
+	 * @return
+	 */
+	public static Properties toProperties(Dictionary dict){
+		Properties properties = new Properties();
+		Enumeration nummer = dict.keys();
+		
+		while(nummer.hasMoreElements()){
+			String key = (String)nummer.nextElement();
+			properties.setProperty(key, (String) dict.get(key));
+		}
+		
+		return properties;
 	}
 	
 	private static String getHostname(){
