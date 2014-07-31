@@ -116,12 +116,8 @@ public class GossClient implements Client{
 	 * @param cred is credentials containing username and password
 	 */
 	public GossClient(Credentials cred) {
-		try{
-			setUpSession(cred, PROTOCOL.OPENWIRE);			
-		}
-		catch(Exception e ){
-			log.error(e);
-		}
+		this.credentials = cred;
+		this.protocol = PROTOCOL.OPENWIRE;
 	}
 	
 	public GossClient(Credentials credentials, PROTOCOL protocol) {

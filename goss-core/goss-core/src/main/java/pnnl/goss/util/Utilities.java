@@ -57,8 +57,11 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Response;
+import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -67,6 +70,7 @@ public class Utilities {
 	private static Utilities instance;
 	private static Properties properties = new Properties();
 	private static URI brokerURI;
+	private static final Logger log = LoggerFactory.getLogger(Utilities.class);
 	
 	private Utilities(){
 		
@@ -124,29 +128,46 @@ public class Utilities {
 	public static Dictionary loadProperties(String path){
 		Properties props = new Properties();
 		try{
-			String hostname = getHostname();
+			// All configuration files now end with .cfg except the one that
+			// ends in the hostname.
+			if (!path.endsWith(".cfg")){
+				path += ".cfg";
+			}
+			
+			// Are we running in a karaf context?  If so then
+			// use a file from etc below.
 			String karafBase = System.getProperty("karaf.base");
 			
+			// The machine where this script is running.
+			String hostname = getHostname();
+			
 			if (karafBase != null){
-				path = Paths.get(karafBase, "etc", path+".cfg").toString();
+				path = Paths.get(karafBase, "etc", path).toString();
 			}
 			if(path!=null){
+ 
 				InputStream input = Utilities.class.getClassLoader().getResourceAsStream(path+"."+hostname);
 				if (input!=null){
-					System.out.println("Uploading configuration file = "+ path+"."+hostname);
+					log.debug("loading properties from:\n\t"+ path+"."+hostname);					
 					props.load(input);
 				}
 				else{
 					input = Utilities.class.getClassLoader().getResourceAsStream(path);
 					if(input!=null){
-						System.out.println("Uploading configuration file = "+ path);
+						log.debug("loading properties from:\n\t"+ path);
 						props.load(input);
 					}
 					else{
-						input = new FileInputStream(new File(path));
-						if(input != null){
-							System.out.println("Uploading configuration file = "+ path);
-							props.load(input);
+						File file = new File(path);
+						if (file.exists()){
+							input = new FileInputStream(file);
+							if(input != null){
+								log.debug("loading properties from:\n\t"+ path);
+								props.load(input);
+							}
+						}
+						else{
+							log.debug("Couldn't find properties for path: \n\t"+path);
 						}
 					}
 				}
@@ -197,11 +218,14 @@ public class Utilities {
 	/**Loads properties from config.properties into memory */
 	public static void loadProperties(){
 		try{
-			InputStream input = Utilities.class.getResourceAsStream("/config.properties");
-			if(input!=null)
+			InputStream input = Utilities.class.getResourceAsStream(PROP_CORE_CONFIG);
+			if(input!=null){
 				properties.load(input);
-			else
-				properties.load(new FileInputStream("config"+File.separatorChar+"config.properties"));
+			}
+			else{
+				String filePath = Paths.get("config", PROP_CORE_CONFIG + ".cfg").toString();
+				properties.load(new FileInputStream(filePath));
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();

@@ -70,6 +70,7 @@ import pnnl.goss.server.core.GossRequestHandler;
 //import pnnl.goss.security.core.GossSecurityConstants;
 //import pnnl.goss.security.core.SecurityRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
+import static pnnl.goss.core.GossCoreContants.*;
 
 //import org.apache.http.impl.cookie.RFC2109DomainHandler;
 
@@ -90,9 +91,9 @@ public class ServerListener implements MessageListener {
 		this.handlerService = handlerService;
 		Dictionary config = handlerService.getCoreServerConfig();
 		try {
-			if(config!=null){
-				System.out.println("PROP IS "+config.get(GossSecurityConstants.PROP_USE_AUTH));
-				useAuth = new Boolean((String)config.get(GossSecurityConstants.PROP_USE_AUTH));
+			if(config!=null){				
+				log.debug("Using authentication? "+config.get(PROP_USE_AUTHORIZATION));
+				useAuth = new Boolean((String)config.get(PROP_USE_AUTHORIZATION));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

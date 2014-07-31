@@ -28,4 +28,7 @@ public class GossCoreContants {
 	// Config file to monitor datasources.
 	public static final String PROP_DATASOURCES_CONFIG = "pnnl.goss.datasources";
 	
+	// Config file used to start broker in standalone mode
+	public static final String PROP_ACTIVEMQ_CONFIG = "pnnl.goss.activemq.config";
+	
 }

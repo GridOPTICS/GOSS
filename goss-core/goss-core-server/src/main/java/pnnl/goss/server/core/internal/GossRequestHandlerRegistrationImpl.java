@@ -49,8 +49,11 @@ import java.util.HashMap;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Property;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,12 +75,30 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 
 	private static final Logger log = LoggerFactory.getLogger(GossRequestHandlerRegistrationImpl.class);
 	private HashMap<String, String> handlerMap = new HashMap<String, String>();
-	private final GossSecurityHandler securityHandler;
+	private GossSecurityHandler securityHandler;
 	private Dictionary coreServerConfig = null;
+	
+	public GossRequestHandlerRegistrationImpl(){
+		log.debug("Constructing");
+	}
+	
+//	@Property
+//	public void setSecurityHandler(GossSecurityHandler securityHandler){
+//		this.securityHandler = securityHandler;
+//	}
+	@Validate
+	public void startHandler(){
+		log.debug("Starting handler");
+	}
 
-	public GossRequestHandlerRegistrationImpl(@Requires(nullable=false) GossSecurityHandler securityHandler){
-		System.out.println("CONSTRUCTING "+getClass());
-		this.securityHandler = securityHandler;
+//	public GossRequestHandlerRegistrationImpl(GossSecurityHandler securityHandler){
+//		System.out.println("CONSTRUCTING "+getClass());
+//		//this.securityHandler = securityHandler;
+//	}
+	@Invalidate
+	public void shutdown(){
+		log.debug("shutdown");
+		this.handlerMap.clear();
 	}
 	
 	public void addHandlerMapping(String request, String handler) {
@@ -86,6 +107,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			return;
 		}
 		
+		log.debug("adding handler mapping: "+request+" -> "+ handler);
 		try {
 			Class requestCls = Class.forName(request);
 			Class handlerCls = Class.forName(handler);
@@ -322,7 +344,12 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 
 	
 	public void addSecurityMapping(Class request, Class handler) {
-		securityHandler.addHandlerMapping(request, handler);
+		if (securityHandler != null){
+			securityHandler.addHandlerMapping(request, handler);
+		}
+		else{
+			log.error("Security handler is null!");
+		}
 	}
 
 	

@@ -44,6 +44,7 @@
 */
 package pnnl.goss.server.core.internal;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Dictionary;
 
@@ -54,15 +55,20 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.commons.lang.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.security.util.GossSecurityConstants;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.util.Utilities;
+import static pnnl.goss.core.GossCoreContants.*;
 
 
 public class GridOpticsServer {
 	
-	public static final String BROKER_URI_PROP = "brokerURI";
+	private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
 	
 	private static Connection connection;
 
@@ -71,10 +77,14 @@ public class GridOpticsServer {
 	public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker){
 		try {
 			Dictionary config = service.getCoreServerConfig();
-			String brokerURI = (String)config.get(BROKER_URI_PROP);
+			String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
 			URI uri = URI.create(brokerURI);
-			String user = (String)config.get(GossSecurityConstants.PROP_SYSTEM_USER);
-			String pw = (String)config.get(GossSecurityConstants.PROP_SYSTEM_PW);
+			String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
+			String pw = (String)config.get(GossCoreContants.PROP_SYSTME_PASSWORD);
+			
+			log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
+			
+			
 			
 			//Needed for standalone server instance
 			if(startBroker){
@@ -143,12 +153,16 @@ public class GridOpticsServer {
 //	}
 	
 	private void startBroker(Dictionary config) throws Exception {
+		throw new NotImplementedException();
+		
+		/*
 		Utilities.getInstance();
 		System.setProperty("activemq.base", System.getProperty("user.dir"));
-		System.out.println("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-		BrokerService broker = BrokerFactory.createBroker(config.get("brokerConfig").toString(), true);
+		log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
+		String brokerConfig = new File((String)config.get(PROP_ACTIVEMQ_CONFIG));
+		BrokerService broker = BrokerFactory.createBroker(.toString(), true);
 		Utilities.setbrokerURI(broker.getTransportConnectors().get(0).getConnectUri());
-		broker.start();
+		broker.start();*/
 	}
 	
 	private void makeActiveMqConnection(URI brokerUri) throws JMSException{
@@ -158,10 +172,14 @@ public class GridOpticsServer {
 		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
 		factory.setUseAsyncSend(true);
 		//Use system login account
-		if(systemUser!=null)
+		if(systemUser!=null){
 			factory.setUserName(systemUser);
-		if(systemPW!=null)
+		}
+		if(systemPW!=null){
 			factory.setPassword(systemPW);
+		}
+		
+		log.debug("Creating connection to: "+brokerUri +" using account: "+ systemUser);
 		connection = (ActiveMQConnection)factory.createConnection();
 		connection.start();
 	}
@@ -177,7 +195,7 @@ public class GridOpticsServer {
 		if (connection != null) {
 			connection.close();
 		}
-		
+		log.debug("Closing connection");
 		connection = null;
 	}
 	

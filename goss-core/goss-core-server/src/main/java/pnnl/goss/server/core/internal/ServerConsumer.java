@@ -49,10 +49,14 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 public class ServerConsumer {
 
+	private static final Logger log = LoggerFactory.getLogger(ServerConsumer.class);
 	//TODO IS THIS NEEDED? I DON'T THINK SO
 	public ServerConsumer() throws JMSException {
 		startConsuming(null);
@@ -64,7 +68,7 @@ public class ServerConsumer {
 
 	private void startConsuming(GossRequestHandlerRegistrationService service) {
 		try {
-			System.out.println("Step: Starting Server Consumer");
+			log.debug("Step: Starting Server Consumer");
 			Session session = GridOpticsServer.getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Destination destination = session.createQueue("Request");
 			MessageConsumer messageConsumer = session.createConsumer(destination);
@@ -76,7 +80,7 @@ public class ServerConsumer {
 				messageConsumer.setMessageListener(new ServerListener(service));
 			}
 			
-			System.out.println("Step: Server Consumer started");
+			log.debug("Step: Server Consumer started");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

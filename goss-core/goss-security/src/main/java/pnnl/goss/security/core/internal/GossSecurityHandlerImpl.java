@@ -55,6 +55,9 @@ import java.util.Set;
 
 import org.apache.activemq.jaas.GroupPrincipal;
 import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.apache.log4j.Logger;
 
 import pnnl.goss.core.Request;
@@ -63,6 +66,8 @@ import pnnl.goss.security.core.authorization.AbstractAccessControlHandler;
 
 @SuppressWarnings("rawtypes")
 @Component(managedservice=PROP_CORE_CONFIG)
+@Instantiate
+@Provides
 public class GossSecurityHandlerImpl implements GossSecurityHandler {
 
 	protected static Logger log = Logger.getLogger(GossSecurityHandlerImpl.class);
@@ -71,6 +76,11 @@ public class GossSecurityHandlerImpl implements GossSecurityHandler {
 	 */
 	private static HashMap<Class, Class> handlerMap = new HashMap<Class, Class>();
 	protected static Map<String, List<String>> tempTopicRoles = new HashMap<String, List<String>>();
+	
+	@Validate
+	public void startingHandler(){
+		log.debug("Starting handler");
+	}
 	
 	/* (non-Javadoc)
 	 * @see pnnl.goss.security.core.GossSecurityHandler#checkAccess(pnnl.goss.core.Request, java.lang.String, java.lang.String)
@@ -215,7 +225,7 @@ public class GossSecurityHandlerImpl implements GossSecurityHandler {
 	 */
 	@Override
 	public void addHandlerMapping(Class request, Class handler) {
-		log.info("Attempting to add security handler mapping for "+request.getName()+" to "+handler.getName());
+		log.debug("Attempting to add security handler mapping for "+request.getName()+" to "+handler.getName());
 		
 		try {
 			
@@ -258,7 +268,7 @@ public class GossSecurityHandlerImpl implements GossSecurityHandler {
 						request.getName()+" and "+handler.getName()+" classes must be subclasses of Request and AbstractAccessControlHandler.");
 				
 			} else {
-				log.info("Added security handler mapping for "+request.getName()+" to "+handler.getName());
+				log.debug("Added security handler mapping for "+request.getName()+" to "+handler.getName());
 				// Keep the string of the class.
 				handlerMap.put(request, handler);
 				//handlerMap.put(request, handler);
