@@ -63,9 +63,6 @@ public class SecurityConfiguration {
 		}
 		log.warn("Warning: no configuration properties found for GossSecurityHandler");
 		Properties defaultProps = new Properties();
-//		defaultProps.put("ac_databaseURI", "jdbc:mysql://localhost:3306/gridopticsdb");
-//		defaultProps.put("ac_databaseUser", "root");
-//		defaultProps.put("ac_databasePW", "CHANGEME");
 		return defaultProps;
 	}
 }

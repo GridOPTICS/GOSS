@@ -63,7 +63,6 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator>pnnl.goss.security.util.GossSecurityUtilActivator</Bundle-Activator>
 						<Export-Package>
 							pnnl.goss.security.util,
 							pnnl.goss.security.broker

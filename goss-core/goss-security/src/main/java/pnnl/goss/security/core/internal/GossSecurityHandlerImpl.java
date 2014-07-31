@@ -42,24 +42,28 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.security.core;
+package pnnl.goss.security.core.internal;
+
+import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.activemq.jaas.GroupPrincipal;
+import org.apache.felix.ipojo.annotations.Component;
 import org.apache.log4j.Logger;
 
 import pnnl.goss.core.Request;
+import pnnl.goss.security.core.GossSecurityHandler;
 import pnnl.goss.security.core.authorization.AbstractAccessControlHandler;
 
 @SuppressWarnings("rawtypes")
-public class GossSecurityHandlerImpl {
+@Component(managedservice=PROP_CORE_CONFIG)
+public class GossSecurityHandlerImpl implements GossSecurityHandler {
 
 	protected static Logger log = Logger.getLogger(GossSecurityHandlerImpl.class);
 	/*
@@ -67,7 +71,11 @@ public class GossSecurityHandlerImpl {
 	 */
 	private static HashMap<Class, Class> handlerMap = new HashMap<Class, Class>();
 	protected static Map<String, List<String>> tempTopicRoles = new HashMap<String, List<String>>();
-
+	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.security.core.GossSecurityHandler#checkAccess(pnnl.goss.core.Request, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public boolean checkAccess(Request request, String userPrincipals, String tempDestination) {
 		//FIND HANDLER FOR REQUEST TYPE, IF NOT FOUND GIVE A WARNING BUT ALLOW ACCESS
 		List<String> allowedRoles = getAllowedRoles(request);
@@ -169,6 +177,10 @@ public class GossSecurityHandlerImpl {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see pnnl.goss.security.core.GossSecurityHandler#addHandlerMapping(java.lang.String, java.lang.String)
+	 */
+	@Override
 	public void addHandlerMapping(String requestClass,
 			String handlerClass) {
 		
@@ -187,6 +199,10 @@ public class GossSecurityHandlerImpl {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see pnnl.goss.security.core.GossSecurityHandler#removeHandlerMapping(java.lang.Class)
+	 */
+	@Override
 	public void removeHandlerMapping(Class request) {
 		// TODO Is it an error to remove a mapping that doesn't exist?
 		if (handlerMap.containsKey(request)) {
@@ -194,6 +210,10 @@ public class GossSecurityHandlerImpl {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see pnnl.goss.security.core.GossSecurityHandler#addHandlerMapping(java.lang.Class, java.lang.Class)
+	 */
+	@Override
 	public void addHandlerMapping(Class request, Class handler) {
 		log.info("Attempting to add security handler mapping for "+request.getName()+" to "+handler.getName());
 		

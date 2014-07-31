@@ -60,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.server.core.internal.GridOpticsServer;
-import static pnnl.goss.server.core.GossCoreContants.*;
+import static pnnl.goss.core.GossCoreContants.*;
 
 @Component(managedservice=PROP_CORE_CONFIG)
 @Instantiate

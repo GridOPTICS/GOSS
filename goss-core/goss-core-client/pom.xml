@@ -54,7 +54,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-					<Bundle-Activator>pnnl.goss.core.client.GossClientActivator</Bundle-Activator>
 					<Import-Package>
 						*
 					</Import-Package>

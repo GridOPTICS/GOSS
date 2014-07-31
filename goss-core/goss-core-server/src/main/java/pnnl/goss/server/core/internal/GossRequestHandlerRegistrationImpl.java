@@ -50,6 +50,7 @@ import java.util.HashMap;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,23 +60,24 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.security.core.GossSecurityHandlerImpl;
+import pnnl.goss.security.core.GossSecurityHandler;
 import pnnl.goss.server.core.GossRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @SuppressWarnings("rawtypes")
-@Component(immediate=true)
+@Component
 @Instantiate
 @Provides
 public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerRegistrationService {
 
 	private static final Logger log = LoggerFactory.getLogger(GossRequestHandlerRegistrationImpl.class);
 	private HashMap<String, String> handlerMap = new HashMap<String, String>();
-	private GossSecurityHandlerImpl securityHandler = new GossSecurityHandlerImpl();
+	private final GossSecurityHandler securityHandler;
 	private Dictionary coreServerConfig = null;
 
-	public GossRequestHandlerRegistrationImpl(){
+	public GossRequestHandlerRegistrationImpl(@Requires(nullable=false) GossSecurityHandler securityHandler){
 		System.out.println("CONSTRUCTING "+getClass());
+		this.securityHandler = securityHandler;
 	}
 	
 	public void addHandlerMapping(String request, String handler) {

@@ -44,62 +44,34 @@
 */
 package pnnl.goss.security.core;
 
+import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
+
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Properties;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.log4j.Logger;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 
 import pnnl.goss.security.core.internal.SecurityConfiguration;
 
-
-public class GossSecurityActivator implements BundleActivator {
+@Component(managedservice=PROP_CORE_CONFIG)
+public class GossSecurityActivator {
 
 	protected Logger log = Logger.getLogger(GossSecurityActivator.class);
-	private static final String CONFIG_PID = "pnnl.goss.core.security";
-	
-    public void start(BundleContext context) {
-        System.out.println("Starting the security bundle");
-        log.info("Starting the security bundle");
-        
-        // Register for updates to the goss.core.security config file.
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(Constants.SERVICE_PID, CONFIG_PID);
-        context.registerService(ManagedService.class.getName(), new GossSecurityConfigUpdater(), properties);
-    }
-
-    public void stop(BundleContext context) {
-        System.out.println("Stopping the security bundle");
-        log.info("Stopping the security bundle");
-    }
-
-    
-    private class GossSecurityConfigUpdater implements ManagedService {
-
-		@SuppressWarnings("rawtypes")
-		public void updated(Dictionary config) throws ConfigurationException {
-			System.out.println("Updating Goss Security configuration");
-			log.info("Updating Goss Security configuration");
-			
-			Properties props = new Properties();
-			Enumeration keys = config.keys();
-			while(keys.hasMoreElements()){
-				String key = (String)keys.nextElement();
-				String value = (String)config.get(key);
-				props.setProperty(key, value);
-			}
-			
-			SecurityConfiguration.setConfig(props);
-			
-		}
-
-	}
-
-    
+//	
+//	@SuppressWarnings("rawtypes")
+//	@Updated
+//	public void updated(Dictionary config){
+//		Properties props = new Properties();
+//		Enumeration keys = config.keys();
+//		while(keys.hasMoreElements()){
+//			String key = (String)keys.nextElement();
+//			String value = (String)config.get(key);
+//			props.setProperty(key, value);
+//		}
+//		
+//		SecurityConfiguration.setConfig(props);
+//	}    
 }

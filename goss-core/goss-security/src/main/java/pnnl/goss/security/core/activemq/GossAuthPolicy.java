@@ -61,7 +61,7 @@ import org.apache.log4j.Logger;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
-import pnnl.goss.security.core.GossSecurityHandlerImpl;
+import pnnl.goss.security.core.internal.GossSecurityHandlerImpl;
 
 
 public class GossAuthPolicy implements MessageAuthorizationPolicy {

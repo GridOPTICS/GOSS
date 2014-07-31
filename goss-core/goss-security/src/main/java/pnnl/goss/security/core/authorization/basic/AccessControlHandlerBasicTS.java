@@ -59,15 +59,15 @@ import java.util.Stack;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.felix.ipojo.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
-
-import pnnl.goss.security.core.GossSecurityHandlerImpl;
 import pnnl.goss.security.core.authorization.AbstractAccessControlHandler;
 import pnnl.goss.security.core.internal.SecurityConfiguration;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import static pnnl.goss.core.GossCoreContants.*;
 
 
 /**
@@ -194,15 +194,16 @@ public abstract class AccessControlHandlerBasicTS extends AbstractAccessControlH
 		return addDistinctRoles(remainingRoles, newAggRoles);
 	}
 	
-	protected Properties getConfiguration() throws IOException {
-//		Properties configProperties = new Properties();
-//		// Grabs the config file from the resources path which is on the class path.
-//		InputStream input = AccessControlHandlerBasicTS.class.getResourceAsStream("/goss.core.security.cfg");
-//		configProperties.load(input);
-		
-		return SecurityConfiguration.getConfig();
-		
-	}
+	// TODO we need a way to get the properties in here now!
+//	protected Properties getConfiguration() throws IOException {
+////		Properties configProperties = new Properties();
+////		// Grabs the config file from the resources path which is on the class path.
+////		InputStream input = AccessControlHandlerBasicTS.class.getResourceAsStream("/goss.core.security.cfg");
+////		configProperties.load(input);
+//		
+//		return SecurityConfiguration.getConfig();
+//		
+//	}
 	
 	protected Connection getDBConnection() throws SQLException{
 		if(dataSourceConnection==null ){
@@ -227,7 +228,8 @@ public abstract class AccessControlHandlerBasicTS extends AbstractAccessControlH
 		 * </p>
 		 */
 		public DataSource getDataSourceConnection() throws Exception {
-			Properties properties =getConfiguration();
+			// TODO Look up properties!!!!
+			Properties properties = new Properties(); //getConfiguration();
 			
 			String url = properties.getProperty("ac_databaseURI");
 			String username = properties.getProperty("ac_databaseUser");
