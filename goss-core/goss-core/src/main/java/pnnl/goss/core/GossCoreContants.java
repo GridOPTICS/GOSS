@@ -25,4 +25,7 @@ public class GossCoreContants {
 	// Authorization module enablement
 	public static final String PROP_USE_AUTHORIZATION = "goss.use.authorization";
 	
+	// Config file to monitor datasources.
+	public static final String PROP_DATASOURCES_CONFIG = "pnnl.goss.datasources";
+	
 }
