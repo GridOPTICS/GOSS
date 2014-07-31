@@ -44,6 +44,8 @@
 */
 package pnnl.goss.core.client.internal;
 
+import static pnnl.goss.core.GossCoreContants.*;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,37 +54,67 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Updated;
 
-
+@Component(managedservice=PROP_CORE_CONFIG)
+@Instantiate
 public class ClientConfiguration {
-	private static Dictionary configProperties;
 	private static final Log log = LogFactory.getLog(ClientConfiguration.class);
+	protected Properties properties = new Properties();
+	
+	public ClientConfiguration(Properties configuration){
+		if (configuration != null){
+			properties= configuration;
+			
+		}
+		
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Updated
+	public void update(Dictionary config){
+		String[] keys = {PROP_OPENWIRE_URI};
+		updateProperties(keys, config);
+	}
+	
+	@SuppressWarnings("unused")
+	protected void updateProperties(String[] keys, Dictionary config){
+		for(String k: keys){
+			properties.setProperty(k, (String)config.get(k));
+		}
+	}
 
 	
-	public static void setProperties(Dictionary props){
-		configProperties = props;
+	public void setProperties(Properties props){
+		properties = props;
 	}
-	public static String getProperty(String propertyName){
-		if(configProperties!=null){
-			log.info("Goss-core-client retreived property "+propertyName+"="+ configProperties.get(propertyName));
-			return (String) configProperties.get(propertyName);
-		}
-		
-		try{
-			log.info("goss-core-client: no configuration set, retrieving from config.properties");
-			Properties properties = new Properties();
-			InputStream input = ClientConfiguration.class.getResourceAsStream("/config.properties");
-			if(input!=null)
-				properties.load(input);
-			else
-				properties.load(new FileInputStream("config.properties"));
-			return properties.getProperty(propertyName);
-		}catch(IOException e){
-			e.printStackTrace();
-			log.error(e);
-		}
-		
-		return null;
+	
+	public String getProperty(String propertyName){
+		return properties.getProperty(propertyName);
 	}
+//	public static String getProperty(String propertyName){
+//		if(configProperties!=null){
+//			log.info("Goss-core-client retreived property "+propertyName+"="+ configProperties.get(propertyName));
+//			return (String) configProperties.get(propertyName);
+//		}
+//		
+//		try{
+//			log.info("goss-core-client: no configuration set, retrieving from config.properties");
+//			Properties properties = new Properties();
+//			InputStream input = ClientConfiguration.class.getResourceAsStream("/config.properties");
+//			if(input!=null)
+//				properties.load(input);
+//			else
+//				properties.load(new FileInputStream("config.properties"));
+//			return properties.getProperty(propertyName);
+//		}catch(IOException e){
+//			e.printStackTrace();
+//			log.error(e);
+//		}
+//		
+//		return null;
+//	}
 	
 }
