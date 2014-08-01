@@ -44,7 +44,7 @@
 */
 package goss.pnnl.fusiondb.handlers;
 
-import goss.pnnl.fusiondb.impl.FusionDataSourceMysql;
+import static goss.pnnl.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -55,7 +55,6 @@ import java.util.List;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
-import pnnl.goss.fusiondb.datamodel.ActualTotalData;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
@@ -69,7 +68,7 @@ public class RequestCapacityRequirementHandler extends GossRequestHandler{
 	public DataResponse handle(Request request) {
 		
 		DataResponse response = new DataResponse();
-		Connection connection = FusionDataSourceMysql.getInstance().getConnection();
+		Connection connection = this.dataservices.getPooledConnection(PROP_FUSIONDB_DATASERVICE);
 		
 		try{
 			
