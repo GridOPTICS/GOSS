@@ -86,6 +86,11 @@
 				<version>${servicemix-commons-io.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.servicemix.bundles</groupId>
+				<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+				<version>${servicemix-commons-dbcp.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
 				<version>${commons-lang.version}</version>
