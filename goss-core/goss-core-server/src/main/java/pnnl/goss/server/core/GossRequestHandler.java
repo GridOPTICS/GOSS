@@ -49,6 +49,16 @@ import pnnl.goss.core.Response;
 
 public abstract class GossRequestHandler {
 	
+	protected GossRequestHandlerRegistrationService requestHandlerService;
+	protected GossDataServices dataservices;
+	
 	public abstract Response handle(Request request);
-
+	
+	public void setHandlerService(GossRequestHandlerRegistrationService requestHandlerService){
+		this.requestHandlerService = requestHandlerService;
+	}
+	
+	public void setGossDataservices(GossDataServices dataservices){
+		this.dataservices = dataservices;
+	}
 }

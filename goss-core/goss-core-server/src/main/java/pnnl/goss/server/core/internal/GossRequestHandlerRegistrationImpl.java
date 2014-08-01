@@ -50,7 +50,6 @@ import java.util.HashMap;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Property;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
@@ -64,22 +63,25 @@ import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.security.core.GossSecurityHandler;
+import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @SuppressWarnings("rawtypes")
-@Component
 @Instantiate
 @Provides
+@Component(immediate=true)
 public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerRegistrationService {
 
 	private static final Logger log = LoggerFactory.getLogger(GossRequestHandlerRegistrationImpl.class);
 	private HashMap<String, String> handlerMap = new HashMap<String, String>();
 	private GossSecurityHandler securityHandler;
 	private Dictionary coreServerConfig = null;
+	private GossDataServices dataServices;
 	
-	public GossRequestHandlerRegistrationImpl(){
+	public GossRequestHandlerRegistrationImpl(@Requires GossDataServices dataServices){
 		log.debug("Constructing");
+		this.dataServices = dataServices;
 	}
 	
 //	@Property
@@ -270,6 +272,8 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 					Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
 					handler = (GossRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
+						handler.setGossDataservices(dataServices);
+						handler.setHandlerService(this);
 						response = handler.handle(request);
 					}
 					/*
