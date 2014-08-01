@@ -44,6 +44,8 @@
 */
 package pnnl.goss.server.core.internal;
 
+import static pnnl.goss.core.GossCoreContants.PROP_USE_AUTHORIZATION;
+
 import java.io.Serializable;
 import java.util.Dictionary;
 
@@ -56,13 +58,12 @@ import javax.jms.ObjectMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Event;
 import pnnl.goss.core.Request;
-import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.security.util.GossSecurityConstants;
@@ -70,7 +71,6 @@ import pnnl.goss.server.core.GossRequestHandler;
 //import pnnl.goss.security.core.GossSecurityConstants;
 //import pnnl.goss.security.core.SecurityRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
-import static pnnl.goss.core.GossCoreContants.*;
 
 //import org.apache.http.impl.cookie.RFC2109DomainHandler;
 

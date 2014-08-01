@@ -44,7 +44,8 @@
 */
 package pnnl.goss.server.core.internal;
 
-import java.io.File;
+import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
+
 import java.net.URI;
 import java.util.Dictionary;
 
@@ -53,17 +54,12 @@ import javax.jms.JMSException;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.BrokerFactory;
-import org.apache.activemq.broker.BrokerService;
 import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.GossCoreContants;
-import pnnl.goss.security.util.GossSecurityConstants;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
-import pnnl.goss.util.Utilities;
-import static pnnl.goss.core.GossCoreContants.*;
 
 
 public class GridOpticsServer {
