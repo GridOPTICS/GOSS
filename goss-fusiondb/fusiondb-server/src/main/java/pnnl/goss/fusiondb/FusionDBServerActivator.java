@@ -1,11 +1,6 @@
-package goss.pnnl.fusiondb;
+package pnnl.goss.fusiondb;
 
 import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
-import goss.pnnl.fusiondb.handlers.RequestActualTotalHandler;
-import goss.pnnl.fusiondb.handlers.RequestCapacityRequirementHandler;
-import goss.pnnl.fusiondb.handlers.RequestForecastTotalHandler;
-import goss.pnnl.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
-import goss.pnnl.fusiondb.handlers.RequestRTEDScheduleHandler;
 
 import java.util.Dictionary;
 
@@ -19,6 +14,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.fusiondb.handlers.RequestActualTotalHandler;
+import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
+import pnnl.goss.fusiondb.handlers.RequestForecastTotalHandler;
+import pnnl.goss.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
+import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;

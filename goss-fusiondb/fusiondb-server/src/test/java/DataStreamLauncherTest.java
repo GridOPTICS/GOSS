@@ -1,9 +1,9 @@
 import org.apache.http.auth.UsernamePasswordCredentials;
 
-import goss.pnnl.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.core.client.Client;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossClient.PROTOCOL;
+import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 
 
 public class DataStreamLauncherTest {

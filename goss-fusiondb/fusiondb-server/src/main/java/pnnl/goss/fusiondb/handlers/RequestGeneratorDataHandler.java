@@ -1,6 +1,6 @@
-package goss.pnnl.fusiondb.handlers;
+package pnnl.goss.fusiondb.handlers;
 
-import static goss.pnnl.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

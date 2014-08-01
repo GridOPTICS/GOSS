@@ -1,9 +1,4 @@
-package goss.pnnl.fusiondb.launchers;
-
-import goss.pnnl.fusiondb.handlers.RequestActualTotalHandler;
-import goss.pnnl.fusiondb.handlers.RequestCapacityRequirementHandler;
-import goss.pnnl.fusiondb.handlers.RequestForecastTotalHandler;
-import goss.pnnl.fusiondb.handlers.RequestRTEDScheduleHandler;
+package pnnl.goss.fusiondb.launchers;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -29,6 +24,10 @@ import pnnl.goss.fusiondb.datamodel.ActualTotal;
 import pnnl.goss.fusiondb.datamodel.ActualTotalData;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.VizRequest;
+import pnnl.goss.fusiondb.handlers.RequestActualTotalHandler;
+import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
+import pnnl.goss.fusiondb.handlers.RequestForecastTotalHandler;
+import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestActualTotal.Type;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
