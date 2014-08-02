@@ -10,7 +10,6 @@ import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +67,9 @@ public class FusionDBServerActivator {
 			if (!dataServices.contains(PROP_FUSIONDB_DATASERVICE)) {
 				log.debug("Attempting to register dataservice: "
 						+ PROP_FUSIONDB_DATASERVICE);
+				if (datasourceCreator == null){
+					datasourceCreator = new BasicDataSourceCreator();
+				}
 				if (datasourceCreator != null){
 					try {
 						dataServices.registerData(PROP_FUSIONDB_DATASERVICE,
@@ -94,13 +96,13 @@ public class FusionDBServerActivator {
 		uri = (String) config.get(PROP_FUSIONDB_URI);
 
 		log.debug("updated uri: " + uri + "\n\tuser:" + user);
+		registerFusionDataService();
 	}
 
 	@Validate
 	public void start() {
 		log.info("Starting bundle: " + this.getClass().getName());
-		registerFusionDataService();
-
+		
 		if (registrationService != null) {
 			registrationService.addHandlerMapping(RequestActualTotal.class,
 					RequestActualTotalHandler.class);
