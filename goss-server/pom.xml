@@ -5,20 +5,23 @@
 	<artifactId>goss-server</artifactId>
 	<version>0.1.4-SNAPSHOT</version>
 	<name>GOSS Server Jar</name>
-	
+
 	<properties>
 		<felix.framework.version>4.4.0</felix.framework.version>
 		<goss.version>0.1.4-SNAPSHOT</goss.version>
 		<activemq.version>5.9.0</activemq.version>
+
+		<ipojo.version>1.12.0</ipojo.version>
+
 		<org-reflections.version>0.9.8</org-reflections.version>
-		
+
 		<servicemix-xstream.version>1.4.6_1</servicemix-xstream.version>
 		<servicemix-commons-io.version>1.4_3</servicemix-commons-io.version>
 		<servicemix-specs.version>2.4.0</servicemix-specs.version>
 		<apacheds.version>2.0.0-M15</apacheds.version>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<slf4j.version>1.7.5</slf4j.version>
-		
+
 	</properties>
 	<distributionManagement>
 		<repository>
@@ -32,8 +35,20 @@
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.framework</artifactId>
@@ -44,147 +59,162 @@
 			<artifactId>goss-core</artifactId>
 			<version>${goss.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-server</artifactId>
 			<version>${goss.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-security</artifactId>
 			<version>${goss.version}</version>
 		</dependency>
-		
-		<dependency>
+
+		<!-- <dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-server</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-common</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-server</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-sharedperspective-server</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-kairosdb-server</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-fusiondb-server</artifactId>
 			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-mdart-server</artifactId>
 			<version>${goss.version}</version>
+		</dependency> -->
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-fusiondb-server</artifactId>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId>
 			<version>${activemq.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.xbean</groupId>
 			<artifactId>xbean-spring</artifactId>
 			<version>3.8</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections-maven</artifactId>
 			<version>${org-reflections.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
 			<version>${servicemix-xstream.version}</version>
 		</dependency>
-		
+
+
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
+			<version>${servicemix-commons-io.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.directory.server</groupId>
 			<artifactId>apacheds-all</artifactId>
 			<version>${apacheds.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.eclipse.jetty.aggregate</groupId>
 			<artifactId>jetty-all-server</artifactId>
 			<version>8.1.14.v20131031</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-websocket</artifactId>
 			<version>8.1.14.v20131031</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>pnnl.goss.tutorial</groupId>
-			<artifactId>tutorial-pmu-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>${ipojo.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>${ipojo.version}</version>
+		</dependency>
+		<!-- <dependency> <groupId>pnnl.goss.tutorial</groupId> <artifactId>tutorial-pmu-core</artifactId> 
+			<version>0.0.1-SNAPSHOT</version> </dependency> -->
 	</dependencies>
 </project>
