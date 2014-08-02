@@ -75,8 +75,10 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 
 	private static final Logger log = LoggerFactory.getLogger(GossRequestHandlerRegistrationImpl.class);
 	private HashMap<String, String> handlerMap = new HashMap<String, String>();
+	private HashMap<String, Class> handlerToClasss = new HashMap<String, Class>();
 	private GossSecurityHandler securityHandler;
 	private Dictionary coreServerConfig = null;
+	@Requires 
 	private GossDataServices dataServices;
 	
 	public GossRequestHandlerRegistrationImpl(@Requires GossDataServices dataServices){
@@ -168,6 +170,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			
 			// Keep the string of the class.
 			handlerMap.put(request.getName(), handler.getName());
+			handlerToClasss.put(request.getName(), handler);
 
 		} catch (InstantiationException e) {
 			log.error("Couldn't instantiate " + handler.getName(), e);
@@ -258,6 +261,10 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			if (handlerMap.containsKey(request)) {
 				handlerMap.remove(request);
 			}
+			
+			if (handlerToClasss.containsKey(request)){
+				handlerToClasss.remove(request);
+			}
 		}
 	}
 
@@ -265,11 +272,12 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		Response response = null;
 		GossRequestHandler handler = null;
 		if (request != null) {
-			log.debug("handling request for: " + request.getClass().getName());
+			log.debug("handling request for:\n\t " + request.getClass().getName() + " => " + handlerMap.get(request.getClass().getName()));
 
 			if (handlerMap.containsKey(request.getClass().getName())) {
 				try {
-					Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
+					Class handlerClass = handlerToClasss.get(request.getClass().getName());
+					//Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
 					handler = (GossRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
 						handler.setGossDataservices(dataServices);
@@ -358,7 +366,13 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 
 	
 	public void removeSecurityMapping(Class request) {
-		securityHandler.removeHandlerMapping(request);
+		log.debug("Removing security mapping for: "+ request.getClass().getName());
+		if(securityHandler != null){
+			securityHandler.removeHandlerMapping(request);
+		}
+		else{
+			log.error("Security handler is null!");
+		}
 	}
 
 	
