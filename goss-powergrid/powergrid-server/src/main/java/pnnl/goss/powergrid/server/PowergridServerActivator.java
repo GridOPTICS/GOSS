@@ -48,6 +48,12 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Updated;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -68,32 +74,21 @@ import pnnl.goss.powergrid.server.handlers.RequestAvailableDatasourcesHandler;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 import pnnl.goss.powergrid.server.impl.PowergridContextServiceImpl;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
+import pnnl.goss.server.core.BasicDataSourceCreator;
+import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.server.core.InvalidDatasourceException;
+import static pnnl.goss.core.GossCoreContants.*;
 
-public class PowergridServerActivator implements BundleActivator, ManagedService{
+@Instantiate
+@Component(managedservice = PROP_DATASOURCES_CONFIG)
+public class PowergridServerActivator{
 
-	/**
-	 * <p>
-	 * The configuration file in $SMX_HOME/etc will be CONFIG_PID.cfg
-	 * </p>
-	 */
-	private static final String CONFIG_PID = "pnnl.goss.powergrid.server";
-	
-	/**
-	 * <p>
-	 * Allows the tracking of the goss registration service.
-	 * </p>
-	 */
-	private ServiceRegistration registration;
-	
-	/**
-	 * <p>
-	 * A reference to the datasources object that is registered with this class.
-	 * </p>
-	 */
-	private static PowergridDataSources powergridDatasources;
-	
+	public static final String PROP_POWERGRID_DATASERVICE = "goss/powergrid";
+	public static final String PROP_POWERGRID_USER = "powergrid.user";
+	public static final String PROP_POWERGRID_PASSWORD = "powergrid.password";
+	public static final String PROP_POWERGRID_URI = "powergrid.uri";
+		
 	/**
 	 * <p>
 	 * Add logging to the class so that we can debug things effectively after deployment.
@@ -101,76 +96,54 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 	 */
 	private static Logger log = LoggerFactory.getLogger(PowergridServerActivator.class);
 
-	/**
-	 * <p>
-	 * Allows tracking of the registration service from the core-server.
-	 * </p>
-	 */
-	private ServiceTracker registrationTracker;
+	private GossRequestHandlerRegistrationService registrationService;
+	private GossDataServices dataServices;
 	
-	/**
-	 * Keep a reference to the bundle context for unregistering services.
-	 */
-	private static BundleContext bundleContext;
+	@Requires
+	private BasicDataSourceCreator datasourceCreator;
 	
-	/**
-	 * Tracks the registration of the PowergridUpdateService
-	 */
-	private ServiceRegistration contextServiceRegistration;
-	
-	
-	public static BundleContext getBundleContext(){
-		return bundleContext;
-	}
-	
-	
-	
-	@SuppressWarnings("rawtypes")
-	public void start(BundleContext context) {
-		bundleContext = context;
-		
-		System.out.println("Starting bundle"+this.getClass().getName());
-		log.info("Starting bundle: " + this.getClass().getName());
-		try {
-			String filterStr = "(" + Constants.OBJECTCLASS + "=" + GossRequestHandlerRegistrationService.class.getName() + ")";
-			Filter filter = context.createFilter(filterStr);
-			registrationTracker = new ServiceTracker(context, filter, null);
-			registrationTracker.open();
-			
-			// Register the handlers on the registration service.
-			registerPowergridHandlers();
-			
-		} catch (InvalidSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private String user;
+	private String password;
+	private String uri;
 
-		registration = context.registerService(ManagedService.class.getName(), this, getDefaults());
-		
-		
-		
-		PowergridServerActivator.powergridDatasources = PowergridDataSources.instance();
-		context.registerService(PowergridDataSources.class.getName(), PowergridServerActivator.powergridDatasources, new Hashtable());
-		
-		contextServiceRegistration = bundleContext.registerService(PowergridContextService.class.getName(), new PowergridContextServiceImpl(), null);
+	
+	public PowergridServerActivator(
+			@Requires GossRequestHandlerRegistrationService registrationService,
+			@Requires GossDataServices dataServices) {
+		this.registrationService = registrationService;
+		this.dataServices = dataServices;
+		log.debug("Constructing activator");
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Hashtable getDefaults(){
-		Hashtable properties= new Hashtable();
-		properties.put(Constants.SERVICE_PID,  CONFIG_PID);
-		//properties.put("datasource0", "datasource0=northandsouth,jdbc:mysql://localhost:3306/northandsouth,root,rootpass,com.mysql.jdbc.Driver");
-		return properties;
+	
+	private void registerDataService() {
+		if (dataServices != null) {
+			if (!dataServices.contains(PROP_POWERGRID_DATASERVICE)) {
+				log.debug("Attempting to register dataservice: "
+						+ PROP_POWERGRID_DATASERVICE);
+				if (datasourceCreator == null){
+					datasourceCreator = new BasicDataSourceCreator();
+				}
+				if (datasourceCreator != null){
+					try {
+						dataServices.registerData(PROP_POWERGRID_DATASERVICE,
+								datasourceCreator.create(uri, user, password));
+					} catch (Exception e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+				else{
+					log.error("datasourceCreator is null!");
+				}
+			}
+		} else {
+			log.error("dataServices is null!");
+		}
 	}
 	
-	/**
-	 * <p>
-	 * The registerPowergridHandlers method registers the handlers with the GossRequestHandlerRegistrationService.
-	 * </p>
-	 */
-	private void registerPowergridHandlers(){
-		GossRequestHandlerRegistrationService registrationService = (GossRequestHandlerRegistrationService) registrationTracker.getService();
-		
+	@Validate
+	public void start(){
+				
 		if(registrationService != null){
 			// Registering service handlers here
 			registrationService.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
@@ -184,13 +157,12 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 			log.debug(GossRequestHandlerRegistrationService.class.getName()+" not found!");
 		}		
 	}
-
-	public void stop(BundleContext context) {
+	
+	@Invalidate
+	public void stop() {
 		try {
 			log.info("Stopping the bundle"+this.getClass().getName());
-			System.out.println("Stopping the bundle"+this.getClass().getName());
-			GossRequestHandlerRegistrationService registrationService = (GossRequestHandlerRegistrationService) registrationTracker.getService();
-
+			
 			if (registrationService != null) {
 				registrationService.removeHandlerMapping(RequestPowergrid.class);
 				registrationService.removeHandlerMapping(RequestPowergridTimeStep.class);
@@ -198,20 +170,7 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 				
 				registrationService.removeSecurityMapping(RequestPowergrid.class);
 				registrationService.removeSecurityMapping(RequestPowergridTimeStep.class);
-			}
-			
-			if (registration != null){
-				registration.unregister();
-			}
-			
-			if (powergridDatasources  != null){
-				powergridDatasources.shutdown();
-			}
-			
-			if (contextServiceRegistration != null){
-				contextServiceRegistration.unregister();
-			}
-
+			}			
 			
 		} catch (Exception e) {
 			log.error(e.getStackTrace().toString());
@@ -219,28 +178,19 @@ public class PowergridServerActivator implements BundleActivator, ManagedService
 		}
 	}
 
+	
 
 	@SuppressWarnings("rawtypes")
-	public synchronized void updated(Dictionary configuration) throws ConfigurationException {
+	@Updated
+	public synchronized void updated(Dictionary config) throws ConfigurationException {
 		log.debug("Updating configuration for: "+this.getClass().getName());
-		
-		if (configuration == null){
-			registration.setProperties(getDefaults());
-		}
-		else{
-			try {
-				powergridDatasources.addConnections(configuration, "datasource");
-				// Sets the other properties in the configuration file to be on the service.
-				registration.setProperties(configuration);
-			} catch (SQLException e) {
-				log.error("SqlException", e);
-				throw new ConfigurationException("Sql Exception", null, e);
-			} catch (InvalidDatasourceException e) {
-				log.error("InvalidDatasourceException", e);
-				throw new ConfigurationException("InvalidDatasourceException", null, e);
-			}
+		log.debug("updating");
+		user = (String) config.get(PROP_POWERGRID_USER);
+		password = (String) config.get(PROP_POWERGRID_PASSWORD);
+		uri = (String) config.get(PROP_POWERGRID_URI);
 
-		}
+		log.debug("updated uri: " + uri + "\n\tuser:" + user);
+		registerDataService();
 		
 	}
 

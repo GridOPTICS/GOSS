@@ -44,6 +44,8 @@
 */
 package pnnl.goss.powergrid.server.handlers;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
@@ -54,15 +56,16 @@ public class RequestAvailableDatasourcesHandler extends GossRequestHandler {
 
 	@Override
 	public Response handle(Request request) {
-				
-		DataResponse dataResponse = new DataResponse();
+		throw new NotImplementedException();
 		
-		//Data data = new Data();
-		//data.
-		
-		dataResponse.setData(PowergridDataSources.instance().getDatasourceKeys());
-		dataResponse.setResponseComplete(true);
-		return dataResponse;
+//		DataResponse dataResponse = new DataResponse();
+//		
+//		//Data data = new Data();
+//		//data.
+//		//dataResponse.setData(new ArrayList);
+//		//dataResponse.setData(PowergridDataSources.instance().getDatasourceKeys());
+//		dataResponse.setResponseComplete(true);
+//		return dataResponse;
 	}
 
 }
