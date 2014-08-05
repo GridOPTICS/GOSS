@@ -89,7 +89,7 @@ public class RequestForecastTotalHandler extends GossRequestHandler{
 			System.out.println(dbQuery);
 			rs = stmt.executeQuery(dbQuery);
 			
-			if(viz==true){
+			if(viz==false){
 				List<Double> valuesList = new ArrayList<Double>();
 				List<String> timestampsList = new ArrayList<String>();
 				List<Integer> intervalsList = new ArrayList<Integer>();

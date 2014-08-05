@@ -88,7 +88,7 @@ public class RequestRTEDScheduleHandler extends GossRequestHandler{
 			rs = stmt.executeQuery(dbQuery);
 			
 			
-			if(viz=false){
+			if(viz==false){
 			List<String> timestampsList = new ArrayList<String>();
 			List<Integer> intervalList = new ArrayList<Integer>();
 			List<Double> genList = new ArrayList<Double>();
