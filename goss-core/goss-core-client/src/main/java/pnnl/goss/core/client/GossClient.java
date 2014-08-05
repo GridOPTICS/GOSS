@@ -132,7 +132,7 @@ public class GossClient implements Client{
 	
 	private boolean createSession() throws ConfigurationException{
 		if(config == null){
-			config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CONFIG)));
+			config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
 			
 			if (config == null){
 				throw new ConfigurationException("Invalid ClientConfiguration object!");
