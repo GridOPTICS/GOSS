@@ -44,82 +44,28 @@
 */
 package pnnl.goss.server;
 
-//import goss.pnnl.fusiondb.handlers.RequestUploadTestHandler;
-import goss.pnnl.kairosdb.handlers.RequestKairosTestHandler;
-import goss.pnnl.kairosdb.handlers.RequestPMUKairosHandler;
-import goss.pnnl.kairosdb.handlers.RequestPMUMetadataHandler;
-
-import java.sql.SQLException;
 import java.util.Dictionary;
 
-import pnnl.goss.core.UploadRequest;
-import pnnl.goss.fusiondb.handlers.FusionUploadHandler;
-import pnnl.goss.fusiondb.handlers.RequestActualTotalHandler;
-import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
-import pnnl.goss.fusiondb.handlers.RequestForecastTotalHandler;
-import pnnl.goss.fusiondb.handlers.RequestGeneratorDataHandler;
-import pnnl.goss.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
-import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
-import pnnl.goss.fusiondb.requests.RequestActualTotal;
-import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
-import pnnl.goss.fusiondb.requests.RequestForecastTotal;
-import pnnl.goss.fusiondb.requests.RequestGeneratorData;
-import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
-import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
-//import pnnl.goss.fusiondb.requests.RequestUploadTest;
-import pnnl.goss.gridmw.handlers.RequestGridMWTestHandler;
-import pnnl.goss.gridmw.handlers.RequestPMUHandler;
-import pnnl.goss.gridmw.requests.RequestGridMWAsyncTest;
-import pnnl.goss.gridmw.requests.RequestGridMWTest;
-import pnnl.goss.gridmw.requests.RequestPMU;
-import pnnl.goss.handlers.TutorialDesktopDownloadHandler;
-import pnnl.goss.handlers.TutorialDesktopHandler;
-import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
-//import pnnl.goss.hpc.handlers.ExecuteHPCHandler;
-import pnnl.goss.kairosdb.requests.RequestKairosTest;
-import pnnl.goss.kairosdb.requests.RequestPMUKairos;
-import pnnl.goss.kairosdb.requests.RequestPMUMetaData;
-import pnnl.goss.mdart.common.requests.RequestPIRecords;
-import pnnl.goss.mdart.server.handlers.RequestPIRecordsHandler;
-import pnnl.goss.powergrid.requests.RequestPowergrid;
-import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
-import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
-import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
-import pnnl.goss.tutorial.request.TutorialDownloadRequestSync;
-import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
-import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
-import pnnl.goss.server.core.InvalidDatasourceException;
+import pnnl.goss.fusiondb.FusionDBServerActivator;
+import pnnl.goss.server.core.GossDataServices;
+import pnnl.goss.server.core.internal.GossDataServicesImpl;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
 import pnnl.goss.server.core.internal.GridOpticsServer;
-import pnnl.goss.sharedperspective.common.requests.RequestAlertContext;
-import pnnl.goss.sharedperspective.common.requests.RequestAlerts;
-import pnnl.goss.sharedperspective.common.requests.RequestContingencyResult;
-import pnnl.goss.sharedperspective.common.requests.RequestLineLoad;
-import pnnl.goss.sharedperspective.common.requests.RequestLineLoadAsyncTest;
-import pnnl.goss.sharedperspective.common.requests.RequestLineLoadTest;
-import pnnl.goss.sharedperspective.common.requests.RequestTopology;
-import pnnl.goss.sharedperspective.server.handlers.RequestAlertHandler;
-import pnnl.goss.sharedperspective.server.handlers.RequestContingencyResultHandler;
-import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadHandler;
-import pnnl.goss.sharedperspective.server.handlers.RequestLineLoadTestHandler;
-import pnnl.goss.sharedperspective.server.handlers.RequestTopologyHandler;
-import pnnl.goss.tutorial.launchers.AggregatorLauncher;
-import pnnl.goss.tutorial.launchers.GeneratorLauncher;
-import pnnl.goss.tutorial.launchers.PythonJavaGatewayLauncher;
 import pnnl.goss.util.Utilities;
+import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
+import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
+
 
 public class ServerMain {
 
-	private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg"; 
+	//private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg"; 
 
 	public void attachShutdownHook(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
-
 			@Override
 			public void run() {
 				System.out.println("Shutdown server main");
 			}
-
 		});
 
 	}
@@ -130,12 +76,28 @@ public class ServerMain {
 		ServerMain main = new ServerMain();
 		main.attachShutdownHook();
 
-		// Add mappings to handler
-		GossRequestHandlerRegistrationService handlers = new GossRequestHandlerRegistrationImpl();
-		//------------------------------------Powergrid(CA)----------------------------------------
-		handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
-		handlers.addHandlerMapping(RequestPowergridTimeStep.class, RequestPowergridHandler.class);
+		GossDataServices dataServices = new GossDataServicesImpl();
+		GossRequestHandlerRegistrationImpl registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
+		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
+		
+		
+		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(registrationService, dataServices);
+		fusionDBServerActivator.update(dataSourcesConfig);
+		fusionDBServerActivator.start();
+		
+		Dictionary coreConfig = Utilities.loadProperties(PROP_CORE_CONFIG);
+		registrationService.setCoreServerConfig(coreConfig);
+		@SuppressWarnings("unused")
+		GridOpticsServer server = new GridOpticsServer(registrationService, true);
+		
+		
+		//TODO: All the lines below to be removed after all the bundles are tested.
+		//GossRequestHandlerRegistrationService handlers = new GossRequestHandlerRegistrationImpl(dataServices);
 
+		//------------------------------------Powergrid(CA)----------------------------------------
+		/*handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
+		handlers.addHandlerMapping(RequestPowergridTimeStep.class, RequestPowergridHandler.class);
+		
 
 		//---------------------------Performance Testing-------------------------------------------
 		handlers.addHandlerMapping(RequestGridMWTest.class, RequestGridMWTestHandler.class);
@@ -174,7 +136,8 @@ public class ServerMain {
 		
 		//-------------------------------------HPC-------------------------------------------------
 		//handlers.addHandlerMapping(ExecuteRequest.class, ExecuteHPCHandler.class);
-
+		
+		
 		//-------------------------------------Fusion----------------------------------------------
 		handlers.addHandlerMapping(RequestActualTotal.class, RequestActualTotalHandler.class);
 		handlers.addHandlerMapping(RequestCapacityRequirement.class, RequestCapacityRequirementHandler.class);
@@ -206,28 +169,30 @@ public class ServerMain {
 		//Start launcher and aggregators
 		String[] arguments = new String[] {};
 		//Start aggregator and generator listening so they can be started by web ui
+		 * 
+		 */
 	    
-		try {
-			Dictionary config = Utilities.loadProperties(powergridDatasourceConfig);
+		//try {
+			//Dictionary config = Utilities.loadProperties(powergridDatasourceConfig);
 
-			PowergridDataSources.instance().addConnections(config, "datasource");
-			Dictionary coreConfig = Utilities.loadProperties("config.properties");
-			handlers.setCoreServerConfig(coreConfig);
-			@SuppressWarnings("unused")
-			GridOpticsServer server = new GridOpticsServer(handlers, true);
+			//PowergridDataSources.instance().addConnections(config, "datasource");
+			//Dictionary coreConfig = Utilities.loadProperties("config.properties");
+			//handlers.setCoreServerConfig(coreConfig);
+			//@SuppressWarnings("unused")
+			//GridOpticsServer server = new GridOpticsServer(registrationService, true);
 			
 			//Launch the generator and aggregator listeners
-			new AggregatorLauncher().start();
-		    new GeneratorLauncher().start();
-		    new PythonJavaGatewayLauncher().start();
+			//new AggregatorLauncher().start();
+		    //new GeneratorLauncher().start();
+		    //new PythonJavaGatewayLauncher().start();
 
-		} catch (SQLException e) {
+		/*} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidDatasourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 
 
 	}
