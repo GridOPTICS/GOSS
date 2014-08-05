@@ -54,12 +54,14 @@ import javax.jms.JMSException;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
+
+import static pnnl.goss.core.GossCoreContants.PROP_ACTIVEMQ_CONFIG;
 
 
 public class GridOpticsServer {
@@ -148,17 +150,22 @@ public class GridOpticsServer {
 //		}
 //	}
 	
+	@SuppressWarnings({"rawtypes" })
 	private void startBroker(Dictionary config) throws Exception {
-		throw new NotImplementedException();
 		
-		/*
-		Utilities.getInstance();
+		URI brokerConfig = new URI("xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG));
+		log.debug("Starting broker using config: " + brokerConfig);
+		
 		System.setProperty("activemq.base", System.getProperty("user.dir"));
 		log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-		String brokerConfig = new File((String)config.get(PROP_ACTIVEMQ_CONFIG));
-		BrokerService broker = BrokerFactory.createBroker(.toString(), true);
-		Utilities.setbrokerURI(broker.getTransportConnectors().get(0).getConnectUri());
-		broker.start();*/
+		
+		String brokerUri = (String) config.get(PROP_OPENWIRE_URI);
+		log.debug("Activemq broker uri: " + brokerUri);
+		
+		BrokerService broker = new BrokerService(); 
+		broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
+		broker.addConnector(brokerUri);
+		broker.start();
 	}
 	
 	private void makeActiveMqConnection(URI brokerUri) throws JMSException{
