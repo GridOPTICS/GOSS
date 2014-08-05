@@ -13,14 +13,17 @@ import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.fusiondb.handlers.FusionUploadHandler;
 import pnnl.goss.fusiondb.handlers.RequestActualTotalHandler;
 import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
 import pnnl.goss.fusiondb.handlers.RequestForecastTotalHandler;
+import pnnl.goss.fusiondb.handlers.RequestGeneratorDataHandler;
 import pnnl.goss.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
 import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
+import pnnl.goss.fusiondb.requests.RequestGeneratorData;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
@@ -116,7 +119,16 @@ public class FusionDBServerActivator {
 					RequestHAInterchangeScheduleHandler.class);
 			registrationService.addHandlerMapping(RequestRTEDSchedule.class,
 					RequestRTEDScheduleHandler.class);
-
+			registrationService.addHandlerMapping(RequestGeneratorData.class, 
+					RequestGeneratorDataHandler.class);
+			
+			registrationService.addUploadHandlerMapping("CapacityRequirement", 
+					FusionUploadHandler.class);
+			registrationService.addUploadHandlerMapping("fusion_GeneratorData", 
+					FusionUploadHandler.class);
+			
+			
+			
 			// Fusion Security----------------------------------------------
 			registrationService.addSecurityMapping(RequestActualTotal.class,
 					AccessControlHandlerAllowAll.class);
