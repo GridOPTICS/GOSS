@@ -8,6 +8,7 @@ public class GossCoreContants {
 	
 	// Confguration file to use
 	public static final String PROP_CORE_CONFIG = "pnnl.goss.core";
+	public static final String PROP_CORE_CLIENT_CONFIG = "pnnl.goss.core.client";
 	
 	// Different protocol uris
 	public static final String PROP_OPENWIRE_URI = "goss.openwire.uri";
