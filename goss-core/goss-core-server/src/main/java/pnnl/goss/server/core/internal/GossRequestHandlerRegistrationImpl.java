@@ -326,6 +326,8 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 					Class handlerClass = Class.forName(handlerMap.get(dataType));
 					handler = (GossRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
+						handler.setGossDataservices(dataServices);
+						handler.setHandlerService(this);
 						response = handler.handle(request);
 					}
 					/*
