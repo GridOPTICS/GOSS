@@ -52,11 +52,9 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
-import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.client.GossClient;
-import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.fusiondb.datamodel.ActualTotal;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
@@ -90,7 +88,7 @@ public class ClientMainFusion {
 			uploadCapacityRequirements();
 			requestCapacityRequirement();
 			uploadGeneratorData();
-			//requestGeneratorData();
+			requestGeneratorData();
 			
 		/*	GossResponseEvent event = new GossResponseEvent() {
 				
@@ -204,7 +202,6 @@ public class ClientMainFusion {
 		
 		/*if(response.isSuccess())
 				client.publish("/topic/goss/fusion/capacity", data,RESPONSE_FORMAT.JSON);*/
-		System.out.println(response.getMessage());
 		if(response.getMessage()!=null)
 			System.out.println(response.getMessage());
 		
@@ -267,7 +264,7 @@ public class ClientMainFusion {
 		RequestGeneratorData request = new RequestGeneratorData(-1, -1);
 		DataResponse response  = (DataResponse)client.getResponse(request);
 		if(response.getData() instanceof DataError){
-			((DataError)response.getData()).getMessage();
+			System.out.println(((DataError)response.getData()).getMessage());
 		}
 		else{
 		GeneratorData data = (GeneratorData)response.getData();
