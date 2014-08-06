@@ -72,6 +72,8 @@
         <transportConnectors>
              <!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB -->
             <transportConnector name="openwire" uri="tcp://0.0.0.0:61616?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="stomp" uri="stomp://0.0.0.0:61613?wireFormat.maxInactivityDuration=0"/>
+            <transportConnector name="ws" uri="ws://0.0.0.0:61614?wireFormat.maxInactivityDuration=0" />
         </transportConnectors>
 		
 		<!---->
