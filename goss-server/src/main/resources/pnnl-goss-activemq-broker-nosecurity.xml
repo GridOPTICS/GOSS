@@ -25,8 +25,7 @@
 
 
     <broker xmlns="http://activemq.apache.org/schema/core"
-            brokerName="${broker-name}"
-            dataDirectory="${data}"
+            brokerName="pnnl-goss-activemq-broker-nosecurity.xml"
             start="false">
 
         <destinationPolicy>
