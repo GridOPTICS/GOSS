@@ -47,6 +47,7 @@ package pnnl.goss.server;
 import java.util.Dictionary;
 
 import pnnl.goss.fusiondb.FusionDBServerActivator;
+import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.internal.GossDataServicesImpl;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
@@ -76,19 +77,24 @@ public class ServerMain {
 		ServerMain main = new ServerMain();
 		main.attachShutdownHook();
 
-		GossDataServices dataServices = new GossDataServicesImpl();
-		GossRequestHandlerRegistrationImpl registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
 		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
+		Dictionary coreConfig = Utilities.loadProperties(PROP_CORE_CONFIG);
 		
+		GossDataServices dataServices = new GossDataServicesImpl();
+		
+		GossRequestHandlerRegistrationImpl registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
+		registrationService.setCoreServerConfig(coreConfig);
 		
 		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(registrationService, dataServices);
 		fusionDBServerActivator.update(dataSourcesConfig);
 		fusionDBServerActivator.start();
 		
-		Dictionary coreConfig = Utilities.loadProperties(PROP_CORE_CONFIG);
-		registrationService.setCoreServerConfig(coreConfig);
 		@SuppressWarnings("unused")
 		GridOpticsServer server = new GridOpticsServer(registrationService, true);
+		
+		//Fusion Launchers----------------------------------------------
+		DataStreamLauncher launcher = new DataStreamLauncher();
+		launcher.startLauncher();
 		
 		
 		//TODO: All the lines below to be removed after all the bundles are tested.
