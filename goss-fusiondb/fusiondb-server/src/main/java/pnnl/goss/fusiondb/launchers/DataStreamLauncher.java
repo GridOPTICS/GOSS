@@ -1,11 +1,12 @@
 package pnnl.goss.fusiondb.launchers;
 
+import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Dictionary;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -16,13 +17,10 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-import pnnl.goss.core.client.Client;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossClient.PROTOCOL;
 import pnnl.goss.core.client.GossResponseEvent;
-import pnnl.goss.fusiondb.datamodel.ActualTotal;
-import pnnl.goss.fusiondb.datamodel.ActualTotalData;
-import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
+import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.datamodel.VizRequest;
 import pnnl.goss.fusiondb.handlers.RequestActualTotalHandler;
 import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
@@ -33,8 +31,11 @@ import pnnl.goss.fusiondb.requests.RequestActualTotal.Type;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
+import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandler;
-import scala.annotation.meta.setter;
+import pnnl.goss.server.core.internal.GossDataServicesImpl;
+import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
+import pnnl.goss.util.Utilities;
 
 import com.google.gson.Gson;
 
@@ -44,7 +45,7 @@ public class DataStreamLauncher implements Runnable {
 	
 	private volatile boolean isRunning = false;
 	
-	Client client = new GossClient(PROTOCOL.STOMP);
+	GossClient client = new GossClient(PROTOCOL.STOMP);
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	String controlTopic = "goss/fusion/viz/control";
@@ -173,10 +174,17 @@ public class DataStreamLauncher implements Runnable {
 	 */
 	private void publishHistoricData(String timeStamp, String endTimestamp){
 
+		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
+		GossDataServices dataServices = new GossDataServicesImpl();
+		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(null, dataServices);
+		fusionDBServerActivator.update(dataSourcesConfig);
+		
+		
 		// capacity requirement
 		Request request = new RequestCapacityRequirement(timeStamp,endTimestamp);
 		RequestCapacityRequirementHandler handler = new RequestCapacityRequirementHandler();
 		handler.viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		DataResponse response = (DataResponse)handler.handle(request);
 		client.publish(historicCapaReqTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		Gson gson = new Gson();
@@ -186,6 +194,7 @@ public class DataStreamLauncher implements Runnable {
 		request = new RequestRTEDSchedule(timeStamp, endTimestamp);
 		RequestRTEDScheduleHandler rtedhandler = new RequestRTEDScheduleHandler();
 		rtedhandler.viz = true;
+		rtedhandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)rtedhandler.handle(request);
 		client.publish(historicInterchangeScheduleTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -194,6 +203,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.INTERHCHANGE, timeStamp, endTimestamp);
 		RequestActualTotalHandler actualtotalhandler = new RequestActualTotalHandler();
 		actualtotalhandler.viz = true;
+		actualtotalhandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)actualtotalhandler.handle(request);
 		client.publish(historicInterchangeTotalTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -202,6 +212,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.LOAD, timeStamp, endTimestamp);
 		actualtotalhandler = new RequestActualTotalHandler();
 		actualtotalhandler.viz = true;
+		actualtotalhandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)actualtotalhandler.handle(request);
 		client.publish(historicActualLoadTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -210,6 +221,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.WIND, timeStamp, endTimestamp);
 		actualtotalhandler = new RequestActualTotalHandler();
 		actualtotalhandler.viz = true;
+		actualtotalhandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)actualtotalhandler.handle(request);
 		client.publish(historicActualWindTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -218,6 +230,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.SOLAR, timeStamp, endTimestamp);
 		actualtotalhandler = new RequestActualTotalHandler();
 		actualtotalhandler.viz = true;
+		actualtotalhandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)actualtotalhandler.handle(request);
 		client.publish(historicActualSolarTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -226,6 +239,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestForecastTotal(pnnl.goss.fusiondb.requests.RequestForecastTotal.Type.LOAD, timeStamp, endTimestamp);
 		RequestForecastTotalHandler forecasthandler = new RequestForecastTotalHandler();
 		forecasthandler.viz = true;
+		forecasthandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)forecasthandler.handle(request);
 		client.publish(historicForecastLoadTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -234,6 +248,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestForecastTotal(pnnl.goss.fusiondb.requests.RequestForecastTotal.Type.SOLAR, timeStamp, endTimestamp);
 		forecasthandler = new RequestForecastTotalHandler();
 		forecasthandler.viz = true;
+		forecasthandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)forecasthandler.handle(request);
 		client.publish(historicForecastSolarTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
@@ -242,16 +257,22 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestForecastTotal(pnnl.goss.fusiondb.requests.RequestForecastTotal.Type.WIND, timeStamp, endTimestamp);
 		forecasthandler = new RequestForecastTotalHandler();
 		forecasthandler.viz = true;
+		forecasthandler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)forecasthandler.handle(request);
 		client.publish(historicForecastWindTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 		System.out.println(gson.toJson(response.getData()));
 	}
 
 	private void publishCurrentData(String timeStamp, String endTimestamp){
-
+		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
+		GossDataServices dataServices = new GossDataServicesImpl();
+		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(null, dataServices);
+		fusionDBServerActivator.update(dataSourcesConfig);
+		
 		// capacity requirement
 		Request request = new RequestCapacityRequirement(timeStamp,endTimestamp);
 		GossRequestHandler handler = new RequestCapacityRequirementHandler();
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		((RequestCapacityRequirementHandler)handler).viz = true;
 		DataResponse response = (DataResponse)handler.handle(request);
 		client.publish(currentCapaReqTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
@@ -260,6 +281,7 @@ public class DataStreamLauncher implements Runnable {
 		request = new RequestRTEDSchedule(timeStamp, endTimestamp);
 		handler = new RequestRTEDScheduleHandler();
 		((RequestRTEDScheduleHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentInterchangeScheduleTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -267,6 +289,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.INTERHCHANGE, timeStamp, endTimestamp);
 		handler = new RequestActualTotalHandler();
 		((RequestActualTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentInterchangeTotalTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -274,6 +297,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.LOAD, timeStamp, endTimestamp);
 		handler = new RequestActualTotalHandler();
 		((RequestActualTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentActualLoadTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -281,6 +305,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.WIND, timeStamp, endTimestamp);
 		handler = new RequestActualTotalHandler();
 		((RequestActualTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentActualWindTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -288,6 +313,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestActualTotal(Type.SOLAR, timeStamp, endTimestamp);
 		handler = new RequestActualTotalHandler();
 		((RequestActualTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentActualSolarTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -295,6 +321,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestForecastTotal(pnnl.goss.fusiondb.requests.RequestForecastTotal.Type.LOAD, timeStamp, endTimestamp);
 		handler = new RequestForecastTotalHandler();
 		((RequestForecastTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentForecastLoadTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -302,6 +329,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestForecastTotal(pnnl.goss.fusiondb.requests.RequestForecastTotal.Type.SOLAR, timeStamp, endTimestamp);
 		handler = new RequestForecastTotalHandler();
 		((RequestForecastTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentForecastSolarTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
@@ -309,6 +337,7 @@ public class DataStreamLauncher implements Runnable {
 		request =  new RequestForecastTotal(pnnl.goss.fusiondb.requests.RequestForecastTotal.Type.WIND, timeStamp, endTimestamp);
 		handler = new RequestForecastTotalHandler();
 		((RequestForecastTotalHandler)handler).viz = true;
+		handler.setGossDataservices(fusionDBServerActivator.getDataServices());
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentForecastWindTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
