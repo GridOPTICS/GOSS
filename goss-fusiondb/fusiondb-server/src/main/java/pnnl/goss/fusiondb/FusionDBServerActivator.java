@@ -20,6 +20,7 @@ import pnnl.goss.fusiondb.handlers.RequestForecastTotalHandler;
 import pnnl.goss.fusiondb.handlers.RequestGeneratorDataHandler;
 import pnnl.goss.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
 import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
+import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
@@ -30,6 +31,7 @@ import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.BasicDataSourceCreator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
+import pnnl.goss.server.core.internal.GossDataServicesImpl;
 
 @Instantiate
 @Component(managedservice = PROP_DATASOURCES_CONFIG)
@@ -142,6 +144,12 @@ public class FusionDBServerActivator {
 					AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestRTEDSchedule.class,
 					AccessControlHandlerAllowAll.class);
+			
+			// Fusion Launchers----------------------------------------------
+			//DataStreamLauncher launcher = new DataStreamLauncher();
+			//launcher.startLauncher();
+			
+			
 		} else {
 			log.error(GossRequestHandlerRegistrationService.class.getName()
 					+ " not found!");
@@ -183,6 +191,12 @@ public class FusionDBServerActivator {
 				dataServices.unRegisterData(PROP_FUSIONDB_DATASERVICE);
 			}
 		}
+	}
+	
+	public GossDataServices getDataServices(){
+		GossDataServices dataServicesImpl =  new GossDataServicesImpl();
+		dataServicesImpl = this.dataServices;
+		return dataServicesImpl;
 	}
 
 }
