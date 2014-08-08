@@ -31,7 +31,6 @@ import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.BasicDataSourceCreator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
-import pnnl.goss.server.core.internal.GossDataServicesImpl;
 
 @Instantiate
 @Component(managedservice = PROP_DATASOURCES_CONFIG)
@@ -146,7 +145,7 @@ public class FusionDBServerActivator {
 					AccessControlHandlerAllowAll.class);
 			
 			// Fusion Launchers----------------------------------------------
-			DataStreamLauncher launcher = new DataStreamLauncher();
+			DataStreamLauncher launcher = new DataStreamLauncher(registrationService, dataServices);
 			launcher.startLauncher();
 			
 			
@@ -191,12 +190,6 @@ public class FusionDBServerActivator {
 				dataServices.unRegisterData(PROP_FUSIONDB_DATASERVICE);
 			}
 		}
-	}
-	
-	public GossDataServices getDataServices(){
-		GossDataServices dataServicesImpl =  new GossDataServicesImpl();
-		dataServicesImpl = this.dataServices;
-		return dataServicesImpl;
 	}
 
 }

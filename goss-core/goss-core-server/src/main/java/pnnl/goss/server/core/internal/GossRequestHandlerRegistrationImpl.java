@@ -83,6 +83,9 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	
 	public GossRequestHandlerRegistrationImpl(@Requires GossDataServices dataServices){
 		log.debug("Constructing");
+		if (dataServices == null){
+			throw new NullPointerException("DataServices cannot be null!");
+		}
 		this.dataServices = dataServices;
 	}
 	

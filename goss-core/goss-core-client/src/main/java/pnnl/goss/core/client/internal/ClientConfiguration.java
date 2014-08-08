@@ -75,7 +75,7 @@ public class ClientConfiguration {
 	@SuppressWarnings("rawtypes")
 	@Updated
 	public void update(Dictionary config){
-		String[] keys = {PROP_OPENWIRE_URI};
+		String[] keys = {PROP_OPENWIRE_URI, PROP_STOMP_URI};
 		updateProperties(keys, config);
 	}
 	

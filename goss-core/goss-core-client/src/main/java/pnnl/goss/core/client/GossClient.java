@@ -45,6 +45,7 @@
 package pnnl.goss.core.client;
 
 import java.io.Serializable;
+import java.util.Dictionary;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -128,6 +129,12 @@ public class GossClient implements Client{
 	
 	public void setConfiguration(ClientConfiguration configuration){
 		config = configuration;		
+	}
+	
+	
+	public void setConfiguration(Dictionary configuration){
+		config = new ClientConfiguration(null);
+		config.update(configuration);
 	}
 	
 	private boolean createSession() throws ConfigurationException{
