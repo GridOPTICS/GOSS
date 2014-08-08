@@ -85,16 +85,17 @@ public class ServerMain {
 		GossRequestHandlerRegistrationImpl registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
 		registrationService.setCoreServerConfig(coreConfig);
 		
+		@SuppressWarnings("unused")
+		GridOpticsServer server = new GridOpticsServer(registrationService, true);
+				
 		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(registrationService, dataServices);
 		fusionDBServerActivator.update(dataSourcesConfig);
 		fusionDBServerActivator.start();
 		
-		@SuppressWarnings("unused")
-		GridOpticsServer server = new GridOpticsServer(registrationService, true);
 		
 		//Fusion Launchers----------------------------------------------
-		DataStreamLauncher launcher = new DataStreamLauncher();
-		launcher.startLauncher();
+//		DataStreamLauncher launcher = new DataStreamLauncher();
+//		launcher.startLauncher();
 		
 		
 		//TODO: All the lines below to be removed after all the bundles are tested.

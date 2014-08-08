@@ -146,8 +146,8 @@ public class FusionDBServerActivator {
 					AccessControlHandlerAllowAll.class);
 			
 			// Fusion Launchers----------------------------------------------
-			//DataStreamLauncher launcher = new DataStreamLauncher();
-			//launcher.startLauncher();
+			DataStreamLauncher launcher = new DataStreamLauncher();
+			launcher.startLauncher();
 			
 			
 		} else {
