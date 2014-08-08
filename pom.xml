@@ -92,7 +92,7 @@
 	<modules>
 		<module>goss-core</module>
         <module>goss-fusiondb</module>
-		<module>goss-powergrid-feature</module>
+		<module>goss-powergrid</module>
 		<module>goss-gridmw-feature</module>
 		<module>goss-tool-gridpack-feature</module>
 		<module>goss-tool-fncs-feature</module>
