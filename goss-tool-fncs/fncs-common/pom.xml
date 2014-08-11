@@ -14,7 +14,7 @@
 	
 	<parent>
 		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-tool-fncs-feature</artifactId>
+		<artifactId>goss-tool-fncs</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
 	</parent>
 	
@@ -56,9 +56,9 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>pnnl.goss.fncs.common.FNCSCommonActivator</Bundle-Activator>
 						<Export-Package>
 							pnnl.goss.fncs.common;version=${project.version},
 							pnnl.goss.fncs.common.datamodel;version=${project.version}
