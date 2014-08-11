@@ -44,33 +44,142 @@
 */
 package pnnl.goss.mdart;
 
+import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
+
 import java.util.Dictionary;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Updated;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MDARTServerActivator implements BundleActivator, ManagedService{
+import pnnl.goss.mdart.common.requests.RequestPIRecords;
+import pnnl.goss.mdart.server.handlers.RequestPIRecordsHandler;
+import pnnl.goss.server.core.BasicDataSourceCreator;
+import pnnl.goss.server.core.GossDataServices;
+import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
-	@Override
-	public void updated(Dictionary properties) throws ConfigurationException {
-		// TODO Auto-generated method stub
+@Instantiate
+@Component(managedservice = PROP_DATASOURCES_CONFIG)
+public class MDARTServerActivator {
+
+	public static final String PROP_MDARTDB_DATASERVICE = "goss/mdartdb";
+	public static final String PROP_MDARTDB_USER = "mdartdb.user";
+	public static final String PROP_MDARTDB_PASSWORD = "mdartdb.password";
+	public static final String PROP_MDARTDB_URI = "mdartdb.uri";
+	
+	
+	/**
+	 * <p>
+	 * Add logging to the class so that we can debug things effectively after
+	 * deployment.
+	 * </p>
+	 */
+	private static Logger log = LoggerFactory
+			.getLogger(MDARTServerActivator.class);
+	
+	private GossRequestHandlerRegistrationService registrationService;
+	private GossDataServices dataServices;
+	@Requires
+	private BasicDataSourceCreator datasourceCreator;
+
+	private String user;
+	private String password;
+	private String uri;
+	
+	
+	
+	public MDARTServerActivator(
+			@Requires GossRequestHandlerRegistrationService registrationService,
+			@Requires GossDataServices dataServices) {
+		this.registrationService = registrationService;
+		this.dataServices = dataServices;
+		log.debug("Constructing activator");
+	}
 		
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-		///DO THIS handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-		//UNREGISTER THIS handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
+	
+	
+	private void registerDataService() {
+		if (dataServices != null) {
+			if (!dataServices.contains(PROP_MDARTDB_DATASERVICE)) {
+				log.debug("Attempting to register dataservice: "
+						+ PROP_MDARTDB_DATASERVICE);
+				if (datasourceCreator == null){
+					datasourceCreator = new BasicDataSourceCreator();
+				}
+				if (datasourceCreator != null){
+					try {
+						dataServices.registerData(PROP_MDARTDB_DATASERVICE,
+								datasourceCreator.create(uri, user, password));
+					} catch (Exception e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+				else{
+					log.error("datasourceCreator is null!");
+				}
+			}
+		} else {
+			log.error("dataServices is null!");
+		}
 	}
 
 	
+	@SuppressWarnings("rawtypes")
+	@Updated
+	public void update(Dictionary config) {
+		log.debug("updating");
+		user = (String) config.get(PROP_MDARTDB_USER);
+		password = (String) config.get(PROP_MDARTDB_PASSWORD);
+		uri = (String) config.get(PROP_MDARTDB_URI);
 
+		log.debug("updated uri: " + uri + "\n\tuser:" + user);
+		registerDataService();
+	}
+
+	@Validate
+	public void start() {
+		log.info("Starting bundle: " + this.getClass().getName());
+		try{
+			if (registrationService != null) {
+			
+				registrationService.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
+	
+			} else {
+				log.error(GossRequestHandlerRegistrationService.class.getName()
+						+ " not found!");
+			}
+		} catch (Exception e) {
+			log.error("error during starting of bundle", e);
+		} finally {
+			if (dataServices != null) {
+				dataServices.unRegisterData(PROP_MDARTDB_DATASERVICE);
+			}
+		}
+	}
+
+	@Invalidate
+	public void stop() {
+		try {
+			log.info("Stopping the bundle" + this.getClass().getName());
+			if (registrationService != null) {
+				registrationService.removeHandlerMapping(RequestPIRecords.class);
+			}
+
+		} catch (Exception e) {
+			log.error("error during stopping of bundle", e);
+		} finally {
+			if (dataServices != null) {
+				dataServices.unRegisterData(PROP_MDARTDB_DATASERVICE);
+			}
+		}
+	}
 }

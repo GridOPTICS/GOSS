@@ -9,6 +9,10 @@
 	<properties>
 		<felix.framework.version>4.4.0</felix.framework.version>
 		<goss.version>0.1.4-SNAPSHOT</goss.version>
+		<goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
+		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
+		
+		
 		<activemq.version>5.9.0</activemq.version>
 
 		<ipojo.version>1.12.0</ipojo.version>
@@ -107,16 +111,16 @@
 			<artifactId>goss-fusiondb-server</artifactId>
 			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
-
+ -->
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-mdart-server</artifactId>
-			<version>${goss.version}</version>
-		</dependency> -->
+			<version>${goss-mdart.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-fusiondb-server</artifactId>
-			<version>0.1.4-SNAPSHOT</version>
+			<version>${goss-fusiondb.version}</version>
 		</dependency>
 
 		<dependency>

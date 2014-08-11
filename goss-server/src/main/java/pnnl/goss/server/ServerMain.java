@@ -48,6 +48,7 @@ import java.util.Dictionary;
 
 import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
+import pnnl.goss.mdart.MDARTServerActivator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.internal.GossDataServicesImpl;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
@@ -92,6 +93,10 @@ public class ServerMain {
 		fusionDBServerActivator.update(dataSourcesConfig);
 		fusionDBServerActivator.start();
 		
+		
+		MDARTServerActivator mdartServerActivator = new MDARTServerActivator(registrationService, dataServices);
+		mdartServerActivator.update(dataSourcesConfig);
+		mdartServerActivator.start();
 		
 		//Fusion Launchers----------------------------------------------
 //		DataStreamLauncher launcher = new DataStreamLauncher();
@@ -145,16 +150,6 @@ public class ServerMain {
 		//handlers.addHandlerMapping(ExecuteRequest.class, ExecuteHPCHandler.class);
 		
 		
-		//-------------------------------------Fusion----------------------------------------------
-		handlers.addHandlerMapping(RequestActualTotal.class, RequestActualTotalHandler.class);
-		handlers.addHandlerMapping(RequestCapacityRequirement.class, RequestCapacityRequirementHandler.class);
-		handlers.addHandlerMapping(RequestForecastTotal.class, RequestForecastTotalHandler.class);
-		handlers.addHandlerMapping(RequestHAInterchangeSchedule.class, RequestHAInterchangeScheduleHandler.class);
-		handlers.addHandlerMapping(RequestRTEDSchedule.class, RequestRTEDScheduleHandler.class);		
-		handlers.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
-		handlers.addHandlerMapping(RequestGeneratorData.class, RequestGeneratorDataHandler.class);
-		handlers.addUploadHandlerMapping("CapacityRequirement", FusionUploadHandler.class);
-		handlers.addUploadHandlerMapping("fusion_GeneratorData", FusionUploadHandler.class);
 		
 		
 		//-------------------------------------Fusion Security----------------------------------------------
@@ -166,9 +161,6 @@ public class ServerMain {
 		handlers.addSecurityMapping(RequestPowergrid.class, AccessControlHandlerAllowAll.class);
 		handlers.addSecurityMapping(RequestGeneratorData.class, AccessControlHandlerAllowAll.class);
 		
-		//-------------------------------------MDART----------------------------------------------
-		handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
-		//handlers.addSecurityMapping(RequestPIRecords.class, AccessControlHandlerAllowAll.class);
 		
 		//-------------------------------------Tutorial----------------------------------------------
 		handlers.addUploadHandlerMapping("Tutorial", TutorialDesktopHandler.class);
