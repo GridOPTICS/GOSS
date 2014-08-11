@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="goss-core-${project.version}">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="goss-tool-fncs-${project.version}">
 
     <feature name="goss-tool-fncs-feature" version="${pom.version}">
 	
 		<feature>jdbc</feature>
-		<feature>goss-core-features</feature>
+		<feature>goss-core-feature</feature>
     	
     	<bundle start-level="88" dependency="true">mvn:pnnl.goss/goss-tool-fncs-common/${pom.version}</bundle>
     	
