@@ -11,9 +11,8 @@
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-tool-mdart-feature</artifactId>
+		<artifactId>goss-tool-mdart</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
 	<dependencies>
@@ -56,10 +55,22 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>	
+			<plugin>
+				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>pnnl.goss.mdart.MDARTServerActivator</Bundle-Activator>
 						<Export-Package>
 							pnnl.goss.mdart.server.handlers
 						</Export-Package>

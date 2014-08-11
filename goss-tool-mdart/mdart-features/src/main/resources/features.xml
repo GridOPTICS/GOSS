@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="goss-tool-mdart-${project.version}">
 
     <feature name="goss-tool-mdart-feature" version="${pom.version}">
     	

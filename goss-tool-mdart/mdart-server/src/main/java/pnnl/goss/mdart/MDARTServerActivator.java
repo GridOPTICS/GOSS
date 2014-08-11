@@ -62,13 +62,13 @@ public class MDARTServerActivator implements BundleActivator, ManagedService{
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		
+		///DO THIS handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		
+		//UNREGISTER THIS handlers.addHandlerMapping(RequestPIRecords.class, RequestPIRecordsHandler.class);
 	}
 
 	
