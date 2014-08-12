@@ -127,7 +127,7 @@ public class DataStreamLauncher implements Runnable {
 	public void run() {
 		GossResponseEvent event =  new GossResponseEvent() {
 			@Override
-			public void onMessage(Response response) {
+			public void onMessage(Serializable response) {
 				try{
 					String message = (String)((DataResponse)response).getData();
 					if(message.contains("stop stream"))

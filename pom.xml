@@ -29,16 +29,15 @@
 		<goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
 		<goss-demo.version>0.1.3-SNAPSHOT</goss-demo.version>
 		<goss-dsa.version>0.1.3-SNAPSHOT</goss-dsa.version>
-		<goss-fncs.version>0.1.3-SNAPSHOT</goss-fncs.version>
+		<goss-fncs.version>0.1.4-SNAPSHOT</goss-fncs.version>
 		<goss-fusion.version>0.1.4-SNAPSHOT</goss-fusion.version>
 		<goss-gridmw.version>0.1.3-SNAPSHOT</goss-gridmw.version>
 		<goss-gridpack.version>0.1.3-SNAPSHOT</goss-gridpack.version>
 		<goss-kariosdb.version>0.1.3-SNAPSHOT</goss-kariosdb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-pmuevents.version>0.1.3-SNAPSHOT</goss-pmuevents.version>
-		<goss-powergrid.version>0.1.3-SNAPSHOT</goss-powergrid.version>
+		<goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
 		<goss-sharedperspective.version>0.1.3-SNAPSHOT</goss-sharedperspective.version>
-		<goss-fncs.version>0.1.3-SNAPSHOT</goss-fncs.version>
 
 		
 		
@@ -93,16 +92,16 @@
 		<module>goss-core</module>
         <module>goss-fusiondb</module>
 		<module>goss-powergrid</module>
-		<module>goss-gridmw-feature</module>
-		<module>goss-tool-gridpack-feature</module>
-		<module>goss-tool-fncs-feature</module>
+<!-- 		<module>goss-gridmw-feature</module> -->
+<!-- 		<module>goss-tool-gridpack-feature</module> -->
+		<module>goss-tool-fncs</module>
 
-		<module>goss-tool-sharedperspective-feature</module>
-		<module>goss-kairosdb-feature</module>
+<!-- 		<module>goss-tool-sharedperspective-feature</module> -->
+<!-- 		<module>goss-kairosdb-feature</module> -->
 		<!--<module>goss-hpc-server</module> -->
 		
-		<module>goss-dsa-feature</module>
-		<module>goss-tool-mdart-feature</module>
+<!-- 		<module>goss-dsa-feature</module> -->
+		<module>goss-tool-mdart</module>
 
 		<!-- Above this line are bundles that can be added to karaf, whilest below 
 			this line are standalone jars that can be run from a terminal. -->
@@ -126,6 +125,7 @@
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
 	<profiles>
 		<profile>
 			<id>local-devdeveloper</id>

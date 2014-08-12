@@ -45,9 +45,10 @@
 package pnnl.goss.core.client;
 
 
-import pnnl.goss.core.Response;
+import java.io.Serializable;
+
 
 
 public interface GossResponseEvent {
-	public void onMessage(Response response);
+	public void onMessage(Serializable response);
 }
