@@ -36,9 +36,9 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 @Component(managedservice = PROP_DATASOURCES_CONFIG)
 public class FusionDBServerActivator {
 	public static final String PROP_FUSIONDB_DATASERVICE = "goss/fusiondb";
-	public static final String PROP_FUSIONDB_USER = "fusiondb.user";
-	public static final String PROP_FUSIONDB_PASSWORD = "fusiondb.password";
-	public static final String PROP_FUSIONDB_URI = "fusiondb.uri";
+	public static final String PROP_FUSIONDB_USER = "fusion.db.user";
+	public static final String PROP_FUSIONDB_PASSWORD = "fusion.db.password";
+	public static final String PROP_FUSIONDB_URI = "fusion.db.uri";
 
 	/**
 	 * <p>
