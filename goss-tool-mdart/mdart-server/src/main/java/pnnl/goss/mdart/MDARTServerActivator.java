@@ -72,9 +72,9 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 public class MDARTServerActivator {
 
 	public static final String PROP_MDARTDB_DATASERVICE = "goss/mdartdb";
-	public static final String PROP_MDARTDB_USER = "mdartdb.user";
-	public static final String PROP_MDARTDB_PASSWORD = "mdartdb.password";
-	public static final String PROP_MDARTDB_URI = "mdartdb.uri";
+	public static final String PROP_MDARTDB_USER = "mdart.db.user";
+	public static final String PROP_MDARTDB_PASSWORD = "mdart.db.password";
+	public static final String PROP_MDARTDB_URI = "mdart.db.uri";
 	
 	
 	/**
@@ -159,11 +159,7 @@ public class MDARTServerActivator {
 			}
 		} catch (Exception e) {
 			log.error("error during starting of bundle", e);
-		} finally {
-			if (dataServices != null) {
-				dataServices.unRegisterData(PROP_MDARTDB_DATASERVICE);
-			}
-		}
+		} 
 	}
 
 	@Invalidate
