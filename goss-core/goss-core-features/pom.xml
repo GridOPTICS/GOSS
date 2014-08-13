@@ -20,7 +20,7 @@
 			</resource>
 		</resources>
 		<filters>
-        	<filter>${goss.properties.file}</filter>
+        	<filter>${global.properties.path}</filter>
         </filters>
 		<plugins>
 			<plugin>
