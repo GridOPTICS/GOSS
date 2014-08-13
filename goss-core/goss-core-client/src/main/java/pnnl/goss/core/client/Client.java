@@ -59,6 +59,9 @@ public interface Client {
 
 	public abstract void publish(String topicName, Serializable data)
 			throws NullPointerException;
+	
+	public abstract void publishString(String topicName, String data)
+			throws NullPointerException;
 
 	/**
 	 * Closes the GossClient connection with server.

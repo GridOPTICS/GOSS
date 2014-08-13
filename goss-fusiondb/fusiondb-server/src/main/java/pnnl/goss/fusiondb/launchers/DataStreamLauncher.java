@@ -163,7 +163,7 @@ public class DataStreamLauncher implements Runnable {
 											endTimestamp = dateFormat.format(date);
 										}
 									}catch(ParseException p){
-										client.publish(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
+										client.publishString(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
 										p.printStackTrace();
 									}
 								}
@@ -172,10 +172,10 @@ public class DataStreamLauncher implements Runnable {
 						}
 					}
 				}catch(ParseException e){
-					client.publish(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
+					client.publishString(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
 					e.printStackTrace();
 				}catch(Exception e){
-					client.publish(controlTopic, e.getMessage());
+					client.publishString(controlTopic, e.getMessage());
 					e.printStackTrace();
 				}
 			}
