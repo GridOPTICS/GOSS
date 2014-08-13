@@ -11,15 +11,6 @@
 	<name>GOSS Master Builder</name>
 
 	<properties>
-		<!-- 
-			The location of the goss properties file for replacing placeholders
-			during the compilation phase of maven.  Because this file is used
-			in multiple layers of poms this needs to be a static reference here
-			
-			By default it is in the current user's home directory.
-		 -->
-		<goss.properties.file>${user.home}/goss.properties</goss.properties.file>
-		
 		
 		<!-- The groupId of all of our bundles. -->
 		<goss.groupId>pnnl.goss</goss.groupId>
@@ -91,7 +82,7 @@
 	<modules>
 		<module>goss-core</module>
         <module>goss-fusiondb</module>
-		<module>goss-powergrid</module>
+		<!-- <module>goss-powergrid</module> -->
 <!-- 		<module>goss-gridmw-feature</module> -->
 <!-- 		<module>goss-tool-gridpack-feature</module> -->
 		<module>goss-tool-fncs</module>
@@ -127,6 +118,10 @@
 	</distributionManagement>
 	
 	<profiles>
+		<!-- 
+			This is the default profile if the user doesn't specify a profile
+			on the command line
+		-->
 		<profile>
 			<id>local-devdeveloper</id>
 			<activation>
