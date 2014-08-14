@@ -13,6 +13,7 @@ import pnnl.goss.core.Response;
 import pnnl.goss.mdart.common.requests.RequestPIRecords;
 import pnnl.goss.mdart.server.datasources.MDARTDataSource;
 import pnnl.goss.server.core.GossRequestHandler;
+import static pnnl.goss.mdart.MDARTServerActivator.PROP_MDARTDB_DATASERVICE;
 
 public class RequestPIRecordsHandler extends GossRequestHandler{
 
@@ -21,7 +22,7 @@ public class RequestPIRecordsHandler extends GossRequestHandler{
 		
 		
 		DataResponse response  = new DataResponse();
-		Connection connection= MDARTDataSource.getInstance().getConnection();
+		Connection connection = this.dataservices.getPooledConnection(PROP_MDARTDB_DATASERVICE);
 		
 		try{
 			RequestPIRecords requestPIRecords = (RequestPIRecords)request;
