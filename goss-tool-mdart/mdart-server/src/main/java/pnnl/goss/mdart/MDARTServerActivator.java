@@ -64,9 +64,10 @@ import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @Instantiate
-@Component(managedservice = PROP_DATASOURCES_CONFIG)
+@Component(managedservice = MDARTServerActivator.PROP_MDART_CONFIG)
 public class MDARTServerActivator {
 
+	public static final String PROP_MDART_CONFIG = "pnnl.goss.mdart";
 	public static final String PROP_MDARTDB_DATASERVICE = "goss/mdartdb";
 	public static final String PROP_MDARTDB_USER = "mdart.db.user";
 	public static final String PROP_MDARTDB_PASSWORD = "mdart.db.password";
