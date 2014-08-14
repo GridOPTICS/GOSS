@@ -337,7 +337,17 @@ public class GossClient implements Client{
 		}
 	}
 	
+	@Deprecated
+	/**
+	 * Instead should use publishString
+	 * @param topicName
+	 * @param data
+	 * @throws NullPointerException
+	 */
 	public void publish(String topicName, String data) throws NullPointerException{
+		publishString(topicName, data);
+	}
+	public void publishString(String topicName, String data) throws NullPointerException{
 		try{
 			createSession();
 			if(data==null)
