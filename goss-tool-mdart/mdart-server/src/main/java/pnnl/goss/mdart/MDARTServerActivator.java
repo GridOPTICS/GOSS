@@ -136,9 +136,26 @@ public class MDARTServerActivator {
 		user = (String) config.get(PROP_MDARTDB_USER);
 		password = (String) config.get(PROP_MDARTDB_PASSWORD);
 		uri = (String) config.get(PROP_MDARTDB_URI);
-
-		log.debug("updated uri: " + uri + "\n\tuser:" + user);
-		registerDataService();
+		
+		boolean valid = true;
+		
+		if (user == null || user.isEmpty()){
+			log.error("Invalid user in config property: " + PROP_MDARTDB_USER);
+			valid = false;
+		}
+		if (password == null || password.isEmpty()){
+			log.error("Invalid password in config property: " + PROP_MDARTDB_PASSWORD);
+			valid = false;
+		}
+		if (uri == null || uri.isEmpty()){
+			log.error("Invalid uri in config proeprty: "+PROP_MDARTDB_URI);
+			valid = false;
+		}
+			
+		if (valid){
+			log.debug("updated uri: " + uri + "\n\tuser:" + user);			
+			registerDataService();
+		}
 	}
 
 	@Validate
