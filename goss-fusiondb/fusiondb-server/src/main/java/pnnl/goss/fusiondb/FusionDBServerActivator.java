@@ -98,9 +98,26 @@ public class FusionDBServerActivator {
 		user = (String) config.get(PROP_FUSIONDB_USER);
 		password = (String) config.get(PROP_FUSIONDB_PASSWORD);
 		uri = (String) config.get(PROP_FUSIONDB_URI);
-
-		log.debug("updated uri: " + uri + "\n\tuser:" + user);
-		registerFusionDataService();
+		
+		boolean valid = true;
+		
+		if (user == null || user.isEmpty()){
+			log.error("Invalid user in config property: " + PROP_FUSIONDB_USER);
+			valid = false;
+		}
+		if (password == null || password.isEmpty()){
+			log.error("Invalid password in config property: " + PROP_FUSIONDB_PASSWORD);
+			valid = false;
+		}
+		if (uri == null || uri.isEmpty()){
+			log.error("Invalid uri in config proeprty: "+PROP_FUSIONDB_URI);
+			valid = false;
+		}
+			
+		if (valid){
+			log.debug("updated uri: " + uri + "\n\tuser:" + user);			
+			registerFusionDataService();
+		}
 	}
 
 	@Validate
