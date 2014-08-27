@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
  */
-package goss.pnnl.kairosdb;
+package pnnl.goss.kairosdb;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

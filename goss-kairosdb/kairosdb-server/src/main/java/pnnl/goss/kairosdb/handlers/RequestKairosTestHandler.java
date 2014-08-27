@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package goss.pnnl.kairosdb.handlers;
+package pnnl.goss.kairosdb.handlers;
 
 import java.sql.Date;
 import java.text.DateFormat;

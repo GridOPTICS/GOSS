@@ -1,4 +1,4 @@
-package goss.pnnl.kairosdb.handlers;
+package pnnl.goss.kairosdb.handlers;
 
 import java.sql.Date;
 import java.text.DateFormat;

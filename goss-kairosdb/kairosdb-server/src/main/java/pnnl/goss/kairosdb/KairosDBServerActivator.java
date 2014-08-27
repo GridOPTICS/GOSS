@@ -44,8 +44,6 @@
 */
 package pnnl.goss.kairosdb;
 
-import goss.pnnl.kairosdb.handlers.RequestKairosTestHandler;
-
 import java.util.Hashtable;
 
 import org.osgi.framework.BundleActivator;
@@ -58,6 +56,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.kairosdb.handlers.RequestKairosTestHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
