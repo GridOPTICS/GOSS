@@ -96,10 +96,10 @@
 
 		<!-- Above this line are bundles that can be added to karaf, whilest below 
 			this line are standalone jars that can be run from a terminal. -->
-		<module>goss-client-tests</module>
-		<module>goss-tool-pmuevents-feature</module>
-		<module>goss-demo-feature</module>
 		<module>goss-server</module>
+		<module>goss-demo-feature</module>
+		<module>goss-tool-pmuevents-feature</module>
+		<module>goss-client-tests</module>
 	</modules>
 	<scm>
 		<developerConnection>scm:git:https://git.pnnl.gov/GOSS/</developerConnection>
