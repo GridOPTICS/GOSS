@@ -64,7 +64,7 @@ public class KairosDBServerActivator{
 
 	
 	public static final String PROP_KAIROSDB_HOST = "kairosdb.db.uri";
-	public static final String PROP_KAIROSDB_PORT = "fusiondb.db.port";
+	public static final String PROP_KAIROSDB_PORT = "kairosdb.db.port";
 	
 	private String hostname;
 	private String port;
