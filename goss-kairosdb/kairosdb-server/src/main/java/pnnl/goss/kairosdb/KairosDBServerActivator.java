@@ -54,8 +54,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.kairosdb.handlers.RequestKairosTestHandler;
+import pnnl.goss.kairosdb.handlers.RequestPMUKairosHandler;
+import pnnl.goss.kairosdb.handlers.RequestPMUMetadataHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
+import pnnl.goss.kairosdb.requests.RequestPMUKairos;
+import pnnl.goss.kairosdb.requests.RequestPMUMetaData;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
@@ -99,9 +103,13 @@ public class KairosDBServerActivator{
 		try{
 		registrationService.addHandlerMapping(RequestKairosAsyncTest.class, RequestKairosTestHandler.class);
 		registrationService.addHandlerMapping(RequestKairosTest.class, RequestKairosTestHandler.class);
+		registrationService.addHandlerMapping(RequestPMUMetaData.class, RequestPMUMetadataHandler.class);
+		registrationService.addHandlerMapping(RequestPMUKairos.class, RequestPMUKairosHandler.class);
 		
 		registrationService.addSecurityMapping(RequestKairosAsyncTest.class, AccessControlHandlerAllowAll.class);
 		registrationService.addSecurityMapping(RequestKairosTest.class, AccessControlHandlerAllowAll.class);
+		registrationService.addSecurityMapping(RequestPMUMetaData.class, AccessControlHandlerAllowAll.class);
+		registrationService.addSecurityMapping(RequestPMUKairos.class, AccessControlHandlerAllowAll.class);
 		}
 		catch(Exception e){
 			log.error("Error starting bundle", e);

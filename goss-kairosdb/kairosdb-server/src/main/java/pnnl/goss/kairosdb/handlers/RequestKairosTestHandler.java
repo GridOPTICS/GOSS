@@ -87,7 +87,7 @@ public class RequestKairosTestHandler extends GossRequestHandler {
 	private Response synchronousHandle(Request request){
 		
 		String hostname = (String)this.dataservices.getDataService(PROP_KAIROSDB_HOST);
-		int port = (Integer)this.dataservices.getDataService(PROP_KAIROSDB_PORT);
+		int port = Integer.parseInt(this.dataservices.getDataService(PROP_KAIROSDB_PORT).toString());
 				
 		DataResponse dataResponse =null;
 		RequestKairosTest testRequest = (RequestKairosTest) request;

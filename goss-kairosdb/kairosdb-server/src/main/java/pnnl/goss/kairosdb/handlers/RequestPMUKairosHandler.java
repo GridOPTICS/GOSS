@@ -28,7 +28,7 @@ public class RequestPMUKairosHandler extends GossRequestHandler{
 	public Response handle(Request request) {
 		
 		String hostname = (String)this.dataservices.getDataService(PROP_KAIROSDB_HOST);
-		int port = (Integer)this.dataservices.getDataService(PROP_KAIROSDB_PORT);
+		int port = Integer.parseInt(this.dataservices.getDataService(PROP_KAIROSDB_PORT).toString());
 		
 		DataResponse dataResponse =null;
 		RequestPMUKairos request_ = (RequestPMUKairos) request;
