@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="goss-kairosdb-${project.version}>
+
+    <feature name="goss-kairosdb-feature" version="${pom.version}">
+<!-- 		<configfile finalname="/etc/pnnl.goss.gridmw.server.cfg"> -->
+<!-- 			mvn:pnnl.goss/goss-gridmw-feature/${pom.version}/cfg/config -->
+<!-- 		</configfile> -->
+		
+		<feature>jdbc</feature>
+		<feature>goss-core-feature</feature>
+		<feature>goss-gridmw-feature</feature>
+    	
+    	
+    	<bundle dependency="true">mvn:com.google.guava/guava/13.0.1</bundle>
+    	<bundle dependency="true">mvn:com.google.code.gson/gson/2.2.4</bundle>
+    	
+    	<bundle start-level="90" dependency="true">mvn:pnnl.goss/goss-kairosdb-common/${pom.version}</bundle>
+    	<bundle start-level="91" dependency="true">mvn:pnnl.goss/goss-kairosdb-server/${pom.version}</bundle>
+    	
+    </feature>
+ </features>
