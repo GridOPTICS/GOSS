@@ -66,6 +66,9 @@ import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
 import pnnl.goss.server.core.GossRequestHandler;
 
+import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_HOST;
+import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_PORT;
+
 public class RequestKairosTestHandler extends GossRequestHandler {
 	
 	HttpClient client = null;
@@ -87,7 +90,7 @@ public class RequestKairosTestHandler extends GossRequestHandler {
 		KairosTestData data = new KairosTestData();
 		long ds1 = System.nanoTime();
 		data.setDS1(ds1);
-		client = new HttpClient("we22743", 8080);
+		client = new HttpClient(PROP_KAIROSDB_HOST, Integer.parseInt(PROP_KAIROSDB_PORT));
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     	Date startTime = new Date((long)testRequest.getStartTime()*1000);
     	Date endTime = new Date((long)testRequest.getEndTime()*1000);

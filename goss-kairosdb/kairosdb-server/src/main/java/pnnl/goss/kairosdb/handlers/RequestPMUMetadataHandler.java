@@ -10,6 +10,8 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.server.core.GossRequestHandler;
+import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_HOST;
+import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_PORT;
 
 public class RequestPMUMetadataHandler  extends GossRequestHandler{
 
@@ -21,8 +23,7 @@ public class RequestPMUMetadataHandler  extends GossRequestHandler{
 		
 		try{
 		
-			//HttpClient client = new HttpClient("eioc-goss", 8020);
-			HttpClient client = new HttpClient("localhost", 8080);
+			HttpClient client = new HttpClient(PROP_KAIROSDB_HOST, Integer.parseInt(PROP_KAIROSDB_PORT));
 			GetResponse response = client.getMetricNames();
 	
 			for (String name : response.getResults())

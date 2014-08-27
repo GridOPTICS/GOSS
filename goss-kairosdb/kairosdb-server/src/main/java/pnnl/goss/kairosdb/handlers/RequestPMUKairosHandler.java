@@ -20,14 +20,16 @@ import pnnl.goss.core.Response;
 import pnnl.goss.kairosdb.requests.RequestPMUKairos;
 import pnnl.goss.server.core.GossRequestHandler;
 
+import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_HOST;
+import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_PORT;
+
 public class RequestPMUKairosHandler extends GossRequestHandler{
 
 	@Override
 	public Response handle(Request request) {
 		DataResponse dataResponse =null;
 		RequestPMUKairos request_ = (RequestPMUKairos) request;
-		//HttpClient client = new HttpClient("eioc-goss", 8020);
-		HttpClient client = new HttpClient("localhost", 8080);
+		HttpClient client = new HttpClient(PROP_KAIROSDB_HOST, Integer.parseInt(PROP_KAIROSDB_PORT));
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     	Date startTime = new Date((long)request_.getStartTime()*1000);
     	Date endTime = new Date((long)request_.getEndTime()*1000);

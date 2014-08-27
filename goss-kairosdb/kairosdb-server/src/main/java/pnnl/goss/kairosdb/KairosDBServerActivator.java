@@ -65,6 +65,9 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 public class KairosDBServerActivator implements BundleActivator {
 
 	
+	public static final String PROP_KAIROSDB_HOST = "kairosdb.db.uri";
+	public static final String PROP_KAIROSDB_PORT = "fusiondb.db.port";
+	
 	/**
 	 * <p>
 	 * Allows the tracking of the goss registration service.
