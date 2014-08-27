@@ -40,15 +40,18 @@
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-mdart-common</artifactId>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-server</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
 		</dependency>
-		
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core-server</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

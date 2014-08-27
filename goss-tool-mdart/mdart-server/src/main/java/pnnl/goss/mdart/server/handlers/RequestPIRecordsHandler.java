@@ -11,7 +11,6 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.mdart.common.requests.RequestPIRecords;
-import pnnl.goss.mdart.server.datasources.MDARTDataSource;
 import pnnl.goss.server.core.GossRequestHandler;
 import static pnnl.goss.mdart.MDARTServerActivator.PROP_MDARTDB_DATASERVICE;
 
