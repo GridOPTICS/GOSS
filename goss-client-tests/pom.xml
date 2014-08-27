@@ -5,7 +5,7 @@
 	<artifactId>goss-client-tests</artifactId>
 	<name>GOSS Client Test Jar</name>
 	<packaging>jar</packaging>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.4-SNAPSHOT</version>
 
 	<description>
 		A jar with multiple mains for testing output.
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-common</artifactId>
-			<version>0.1.4-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-kairosdb-common</artifactId>
-			<version>0.1.3-SNAPSHOT</version>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>

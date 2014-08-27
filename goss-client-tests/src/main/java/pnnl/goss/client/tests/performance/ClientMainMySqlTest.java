@@ -46,6 +46,7 @@ package pnnl.goss.client.tests.performance;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -121,13 +122,13 @@ public class ClientMainMySqlTest {
 								ACLineSegmentTest data  = (ACLineSegmentTest)(response).getData();
 								//logWriter.write(data.getTime()+";"+String.valueOf(System.currentTimeMillis()-perfStartTime)+"\n");
 								//long gossTime = System.currentTimeMillis()-perfStartTime-data.getTime();
-								long endTime = System.currentTimeMillis();
+								/*long endTime = System.currentTimeMillis();
 								long total = endTime-perfStartTime;
 								long startTimeDB = data.getBeforeTime();
 								long endTimeDB = data.getTime();
 								long totalTimeDB = endTimeDB-startTimeDB;
 								long timeTakneByGoss = total-totalTimeDB;
-								System.out.println("Client_"+clientNum+",Request_"+i+","+perfStartTime+","+endTime+","+total+","+startTimeDB+","+endTimeDB+","+totalTimeDB+","+timeTakneByGoss);
+								System.out.println("Client_"+clientNum+",Request_"+i+","+perfStartTime+","+endTime+","+total+","+startTimeDB+","+endTimeDB+","+totalTimeDB+","+timeTakneByGoss);*/
 								//System.out.println(data.getKvlevel());
 								//System.out.println(response.sizeof());
 						}
@@ -170,7 +171,7 @@ public class ClientMainMySqlTest {
 						final FileWriter logWriter = new FileWriter("mysql_asynchronous_client"+clientNum+".log",true);
 						RequestLineLoadAsyncTest request = new RequestLineLoadAsyncTest("Greek-118-South",38, startDate, endDate, segment_);
 						GossResponseEvent event = new GossResponseEvent() {
-							public void onMessage(Response response) {
+							public void onMessage(Serializable response) {
 								try{
 									long time = System.currentTimeMillis();
 									DataResponse dataResponse = (DataResponse)response;

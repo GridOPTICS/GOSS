@@ -44,8 +44,7 @@
 */
 package pnnl.goss.client.tests;
 
-import javax.jms.IllegalStateException;
-import javax.jms.JMSException;
+import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +52,10 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
-import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 
 // import pnnl.goss.events.LineTripEvent;
 
@@ -171,7 +168,7 @@ public class ClientMainGca implements GossResponseEvent {
 
 	}
 
-	public void onMessage(Response response) {
+	public void onMessage(Serializable response) {
 
 		/*
 		 * DataResponse dataResponse=null;

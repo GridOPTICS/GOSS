@@ -45,11 +45,11 @@
 package pnnl.goss.client.tests.performance;
 
 import java.io.FileWriter;
+import java.io.Serializable;
 
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.kairosdb.datamodel.KairosTestData;
@@ -141,7 +141,7 @@ static void asynchronousTest(int noOfClients, int noOfChannels, int dataPerRespo
 					RequestKairosAsyncTest request = new RequestKairosAsyncTest("test", "flag", 1270105200, 1270105300,dataPerResp);
 					
 					GossResponseEvent event = new GossResponseEvent() {
-						public void onMessage(Response response) {
+						public void onMessage(Serializable response) {
 							long res = System.nanoTime();
 							DataResponse dataresponse=null;
 							try{

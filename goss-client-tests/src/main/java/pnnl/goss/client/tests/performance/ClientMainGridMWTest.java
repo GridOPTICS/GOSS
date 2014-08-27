@@ -45,12 +45,12 @@
 package pnnl.goss.client.tests.performance;
 
 import java.io.FileWriter;
+import java.io.Serializable;
 import java.util.Random;
 
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.gridmw.datamodel.GridMWTestData;
@@ -130,7 +130,7 @@ public class ClientMainGridMWTest {
 						RequestGridMWAsyncTest request = new RequestGridMWAsyncTest(1, 1270105200, 1270108798,dataPerResp);
 						
 						GossResponseEvent event = new GossResponseEvent() {
-							public void onMessage(Response response) {
+							public void onMessage(Serializable response) {
 								DataResponse dataresponse=null;
 								try{
 									dataresponse = (DataResponse)response;
@@ -140,7 +140,7 @@ public class ClientMainGridMWTest {
 										System.out.print(data.getValues()[i]);
 									}*/
 									//System.out.println(";");
-									System.out.println(response.sizeof());
+									//System.out.println(response.sizeof());
 									if(dataresponse.isResponseComplete()){
 										logWriter.close();
 										client.close();

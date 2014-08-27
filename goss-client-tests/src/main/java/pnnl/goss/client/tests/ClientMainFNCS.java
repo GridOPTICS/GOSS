@@ -1,9 +1,10 @@
 package pnnl.goss.client.tests;
 
+import java.io.Serializable;
+
 import pnnl.goss.client.tests.util.ClientAuthHelper;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
-import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossClient.PROTOCOL;
 import pnnl.goss.core.client.GossResponseEvent;
@@ -25,7 +26,7 @@ public class ClientMainFNCS {
 			
 			//Subcribe to SteerEvent
 			GossResponseEvent event = new GossResponseEvent() {
-				public void onMessage(Response response) {
+				public void onMessage(Serializable response) {
 					String message = (String)((DataResponse)response).getData(); 
 					System.out.println(message);
 					Gson gson = new Gson();
