@@ -11,6 +11,7 @@
 		<goss.version>0.1.4-SNAPSHOT</goss.version>
 		<goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
+		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
 		
 		
 		<activemq.version>5.9.0</activemq.version>
@@ -99,13 +100,13 @@
 			<artifactId>goss-tool-sharedperspective-server</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-
+		-->
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-kairosdb-server</artifactId>
-			<version>0.1.3-SNAPSHOT</version>
+			<version>${goss-kairosdb.version}</version>
 		</dependency>
-
+<!-- 
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-fusiondb-server</artifactId>

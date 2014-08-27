@@ -44,15 +44,12 @@
 */
 package pnnl.goss.kairosdb;
 
-import java.util.Hashtable;
+import java.util.Dictionary;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Updated;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,20 +57,25 @@ import pnnl.goss.kairosdb.handlers.RequestKairosTestHandler;
 import pnnl.goss.kairosdb.requests.RequestKairosAsyncTest;
 import pnnl.goss.kairosdb.requests.RequestKairosTest;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
+import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
-public class KairosDBServerActivator implements BundleActivator {
+public class KairosDBServerActivator{
 
 	
 	public static final String PROP_KAIROSDB_HOST = "kairosdb.db.uri";
 	public static final String PROP_KAIROSDB_PORT = "fusiondb.db.port";
+	
+	private String hostname;
+	private String port;
 	
 	/**
 	 * <p>
 	 * Allows the tracking of the goss registration service.
 	 * </p>
 	 */
-	private ServiceRegistration registration;
+	private GossRequestHandlerRegistrationService registrationService;
+	private GossDataServices dataServices;
 	
 	/**
 	 * <p>
@@ -82,120 +84,67 @@ public class KairosDBServerActivator implements BundleActivator {
 	 */
 	private static Logger log = LoggerFactory.getLogger(KairosDBServerActivator.class);
 
-	/**
-	 * <p>
-	 * Allows tracking of the registration service from the core-server.
-	 * </p>
-	 */
-	private ServiceTracker registrationTracker;
-
-	@SuppressWarnings("rawtypes")
-	public void start(BundleContext context) {
-		System.out.println("Starting bundle "+this.getClass().getName());
+	
+	public KairosDBServerActivator(
+			@Requires GossRequestHandlerRegistrationService registrationService,
+			@Requires GossDataServices dataServices) {
+		this.registrationService = registrationService;
+		this.dataServices = dataServices;
+		log.debug("Constructing activator");
+	}
+	
+	@Validate
+	public void start() {
 		log.info("Starting bundle: " + this.getClass().getName());
-		try {
-			String filterStr = "(" + Constants.OBJECTCLASS + "=" + GossRequestHandlerRegistrationService.class.getName() + ")";
-			Filter filter = context.createFilter(filterStr);
-			registrationTracker = new ServiceTracker(context, filter, null);
-			registrationTracker.open();
-			
-			
-			// Register for updates to the goss.core.security config file.
-//	        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-//	        properties.put(Constants.SERVICE_PID, GridMWConfiguration.CONFIG_PID);
-//	        context.registerService(ManagedService.class.getName(), this, properties);
-			
-			// Register the handlers on the registration service.
-			registerHandlers();
-			
-		} catch (InvalidSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		try{
+		registrationService.addHandlerMapping(RequestKairosAsyncTest.class, RequestKairosTestHandler.class);
+		registrationService.addHandlerMapping(RequestKairosTest.class, RequestKairosTestHandler.class);
+		
+		registrationService.addSecurityMapping(RequestKairosAsyncTest.class, AccessControlHandlerAllowAll.class);
+		registrationService.addSecurityMapping(RequestKairosTest.class, AccessControlHandlerAllowAll.class);
+		}
+		catch(Exception e){
+			log.error("Error starting bundle", e);
 		}
 
-//		registration = context.registerService(ManagedService.class.getName(), this, getDefaults());
-		
     }
 
-    public void stop(BundleContext context) {
+	@Invalidate
+    public void stop() {
     	try {
 			log.info("Stopping the bundle"+this.getClass().getName());
-			System.out.println("Stopping the bundle"+this.getClass().getName());
-
-			unRegisterHandlers();
 			
-			if (registration != null){
-				registration.unregister();
-			}
+			registrationService.removeHandlerMapping(RequestKairosAsyncTest.class);
+			registrationService.removeHandlerMapping(RequestKairosTest.class);
 			
+			registrationService.removeSecurityMapping(RequestKairosAsyncTest.class);
+			registrationService.removeSecurityMapping(RequestKairosTest.class);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+    	}
+		catch(Exception e){
+			log.error("Error stopping  bundle", e);
 		}
     }
 
     
-    void registerHandlers(){
-    	GossRequestHandlerRegistrationService registrationService = (GossRequestHandlerRegistrationService) registrationTracker.getService();
+    @SuppressWarnings("rawtypes")
+	@Updated
+	public void update(Dictionary config) {
+		log.debug("updating");
+		try{
+			hostname = (String) config.get(PROP_KAIROSDB_HOST);
+			port = (String) config.get(PROP_KAIROSDB_PORT);
+			if (dataServices != null) {
+				dataServices.registerData(PROP_KAIROSDB_HOST, hostname);
+				dataServices.registerData(PROP_KAIROSDB_PORT, port);
+			} else {
+				log.error("dataServices is null!");
+			}
+		}
+		catch(Exception e){
+			log.error("Error updating bundle", e);
+		}
 		
-		if(registrationService != null){
-			// Registering service handlers here
-			registrationService.addHandlerMapping(RequestKairosAsyncTest.class, RequestKairosTestHandler.class);
-			registrationService.addHandlerMapping(RequestKairosTest.class, RequestKairosTestHandler.class);
-			registrationService.addSecurityMapping(RequestKairosAsyncTest.class, AccessControlHandlerAllowAll.class);
-			registrationService.addSecurityMapping(RequestKairosTest.class, AccessControlHandlerAllowAll.class);
-
-		}
-		else{
-			log.debug(GossRequestHandlerRegistrationService.class.getName()+" not found!");
-		}	
-    }
-	void unRegisterHandlers(){
-	    	GossRequestHandlerRegistrationService registrationService = (GossRequestHandlerRegistrationService) registrationTracker.getService();
-			
-			if(registrationService != null){
-				// Registering service handlers here
-				registrationService.removeHandlerMapping(RequestKairosAsyncTest.class);
-				registrationService.removeHandlerMapping(RequestKairosTest.class);
-				registrationService.removeSecurityMapping(RequestKairosAsyncTest.class);
-				registrationService.removeSecurityMapping(RequestKairosTest.class);
-			}
-			else{
-				log.debug(GossRequestHandlerRegistrationService.class.getName()+" not found!");
-			}
-    	
-    }
-    
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	private Hashtable getDefaults(){
-		Hashtable properties= new Hashtable();
-		return properties;
-	}
-
-//    @SuppressWarnings("rawtypes")
-//	@Override
-//	public void updated(Dictionary properties) throws ConfigurationException {
-//    	log.debug("Updating configuration for: "+this.getClass().getName());
-//    	GridMWConfiguration.setConfigProperties(properties);
-//    	GridmwMappingDataSource.resetInstance();
-//    	
-//    	
-////		if (configuration == null){
-////			registration.setProperties(getDefaults());
-////		}
-////		else{
-////			try {
-////				powergridDatasources.addConnections(configuration, "datasource");
-////				// Sets the other properties in the configuration file to be on the service.
-////				registration.setProperties(configuration);
-////			} catch (SQLException e) {
-////				log.error("SqlException", e);
-////				throw new ConfigurationException("Sql Exception", null, e);
-////			} catch (InvalidDatasourceException e) {
-////				log.error("InvalidDatasourceException", e);
-////				throw new ConfigurationException("InvalidDatasourceException", null, e);
-////			}
-////
-////		}
-//	}
+	}	
+	
 }

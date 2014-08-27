@@ -48,6 +48,7 @@ import java.util.Dictionary;
 
 import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
+import pnnl.goss.kairosdb.KairosDBServerActivator;
 import pnnl.goss.mdart.MDARTServerActivator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.internal.GossDataServicesImpl;
@@ -97,6 +98,11 @@ public class ServerMain {
 		MDARTServerActivator mdartServerActivator = new MDARTServerActivator(registrationService, dataServices);
 		mdartServerActivator.update(dataSourcesConfig);
 		mdartServerActivator.start();
+		
+		KairosDBServerActivator kairosDBServerActivator = new KairosDBServerActivator(registrationService, dataServices);
+		kairosDBServerActivator.update(dataSourcesConfig);
+		kairosDBServerActivator.start();
+		
 		
 		//Fusion Launchers----------------------------------------------
 //		DataStreamLauncher launcher = new DataStreamLauncher();
