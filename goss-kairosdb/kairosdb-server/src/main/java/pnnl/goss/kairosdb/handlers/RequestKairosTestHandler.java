@@ -85,12 +85,16 @@ public class RequestKairosTestHandler extends GossRequestHandler {
 	}
 	
 	private Response synchronousHandle(Request request){
+		
+		String hostname = (String)this.dataservices.getDataService(PROP_KAIROSDB_HOST);
+		int port = (Integer)this.dataservices.getDataService(PROP_KAIROSDB_PORT);
+				
 		DataResponse dataResponse =null;
 		RequestKairosTest testRequest = (RequestKairosTest) request;
 		KairosTestData data = new KairosTestData();
 		long ds1 = System.nanoTime();
 		data.setDS1(ds1);
-		client = new HttpClient(PROP_KAIROSDB_HOST, Integer.parseInt(PROP_KAIROSDB_PORT));
+		client = new HttpClient(hostname, port);
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     	Date startTime = new Date((long)testRequest.getStartTime()*1000);
     	Date endTime = new Date((long)testRequest.getEndTime()*1000);

@@ -19,7 +19,6 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.kairosdb.requests.RequestPMUKairos;
 import pnnl.goss.server.core.GossRequestHandler;
-
 import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_HOST;
 import static pnnl.goss.kairosdb.KairosDBServerActivator.PROP_KAIROSDB_PORT;
 
@@ -27,9 +26,13 @@ public class RequestPMUKairosHandler extends GossRequestHandler{
 
 	@Override
 	public Response handle(Request request) {
+		
+		String hostname = (String)this.dataservices.getDataService(PROP_KAIROSDB_HOST);
+		int port = (Integer)this.dataservices.getDataService(PROP_KAIROSDB_PORT);
+		
 		DataResponse dataResponse =null;
 		RequestPMUKairos request_ = (RequestPMUKairos) request;
-		HttpClient client = new HttpClient(PROP_KAIROSDB_HOST, Integer.parseInt(PROP_KAIROSDB_PORT));
+		HttpClient client = new HttpClient(hostname, port);
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     	Date startTime = new Date((long)request_.getStartTime()*1000);
     	Date endTime = new Date((long)request_.getEndTime()*1000);

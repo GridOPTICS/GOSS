@@ -18,12 +18,15 @@ public class RequestPMUMetadataHandler  extends GossRequestHandler{
 	@Override
 	public Response handle(Request request) {
 		
+		String hostname = (String)this.dataservices.getDataService(PROP_KAIROSDB_HOST);
+		int port = (Integer)this.dataservices.getDataService(PROP_KAIROSDB_PORT);
+		
 		ArrayList<String> channels = new ArrayList<String>();
 		DataResponse dataResponse = new DataResponse();
 		
 		try{
 		
-			HttpClient client = new HttpClient(PROP_KAIROSDB_HOST, Integer.parseInt(PROP_KAIROSDB_PORT));
+			HttpClient client = new HttpClient(hostname, port);
 			GetResponse response = client.getMetricNames();
 	
 			for (String name : response.getResults())
