@@ -56,6 +56,86 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 		</dependency>
+		
+		<!-- Kundera Supported Core and Client Libraries -->
+		<dependency>
+			<groupId>com.impetus.kundera.core</groupId>
+			<artifactId>kundera-core</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-cassandra</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-hbase</artifactId>
+			<version>2.13</version>
+		</dependency> -->
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-mongo</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-rdbms</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-rest</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-redis</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-oracle-nosql</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-neo4j</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-elastic-search</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-couchdb</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-cassandra-pelops</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.impetus.kundera.client</groupId>
+			<artifactId>kundera-cassandra-ds-driver</artifactId>
+			<version>2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>2.5.0</version>
+			<scope>test</scope>
+		</dependency>
+				
 	</dependencies>
 	<build>
 		<plugins>
