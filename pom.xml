@@ -82,7 +82,7 @@
 	<modules>
 		<module>goss-core</module>
         <module>goss-fusiondb</module>
-		<!-- <module>goss-powergrid</module> -->
+		<module>goss-powergrid</module>
 <!-- 		<module>goss-gridmw-feature</module> -->
 <!-- 		<module>goss-tool-gridpack-feature</module> -->
 		<module>goss-tool-fncs</module>
@@ -96,6 +96,7 @@
 
 		<!-- Above this line are bundles that can be added to karaf, whilest below 
 			this line are standalone jars that can be run from a terminal. -->
+		<!-- <module>goss-demo-feature</module> -->
 		<module>goss-server</module>
 		<module>goss-demo-feature</module>
 		<module>goss-tool-pmuevents-feature</module>
