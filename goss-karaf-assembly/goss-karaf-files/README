@@ -1,0 +1,1 @@
+You can place the pnnl-goss-activemq-broker.xml, pnnl.goss.core.cfg, an dpnnl.goss.datasources.cfg with actual values here and they will be copied into the cleaned karaf deployment but ignored by git
