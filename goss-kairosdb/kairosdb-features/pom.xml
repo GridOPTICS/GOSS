@@ -117,17 +117,17 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.3-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security</artifactId>
-				<version>0.1.3-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-server</artifactId>
-				<version>0.1.3-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>

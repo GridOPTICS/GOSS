@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>goss-gridmw-server</artifactId>
+	<packaging>bundle</packaging>
+
+	<name>GOSS GridMW Server Bundle</name>
+
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-gridmw</artifactId>
+		<version>0.1.4-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-gridmw-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${maven-bundle-plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>
+							pnnl.goss.gridmw,
+							pnnl.goss.gridmw.handlers,
+							pnnl.goss.gridmw.datasources,
+							pnnl.goss.gridmw.security
+						</Export-Package>
+						<Import-Package>
+							com.mysql.jdbc,
+							*
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
