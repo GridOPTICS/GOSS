@@ -82,6 +82,13 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 										<include>**/*</include>
 									</includes>
 								</resource>
+								<resource>
+									<directory>${basedir}/goss-karaf-files</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>etc/*</include>
+									</includes>
+								</resource>
 							</resources>
 						</configuration>
 					</execution>

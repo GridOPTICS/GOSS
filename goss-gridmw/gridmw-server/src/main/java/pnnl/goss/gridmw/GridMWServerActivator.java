@@ -120,7 +120,6 @@ public class GridMWServerActivator  {
     public void stop() {
     	try {
 			log.info("Stopping the bundle"+this.getClass().getName());
-			System.out.println("Stopping the bundle"+this.getClass().getName());
 
 			unRegisterHandlers();
 			
