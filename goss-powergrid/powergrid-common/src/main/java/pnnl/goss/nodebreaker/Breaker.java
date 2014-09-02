@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import pnnl.goss.model.ElementIdentifier;
+import pnnl.goss.model.IdentifiedObject;
+
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 

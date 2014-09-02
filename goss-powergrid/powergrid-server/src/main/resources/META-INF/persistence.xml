@@ -3,6 +3,54 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
 https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src/test/resources/META-INF/persistence_2_0.xsd"
 	version="2.0">
+	
+	<!-- Powergrid persisence unit for use with the powergrid datamodel. -->
+	<persistence-unit name="powergrid_cass_pu">
+		<provider>com.impetus.kundera.KunderaPersistence</provider>
+		
+		<!-- 
+			Each class that is an entity must be listed here because we are using
+			multiple domain jars.
+		 -->
+		 <class>pnnl.goss.powergrid.PowergridModel</class>
+		 <class>pnnl.goss.powergrid.datamodel.Powergrid</class>
+		 
+		 <properties>
+			<property name="kundera.nodes" value="localhost" />
+			<property name="kundera.port" value="9160" />
+			<property name="kundera.keyspace" value="powergrid" />
+			
+			<!-- This property will autocreate they space (not always advisable) -->			
+			<property name="kundera.ddl.auto.prepare" value="create" />
+			
+			
+			<!-- 
+				The following are different dialects that the kundera provider
+				has ported for our use.
+			 -->
+			<property name="kundera.dialect" value="pelops" />
+            <property name="kundera.client.lookup.class"
+                value="com.impetus.client.cassandra.pelops.PelopsClientFactory" />
+             
+            <!-- 
+            <property name="kundera.dialect" value="cassandra" />
+            <property name="kundera.client.lookup.class"
+                value="com.impetus.kundera.client.cassandra.dsdriver.DSClientFactory" />
+             -->
+            <!--
+            <property name="kundera.dialect" value="cassandra" />
+			<property name="kundera.client" value="thrift" />
+			<property name="kundera.client.lookup.class"
+				value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
+			 -->
+			<!-- <property name="kundera.cache.provider.class"
+				value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />-->
+			<!-- <property name="kundera.cache.config.resource" value="/ehcache-test.xml" /> -->
+			<!-- <property name="kundera.client.property" value="kunderaCounter.xml" /> -->
+		</properties>
+		
+	</persistence-unit>
+	
 	<persistence-unit name="nodebreaker_cass_pu">
 		<provider>com.impetus.kundera.KunderaPersistence</provider>
 		 
