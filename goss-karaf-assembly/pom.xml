@@ -13,6 +13,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <karaf.version>3.0.1</karaf.version>
         <goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
         <goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
+        <goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
 		<goss-tool-fncs.version>0.1.4-SNAPSHOT</goss-tool-fncs.version>
 		<goss-tool-mdart.version>0.1.4-SNAPSHOT</goss-tool-mdart.version>
     </properties>
@@ -129,6 +130,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>goss-ipojo-wrapper</feature>
                                 <feature>goss-core-features</feature>
                                 <feature>goss-fusiondb-features</feature>
+                                <feature>goss-gridmw-features</feature>
 								<feature>goss-tool-fncs-features</feature>
 								<feature>goss-tool-mdart-features</feature>
 
@@ -229,6 +231,14 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <classifier>features</classifier>
             <scope>runtime</scope>
             <version>${goss-fusiondb.version}</version>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>pnnl.goss</groupId>
+            <artifactId>goss-gridmw-features</artifactId>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+            <version>${goss-gridmw.version}</version>
             <type>xml</type>
         </dependency>
 		<dependency>

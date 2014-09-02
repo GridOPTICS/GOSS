@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>goss-gridmw-features</artifactId>
+	<packaging>pom</packaging>
+
+	<name>GOSS GridMW Feature</name>
+
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-gridmw</artifactId>
+		<version>0.1.4-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<gson.version>2.2.4</gson.version>
+		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
+		<org-reflections.version>0.9.8</org-reflections.version>
+
+		<slf4j.version>1.7.5</slf4j.version>
+		<commons-lang.version>2.6</commons-lang.version>
+
+		<javax-persist.version>1.0.2</javax-persist.version>
+		<woodstox.version>4.2.0</woodstox.version>
+	</properties>
+
+
+	<build>
+		<!-- resource required for property replacement on config files -->
+		 <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+		<plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <executions>
+             <execution>
+                <id>filter</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+             </execution>
+          </executions>
+        </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>target/classes/features.xml</file>
+                                    <classifier>features</classifier>
+                                    <type>xml</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+	</build>
+	
+
+</project>

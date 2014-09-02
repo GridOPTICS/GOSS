@@ -1,5 +1,6 @@
 package pnnl.goss.sharedperspective.server.handlers;
 
+import java.io.Serializable;
 import java.util.List;
 
 import pnnl.goss.core.DataError;
@@ -44,7 +45,7 @@ public class RequestAlertHandler extends GossRequestHandler {
 				dataResponse.setData(getAlertContext((RequestAlertContext)request));
 			}
 			else if (request instanceof RequestAlerts){
-				dataResponse.setData(getAlerts((RequestAlerts)request));
+				dataResponse.setData((Serializable) getAlerts((RequestAlerts)request));
 			}
 		}
 		catch(Exception e){

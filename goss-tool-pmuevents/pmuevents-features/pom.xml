@@ -3,24 +3,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>goss-demo-feature</artifactId>
+	<artifactId>goss-tool-pmuevents-feature</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.3-SNAPSHOT</version>
+	<name>GOSS PMU Events Feature</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<name>GOSS Demo Feature</name>
-
-	<modules>
-		<module>demo-pmu-security</module>
-	</modules>
 
 	<build>
+		<!-- resource required for property replacement on config files -->
 		 <resources>
 	      <resource>
 	        <directory>src/main/config</directory>
@@ -92,11 +87,6 @@
 									<classifier>features</classifier>
 									<type>xml</type>
 								</artifact>
-								<!-- <artifact>
-									<file>target/classes/pnnl.goss.demo.pmu.security.cfg</file>
-									<classifier>pmu-security-config</classifier>
-									<type>cfg</type>
-								</artifact> -->
 							</artifacts>
 						</configuration>
 					</execution>
@@ -111,7 +101,6 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Web-ContextPath>/demo-pmu-security</Web-ContextPath>
 						<!-- Assumes import of all packages when the bundle is loaded. Overwrite 
 							in dependent poms for different behaviour. -->
 						<Import-Package>
@@ -122,32 +111,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>pnnl.goss</groupId>
-				<artifactId>goss-core-client</artifactId>
-				<version>${goss-core.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>pnnl.goss</groupId>
-				<artifactId>goss-gridmw-common</artifactId>
-				<version>${goss-gridmw.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>${javax.servlet.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
-				<version>${osgi.version}</version>
-				<scope>provided</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 </project>

@@ -12,6 +12,7 @@
 		<goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
+		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
 		
 		
 		<activemq.version>5.9.0</activemq.version>
@@ -82,19 +83,19 @@
 			<artifactId>goss-powergrid-server</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-
+-->
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-common</artifactId>
-			<version>0.1.3-SNAPSHOT</version>
+			<version>${goss-gridmw.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-server</artifactId>
-			<version>0.1.3-SNAPSHOT</version>
+			<version>${goss-gridmw.version}</version>
 		</dependency>
-
+<!-- 
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-sharedperspective-server</artifactId>
