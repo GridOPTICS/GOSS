@@ -126,11 +126,16 @@ public class Utilities {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Dictionary loadProperties(String path){
+		return loadProperties(path, true);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static Dictionary loadProperties(String path, boolean iskarafconfig){
 		Properties props = new Properties();
 		try{
 			// All configuration files now end with .cfg except the one that
 			// ends in the hostname.
-			if (!path.endsWith(".cfg")){
+			if (!path.endsWith(".cfg") && iskarafconfig){
 				path += ".cfg";
 			}
 			

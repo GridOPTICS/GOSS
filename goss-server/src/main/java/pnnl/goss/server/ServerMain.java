@@ -44,6 +44,7 @@
 */
 package pnnl.goss.server;
 
+import java.io.File;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
@@ -90,6 +91,33 @@ public class ServerMain {
 			log.debug("\t"+element+" => "+ dictionary.get(element));
 		}
 	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void replacePropertiesFromHome(Dictionary toReplace, String propertiesFile){
+		File gossProperties = new File(System.getProperty("user.home")+"\\.goss\\"+propertiesFile);
+		
+		if(!gossProperties.exists()){
+			log.error("Properties File Doesn't exist!\n\t"+gossProperties.toString());
+			return;
+		}
+		
+		Dictionary privateProperties = Utilities.loadProperties(gossProperties.getAbsolutePath(), false);
+		
+		Enumeration propEnum = toReplace.keys();
+		
+		while(propEnum.hasMoreElements()){
+			String k = (String) propEnum.nextElement();
+			String v = (String) toReplace.get(k);
+			
+			if (v != null && v.startsWith("${") && v.endsWith("}")){
+				String keyInPrivate = v.substring(2, v.length() - 1);
+				if (privateProperties.get(keyInPrivate) != null){
+					toReplace.put(k, privateProperties.get(keyInPrivate));
+				}
+			}
+		}		
+	}
+	
 
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
@@ -98,6 +126,9 @@ public class ServerMain {
 		main.attachShutdownHook();
 
 		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
+		// Replaces the ${..} with values from the goss.properties file.
+		replacePropertiesFromHome(dataSourcesConfig, "goss.properties");
+		
 		Dictionary coreConfig = Utilities.loadProperties(PROP_CORE_CONFIG);
 		
 		log.debug("CORE CONFIGURATION");
