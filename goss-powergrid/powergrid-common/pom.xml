@@ -97,6 +97,7 @@
 						<Export-Package>
 							pnnl.goss.nodebreaker,
 							pnnl.goss.powergrid,
+							pnnl.goss.powergrid.topology,
 							pnnl.goss.powergrid.collections,
 							pnnl.goss.powergrid.datamodel,
 							pnnl.goss.powergrid.requests

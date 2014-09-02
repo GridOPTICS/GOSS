@@ -1,4 +1,4 @@
-package pnnl.goss.model;
+package pnnl.goss.powergrid.topology;
 
 import java.io.Serializable;
 

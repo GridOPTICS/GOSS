@@ -58,7 +58,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import pnnl.goss.model.ElementIdentifier;
 import pnnl.goss.powergrid.datamodel.Alert;
 import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.powergrid.datamodel.AlertSeverity;
@@ -74,6 +73,7 @@ import pnnl.goss.powergrid.datamodel.Substation;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
 import pnnl.goss.powergrid.datamodel.Zone;
+import pnnl.goss.powergrid.topology.ElementIdentifier;
 
 @XmlRootElement(name = "PowergridModel")
 @Entity

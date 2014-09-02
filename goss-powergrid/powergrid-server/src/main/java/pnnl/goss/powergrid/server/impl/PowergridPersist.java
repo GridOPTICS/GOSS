@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import pnnl.goss.model.ElementIdentifier;
 import pnnl.goss.nodebreaker.Breaker;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.dao.PowergridDao;
@@ -23,6 +22,7 @@ import pnnl.goss.powergrid.datamodel.Substation;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
 import pnnl.goss.powergrid.datamodel.Zone;
+import pnnl.goss.powergrid.topology.ElementIdentifier;
 
 public class PowergridPersist implements PowergridDao {
 

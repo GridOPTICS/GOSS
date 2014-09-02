@@ -19,8 +19,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import pnnl.goss.model.ElementIdentifier;
-import pnnl.goss.model.IdentifiedObject;
+import pnnl.goss.powergrid.topology.ElementIdentifier;
+import pnnl.goss.powergrid.topology.IdentifiedObject;
 
 
 /**
