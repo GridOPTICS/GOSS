@@ -44,6 +44,13 @@
 */
 package pnnl.goss.gridpack.service;
 
+import java.util.Dictionary;
+
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Updated;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -61,90 +68,49 @@ import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
+import pnnl.goss.server.core.BasicDataSourceCreator;
+import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
-public class GridpackServerActivator implements BundleActivator {
-	/**
-	 * <p>
-	 * Allows tracking of the registration service from the core-server.
-	 * </p>
-	 */
-	private ServiceTracker registrationTracker;
-		
+@Instantiate
+public class GridpackServerActivator {
+			
 	/**
 	 * <p>
 	 * Add logging to the class so that we can debug things effectively after deployment.
 	 * </p>
 	 */
-	private static Logger log = LoggerFactory.getLogger(PowergridServerActivator.class);
-    public void start(BundleContext context) {
-        System.out.println("Starting the bundle");
-        /*log.info("Starting bundle: " + this.getClass().getName());
-		try {
-			String filterStr = "(" + Constants.OBJECTCLASS + "=" + GossRequestHandlerRegistrationService.class.getName() + ")";
-			Filter filter = context.createFilter(filterStr);
-			registrationTracker = new ServiceTracker(context, filter, null);
-			registrationTracker.open();
-			
-			// Register the handlers on the registration service.
-			registerPowergridHandlers();
-			
-		} catch (InvalidSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+	private static Logger log = LoggerFactory.getLogger(GridpackServerActivator.class);
+	
+	private GossRequestHandlerRegistrationService registrationService;
+	private GossDataServices dataServices;
+	
+	@Requires
+	private BasicDataSourceCreator datasourceCreator;
+	
+	@Validate
+    public void start() {
+		log.info("Starting: "+this.getClass().getName());
     }
 
+	@Invalidate
     public void stop(BundleContext context) {
     	log.info("Stopping the bundle"+this.getClass().getName());
-		/*try {
-			log.info("Stopping the bundle"+this.getClass().getName());
-			System.out.println("Stopping the bundle"+this.getClass().getName());
-			GossRequestHandlerRegistrationService registrationService = (GossRequestHandlerRegistrationService) registrationTracker.getService();
-
-			if (registrationService != null) {
-				registrationService.removeHandlerMapping(RequestPowergrid.class);
-				registrationService.removeHandlerMapping(RequestPowergridTimeStep.class);
-				registrationService.removeHandlerMapping(RequestPowergridList.class);
-				
-				registrationService.removeSecurityMapping(RequestPowergrid.class);
-				registrationService.removeSecurityMapping(RequestPowergridTimeStep.class);
-			}
-			
-			if (registration != null){
-				registration.unregister();
-			}
-			
-			if (powergridDatasources  != null){
-				powergridDatasources.shutdown();
-			}
-
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
     }
-
-    /**
-	 * <p>
-	 * The registerPowergridHandlers method registers the handlers with the GossRequestHandlerRegistrationService.
-	 * </p>
-	 */
-    /*
-	private void registerPowergridHandlers(){
-		GossRequestHandlerRegistrationService registrationService = (GossRequestHandlerRegistrationService) registrationTracker.getService();
-		
-		if(registrationService != null){
-			// Registering service handlers here
-			registrationService.addHandlerMapping(RequestPowergrid.class, RequestPowergridHandler.class);
-			registrationService.addHandlerMapping(RequestPowergridTimeStep.class, RequestPowergridHandler.class);
-			registrationService.addHandlerMapping(RequestPowergridList.class, RequestPowergridHandler.class);
+	
+	public GridpackServerActivator(
+			@Requires GossRequestHandlerRegistrationService registrationService,
+			@Requires GossDataServices dataServices) {
+		this.registrationService = registrationService;
+		this.dataServices = dataServices;
+		log.debug("Constructing activator");
 			
-			registrationService.addSecurityMapping(RequestPowergrid.class, AccessControlHandlerAllowAll.class);
-			registrationService.addSecurityMapping(RequestPowergridTimeStep.class, AccessControlHandlerAllowAll.class);
-		}
-		else{
-			log.debug(GossRequestHandlerRegistrationService.class.getName()+" not found!");
-		}		
-	}*/
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Updated
+	public synchronized void updated(Dictionary config){
+		log.debug("Updating configuration for: "+this.getClass().getName());
+		log.debug("NOTE: Gridpack doesn't register its own datasource");		
+	}
 }
