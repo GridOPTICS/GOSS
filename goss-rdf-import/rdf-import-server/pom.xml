@@ -6,7 +6,7 @@
 	<name>GOSS Rdf Import Server Bundle</name>
 	<parent>
 		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-tool-rdf-import</artifactId>
+		<artifactId>goss-rdf-import</artifactId>
 		<version>0.1.4-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
