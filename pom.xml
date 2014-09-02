@@ -23,7 +23,7 @@
 		<goss-fncs.version>0.1.4-SNAPSHOT</goss-fncs.version>
 		<goss-fusion.version>0.1.4-SNAPSHOT</goss-fusion.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
-		<goss-gridpack.version>0.1.3-SNAPSHOT</goss-gridpack.version>
+		<goss-gridpack.version>0.1.4-SNAPSHOT</goss-gridpack.version>
 		<goss-kariosdb.version>0.1.4-SNAPSHOT</goss-kariosdb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-pmuevents.version>0.1.4-SNAPSHOT</goss-pmuevents.version>
@@ -83,7 +83,9 @@
 		<module>goss-core</module>
         <module>goss-fusiondb</module>
 		<module>goss-powergrid</module>
+        <module>goss-gridpack</module>
  		<module>goss-gridmw</module> 
+        
 <!-- 		<module>goss-tool-gridpack-feature</module> -->
 		<module>goss-tool-fncs</module>
 
