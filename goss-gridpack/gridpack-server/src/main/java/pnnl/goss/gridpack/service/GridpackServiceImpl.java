@@ -54,6 +54,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.felix.ipojo.annotations.Requires;
+
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.gridpack.common.datamodel.GridpackBranch;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
@@ -61,10 +63,19 @@ import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
 import pnnl.goss.gridpack.service.impl.GridpackUtils;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
+import pnnl.goss.powergrid.server.PowergridService;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
+import pnnl.goss.server.core.GossDataServices;
 
 @Path("/")
 public class GridpackServiceImpl {
+	
+	private PowergridService powergridService;
+	
+	public GridpackServiceImpl(@Requires PowergridService powergridService){
+		this.powergridService = powergridService;
+	}
+	
 	
 	@GET
 	@Path("/{powergridName}/buses/{numberOfBuses}")
@@ -105,15 +116,13 @@ public class GridpackServiceImpl {
 		
 		GridpackPowergrid pg = null;
 		
-		RequestPowergrid request = new RequestPowergrid(powergridName);
-		RequestPowergridHandler handler = new RequestPowergridHandler();
+		PowergridModel powergrid = powergridService.getPowergridModel(powergridName);
 		
-		DataResponse response = handler.getResponse(request);
-
-		// Make sure the response didn't throw an error.
-		GridpackUtils.throwDataError(response);
-		
-		PowergridModel powergrid = (PowergridModel)response.getData(); //handler.getResponse(request).getData();
+		if (powergrid == null){
+			// Make sure the response didn't throw an error.
+			GridpackUtils.throwInputError("Invalid powergrid specified: "+powergridName);
+			return null;
+		}
 					
 		pg = new GridpackPowergrid(powergrid);
 		
