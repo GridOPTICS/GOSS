@@ -51,8 +51,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -73,7 +75,7 @@ import pnnl.goss.powergrid.datamodel.Substation;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
 import pnnl.goss.powergrid.datamodel.Zone;
-import pnnl.goss.powergrid.topology.ElementIdentifier;
+import pnnl.goss.powergrid.topology.IdentifiedObject;
 
 @XmlRootElement(name = "PowergridModel")
 @Entity
@@ -81,8 +83,11 @@ public class PowergridModel implements Serializable {
 
 	private static final long serialVersionUID = 2759654942517938088L;
 	
-	@EmbeddedId
-	private ElementIdentifier elementIdentifier;
+	@Id
+	private String mrid;
+	
+	@Embedded
+	private IdentifiedObject identifiedObject;	
 
 	private static final int BRANCHES = 0;
 	private static final int TRANSFORMERS = 1;

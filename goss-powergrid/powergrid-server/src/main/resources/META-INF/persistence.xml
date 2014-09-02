@@ -55,9 +55,11 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 		<provider>com.impetus.kundera.KunderaPersistence</provider>
 		 
 		<!-- <class>pnnl.goss.nodebreaker.IdentifiedObject</class> -->
-		<!-- <class>pnnl.goss.nodebreaker.ElementIdentifier</class> -->
-		<!--  <class>pnnl.goss.nodebreaker.IdentifiedObject</class>-->
-		<class>pnnl.goss.nodebreaker.Breaker</class>
+		<!-- 
+		<class>pnnl.goss.powergrid.ElementIdentifier</class>
+		<class>pnnl.goss.powergrid.IdentifiedObject</class>
+		 -->
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Breaker</class>
 		<!-- <class>pnnl.goss.nodebreaker.Terminal</class> -->
 		
 		

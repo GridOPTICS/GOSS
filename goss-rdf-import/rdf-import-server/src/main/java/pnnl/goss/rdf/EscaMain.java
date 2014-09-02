@@ -18,7 +18,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import pnnl.goss.powergrid.topology.ElementIdentifier;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
@@ -26,6 +25,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
 import pnnl.goss.rdf.server.BuildPowergrid;
 import pnnl.goss.rdf.server.Esca60Vocab;
 import pnnl.goss.topology.nodebreaker.dao.BreakerDao;
+import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
 
 public class EscaMain {
 	
@@ -45,11 +45,10 @@ public class EscaMain {
 		System.setOut(new PrintStream(outStream));
 	}
 	
-	private static void populateIdentityObjects(EscaType escaType, ElementIdentifier elementId,
-			IdentifiedObject ident){
+	private static void populateIdentityObjects(EscaType escaType, IdentifiedObject ident){
 		Resource resource = escaType.getResource();
-		elementId.setMrid(escaType.getMrid());
-		elementId.setDataType(escaType.getDataType());
+		ident.setIdentMrid(escaType.getMrid());
+		ident.setIdentDataType(escaType.getDataType());
 		
 		ident.setIdentAlias(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME).getString());
 		ident.setIdentName(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_NAME).getString());
@@ -76,13 +75,11 @@ public class EscaMain {
 	private static void storeBreaker(BreakerDao dao, EscaType breaker){
 		
 		IdentifiedObject ident = new IdentifiedObject();
-		ElementIdentifier elementId = new ElementIdentifier();
 		
-		populateIdentityObjects(breaker, elementId, ident);
+		populateIdentityObjects(breaker, ident);
 		
 		Breaker entity = new Breaker();
 		
-		entity.setElementIdentifier(elementId);
 		entity.setIdentifiedObject(ident);
 		
 		

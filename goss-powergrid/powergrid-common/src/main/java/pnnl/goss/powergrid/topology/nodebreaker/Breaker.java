@@ -12,49 +12,37 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-
-import pnnl.goss.powergrid.topology.ElementIdentifier;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
 @Entity
-public class Breaker extends IdentifiedObject {
+public class Breaker {
+	public final String OBJECT_TYPE = "Breaker";
 	
-	@EmbeddedId
-	private ElementIdentifier elementIdentifier;
-	
-	private String identName;
-	private String identAlias;
-	private String identPath;
-	private String identDescription;
-	
+	@Id
+	private String mrid;
 	private String memberOfEquipmentContainer;
 	private String conductingEquipmentBaseVoltage;	
 	
 	private Double ratedCurrent;
 	private Boolean switchNormalOpen;
 	
-	@Transient
+	@Embedded
 	private IdentifiedObject identifiedObject;
 	
 	public Breaker(){
 		
 	}
 	
+	
+	
 	public Breaker(String mrid, String dataType, String identName, String identAlias,
 			String identPath, String identDescription, Double ratedCurrent, Boolean switchNormalOpen,
 			String memberOfEquipmentContainer, String conductingEquipmentBaseVoltage){
 		
-		elementIdentifier = new ElementIdentifier(mrid, dataType);
-		this.identAlias = identAlias;
-		this.identName = identName;
-		this.identDescription = identDescription;
-		this.identPath = identPath;
-		
-		this.createIdentifiedObject();
-		
+		this.identifiedObject = new IdentifiedObject(mrid, OBJECT_TYPE,  identName, identAlias, identPath, identDescription);
 		
 		this.ratedCurrent = ratedCurrent;
 		
@@ -64,10 +52,10 @@ public class Breaker extends IdentifiedObject {
 		
 	}
 	
-	private void createIdentifiedObject(){
+	/*private void createIdentifiedObject(){
 		identifiedObject = new IdentifiedObject(this.identName,
-				this.identAlias, this.identPath, this.identDescription);
-	}
+				this.identAlias, this.identPathName, this.identDescription);
+	}*/
 		
 	public Double getRatedCurrent() {
 		return ratedCurrent;
@@ -82,30 +70,24 @@ public class Breaker extends IdentifiedObject {
 		this.switchNormalOpen = normalOpen;
 	}
 
-	public ElementIdentifier getElementIdentifier() {
-		return elementIdentifier;
-	}
-
-	public void setElementIdentifier(ElementIdentifier elementIdentifier) {
-		this.elementIdentifier = elementIdentifier;
-	}
 
 	public IdentifiedObject getIdentifiedObject() {
-		if (identifiedObject == null){
-			createIdentifiedObject();
-		}
+//		if (identifiedObject == null){
+//			createIdentifiedObject();
+//		}
 		return identifiedObject;
 	}
 
 	public void setIdentifiedObject(IdentifiedObject identObject) {
 		this.identifiedObject = identObject;
+		this.mrid = identObject.getIdentMrid();
 		
-		if(identObject != null){
-			this.identAlias = identObject.getIdentAlias();
-			this.identDescription = identObject.getIdentDescription();
-			this.identName = identObject.getIdentName();
-			this.identPath = identObject.getIdentPathName();
-		}
+//		if(identObject != null){
+//			this.identAlias = identObject.getIdentAlias();
+//			this.identDescription = identObject.getIdentDescription();
+//			this.identName = identObject.getIdentName();
+//			this.identPathName = identObject.getIdentPathName();
+//		}
 	}
 
 	public String getMemberOfEquipmentContainer() {
@@ -123,5 +105,9 @@ public class Breaker extends IdentifiedObject {
 	public void setConductingEquipmentBaseVoltage(
 			String conductingEquipmentBaseVoltage) {
 		this.conductingEquipmentBaseVoltage = conductingEquipmentBaseVoltage;
+	}
+
+	public String getMrid() {
+		return mrid;
 	}
 }

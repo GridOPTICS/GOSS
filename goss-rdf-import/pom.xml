@@ -20,7 +20,12 @@
         <goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
 	</properties>
 	<dependencyManagement>
-		<dependencies>
+		<dependencies>		
+			<dependency>
+				<groupId>goss.pnnl</groupId>
+				<artifactId>goss-powergrid-common</artifactId>
+				<version>${goss-powergrid.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>goss.pnnl</groupId>
 				<artifactId>goss-powergrid-server</artifactId>

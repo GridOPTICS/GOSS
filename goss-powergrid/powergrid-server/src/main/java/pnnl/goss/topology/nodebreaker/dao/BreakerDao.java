@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import pnnl.goss.powergrid.topology.ElementIdentifier;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 
 
@@ -21,7 +20,7 @@ public class BreakerDao {
         }
     }
     
-    public Object get(Class<?> entityClass, ElementIdentifier id)
+    public Object get(Class<?> entityClass, String id)
     {
         EntityManager em = emf.createEntityManager();
         Object p = em.find(entityClass, id);

@@ -10,8 +10,10 @@ package pnnl.goss.powergrid.datamodel;
 
 import java.io.Serializable;
 
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +21,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import pnnl.goss.powergrid.topology.ElementIdentifier;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 
 
@@ -91,7 +92,7 @@ public class Powergrid
     @XmlElement(name = "CoordinateSystem", required = true)
     protected String coordinateSystem;
     @XmlElement(name = "Mrid", required = true)
-    @Transient
+    @Id
     protected String mrid;
     
     /**
@@ -107,18 +108,11 @@ public class Powergrid
     /**
      * The identifing element for this object.
      */
-    @EmbeddedId
-    private ElementIdentifier elementIdentifier;
+    @Embedded
+    private IdentifiedObject identifiedObject;
     
     public Powergrid(){
-    	// Required
-    	this.elementIdentifier = new ElementIdentifier();
-    	this.elementIdentifier.setDataType(POWERGRID_DATATYPE);
-    }
-    
-    public Powergrid(ElementIdentifier elementIdentifier){
-    	this.elementIdentifier = elementIdentifier;
-    	this.elementIdentifier.setDataType(POWERGRID_DATATYPE);
+    	
     }
     
 
@@ -219,7 +213,6 @@ public class Powergrid
      *     
      */
     public void setMrid(String value) {
-    	this.elementIdentifier.setMrid(value);
         this.mrid = value;
     }
 
@@ -243,12 +236,11 @@ public class Powergrid
 		this.sbase = sbase;
 	}
 
-	public ElementIdentifier getElementIdentifier() {
-		return elementIdentifier;
+	public IdentifiedObject getIdentifiedObject() {
+		return identifiedObject;
 	}
 
-	public void setElementIdentifier(ElementIdentifier elementIdentifier) {
-		this.elementIdentifier = elementIdentifier;
+	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
+		this.identifiedObject = identifiedObject;
 	}
-
 }

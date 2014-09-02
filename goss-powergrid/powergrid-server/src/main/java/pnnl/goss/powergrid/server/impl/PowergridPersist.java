@@ -21,7 +21,6 @@ import pnnl.goss.powergrid.datamodel.Substation;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
 import pnnl.goss.powergrid.datamodel.Transformer;
 import pnnl.goss.powergrid.datamodel.Zone;
-import pnnl.goss.powergrid.topology.ElementIdentifier;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 
 public class PowergridPersist implements PowergridDao {
@@ -60,7 +59,7 @@ public class PowergridPersist implements PowergridDao {
 
 
    
-    public Object get(Class<?> entityClass, ElementIdentifier id)
+    public Object get(Class<?> entityClass, String id)
     {
         EntityManager em = emf.createEntityManager();
         Object p = em.find(entityClass, id);
