@@ -18,7 +18,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import pnnl.goss.nodebreaker.dao.BreakerDao;
 import pnnl.goss.powergrid.topology.ElementIdentifier;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
@@ -26,6 +25,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.Network;
 import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
 import pnnl.goss.rdf.server.BuildPowergrid;
 import pnnl.goss.rdf.server.Esca60Vocab;
+import pnnl.goss.topology.nodebreaker.dao.BreakerDao;
 
 public class EscaMain {
 	
@@ -127,7 +127,6 @@ public class EscaMain {
 			String dataType = typeMap.get(d).getDataType();
 			if (Esca60Vocab.BREAKER_OBJECT.getLocalName().equals(dataType)){
 				storeBreaker(breakerDao, typeMap.get(d));
-				
 			}
 			//System.out.println(d+typeMap.get(d).getDataType());
 		}
