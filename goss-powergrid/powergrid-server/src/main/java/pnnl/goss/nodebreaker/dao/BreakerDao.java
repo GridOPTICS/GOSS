@@ -4,8 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import pnnl.goss.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.ElementIdentifier;
+import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 
 
 public class BreakerDao {

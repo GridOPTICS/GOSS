@@ -1,4 +1,4 @@
-package pnnl.goss.nodebreaker;
+package pnnl.goss.powergrid.topology.nodebreaker;
 
 import java.util.List;
 

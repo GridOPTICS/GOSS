@@ -18,12 +18,12 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import pnnl.goss.nodebreaker.Breaker;
-import pnnl.goss.nodebreaker.ElementIdentifier;
-import pnnl.goss.nodebreaker.IdentifiedObject;
-import pnnl.goss.nodebreaker.Network;
-import pnnl.goss.nodebreaker.TopologicalNode;
 import pnnl.goss.nodebreaker.dao.BreakerDao;
+import pnnl.goss.powergrid.topology.ElementIdentifier;
+import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.Network;
+import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
 import pnnl.goss.rdf.server.BuildPowergrid;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
