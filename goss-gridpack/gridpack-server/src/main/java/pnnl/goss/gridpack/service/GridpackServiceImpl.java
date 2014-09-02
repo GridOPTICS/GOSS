@@ -55,6 +55,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.felix.ipojo.annotations.Requires;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.gridpack.common.datamodel.GridpackBranch;
@@ -70,9 +72,15 @@ import pnnl.goss.server.core.GossDataServices;
 @Path("/")
 public class GridpackServiceImpl {
 	
+	private static Logger log = LoggerFactory.getLogger(GridpackServiceImpl.class);
 	private PowergridService powergridService;
 	
+	public GridpackServiceImpl(){
+		log.debug("DEFAULT CONSTRUCTOR");
+	}
+	
 	public GridpackServiceImpl(@Requires PowergridService powergridService){
+		log.debug("CONSTRUCTING USING PowergridService constructor");
 		this.powergridService = powergridService;
 	}
 	
