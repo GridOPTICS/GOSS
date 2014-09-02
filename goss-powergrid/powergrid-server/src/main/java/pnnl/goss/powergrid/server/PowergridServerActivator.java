@@ -85,9 +85,9 @@ import static pnnl.goss.core.GossCoreContants.*;
 public class PowergridServerActivator{
 
 	public static final String PROP_POWERGRID_DATASERVICE = "goss/powergrid";
-	public static final String PROP_POWERGRID_USER = "powergrid.user";
-	public static final String PROP_POWERGRID_PASSWORD = "powergrid.password";
-	public static final String PROP_POWERGRID_URI = "powergrid.uri";
+	public static final String PROP_POWERGRID_USER = "powergrid.db.user";
+	public static final String PROP_POWERGRID_PASSWORD = "powergrid.db.password";
+	public static final String PROP_POWERGRID_URI = "powergrid.db.uri";
 		
 	/**
 	 * <p>
@@ -182,7 +182,7 @@ public class PowergridServerActivator{
 
 	@SuppressWarnings("rawtypes")
 	@Updated
-	public synchronized void updated(Dictionary config) throws ConfigurationException {
+	public synchronized void updated(Dictionary config){
 		log.debug("Updating configuration for: "+this.getClass().getName());
 		log.debug("updating");
 		user = (String) config.get(PROP_POWERGRID_USER);

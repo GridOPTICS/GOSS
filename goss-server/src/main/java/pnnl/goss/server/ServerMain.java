@@ -45,12 +45,18 @@
 package pnnl.goss.server;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.gridmw.GridMWServerActivator;
+import pnnl.goss.gridpack.service.GridpackServerActivator;
 import pnnl.goss.kairosdb.KairosDBServerActivator;
 import pnnl.goss.mdart.MDARTServerActivator;
+import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.internal.GossDataServicesImpl;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
@@ -61,8 +67,8 @@ import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
 
 
 public class ServerMain {
-
-	//private final static String powergridDatasourceConfig = "pnnl.goss.powergrid.server.cfg"; 
+	
+	private static Logger log = LoggerFactory.getLogger(ServerMain.class);
 
 	public void attachShutdownHook(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -73,6 +79,17 @@ public class ServerMain {
 		});
 
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void outputConfig(Dictionary dictionary){
+		
+		Enumeration dictEnumeration = dictionary.keys();
+		
+		while(dictEnumeration.hasMoreElements()){
+			String element = (String)dictEnumeration.nextElement();
+			log.debug("\t"+element+" => "+ dictionary.get(element));
+		}
+	}
 
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
@@ -82,6 +99,12 @@ public class ServerMain {
 
 		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
 		Dictionary coreConfig = Utilities.loadProperties(PROP_CORE_CONFIG);
+		
+		log.debug("CORE CONFIGURATION");
+		outputConfig(coreConfig);
+		
+		log.debug("DATASOURCES CONFIGURATION");
+		outputConfig(dataSourcesConfig);
 		
 		GossDataServices dataServices = new GossDataServicesImpl();
 		
@@ -108,6 +131,12 @@ public class ServerMain {
 		gridmwServerActivator.update(dataSourcesConfig);
 		gridmwServerActivator.start();
 		
+		
+		PowergridServerActivator pgActivator = new PowergridServerActivator(registrationService, dataServices);
+		pgActivator.updated(dataSourcesConfig);
+		pgActivator.start();
+		
+		//GridpackServerActivator gridpackActivator = new GridpackServerActivator()
 		
 		//Fusion Launchers----------------------------------------------
 //		DataStreamLauncher launcher = new DataStreamLauncher();
