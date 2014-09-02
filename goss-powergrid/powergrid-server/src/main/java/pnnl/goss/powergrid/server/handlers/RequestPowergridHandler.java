@@ -47,6 +47,8 @@ package pnnl.goss.powergrid.server.handlers;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,7 @@ import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridList;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStepValues;
+import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.server.core.GossRequestHandler;
 
@@ -143,16 +146,16 @@ public class RequestPowergridHandler extends GossRequestHandler {
 			return response;
 		}
 		
-		String datasourceKey = PowergridDataSources.instance().getDatasourceKeyWherePowergridName(new PowergridDaoMySql(), requestPowergrid.getPowergridName());
-		
-		// Make sure the powergrid name is located in our set.
-		if (datasourceKey == null){
-			response = new DataResponse(new DataError("Unkown powergrid: " + requestPowergrid.getPowergridName()));
-			return response;
-		}
+//		String datasourceKey = PowergridDataSources.instance().getDatasourceKeyWherePowergridName(new PowergridDaoMySql(), requestPowergrid.getPowergridName());
+//		
+//		// Make sure the powergrid name is located in our set.
+//		if (datasourceKey == null){
+//			response = new DataResponse(new DataError("Unkown powergrid: " + requestPowergrid.getPowergridName()));
+//			return response;
+//		}
 		
 		log.debug("using datasource: " + datasourceKey);
-		PowergridDao dao = new PowergridDaoMySql(PowergridDataSources.instance().getConnectionPool(datasourceKey));
+		PowergridDao dao = new PowergridDaoMySql((DataSource) this.dataservices.getDataService(PowergridServerActivator.PROP_POWERGRID_DATASERVICE));
 
 		if (request instanceof RequestPowergridTimeStep) {
 			RequestPowergridTimeStep pgRequest = (RequestPowergridTimeStep) request;

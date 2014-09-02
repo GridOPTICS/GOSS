@@ -63,7 +63,7 @@ public class ClientMainGca implements GossResponseEvent {
 
 	private static GossClient client = null;
 	private static final Logger log = LoggerFactory.getLogger(ClientMainGca.class);
-	private static final String DATA = "Greek-118-South";
+	private static final String DATA = "Greek-118-North";
 
 	public static void main(String[] args) {
 
