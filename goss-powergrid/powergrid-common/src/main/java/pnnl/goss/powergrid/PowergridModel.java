@@ -51,11 +51,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import pnnl.goss.model.ElementIdentifier;
 import pnnl.goss.powergrid.datamodel.Alert;
 import pnnl.goss.powergrid.datamodel.AlertContext;
 import pnnl.goss.powergrid.datamodel.AlertSeverity;
@@ -73,9 +76,13 @@ import pnnl.goss.powergrid.datamodel.Transformer;
 import pnnl.goss.powergrid.datamodel.Zone;
 
 @XmlRootElement(name = "PowergridModel")
+@Entity
 public class PowergridModel implements Serializable {
 
 	private static final long serialVersionUID = 2759654942517938088L;
+	
+	@EmbeddedId
+	private ElementIdentifier elementIdentifier;
 
 	private static final int BRANCHES = 0;
 	private static final int TRANSFORMERS = 1;
@@ -123,6 +130,11 @@ public class PowergridModel implements Serializable {
 		this.alertContext = alertContext;
 		reset();
 	}
+	
+	public PowergridModel(){
+		this.alertContext = new AlertContext();
+	}
+	
 
 	public void reset() {
 		elementMap.clear();
