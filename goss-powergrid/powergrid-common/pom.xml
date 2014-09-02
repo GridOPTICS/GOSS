@@ -90,7 +90,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>pnnl.goss.powergrid.PowergridCommonActivator</Bundle-Activator>
 						<Import-Package>
 							*
 						</Import-Package>
