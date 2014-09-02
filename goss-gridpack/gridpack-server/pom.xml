@@ -21,7 +21,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
-			<artifactId>goss-tool-gridpack-common</artifactId>
+			<artifactId>goss-gridpack-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
