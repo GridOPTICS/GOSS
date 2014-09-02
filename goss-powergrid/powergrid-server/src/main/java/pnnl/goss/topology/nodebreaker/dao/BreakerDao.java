@@ -1,4 +1,4 @@
-package pnnl.goss.nodebreaker.dao;
+package pnnl.goss.topology.nodebreaker.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
