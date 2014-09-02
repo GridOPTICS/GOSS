@@ -1,4 +1,4 @@
-package pnnl.goss.nodebreaker;
+package pnnl.goss.model;
 
 import java.io.Serializable;
 

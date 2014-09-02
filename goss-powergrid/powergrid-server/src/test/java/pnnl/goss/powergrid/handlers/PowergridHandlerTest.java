@@ -44,8 +44,16 @@
 */
 package pnnl.goss.powergrid.handlers;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.Before;
+
+import org.junit.Test;
+
+//Let's import Mockito statically so that the code looks clearer
+import static org.mockito.Mockito.*;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.powergrid.ContingencyModel;
 import pnnl.goss.powergrid.PowergridModel;
@@ -55,13 +63,29 @@ import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.handlers.RequestContingencyModelHandler;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
+import pnnl.goss.server.core.GossDataServices;
 
 public class PowergridHandlerTest {
 
+	
 	static final String dsKey = "northandsouth";
 	static final String databaseUri = "jdbc:mysql://localhost:3306/northandsouth";
 	static final String databaseUser = "root";
 	static final String databasePassword = "Luckydog2004";
+	
+	private GossDataServices _dataservice;
+	private Connection _connection;
+	
+	@Before
+	public void setup(){
+		_connection = mock(Connection.class);
+		_dataservice = mock(GossDataServices.class);
+	}
+	
+	@Test
+	public void canGetPowergridByName(){
+		
+	}
 	
 	public static void setupDatasource(){
 		try {

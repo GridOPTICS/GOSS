@@ -10,11 +10,17 @@ package pnnl.goss.powergrid.datamodel;
 
 import java.io.Serializable;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import pnnl.goss.model.ElementIdentifier;
+import pnnl.goss.model.IdentifiedObject;
 
 
 /**
@@ -70,10 +76,13 @@ import javax.xml.bind.annotation.XmlType;
     "coordinateSystem",
     "mrid"
 })
+@Entity
 public class Powergrid
     implements Serializable
 {
 
+	public final static String POWERGRID_DATATYPE = "Powergrid";
+	
     private final static long serialVersionUID = 12343L;
     @XmlElement(name = "PowergridId")
     protected int powergridId;
@@ -82,7 +91,36 @@ public class Powergrid
     @XmlElement(name = "CoordinateSystem", required = true)
     protected String coordinateSystem;
     @XmlElement(name = "Mrid", required = true)
+    @Transient
     protected String mrid;
+    
+    /**
+     * PTI-Case identifier
+     */
+    private String caseIdentifier;
+    
+    /**
+     * System mva base 
+     */
+    private Double sbase;	
+    
+    /**
+     * The identifing element for this object.
+     */
+    @EmbeddedId
+    private ElementIdentifier elementIdentifier;
+    
+    public Powergrid(){
+    	// Required
+    	this.elementIdentifier = new ElementIdentifier();
+    	this.elementIdentifier.setDataType(POWERGRID_DATATYPE);
+    }
+    
+    public Powergrid(ElementIdentifier elementIdentifier){
+    	this.elementIdentifier = elementIdentifier;
+    	this.elementIdentifier.setDataType(POWERGRID_DATATYPE);
+    }
+    
 
     /**
      * Gets the value of the powergridId property.
@@ -181,11 +219,36 @@ public class Powergrid
      *     
      */
     public void setMrid(String value) {
+    	this.elementIdentifier.setMrid(value);
         this.mrid = value;
     }
 
     public boolean isSetMrid() {
         return (this.mrid!= null);
     }
+
+	public String getCaseIdentifier() {
+		return caseIdentifier;
+	}
+
+	public void setCaseIdentifier(String caseIdentifier) {
+		this.caseIdentifier = caseIdentifier;
+	}
+
+	public Double getSbase() {
+		return sbase;
+	}
+
+	public void setSbase(Double sbase) {
+		this.sbase = sbase;
+	}
+
+	public ElementIdentifier getElementIdentifier() {
+		return elementIdentifier;
+	}
+
+	public void setElementIdentifier(ElementIdentifier elementIdentifier) {
+		this.elementIdentifier = elementIdentifier;
+	}
 
 }

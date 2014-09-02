@@ -96,6 +96,15 @@ public class PowergridDaoMySql implements PowergridDao {
 	public PowergridDaoMySql(DataSource datasource) {
 		log.debug("Creating " + PowergridDaoMySql.class);
 		this.datasource = datasource;
+		
+		try {
+			log.debug("Attempting connection to datasource: ");
+			this.datasource.getConnection();
+		} catch (SQLException e) {
+			log.debug("Connection to datasource failed!");
+			e.printStackTrace();
+		}
+		
 		alertContext = new AlertContext();
 		initializeAlertContext();
 	}
@@ -839,6 +848,18 @@ public class PowergridDaoMySql implements PowergridDao {
 		stmt.setInt(1, powergridId);
 		stmt.setString(2, timestep);
 		return stmt.executeQuery();
+	}
+
+	@Override
+	public Powergrid getPowergridByMrid(String mrid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void persist(Powergrid powergrid) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

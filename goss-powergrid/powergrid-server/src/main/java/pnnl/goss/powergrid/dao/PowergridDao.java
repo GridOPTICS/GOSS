@@ -70,6 +70,7 @@ public interface PowergridDao {
 	 */
 	List<String> getPowergridNames();
 
+	Powergrid getPowergridByMrid(String mrid);
 	Powergrid getPowergridByName(String powergridName);
 	Powergrid getPowergridById(int powergridId);
 	/**
@@ -95,4 +96,7 @@ public interface PowergridDao {
 	List<Substation> getSubstations(int powergridId);
 	List<Transformer> getTransformers(int powergridId);
 	List<Zone> getZones(int powergridId);
+	
+	
+	void persist(Powergrid powergrid);
 }
