@@ -18,7 +18,7 @@
 		<!-- Goss properties that are listed below in the dependencymanagement 
 			section. -->
 		<goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
-		<goss-demo.version>0.1.3-SNAPSHOT</goss-demo.version>
+		<goss-demo.version>0.1.4-SNAPSHOT</goss-demo.version>
 		<goss-dsa.version>0.1.3-SNAPSHOT</goss-dsa.version>
 		<goss-fncs.version>0.1.4-SNAPSHOT</goss-fncs.version>
 		<goss-fusion.version>0.1.4-SNAPSHOT</goss-fusion.version>
@@ -100,7 +100,7 @@
 			this line are standalone jars that can be run from a terminal. -->
 		<!-- <module>goss-demo-feature</module> -->
 		<module>goss-server</module>
-		<module>goss-demo-feature</module>
+		<module>goss-demo</module>
 		<module>goss-tool-pmuevents</module>
 		<module>goss-client-tests</module>
 	</modules>

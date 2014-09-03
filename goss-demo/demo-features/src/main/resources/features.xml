@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="goss-demo-feature-${pom.version}">
+<features name="goss-demo-feature-${pom.version}"  name="goss-demo-${project.version}">
 
-    <feature name="goss-demo-feature" version="${pom.version}">
+    <feature name="goss-demo-feature" version="${pom.version}" >
 <!--     	<config name="goss.demo.feature"> -->
 <!--   			brokerURI=tcp://${activemq.host}:${activemq.port} -->
 <!--   			defaultPollFreq=10	 -->

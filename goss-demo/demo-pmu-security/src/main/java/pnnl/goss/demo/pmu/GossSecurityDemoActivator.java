@@ -45,52 +45,86 @@
 package pnnl.goss.demo.pmu;
 
 
+import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
+
 import java.util.Dictionary;
-import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.osgi.framework.BundleActivator;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Updated;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.demo.security.util.DemoConstants;
+import pnnl.goss.server.core.GossDataServices;
+import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
-import pnnl.goss.demo.security.util.DemoConstants;
+@Instantiate
+@Component(managedservice = PROP_DATASOURCES_CONFIG)
+public class GossSecurityDemoActivator {
 
-
-public class GossSecurityDemoActivator implements BundleActivator, ManagedService{
-
+	public static final String PROP_DEMO_DEFAULT_POLL_FREQ = "demo.defaultPollFreq";
+	public static final String PROP_DEMO_DEFAULT_POLL_INC = "demo.defaultPollInc";
+	public static final String PROP_DEMO_DEFAULT_POLL_TIME_SHOWN = "demo.defaultPollTimeShown";
+	public static final String PROP_DEMO_DEFAULT_START = "demo.defaultStart";
+	
+	/**
+	 * <p>
+	 * Allows the tracking of the goss registration service.
+	 * </p>
+	 */
+	private GossRequestHandlerRegistrationService registrationService;
+	private GossDataServices dataServices;
+	
 	/**
 	 * <p>
 	 * The configuration file in $SMX_HOME/etc will be CONFIG_PID.cfg
 	 * </p>
 	 */
-	private static final String CONFIG_PID = "pnnl.goss.demo.security";
-	private static final Log log = LogFactory.getLog(GossSecurityDemoActivator.class);
+	private static Logger log = LoggerFactory.getLogger(GossSecurityDemoActivator.class);
 
+	public GossSecurityDemoActivator(
+		@Requires GossRequestHandlerRegistrationService registrationService,
+		@Requires GossDataServices dataServices){
+		this.registrationService = registrationService;
+		this.dataServices = dataServices;
+		log.debug("Constructing goss-demo activator");
+	}
 	
+	@Validate
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Starting the "+this.getClass().getName()+" Activator");
 		
 		// Register for updates to the goss.core.security config file.
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(Constants.SERVICE_PID, CONFIG_PID);
-        context.registerService(ManagedService.class.getName(), this, properties);
+//        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+//        properties.put(Constants.SERVICE_PID, CONFIG_PID);
+//        context.registerService(ManagedService.class.getName(), this, properties);
 	}
 
+	@Invalidate
 	public void stop(BundleContext context) throws Exception {
 		System.out.println("Stopping the "+this.getClass().getName()+" Activator");
 		
 	}
 
-
+	@Updated
 	public void updated(Dictionary properties) throws ConfigurationException {
 		log.debug("Updating configuration for: "+this.getClass().getName());
 		//TODO it would be nice if this could be on the GOSS Client so that it closes and restarts the session when this happens
-		DemoConstants.setProperties(properties);
+//		DemoConstants.setProperties(properties);
+		if (dataServices != null) {
+			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_FREQ, (String)properties.get(PROP_DEMO_DEFAULT_POLL_FREQ));
+			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_INC, (String)properties.get(PROP_DEMO_DEFAULT_POLL_INC));
+			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_TIME_SHOWN, (String)properties.get(PROP_DEMO_DEFAULT_POLL_TIME_SHOWN));
+			dataServices.registerData(PROP_DEMO_DEFAULT_START, (String)properties.get(PROP_DEMO_DEFAULT_START));
+		} else {
+			log.error("dataServices is null!");
+		}
 	}
 	
 }

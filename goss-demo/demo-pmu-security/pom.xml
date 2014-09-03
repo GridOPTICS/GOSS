@@ -8,8 +8,8 @@
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-demo-feature</artifactId>
-		<version>0.1.3-SNAPSHOT</version>
+		<artifactId>goss-demo</artifactId>
+		<version>0.1.4-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -26,6 +26,10 @@
 			<artifactId>goss-core-client</artifactId>
 		</dependency>
 		<dependency>
+				<groupId>pnnl.goss</groupId>
+				<artifactId>goss-core-server</artifactId>
+			</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
@@ -36,6 +40,18 @@
 	</dependencies>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -49,7 +65,6 @@
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Web-ContextPath>demo-pmu-security</Web-ContextPath>
 						<Webapp-Context>demo-pmu-security</Webapp-Context>
-						<Bundle-Activator>pnnl.goss.demo.pmu.GossSecurityDemoActivator</Bundle-Activator>
 						<Export-Package>
 							pnnl.goss.demo.pmu*;version=${project.version}
 						</Export-Package>
