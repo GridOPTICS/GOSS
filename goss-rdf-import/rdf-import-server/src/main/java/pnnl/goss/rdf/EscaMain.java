@@ -28,6 +28,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.Analog;
 import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
 import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.BusbarSection;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.Disconnector;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
@@ -155,6 +156,19 @@ public class EscaMain {
 		Resource resource = escaType.getResource();
 		
 		entity.setValue(resource.getProperty(Esca60Vocab.ANALOGLIMIT_VALUE).getDouble());
+		
+		dao.persist(entity);
+	}
+	
+	public static void storeBusBarSection(NodeBreakerDao dao, EscaType escaType){
+		
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		BusbarSection entity = new BusbarSection();
+		
+		entity.setIdentifiedObject(ident);
 		
 		dao.persist(entity);
 	}
@@ -361,6 +375,9 @@ public class EscaMain {
 			}
 			else if(Esca60Vocab.VOLTAGELEVEL_OBJECT.getLocalName().equals(dataType)){
 				storeVoltageLevel(nodeBreakerDao, typeMap.get(d));
+			}
+			else if("BusBarSection".equals(dataType)){
+				storeBusBarSection(nodeBreakerDao, typeMap.get(d));
 			}
 			
 			//pnnl.goss.powergrid.topology.Substation

@@ -66,6 +66,7 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 		<class>pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Breaker</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.BusbarSection</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.ConformLoad</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Disconnector</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Discrete</class>

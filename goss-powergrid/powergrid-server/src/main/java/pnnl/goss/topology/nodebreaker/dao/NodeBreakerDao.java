@@ -9,6 +9,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.Analog;
 import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
 import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.BusbarSection;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.Disconnector;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
@@ -108,6 +109,16 @@ public class NodeBreakerDao {
         }
     }
     
+    public void persist(BusbarSection entity){
+    	em = emf.createEntityManager();
+    	
+    	em.persist(entity);
+    	if (em != null)
+        {
+            em.close();
+            em = null;
+        }
+    }
     
     
     public void persist(VoltageLevel entity){
