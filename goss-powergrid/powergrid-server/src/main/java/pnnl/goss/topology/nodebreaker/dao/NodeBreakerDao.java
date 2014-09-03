@@ -5,6 +5,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import pnnl.goss.powergrid.topology.Substation;
+import pnnl.goss.powergrid.topology.nodebreaker.Analog;
+import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
+import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
@@ -23,6 +26,39 @@ public class NodeBreakerDao {
         if (emf == null)
         {
             emf = Persistence.createEntityManagerFactory(persistenceUnitName);
+        }
+    }
+    
+    public void persist(Analog entity){
+    	em = emf.createEntityManager();
+    	
+    	em.persist(entity);
+    	if (em != null)
+        {
+            em.close();
+            em = null;
+        }
+    }
+    
+    public void persist(AnalogLimit entity){
+    	em = emf.createEntityManager();
+    	
+    	em.persist(entity);
+    	if (em != null)
+        {
+            em.close();
+            em = null;
+        }
+    }
+    
+    public void persist(AnalogLimitSet entity){
+    	em = emf.createEntityManager();
+    	
+    	em.persist(entity);
+    	if (em != null)
+        {
+            em.close();
+            em = null;
         }
     }
     

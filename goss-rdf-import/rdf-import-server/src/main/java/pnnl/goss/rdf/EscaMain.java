@@ -24,6 +24,9 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.Substation;
+import pnnl.goss.powergrid.topology.nodebreaker.Analog;
+import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
+import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
@@ -104,6 +107,56 @@ public class EscaMain {
 		}
 		return null;
 	}
+	
+	private static void storeAnalog(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		Analog entity = new Analog();
+		
+		entity.setIdentifiedObject(ident);
+		
+		Resource resource = escaType.getResource();
+		
+		entity.setNormalValue(resource.getProperty(Esca60Vocab.ANALOG_NORMALVALUE).getDouble());
+		entity.setPositiveFlowIn(resource.getProperty(Esca60Vocab.ANALOG_POSITIVEFLOWIN).getBoolean());
+		
+		dao.persist(entity);
+	}
+	
+	private static void storeAnalogLimitSet(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		AnalogLimitSet entity = new AnalogLimitSet();
+		
+		entity.setIdentifiedObject(ident);
+		
+		Resource resource = escaType.getResource();
+		
+		entity.setLimitSetIsPercentageLimits(resource.getProperty(Esca60Vocab.LIMITSET_ISPERCENTAGELIMITS).getBoolean());
+		
+		dao.persist(entity);
+	}
+	
+	private static void storeAnalogLimit(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		AnalogLimit entity = new AnalogLimit();
+		
+		entity.setIdentifiedObject(ident);
+		
+		Resource resource = escaType.getResource();
+		
+		entity.setValue(resource.getProperty(Esca60Vocab.ANALOGLIMIT_VALUE).getDouble());
+		
+		dao.persist(entity);
+	}
+	
 	
 	private static void storeConformLoad(NodeBreakerDao dao, EscaType escaType){
 		IdentifiedObject ident = new IdentifiedObject();
@@ -244,7 +297,17 @@ public class EscaMain {
 		for (String d : typeMap.keySet()){
 			
 			String dataType = typeMap.get(d).getDataType();
-			if (Esca60Vocab.BREAKER_OBJECT.getLocalName().equals(dataType)){
+			
+			if(Esca60Vocab.ANALOG_OBJECT.getLocalName().equals(dataType)){
+				storeAnalog(nodeBreakerDao, typeMap.get(d));
+			}
+			else if (Esca60Vocab.ANALOGLIMITSET_OBJECT.getLocalName().equals(dataType)){
+				storeAnalogLimitSet(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.ANALOGLIMIT_OBJECT.getLocalName().equals(dataType)){
+				storeAnalogLimit(nodeBreakerDao, typeMap.get(d));
+			}
+			else if (Esca60Vocab.BREAKER_OBJECT.getLocalName().equals(dataType)){
 				storeBreaker(nodeBreakerDao, typeMap.get(d));
 			}
 			else if(Esca60Vocab.CONFORMLOAD_OBJECT.getLocalName().equals(dataType)){
