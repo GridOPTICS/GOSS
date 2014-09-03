@@ -29,6 +29,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
 import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
+import pnnl.goss.powergrid.topology.nodebreaker.Disconnector;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
@@ -157,6 +158,22 @@ public class EscaMain {
 		dao.persist(entity);
 	}
 	
+	private static void storeDisconnector(NodeBreakerDao dao, EscaType escaType){
+		
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		Disconnector entity = new Disconnector();
+		
+		entity.setIdentifiedObject(ident);
+		
+		Resource resource = escaType.getResource();
+		
+		entity.setSwitchNormalOpen(resource.getProperty(Esca60Vocab.SWITCH_NORMALOPEN).getBoolean());
+		
+		dao.persist(entity);
+	}
 	
 	private static void storeConformLoad(NodeBreakerDao dao, EscaType escaType){
 		IdentifiedObject ident = new IdentifiedObject();
@@ -312,6 +329,9 @@ public class EscaMain {
 			}
 			else if(Esca60Vocab.CONFORMLOAD_OBJECT.getLocalName().equals(dataType)){
 				storeConformLoad(nodeBreakerDao, typeMap.get(d));
+			}
+			else if("Disconnector".equals(dataType)){
+				storeDisconnector(nodeBreakerDao, typeMap.get(d));
 			}
 			else if(Esca60Vocab.LINE_OBJECT.getLocalName().equals(dataType)){
 				storeLine(nodeBreakerDao, typeMap.get(d));
