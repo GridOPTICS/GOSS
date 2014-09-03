@@ -12,6 +12,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.atlas.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -21,9 +25,11 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.Substation;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
 import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
+import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 import pnnl.goss.rdf.server.BuildPowergrid;
 import pnnl.goss.rdf.server.Esca60Vocab;
 import pnnl.goss.topology.nodebreaker.dao.BreakerDao;
@@ -36,6 +42,8 @@ public class EscaMain {
 	private static final String ESCA_TEST = "esca60_cim.xml";
 	private static boolean bufferedOut = false;
 	private static BufferedOutputStream outStream = null;
+	
+	private static Logger log = LoggerFactory.getLogger(EscaMain.class);
 	
 	private static void setBufferedOut() throws FileNotFoundException{
 		bufferedOut = true;
@@ -52,13 +60,34 @@ public class EscaMain {
 		ident.setIdentMrid(escaType.getMrid());
 		ident.setIdentDataType(escaType.getDataType());
 		
-		ident.setIdentAlias(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME).getString());
-		ident.setIdentName(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_NAME).getString());
-		ident.setIdentPathName(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME).getString());
-		if(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION) != null){
-			ident.setIdentDescription(resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION).getString());
+		Statement stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME);
+		if (stmt == null){
+			log.warn(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME + " was null!");
 		}
-		
+		else{
+			ident.setIdentAlias(stmt.getString());
+		}
+		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_NAME);
+		if (stmt == null){
+			log.warn(Esca60Vocab.IDENTIFIEDOBJECT_NAME + " was null!");
+		}
+		else{
+			ident.setIdentName(stmt.getString());
+		}
+		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME);
+		if (stmt == null){
+			log.warn(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME + " was null!");
+		}
+		else{
+			ident.setIdentPathName(stmt.getString());
+		}
+		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION);
+		if (stmt == null){
+			log.warn(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION + " was null!");
+		}
+		else{
+			ident.setIdentDescription(stmt.getString());
+		}		
 	}
 	
 	private static String getPropertyString(Resource resource, Property property){
@@ -74,6 +103,17 @@ public class EscaMain {
 		return null;
 	}
 	
+	private static void storeDiscrete(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		Discrete entity = new Discrete();
+		
+		entity.setIdentifiedObject(ident);
+				
+		dao.persist(entity);
+	}
 	
 	private static void storeSubstation(NodeBreakerDao dao, EscaType escaType){
 		IdentifiedObject ident = new IdentifiedObject();
@@ -81,6 +121,18 @@ public class EscaMain {
 		populateIdentityObjects(escaType, ident);
 		
 		Substation entity = new Substation();
+		
+		entity.setIdentifiedObject(ident);
+				
+		dao.persist(entity);
+	}
+	
+	private static void storeVoltageLevel(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		VoltageLevel entity = new VoltageLevel();
 		
 		entity.setIdentifiedObject(ident);
 				
@@ -161,6 +213,12 @@ public class EscaMain {
 			}
 			else if(Esca60Vocab.SUBSTATION_OBJECT.getLocalName().equals(dataType)){
 				storeSubstation(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.VOLTAGELEVEL_OBJECT.getLocalName().equals(dataType)){
+				storeVoltageLevel(nodeBreakerDao, typeMap.get(d));
+			}
+			else if("Discrete".equals(dataType)){
+				storeDiscrete(nodeBreakerDao, typeMap.get(d));
 			}
 			//pnnl.goss.powergrid.topology.Substation
 			//System.out.println(d+typeMap.get(d).getDataType());
