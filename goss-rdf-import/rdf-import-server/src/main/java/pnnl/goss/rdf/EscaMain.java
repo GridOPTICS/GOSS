@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
 import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
 import pnnl.goss.rdf.server.BuildPowergrid;
@@ -72,7 +73,24 @@ public class EscaMain {
 		return null;
 	}
 	
-	private static void storeBreaker(BreakerDao dao, EscaType breaker){
+		
+	private static void storeLine(NodeBreakerDao dao, EscaType line){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(line, ident);
+		
+		Line lineObj = new Line();
+		
+		lineObj.setIdentifiedObject(ident);
+		
+		Resource resource = line.getResource();
+		
+		lineObj.setLineRegion(resource.getProperty(Esca60Vocab.LINE_REGION).getResource().getLocalName());
+		
+		dao.persist(lineObj);
+	}
+	
+	private static void storeBreaker(NodeBreakerDao dao, EscaType breaker){
 		
 		IdentifiedObject ident = new IdentifiedObject();
 		
@@ -116,14 +134,17 @@ public class EscaMain {
 		window.loadData();
 		window.loadTypeMap();
 		
-		BreakerDao breakerDao = new BreakerDao(PERSISTANCE_UNIT);
+		NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 		Map<String, EscaType> typeMap = window.getEscaTypeMap(); 
 		
 		for (String d : typeMap.keySet()){
 			
 			String dataType = typeMap.get(d).getDataType();
 			if (Esca60Vocab.BREAKER_OBJECT.getLocalName().equals(dataType)){
-				storeBreaker(breakerDao, typeMap.get(d));
+				storeBreaker(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.LINE_OBJECT.getLocalName().equals(dataType)){
+				storeLine(nodeBreakerDao, typeMap.get(d));
 			}
 			//System.out.println(d+typeMap.get(d).getDataType());
 		}
