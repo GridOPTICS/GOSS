@@ -35,6 +35,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
 import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
 import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
+import pnnl.goss.powergrid.topology.nodebreaker.TransformerWinding;
 import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 import pnnl.goss.rdf.server.BuildPowergrid;
 import pnnl.goss.rdf.server.Esca60Vocab;
@@ -286,19 +287,29 @@ public class EscaMain {
 				getPropertyString(resource, Esca60Vocab.CONDUCTINGEQUIPMENT_BASEVOLTAGE));
 		
 		dao.persist(entity);
-		
-//		while(stmtIter.hasNext()){
-//			Statement stmt = stmtIter.next();
-//			Resource subject = stmt.getSubject();
-//			Property predicate = stmt.getPredicate();
-//			RDFNode object =  stmt.getObject();
-//			
-//			System.out.println("Subject to save: "+subject.getLocalName());
-//			System.out.println("Predicatet to save: "+predicate.getLocalName());
-//			System.out.println("Object to save: "+object.toString());
-//		}
-		
+				
 		System.out.println("\n");
+	}
+	
+	private static void storeTransformerWinding(NodeBreakerDao dao, EscaType breaker){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(breaker, ident);
+		
+		TransformerWinding entity = new TransformerWinding();
+		
+		entity.setIdentifiedObject(ident);
+				
+		Resource resource = breaker.getResource();
+		
+		entity.setB(resource.getProperty(Esca60Vocab.TRANSFORMERWINDING_B).getDouble());
+		entity.setG(resource.getProperty(Esca60Vocab.TRANSFORMERWINDING_G).getDouble());
+		entity.setR(resource.getProperty(Esca60Vocab.TRANSFORMERWINDING_R).getDouble());
+		entity.setX(resource.getProperty(Esca60Vocab.TRANSFORMERWINDING_X).getDouble());
+		entity.setRatedU(resource.getProperty(Esca60Vocab.TRANSFORMERWINDING_RATEDU).getDouble());
+		entity.setRatedS(resource.getProperty(Esca60Vocab.TRANSFORMERWINDING_RATEDS).getDouble());
+		
+		dao.persist(entity);
 	}
 
 	public static void main(String[] args) throws InvalidArgumentException, IOException {
@@ -333,6 +344,9 @@ public class EscaMain {
 			else if("Disconnector".equals(dataType)){
 				storeDisconnector(nodeBreakerDao, typeMap.get(d));
 			}
+			else if("Discrete".equals(dataType)){
+				storeDiscrete(nodeBreakerDao, typeMap.get(d));
+			}
 			else if(Esca60Vocab.LINE_OBJECT.getLocalName().equals(dataType)){
 				storeLine(nodeBreakerDao, typeMap.get(d));
 			}
@@ -342,12 +356,13 @@ public class EscaMain {
 			else if(Esca60Vocab.TERMINAL_OBJECT.getLocalName().equals(dataType)){
 				storeTerminal(nodeBreakerDao, typeMap.get(d));
 			}
+			else if(Esca60Vocab.TRANSFORMERWINDING_OBJECT.getLocalName().equals(dataType)){
+				storeTransformerWinding(nodeBreakerDao, typeMap.get(d));
+			}
 			else if(Esca60Vocab.VOLTAGELEVEL_OBJECT.getLocalName().equals(dataType)){
 				storeVoltageLevel(nodeBreakerDao, typeMap.get(d));
 			}
-			else if("Discrete".equals(dataType)){
-				storeDiscrete(nodeBreakerDao, typeMap.get(d));
-			}
+			
 			//pnnl.goss.powergrid.topology.Substation
 			//System.out.println(d+typeMap.get(d).getDataType());
 		}

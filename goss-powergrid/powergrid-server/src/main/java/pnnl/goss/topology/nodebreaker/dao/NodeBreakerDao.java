@@ -14,6 +14,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.Disconnector;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
+import pnnl.goss.powergrid.topology.nodebreaker.TransformerWinding;
 import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 
 public class NodeBreakerDao {
@@ -107,6 +108,8 @@ public class NodeBreakerDao {
         }
     }
     
+    
+    
     public void persist(VoltageLevel entity){
     	em = emf.createEntityManager();
     	
@@ -122,6 +125,17 @@ public class NodeBreakerDao {
     	em = emf.createEntityManager();
     	
     	em.persist(substation);
+    	if (em != null)
+        {
+            em.close();
+            em = null;
+        }
+    }
+    
+    public void persist(TransformerWinding entity){
+    	em = emf.createEntityManager();
+    	
+    	em.persist(entity);
     	if (em != null)
         {
             em.close();
