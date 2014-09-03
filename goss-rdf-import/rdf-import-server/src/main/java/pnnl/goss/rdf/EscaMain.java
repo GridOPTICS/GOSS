@@ -31,10 +31,14 @@ import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.BusbarSection;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.ConnectivityNode;
+import pnnl.goss.powergrid.topology.nodebreaker.CurveData;
 import pnnl.goss.powergrid.topology.nodebreaker.Disconnector;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
+import pnnl.goss.powergrid.topology.nodebreaker.PowerTransformer;
+import pnnl.goss.powergrid.topology.nodebreaker.RegularTimePoint;
+import pnnl.goss.powergrid.topology.nodebreaker.TapChanger;
 import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
 import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
 import pnnl.goss.powergrid.topology.nodebreaker.TransformerWinding;
@@ -173,6 +177,18 @@ public class EscaMain {
 		dao.persist(entity);
 	}
 	
+	private static void storePowerTransformer(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		PowerTransformer entity = new PowerTransformer();
+		
+		entity.setIdentifiedObject(ident);
+		
+		dao.persist(entity);
+	}
+	
 	public static void storeBusBarSection(NodeBreakerDao dao, EscaType escaType){
 		
 		IdentifiedObject ident = new IdentifiedObject();
@@ -292,6 +308,73 @@ public class EscaMain {
 		dao.persist(lineObj);
 	}
 	
+	private static void storeCurveData(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		CurveData entity = new CurveData();
+		
+		entity.setIdentifiedObject(ident);
+		
+		Resource resource = escaType.getResource();
+		
+		entity.setXvalue(resource.getProperty(Esca60Vocab.CURVEDATA_XVALUE).getDouble());
+		entity.setY1value(resource.getProperty(Esca60Vocab.CURVEDATA_Y1VALUE).getDouble());
+		entity.setY2value(resource.getProperty(Esca60Vocab.CURVEDATA_Y2VALUE).getDouble());
+		
+		dao.persist(entity);
+	}
+	
+	private static void storeTapChanger(NodeBreakerDao dao, EscaType breaker){
+		
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(breaker, ident);
+		
+		TapChanger entity = new TapChanger();
+		
+		entity.setIdentifiedObject(ident);
+				
+		Resource resource = breaker.getResource();
+		
+		entity.setHighStep(resource.getProperty(Esca60Vocab.TAPCHANGER_HIGHSTEP).getInt());
+		entity.setNormalStep(resource.getProperty(Esca60Vocab.TAPCHANGER_NORMALSTEP).getInt());
+		entity.setLowStep(resource.getProperty(Esca60Vocab.TAPCHANGER_LOWSTEP).getInt());
+		entity.setNeutralStep(resource.getProperty(Esca60Vocab.TAPCHANGER_NEUTRALSTEP).getInt());
+		entity.setTculControlMode(resource.getProperty(Esca60Vocab.TAPCHANGER_TCULCONTROLMODE).getResource().getLocalName());
+		Statement stmt = resource.getProperty(Esca60Vocab.TAPCHANGER_STEPVOLTAGEINCREMENT);
+		if (stmt != null){
+			entity.setStepVoltageIncrement(stmt.getDouble());
+		}
+		entity.setTransformerWinding(resource.getProperty(Esca60Vocab.TAPCHANGER_TRANSFORMERWINDING).getResource().getLocalName());
+		
+		dao.persist(entity);
+	}
+	
+	private static void storeRegularTimePoint(NodeBreakerDao dao, EscaType breaker){
+		
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(breaker, ident);
+		
+		RegularTimePoint entity = new RegularTimePoint();
+		
+		entity.setIdentifiedObject(ident);
+				
+		Resource resource = breaker.getResource();
+		
+		Statement stmt = resource.getProperty(Esca60Vocab.REGULARTIMEPOINT_INTERVALSCHEDULE);
+		if (stmt != null && stmt.getResource() != null){
+			entity.setIntervalSchedule(stmt.getResource().getLocalName());
+		}
+		
+		entity.setValue1(resource.getProperty(Esca60Vocab.REGULARTIMEPOINT_VALUE1).getDouble());
+		entity.setValue2(resource.getProperty(Esca60Vocab.REGULARTIMEPOINT_VALUE2).getDouble());
+		
+		dao.persist(entity);
+	}
+	
 	private static void storeBreaker(NodeBreakerDao dao, EscaType breaker){
 		
 		IdentifiedObject ident = new IdentifiedObject();
@@ -394,6 +477,21 @@ public class EscaMain {
 			}
 			else if("BusBarSection".equals(dataType)){
 				storeBusBarSection(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.POWERTRANSFORMER_OBJECT.getLocalName().equals(dataType)){
+				storePowerTransformer(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.CURVEDATA_OBJECT.getLocalName().equals(dataType)){
+				storeCurveData(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.REGULARTIMEPOINT_OBJECT.getLocalName().equals(dataType)) {
+				storeRegularTimePoint(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.TAPCHANGER_OBJECT.getLocalName().equals(dataType)){
+				storeTapChanger(nodeBreakerDao, typeMap.get(d));
+			}
+			else{
+				System.out.println("Datatype: "+dataType);
 			}
 			
 			//pnnl.goss.powergrid.topology.Substation

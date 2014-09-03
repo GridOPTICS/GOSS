@@ -69,9 +69,13 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 		<class>pnnl.goss.powergrid.topology.nodebreaker.BusbarSection</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.ConformLoad</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.ConnectivityNode</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.CurveData</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Disconnector</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Discrete</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Line</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.RegularTimePoint</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.PowerTransformer</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.TapChanger</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Terminal</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.TransformerWinding</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel</class>
