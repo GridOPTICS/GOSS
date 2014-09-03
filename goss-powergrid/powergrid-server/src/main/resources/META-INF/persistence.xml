@@ -60,13 +60,14 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 		<class>pnnl.goss.powergrid.IdentifiedObject</class>
 		 -->
 		
+		<class>pnnl.goss.powergrid.topology.Substation</class>
+		
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Breaker</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Discrete</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.Line</class>
-		<class>pnnl.goss.powergrid.topology.Substation</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Terminal</class>
 		<class>pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel</class>
-		<!-- <class>pnnl.goss.nodebreaker.Terminal</class> -->
-		
+				
 		
 		<!-- <class>pnnl.goss.nodebreaker.Discrete</class> -->
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>

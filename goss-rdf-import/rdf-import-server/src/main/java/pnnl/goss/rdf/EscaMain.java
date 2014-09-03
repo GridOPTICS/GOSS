@@ -28,6 +28,7 @@ import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
+import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
 import pnnl.goss.powergrid.topology.nodebreaker.TopologicalNode;
 import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 import pnnl.goss.rdf.server.BuildPowergrid;
@@ -101,6 +102,18 @@ public class EscaMain {
 			return resource.getProperty(property).getString();
 		}
 		return null;
+	}
+	
+	private static void storeTerminal(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		Terminal entity = new Terminal();
+		
+		entity.setIdentifiedObject(ident);
+				
+		dao.persist(entity);
 	}
 	
 	private static void storeDiscrete(NodeBreakerDao dao, EscaType escaType){
@@ -213,6 +226,9 @@ public class EscaMain {
 			}
 			else if(Esca60Vocab.SUBSTATION_OBJECT.getLocalName().equals(dataType)){
 				storeSubstation(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.TERMINAL_OBJECT.getLocalName().equals(dataType)){
+				storeTerminal(nodeBreakerDao, typeMap.get(d));
 			}
 			else if(Esca60Vocab.VOLTAGELEVEL_OBJECT.getLocalName().equals(dataType)){
 				storeVoltageLevel(nodeBreakerDao, typeMap.get(d));
