@@ -19,6 +19,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.Substation;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
@@ -73,6 +74,18 @@ public class EscaMain {
 		return null;
 	}
 	
+	
+	private static void storeSubstation(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		Substation entity = new Substation();
+		
+		entity.setIdentifiedObject(ident);
+				
+		dao.persist(entity);
+	}
 		
 	private static void storeLine(NodeBreakerDao dao, EscaType line){
 		IdentifiedObject ident = new IdentifiedObject();
@@ -146,6 +159,10 @@ public class EscaMain {
 			else if(Esca60Vocab.LINE_OBJECT.getLocalName().equals(dataType)){
 				storeLine(nodeBreakerDao, typeMap.get(d));
 			}
+			else if(Esca60Vocab.SUBSTATION_OBJECT.getLocalName().equals(dataType)){
+				storeSubstation(nodeBreakerDao, typeMap.get(d));
+			}
+			//pnnl.goss.powergrid.topology.Substation
 			//System.out.println(d+typeMap.get(d).getDataType());
 		}
 		
