@@ -25,6 +25,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.Substation;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Network;
@@ -102,6 +103,31 @@ public class EscaMain {
 			return resource.getProperty(property).getString();
 		}
 		return null;
+	}
+	
+	private static void storeConformLoad(NodeBreakerDao dao, EscaType escaType){
+		IdentifiedObject ident = new IdentifiedObject();
+		
+		populateIdentityObjects(escaType, ident);
+		
+		ConformLoad entity = new ConformLoad();
+		
+		entity.setIdentifiedObject(ident);
+		
+		Resource resource = escaType.getResource();
+		
+		entity.setEnergyConsumerpFexp(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_PFEXP).getDouble());
+		entity.setEnergyConsumerpfixed(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_PFIXED).getDouble());
+		entity.setEnergyConsumerpfixedPct(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_PFIXEDPCT).getDouble());
+		entity.setEnergyConsumerpVexp(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_PVEXP).getDouble());
+		
+		entity.setEnergyConsumerqFexp(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_QFEXP).getDouble());
+		entity.setEnergyConsumerqfixed(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_QFIXED).getDouble());
+		entity.setEnergyConsumerqfixedPct(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_QFIXEDPCT).getDouble());
+		entity.setEnergyConsumerqVexp(resource.getProperty(Esca60Vocab.ENERGYCONSUMER_QVEXP).getDouble());
+		
+				
+		dao.persist(entity);
 	}
 	
 	private static void storeTerminal(NodeBreakerDao dao, EscaType escaType){
@@ -220,6 +246,9 @@ public class EscaMain {
 			String dataType = typeMap.get(d).getDataType();
 			if (Esca60Vocab.BREAKER_OBJECT.getLocalName().equals(dataType)){
 				storeBreaker(nodeBreakerDao, typeMap.get(d));
+			}
+			else if(Esca60Vocab.CONFORMLOAD_OBJECT.getLocalName().equals(dataType)){
+				storeConformLoad(nodeBreakerDao, typeMap.get(d));
 			}
 			else if(Esca60Vocab.LINE_OBJECT.getLocalName().equals(dataType)){
 				storeLine(nodeBreakerDao, typeMap.get(d));

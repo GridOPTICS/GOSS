@@ -6,6 +6,7 @@ import javax.persistence.Persistence;
 
 import pnnl.goss.powergrid.topology.Substation;
 import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
 import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
 import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
@@ -22,6 +23,17 @@ public class NodeBreakerDao {
         if (emf == null)
         {
             emf = Persistence.createEntityManagerFactory(persistenceUnitName);
+        }
+    }
+    
+    public void persist(ConformLoad entity){
+    	em = emf.createEntityManager();
+    	
+    	em.persist(entity);
+    	if (em != null)
+        {
+            em.close();
+            em = null;
         }
     }
     
