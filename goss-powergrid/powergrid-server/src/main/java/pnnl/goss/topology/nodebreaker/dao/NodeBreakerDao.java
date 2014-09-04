@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 import pnnl.goss.powergrid.topology.Substation;
 import pnnl.goss.powergrid.topology.nodebreaker.Analog;
 import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
@@ -37,7 +38,7 @@ public class NodeBreakerDao {
         }
     }
     
-    public void persist(TapChanger entity){
+    public void persist(NodeBreakerDataType entity){
     	em = emf.createEntityManager();
     	
     	em.persist(entity);
@@ -46,194 +47,6 @@ public class NodeBreakerDao {
             em.close();
             em = null;
         }
-    }
-    
-    public void persist(Analog entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(AnalogLimit entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(AnalogLimitSet entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(ConformLoad entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(CurveData entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(RegularTimePoint entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(ConnectivityNode entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(Disconnector entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(PowerTransformer entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(Terminal entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(Discrete entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(BusbarSection entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    
-    public void persist(VoltageLevel entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(Substation substation){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(substation);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(TransformerWinding entity){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(entity);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }
-    }
-    
-    public void persist(Breaker breaker){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(breaker);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }    	
-    }
-    
-    public void persist(Line obj){
-    	em = emf.createEntityManager();
-    	
-    	em.persist(obj);
-    	if (em != null)
-        {
-            em.close();
-            em = null;
-        }    
     }
     
     public Object get(Class<?> entityClass, String id)
