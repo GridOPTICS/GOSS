@@ -8,7 +8,9 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
 public class ConformLoad extends IdentifiedObject implements NodeBreakerDataType  {
-	
+
+	@Column
+	protected String dataType;
 	@Column
 	private Double energyConsumerpfixed;
 	@Column
@@ -25,8 +27,15 @@ public class ConformLoad extends IdentifiedObject implements NodeBreakerDataType
 	private Double energyConsumerqVexp;
 	@Column
 	private Double energyConsumerqFexp;
-	
-	
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+		
 	public Double getEnergyConsumerpfixed() {
 		return energyConsumerpfixed;
 	}

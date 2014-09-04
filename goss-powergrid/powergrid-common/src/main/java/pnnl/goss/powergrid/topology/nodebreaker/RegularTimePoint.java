@@ -8,7 +8,9 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
 public class RegularTimePoint extends IdentifiedObject implements NodeBreakerDataType  {
-	
+
+	@Column
+	protected String dataType;	
 	@Column
 	private String intervalSchedule;
 	@Column
@@ -16,6 +18,14 @@ public class RegularTimePoint extends IdentifiedObject implements NodeBreakerDat
 	@Column
 	private Double value2;
 
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+	
 	public String getIntervalSchedule() {
 		return intervalSchedule;
 	}

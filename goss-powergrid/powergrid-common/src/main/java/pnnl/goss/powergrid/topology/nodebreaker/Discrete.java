@@ -1,5 +1,6 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,5 +14,16 @@ import com.impetus.kundera.index.IndexCollection;
 
 @Entity
 public class Discrete extends IdentifiedObject implements NodeBreakerDataType  {
+
+	@Column
+	protected String dataType;
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
 	
 }

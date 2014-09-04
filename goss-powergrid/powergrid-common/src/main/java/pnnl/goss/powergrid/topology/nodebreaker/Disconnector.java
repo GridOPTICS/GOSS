@@ -10,8 +10,18 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 public class Disconnector extends IdentifiedObject implements NodeBreakerDataType  {
 
 	@Column
+	protected String dataType;
+	@Column
 	private Boolean switchNormalOpen;
 
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+	
 	public Boolean getSwitchNormalOpen() {
 		return switchNormalOpen;
 	}

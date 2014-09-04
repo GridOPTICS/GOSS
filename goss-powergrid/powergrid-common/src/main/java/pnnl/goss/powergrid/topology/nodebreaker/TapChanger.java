@@ -8,7 +8,9 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
 public class TapChanger extends IdentifiedObject implements NodeBreakerDataType  {
-	
+
+	@Column
+	protected String dataType;
 	@Column
 	private String tculControlMode;
 	@Column
@@ -23,6 +25,14 @@ public class TapChanger extends IdentifiedObject implements NodeBreakerDataType 
 	private Double stepVoltageIncrement;
 	@Column
 	private String transformerWinding;	
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
 	
 	public String getTculControlMode() {
 		return tculControlMode;

@@ -3,6 +3,7 @@ package pnnl.goss.powergrid.topology.nodebreaker;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
@@ -21,7 +22,9 @@ import com.impetus.kundera.index.IndexCollection;
 
 @Entity
 public class Breaker extends IdentifiedObject implements NodeBreakerDataType  {
-	
+
+	@Column
+	protected String dataType;
 	private String memberOfEquipmentContainer;
 	private String conductingEquipmentBaseVoltage;	
 	
@@ -39,8 +42,15 @@ public class Breaker extends IdentifiedObject implements NodeBreakerDataType  {
 		this.conductingEquipmentBaseVoltage = conductingEquipmentBaseVoltage;
 		
 	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
 	
-		
 	public Double getRatedCurrent() {
 		return ratedCurrent;
 	}
