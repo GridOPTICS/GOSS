@@ -1,32 +1,20 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class RegularTimePoint {
+public class RegularTimePoint extends IdentifiedObject implements NodeBreakerDataType  {
 	
-	@Id
-	private String mrid;
-	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-	
+	@Column
 	private String intervalSchedule;
+	@Column
 	private Double value1;
+	@Column
 	private Double value2;
-
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
 
 	public String getIntervalSchedule() {
 		return intervalSchedule;

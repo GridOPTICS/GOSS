@@ -1,29 +1,18 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class AnalogLimit {
-	@Id
-	private String mrid;
+public class AnalogLimit extends IdentifiedObject implements NodeBreakerDataType  {
+	
+	@Column
 	private Double value;
 	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
-
 	public Double getValue() {
 		return value;
 	}

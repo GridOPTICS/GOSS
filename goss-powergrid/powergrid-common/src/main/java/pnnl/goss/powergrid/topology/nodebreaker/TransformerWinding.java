@@ -1,35 +1,26 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class TransformerWinding {
+public class TransformerWinding extends IdentifiedObject implements NodeBreakerDataType  {
 	
-	@Id
-	private String mrid;
-	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-	
+	@Column
 	private Double ratedU;
+	@Column
 	private Double ratedS;
+	@Column
 	private Double x;
+	@Column
 	private Double b;
+	@Column
 	private Double r;
+	@Column
 	private Double g;
-
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
 
 	public Double getRatedU() {
 		return ratedU;

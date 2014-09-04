@@ -12,37 +12,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
 @Entity
-public class Breaker {
-	public final String OBJECT_TYPE = "Breaker";
+public class Breaker extends IdentifiedObject implements NodeBreakerDataType  {
 	
-	@Id
-	private String mrid;
 	private String memberOfEquipmentContainer;
 	private String conductingEquipmentBaseVoltage;	
 	
 	private Double ratedCurrent;
 	private Boolean switchNormalOpen;
-	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-	
-	public Breaker(){
 		
-	}
-	
-	
-	
 	public Breaker(String mrid, String dataType, String identName, String identAlias,
 			String identPath, String identDescription, Double ratedCurrent, Boolean switchNormalOpen,
 			String memberOfEquipmentContainer, String conductingEquipmentBaseVoltage){
-		
-		this.identifiedObject = new IdentifiedObject(mrid, OBJECT_TYPE,  identName, identAlias, identPath, identDescription);
 		
 		this.ratedCurrent = ratedCurrent;
 		
@@ -52,10 +40,6 @@ public class Breaker {
 		
 	}
 	
-	/*private void createIdentifiedObject(){
-		identifiedObject = new IdentifiedObject(this.identName,
-				this.identAlias, this.identPathName, this.identDescription);
-	}*/
 		
 	public Double getRatedCurrent() {
 		return ratedCurrent;
@@ -68,26 +52,6 @@ public class Breaker {
 	}
 	public void setSwitchNormalOpen(Boolean normalOpen) {
 		this.switchNormalOpen = normalOpen;
-	}
-
-
-	public IdentifiedObject getIdentifiedObject() {
-//		if (identifiedObject == null){
-//			createIdentifiedObject();
-//		}
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identObject) {
-		this.identifiedObject = identObject;
-		this.mrid = identObject.getIdentMrid();
-		
-//		if(identObject != null){
-//			this.identAlias = identObject.getIdentAlias();
-//			this.identDescription = identObject.getIdentDescription();
-//			this.identName = identObject.getIdentName();
-//			this.identPathName = identObject.getIdentPathName();
-//		}
 	}
 
 	public String getMemberOfEquipmentContainer() {
@@ -105,9 +69,5 @@ public class Breaker {
 	public void setConductingEquipmentBaseVoltage(
 			String conductingEquipmentBaseVoltage) {
 		this.conductingEquipmentBaseVoltage = conductingEquipmentBaseVoltage;
-	}
-
-	public String getMrid() {
-		return mrid;
 	}
 }

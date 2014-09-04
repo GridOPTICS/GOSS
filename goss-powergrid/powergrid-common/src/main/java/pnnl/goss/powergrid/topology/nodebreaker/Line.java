@@ -1,26 +1,18 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class Line {
+public class Line extends IdentifiedObject implements NodeBreakerDataType  {
 	
-	@Id
-	private String mrid;
-	
+	@Column	
 	protected String lineRegion;
 	
-	@Embedded
-	protected IdentifiedObject identifiedObject;
-
-	public String getMrid() {
-		return mrid;
-	}
-
 	public String getLineRegion() {
 		return lineRegion;
 	}
@@ -29,12 +21,4 @@ public class Line {
 		this.lineRegion = lineRegion;
 	}
 
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		this.mrid = identifiedObject.getIdentMrid();
-	}
 }

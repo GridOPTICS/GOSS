@@ -5,22 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class PowerTransformer {
+public class PowerTransformer extends IdentifiedObject implements NodeBreakerDataType  {
 	
-	@Id
-	private String mrid;
-	
-	@Embedded
-	private IdentifiedObject identifiedObject;
 
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
 }

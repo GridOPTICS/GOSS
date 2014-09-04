@@ -1,33 +1,21 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class CurveData {
+public class CurveData extends IdentifiedObject implements NodeBreakerDataType  {
 	
-	@Id
-	private String mrid;
-	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-
+	@Column
 	private Double xvalue;
+	@Column
 	private Double y1value;
+	@Column
 	private Double y2value;
 	
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
-
 	public Double getXvalue() {
 		return xvalue;
 	}

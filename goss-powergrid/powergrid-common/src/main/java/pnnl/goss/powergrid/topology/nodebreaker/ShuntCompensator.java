@@ -8,6 +8,7 @@ import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class BusbarSection extends IdentifiedObject implements NodeBreakerDataType  {
+public class ShuntCompensator extends IdentifiedObject implements NodeBreakerDataType  {
+
 	
 }

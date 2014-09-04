@@ -1,30 +1,16 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class Disconnector {
+public class Disconnector extends IdentifiedObject implements NodeBreakerDataType  {
 
-	@Id
-	private String mrid;
-	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-	
+	@Column
 	private Boolean switchNormalOpen;
-
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
 
 	public Boolean getSwitchNormalOpen() {
 		return switchNormalOpen;

@@ -1,31 +1,19 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
 @Entity
-public class Analog {
-	@Id
-	private String mrid;
-	
+public class Analog extends IdentifiedObject implements NodeBreakerDataType  {
+
+	@Column
 	private Double normalValue;
+	@Column
 	private Boolean positiveFlowIn;
 	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-
-	public IdentifiedObject getIdentifiedObject() {
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identifiedObject) {
-		this.identifiedObject = identifiedObject;
-		mrid = identifiedObject.getIdentMrid();
-	}
-
 	public Double getNormalValue() {
 		return normalValue;
 	}
