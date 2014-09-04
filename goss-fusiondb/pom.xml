@@ -5,7 +5,7 @@
 
     <groupId>pnnl.goss</groupId>
 	<artifactId>goss-fusiondb</artifactId>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GOSS Fusiondb</name>
 		
@@ -58,7 +58,7 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-fusiondb-common</artifactId>
-				<version>0.1.4-SNAPSHOT</version>
+				<version>0.1.5-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
