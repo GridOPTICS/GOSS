@@ -43,8 +43,9 @@ public class Substation extends IdentifiedObject implements NodeBreakerDataType 
 		this.dataType = dataType;
 	}
 	
-	public void addVoltageLevel(VoltageLevel obj){
-		voltageLevels.add(obj);
+	public void addVoltageLevel(VoltageLevel voltageLevel){
+		voltageLevels.add(voltageLevel);
+		voltageLevel.setSubstation(this);
 	}
 
 	public List<VoltageLevel> getVoltageLevels() {
