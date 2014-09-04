@@ -9,7 +9,7 @@
 	<properties>
 		<felix.framework.version>4.4.0</felix.framework.version>
 		<goss.version>0.1.4-SNAPSHOT</goss.version>
-		<goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
+		<goss-fusiondb.version>0.1.5-SNAPSHOT</goss-fusiondb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
@@ -115,13 +115,7 @@
 			<artifactId>goss-kairosdb-server</artifactId>
 			<version>${goss-kairosdb.version}</version>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>pnnl.goss</groupId>
-			<artifactId>goss-fusiondb-server</artifactId>
-			<version>0.1.4-SNAPSHOT</version>
-		</dependency>
- -->
+ 
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-tool-mdart-server</artifactId>
