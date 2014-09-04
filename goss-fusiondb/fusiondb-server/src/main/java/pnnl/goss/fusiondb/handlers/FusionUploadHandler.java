@@ -54,6 +54,8 @@ import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.GeneratorData;
+import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
+import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
 import pnnl.goss.server.core.GossRequestHandler;
 
 
@@ -77,6 +79,11 @@ public class FusionUploadHandler extends GossRequestHandler {
 				uploadCapacityRequirement((CapacityRequirement)uploadrequest.getData());
 			else if(uploadrequest.getData() instanceof GeneratorData)
 				uploadGeneratorData((GeneratorData)uploadrequest.getData());
+			else if(uploadrequest.getData() instanceof InterfacesViolation)
+				uploadInterfacesViolation((InterfacesViolation)uploadrequest.getData());
+			else if(uploadrequest.getData() instanceof VoltageStabilityViolation)
+				uploadVoltageStabilityViolation((VoltageStabilityViolation)uploadrequest.getData());
+			
 				
 		}
 		catch(Exception e){
@@ -133,6 +140,44 @@ public class FusionUploadHandler extends GossRequestHandler {
 		connection.close();
 		
 		
+	}
+	
+	private void uploadInterfacesViolation(InterfacesViolation data) throws Exception{
+		
+		String queryString = "replace into interfaces_violation("
+						+ "`timestamp`,"
+						+ "interval_id,"
+						+ "interface_id,"
+						+ "probability) values ('"
+						+ data.getTimestamp()+"',"
+						+ data.getIntervalId()+","
+						+ data.getInterfaceId()+","
+						+ data.getProbability()+")";
+		System.out.println(queryString);
+		int rows =  statement.executeUpdate(queryString);
+		System.out.println(rows);
+		if(connection.getAutoCommit()==false)
+		connection.commit();
+		connection.close();
+		
+	}
+	
+	private void uploadVoltageStabilityViolation(VoltageStabilityViolation data) throws Exception{
+		String queryString = "replace into voltage_stability_violation("
+				+ "`timestamp`,"
+				+ "interval_id,"
+				+ "bus_id,"
+				+ "probability) values ('"
+				+ data.getTimestamp()+"',"
+				+ data.getIntervalId()+","
+				+ data.getBusId()+","
+				+ data.getProbability()+")";
+		System.out.println(queryString);
+		int rows =  statement.executeUpdate(queryString);
+		System.out.println(rows);
+		if(connection.getAutoCommit()==false)
+		connection.commit();
+		connection.close();
 	}
 
 }
