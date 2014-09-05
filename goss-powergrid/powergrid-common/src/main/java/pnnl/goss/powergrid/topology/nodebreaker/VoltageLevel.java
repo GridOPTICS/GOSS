@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 import pnnl.goss.powergrid.topology.Substation;
 
 import com.impetus.kundera.index.Index;
@@ -20,7 +21,7 @@ import com.impetus.kundera.index.IndexCollection;
 @Table(name=VOLTAGE_LEVEL)
 @AttributeOverride(name="mrid", column=@Column(name=VOLTAGE_LEVEL_MRID))
 @IndexCollection(columns={@Index(name=DATA_TYPE)})
-public class VoltageLevel extends IdentifiedObject {
+public class VoltageLevel extends IdentifiedObject implements NodeBreakerDataType, EquipmentContainer {
 	
 	private static final long serialVersionUID = -3855948715546769934L;
 
@@ -29,6 +30,9 @@ public class VoltageLevel extends IdentifiedObject {
 	
 	@Column(name=SUBSTATION)
 	protected Substation substation;
+	
+	@Column(name=BASE_VOLTAGE)
+	protected BaseVoltage baseVoltage;
 	
 	public VoltageLevel(){
 		this.dataType = VOLTAGE_LEVEL;
@@ -48,5 +52,13 @@ public class VoltageLevel extends IdentifiedObject {
 
 	public void setSubstation(Substation substation) {
 		this.substation = substation;
+	}
+
+	public BaseVoltage getBaseVoltage() {
+		return baseVoltage;
+	}
+
+	public void setBaseVoltage(BaseVoltage baseVoltage) {
+		this.baseVoltage = baseVoltage;
 	}
 }
