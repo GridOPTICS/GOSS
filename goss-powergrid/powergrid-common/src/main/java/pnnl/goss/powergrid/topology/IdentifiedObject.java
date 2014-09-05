@@ -1,28 +1,36 @@
 package pnnl.goss.powergrid.topology;
 
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.ALIAS;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.DESCRIPTION;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.MRID;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.NAME;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.PATH;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class IdentifiedObject {
+public class IdentifiedObject implements Serializable {
 		
+	private static final long serialVersionUID = 7566807338923877903L;
+
 	@Id
+	@Column(name=MRID)
 	protected String mrid;
 	
-	@Column
+	@Column(name=NAME)
 	protected String name;
 	
-	@Column
+	@Column(name=ALIAS)
 	protected String alias;
 
-	@Column
+	@Column(name=PATH)
 	protected String path;
 	
-	@Column
+	@Column(name=DESCRIPTION)
 	protected String description;
 	
 	public IdentifiedObject(){
