@@ -53,11 +53,23 @@ public interface NodeBreakerDataType {
 	public static final String CURVE_DATA = "CURVE_DATA";
 	public static final String CURVE_DATA_MRID = "CURVE_DATA_MRID";
 	
+	public static final String DISCONNECTOR = "DISCONNECTOR";
+	public static final String DISCONNECTOR_MRID = "DISCONNECTOR_MRID";
+	
+	public static final String DISCRETE = "DISCRETE";
+	public static final String DISCRETE_MRID = "DISCRETE_MRID";
+	
 	public static final String GEOGRAPHICAL_REGION = "GEOGRAPHICAL_REGION";
 	public static final String GEOGRAPHICAL_REGION_MRID = "GEOGRAPHICAL_REGION_MRID";
 	
 	public static final String LINE = "LINE";
 	public static final String LINE_MRID = "LINE_MRID";	
+	
+	public static final String LOAD_BREAK_SWITCH = "LOAD_BREAK_SWITCH";
+	public static final String LOAD_BREAK_SWITCH_MRID = "LOAD_BREAK_SWITCH_MRID";
+	
+	public static final String REGULATION_SCHEDULE = "REGULATION_SCHEDULE";
+	public static final String REGULATION_SCHEDULE_MRID = "REGULATION_SCHEDULE_MRID";
 	
 	public static final String SUB_GEOGRAPHICAL_REGION = "SUB_GEOGRAPHICAL_REGION";
 	public static final String SUB_GEOGRAPHICAL_REGION_MRID = "SUB_GEOGRAPHICAL_REGION_MRID";
