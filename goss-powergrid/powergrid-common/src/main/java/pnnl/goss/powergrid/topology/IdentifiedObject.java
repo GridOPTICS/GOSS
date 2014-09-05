@@ -80,4 +80,14 @@ public class IdentifiedObject implements Serializable {
 	public void setMrid(String mrid) {
 		this.mrid = mrid;
 	}	
+	
+	@Override
+	public String toString() {
+		String data = "MRID: "+mrid
+				+ " ALIAS: "+alias
+				+ " NAME: "+name
+				+ " PATH: "+path
+				+ " DESCRIPTION: " + description;
+		return data;
+	}
 }
