@@ -1,5 +1,5 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-public class ConductingEquipment {
+public interface ConductingEquipment {
 
 }
