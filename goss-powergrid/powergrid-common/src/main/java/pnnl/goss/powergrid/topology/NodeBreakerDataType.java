@@ -33,8 +33,19 @@ public interface NodeBreakerDataType {
 	public static final String BUS_BAR_SECTION = "BUS_BAR_SECTION";
 	public static final String BUS_BAR_SECTION_MRID = "BUS_BAR_SECTION_MRID";
 	
+	// ConductingeEquipment is an interface
+	// TODO figure out what to do with interfaces.
 	public static final String CONDUCTING_EQUIPMENT = "CONDUCTING_EQUIPMENT";
 	public static final String CONDUCTING_EQUIPMENT_MIRD = "CONDUCTING_EQUIPMENT_MIRD";
+	
+	public static final String CONFORM_LOAD = "CONFORM_LOAD";
+	public static final String CONFORM_LOAD_MRID = "CONFORM_LOAD_MRID";	
+	
+	public static final String CONFORM_LOAD_GROUP = "CONFORM_LOAD_GROUP";
+	public static final String CONFORM_LOAD_GROUP_MRID = "CONFORM_LOAD_GROUP_MRID";
+
+	public static final String CONFORM_LOAD_SCHEDULE = "CONFORM_LOAD_SCHEDULE";
+	public static final String CONFORM_LOAD_SCHEDULE_MRID = "CONFORM_LOAD_SCHEDULE_MRID";
 	
 	public static final String CONNECTIVITY_NODE = "CONNECTIVITY_NODE";
 	public static final String CONNECTIVITY_NODE_MIRD = "CONNECTIVITY_NODE_MIRD";

@@ -1,17 +1,30 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.CONFORM_LOAD;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.CONFORM_LOAD_MRID;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.DATA_TYPE;
+
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
+
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
+
 @Entity
-public class ConformLoad extends IdentifiedObject implements NodeBreakerDataType  {
+@Table(name = CONFORM_LOAD)
+@AttributeOverride(name = "mrid", column = @Column(name = CONFORM_LOAD_MRID))
+@IndexCollection(columns = { @Index(name = DATA_TYPE) })
+public class ConformLoad extends IdentifiedObject implements
+		NodeBreakerDataType {
 
 	private static final long serialVersionUID = 7212631573237725674L;
 
-	@Column(name=DATA_TYPE)
+	@Column(name = DATA_TYPE)
 	protected String dataType;
 	@Column
 	private Double energyConsumerpfixed;
@@ -30,6 +43,10 @@ public class ConformLoad extends IdentifiedObject implements NodeBreakerDataType
 	@Column
 	private Double energyConsumerqFexp;
 
+	public ConformLoad() {
+		dataType = CONFORM_LOAD;
+	}
+
 	@Override
 	public String getDataType() {
 		return dataType;
@@ -39,7 +56,7 @@ public class ConformLoad extends IdentifiedObject implements NodeBreakerDataType
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
-		
+
 	public Double getEnergyConsumerpfixed() {
 		return energyConsumerpfixed;
 	}
