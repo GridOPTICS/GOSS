@@ -9,6 +9,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class Analog extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = 5285780927858065902L;
+
 	@Column
 	protected String dataType;
 	@Column
@@ -16,10 +18,12 @@ public class Analog extends IdentifiedObject implements NodeBreakerDataType  {
 	@Column
 	private Boolean positiveFlowIn;
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}

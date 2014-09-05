@@ -1,27 +1,14 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
-import com.impetus.kundera.index.Index;
-import com.impetus.kundera.index.IndexCollection;
-
 @Entity
 public class Breaker extends IdentifiedObject implements NodeBreakerDataType  {
+
+	private static final long serialVersionUID = -7019934471143148743L;
 
 	@Column
 	protected String dataType;
@@ -43,10 +30,12 @@ public class Breaker extends IdentifiedObject implements NodeBreakerDataType  {
 		
 	}
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}

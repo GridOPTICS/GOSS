@@ -9,6 +9,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class CurveData extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = 8351778930059080566L;
+
 	@Column
 	protected String dataType;
 	@Column
@@ -18,10 +20,12 @@ public class CurveData extends IdentifiedObject implements NodeBreakerDataType  
 	@Column
 	private Double y2value;
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}

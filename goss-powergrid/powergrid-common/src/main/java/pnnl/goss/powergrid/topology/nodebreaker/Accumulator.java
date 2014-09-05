@@ -11,6 +11,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class Accumulator extends IdentifiedObject implements NodeBreakerDataType  {
 	
+	private static final long serialVersionUID = 2173096405492358853L;
+	
 	@Column
 	protected String dataType;
 

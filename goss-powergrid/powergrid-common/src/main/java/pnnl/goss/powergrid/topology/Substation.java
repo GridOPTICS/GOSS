@@ -27,6 +27,8 @@ import com.impetus.kundera.index.IndexCollection;
 @IndexCollection(columns={@Index(name=DATA_TYPE)})
 public class Substation extends IdentifiedObject implements NodeBreakerDataType {
 	
+	private static final long serialVersionUID = 3657810744633660312L;
+
 	@Column(name=DATA_TYPE)
 	protected String dataType;
 	

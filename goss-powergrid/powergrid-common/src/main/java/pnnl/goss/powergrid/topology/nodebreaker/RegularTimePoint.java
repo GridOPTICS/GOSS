@@ -9,6 +9,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class RegularTimePoint extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = -1005140752411823468L;
+
 	@Column
 	protected String dataType;	
 	@Column
@@ -18,10 +20,12 @@ public class RegularTimePoint extends IdentifiedObject implements NodeBreakerDat
 	@Column
 	private Double value2;
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}

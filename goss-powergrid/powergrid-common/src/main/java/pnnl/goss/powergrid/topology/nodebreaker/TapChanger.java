@@ -9,6 +9,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class TapChanger extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = -8984289204990380623L;
+
 	@Column
 	protected String dataType;
 	@Column
@@ -26,10 +28,12 @@ public class TapChanger extends IdentifiedObject implements NodeBreakerDataType 
 	@Column
 	private String transformerWinding;	
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}

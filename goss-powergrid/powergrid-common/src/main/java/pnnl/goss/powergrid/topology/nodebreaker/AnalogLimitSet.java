@@ -9,15 +9,19 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class AnalogLimitSet extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = -5597074884975084827L;
+
 	@Column
 	protected String dataType;
 	@Column
 	private Boolean limitSetIsPercentageLimits;
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}

@@ -11,6 +11,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class ACLineSegment extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = 6263933162623230597L;
+	
 	@Column
 	protected String dataType;
 

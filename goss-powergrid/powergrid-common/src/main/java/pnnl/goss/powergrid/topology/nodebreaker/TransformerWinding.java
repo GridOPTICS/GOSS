@@ -9,6 +9,8 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 @Entity
 public class TransformerWinding extends IdentifiedObject implements NodeBreakerDataType  {
 
+	private static final long serialVersionUID = 4941755759033279919L;
+
 	@Column
 	protected String dataType;
 	@Column
@@ -24,10 +26,12 @@ public class TransformerWinding extends IdentifiedObject implements NodeBreakerD
 	@Column
 	private Double g;
 
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
+	@Override
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
