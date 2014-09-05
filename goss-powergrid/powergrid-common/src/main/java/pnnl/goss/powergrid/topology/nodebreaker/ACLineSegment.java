@@ -25,6 +25,9 @@ public class ACLineSegment extends IdentifiedObject implements NodeBreakerDataTy
 	@Column(name=DATA_TYPE)
 	protected String dataType;
 	
+	@Column
+	protected EquipmentContainer equipmentContainer;
+	
 	public ACLineSegment(){
 		dataType=ACLINESEGMENT;
 	}
@@ -35,5 +38,13 @@ public class ACLineSegment extends IdentifiedObject implements NodeBreakerDataTy
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public EquipmentContainer getMemberOfEquipmentContainer() {
+		return equipmentContainer;
+	}
+
+	public void setMemberOfEquipmentContainer(EquipmentContainer equipmentContainer) {
+		this.equipmentContainer = equipmentContainer;
 	}
 }
