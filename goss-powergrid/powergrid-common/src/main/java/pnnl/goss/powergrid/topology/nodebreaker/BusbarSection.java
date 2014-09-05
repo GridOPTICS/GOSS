@@ -4,13 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Entity
 public class BusbarSection extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 1983837579028685823L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 
 	@Override

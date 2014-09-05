@@ -4,13 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Entity
 public class GeographicalRegion extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = -2019222612455376153L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 
 	@Override

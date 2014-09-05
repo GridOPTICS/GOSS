@@ -1,7 +1,5 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
-
-import java.util.HashMap;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 public class TopologicalNode {
 	
 //	private String mrid;

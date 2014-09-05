@@ -5,13 +5,13 @@ import javax.persistence.Entity;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Entity
 public class Disconnector extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 5099879392767680088L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 	@Column
 	private Boolean switchNormalOpen;

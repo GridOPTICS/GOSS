@@ -5,13 +5,13 @@ import javax.persistence.Entity;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Entity
 public class CurveData extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 8351778930059080566L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 	@Column
 	private Double xvalue;

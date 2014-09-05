@@ -1,7 +1,9 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
@@ -10,7 +12,7 @@ public class Terminal extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 121797933715007032L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 
 	@Override

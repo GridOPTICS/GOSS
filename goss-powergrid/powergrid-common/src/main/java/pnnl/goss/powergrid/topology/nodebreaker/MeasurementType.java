@@ -4,10 +4,10 @@ import javax.persistence.Column;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 public class MeasurementType extends IdentifiedObject implements NodeBreakerDataType   {
 	
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 	
 	public MeasurementType(){

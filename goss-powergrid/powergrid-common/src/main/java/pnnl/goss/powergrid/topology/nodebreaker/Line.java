@@ -1,5 +1,5 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -11,7 +11,7 @@ public class Line extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 891186584111871258L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 	@Column	
 	protected String lineRegion;

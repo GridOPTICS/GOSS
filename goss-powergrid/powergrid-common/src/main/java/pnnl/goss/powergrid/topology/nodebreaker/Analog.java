@@ -1,5 +1,5 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
-
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -11,7 +11,7 @@ public class Analog extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 5285780927858065902L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 	@Column
 	private Double normalValue;
