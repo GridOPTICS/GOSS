@@ -48,7 +48,10 @@ public interface NodeBreakerDataType {
 	public static final String CONFORM_LOAD_SCHEDULE_MRID = "CONFORM_LOAD_SCHEDULE_MRID";
 	
 	public static final String CONNECTIVITY_NODE = "CONNECTIVITY_NODE";
-	public static final String CONNECTIVITY_NODE_MIRD = "CONNECTIVITY_NODE_MIRD";
+	public static final String CONNECTIVITY_NODE_MRID = "CONNECTIVITY_NODE_MRID";
+	
+	public static final String CURVE_DATA = "CURVE_DATA";
+	public static final String CURVE_DATA_MRID = "CURVE_DATA_MRID";
 	
 	public static final String GEOGRAPHICAL_REGION = "GEOGRAPHICAL_REGION";
 	public static final String GEOGRAPHICAL_REGION_MRID = "GEOGRAPHICAL_REGION_MRID";

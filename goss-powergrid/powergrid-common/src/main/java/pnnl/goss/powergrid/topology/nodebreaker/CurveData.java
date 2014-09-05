@@ -1,12 +1,23 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.CURVE_DATA;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.CURVE_DATA_MRID;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.DATA_TYPE;
+
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
-import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
+
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
 @Entity
+@Table(name=CURVE_DATA)
+@AttributeOverride(name="mrid", column=@Column(name=CURVE_DATA_MRID))
+@IndexCollection(columns={@Index(name=DATA_TYPE)})
 public class CurveData extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 8351778930059080566L;
@@ -19,6 +30,10 @@ public class CurveData extends IdentifiedObject implements NodeBreakerDataType  
 	private Double y1value;
 	@Column
 	private Double y2value;
+	
+	public CurveData(){
+		dataType = CURVE_DATA;
+	}
 
 	@Override
 	public String getDataType() {
