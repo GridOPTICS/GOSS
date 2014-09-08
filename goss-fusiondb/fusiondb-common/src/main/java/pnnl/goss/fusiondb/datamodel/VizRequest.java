@@ -10,6 +10,7 @@ public class VizRequest implements Serializable{
 	String timestamp;
 	Integer range;
 	String unit;
+	String endTimestamp;
 	
 	public String getType() {
 		return type;
@@ -35,6 +36,13 @@ public class VizRequest implements Serializable{
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
+	public String getEndTimestamp() {
+		return endTimestamp;
+	}
+	public void setEndTimestamp(String endTimestamp) {
+		this.endTimestamp = endTimestamp;
+	}
+	
 	
 	
 

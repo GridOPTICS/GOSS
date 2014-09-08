@@ -17,11 +17,9 @@ import org.apache.felix.ipojo.annotations.Validate;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
-import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.client.GossClient.PROTOCOL;
 import pnnl.goss.core.client.GossResponseEvent;
-import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.datamodel.VizRequest;
 import pnnl.goss.fusiondb.handlers.RequestActualTotalHandler;
 import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
@@ -34,7 +32,6 @@ import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandler;
-import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.util.Utilities;
 
@@ -81,14 +78,15 @@ public class DataStreamLauncher implements Runnable {
 	 * Historic Request in the form:
 	 * 	 {	type:historic,
 	 * 		timestamp:"MM/dd/yyyy HH:mm:ss", 
-	 * 		range:2
-	 * 		unit:hour 	}
+	 * 		range:2,
+	 * 		unit:hour	}
 	 * 
 	 * Current Request in the form: 
 	 * 	{ 	type:current, 
 	 * 		timestamp:"MM/dd/yyyy HH:mm:ss a", 
-	 * 		range:5
-	 * 		unit:minute	}
+	 * 		range:5,
+	 * 		unit:minute
+	 * 		endTimestamp: "MM/dd/yyyy HH:mm:ss	}
 	 * 
 	 * To stop current data stream:
 	 * "stop stream"
@@ -133,6 +131,7 @@ public class DataStreamLauncher implements Runnable {
 					if(message.contains("stop stream"))
 						isRunning= false;
 					else{
+						isRunning = true;
 						Gson gson = new Gson();
 						final VizRequest vizRequest = gson.fromJson(message, VizRequest.class);
 						if(vizRequest.getType().toLowerCase().equals("historic")){
@@ -150,17 +149,17 @@ public class DataStreamLauncher implements Runnable {
 									try{
 										SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 										isRunning = true;
-										String timestamp = vizRequest.getTimestamp();
-										Date date = dateFormat.parse(timestamp);
-										date = new Date(date.getTime()+(vizRequest.getRange()*60*1000));
-										String endTimestamp = dateFormat.format(date);
-										publishHistoricData(timestamp, endTimestamp);
-										while(isRunning){
-											publishCurrentData(timestamp,endTimestamp);
-											timestamp = endTimestamp;
-											date = dateFormat.parse(timestamp);
-											date = new Date(date.getTime()+(vizRequest.getRange()*60*1000));
-											endTimestamp = dateFormat.format(date);
+										String startTimestamp = vizRequest.getTimestamp();
+										Date startDate = dateFormat.parse(startTimestamp);
+										Date endDate = new Date(startDate.getTime()+(vizRequest.getRange()*60*1000));
+										String endTimestamp = dateFormat.format(endDate);
+										Date stopTimestamp = dateFormat.parse(vizRequest.getEndTimestamp());
+										while(startDate.before(stopTimestamp) || startDate.equals(stopTimestamp)){
+											publishCurrentData(startTimestamp,endTimestamp);
+											startTimestamp = endTimestamp;
+											startDate = dateFormat.parse(startTimestamp);
+											endDate = new Date(startDate.getTime()+(vizRequest.getRange()*60*1000));
+											endTimestamp = dateFormat.format(endDate);
 										}
 									}catch(ParseException p){
 										client.publishString(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
