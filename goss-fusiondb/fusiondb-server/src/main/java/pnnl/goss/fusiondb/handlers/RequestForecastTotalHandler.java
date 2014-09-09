@@ -79,11 +79,14 @@ public class RequestForecastTotalHandler extends GossRequestHandler{
 			String tableName = "rte_"+request1.getType().toString().toLowerCase()+"_forecast";
 
 			if (request1.getEndTimeStamp() == null) {
-				dbQuery = "select * from fusion."+tableName+" where `TimeStamp` = '"+request1.getStartTimestamp()+"' AND IntervalID <= "+request1.getInterval()+" order by IntervalID";
+				dbQuery = "select * from fusion."+tableName+" where `TimeStamp` = '"+request1.getStartTimestamp()+"' and IntervalID <= "+request1.getInterval()+" order by IntervalID";
 			} else {
-
-				dbQuery = "select * from fusion."+tableName+" where `TimeStamp` >= '"+request1.getStartTimestamp()+"' and `TimeStamp`<'"+request1.getEndTimeStamp()+"' and "+
+				if (request1.getInterval()!=0)
+					dbQuery = "select * from fusion."+tableName+" where `TimeStamp` >= '"+request1.getStartTimestamp()+"' and `TimeStamp`<'"+request1.getEndTimeStamp()+"' and "+
 						"IntervalID <="+request1.getInterval()+"  order by `TimeStamp`";
+				else
+					dbQuery = "select * from fusion."+tableName+" where `TimeStamp` >= '"+request1.getStartTimestamp()+"' and `TimeStamp`<'"+request1.getEndTimeStamp()+"' "+
+							"  order by `TimeStamp`";
 			}
 
 			System.out.println(dbQuery);
