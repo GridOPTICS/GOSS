@@ -79,9 +79,13 @@ public class RequestRTEDScheduleHandler extends GossRequestHandler{
 			if (request1.getEndTimeStamp() == null) {
 				dbQuery = "select * from fusion.rte_d_total where `TimeStamp` = '"+request1.getStartTimestamp()+"' order by IntervalID";
 			} else {
+				if(request1.interval!=0)
 
 				dbQuery = "select * from fusion.rte_d_total where `TimeStamp` between '"+request1.getStartTimestamp()+"' and '"+request1.getEndTimeStamp()+"' and "+
 						"IntervalID <= "+request1.getInterval()+" order by IntervalID";
+				else
+					dbQuery = "select * from fusion.rte_d_total where `TimeStamp` between '"+request1.getStartTimestamp()+"' and '"+request1.getEndTimeStamp()+"' "+
+							" order by IntervalID";
 			}
 
 			System.out.println(dbQuery);
