@@ -161,6 +161,7 @@ public class DataStreamLauncher implements Runnable {
 											endDate = new Date(startDate.getTime()+(vizRequest.getRange()*60*1000));
 											endTimestamp = dateFormat.format(endDate);
 										}
+										publishCurrentDataEnd();
 									}catch(ParseException p){
 										client.publishString(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
 										p.printStackTrace();
@@ -347,6 +348,38 @@ public class DataStreamLauncher implements Runnable {
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentForecastWindTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
+	}
+	
+	private void publishCurrentDataEnd(){
+		
+		String message = "STREAM STOPPED";
+		
+		// capacity requirement
+		client.publish(currentCapaReqTopic, message, RESPONSE_FORMAT.JSON);
+
+		// total rted
+		client.publish(currentInterchangeScheduleTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// total interchange
+		client.publish(currentInterchangeTotalTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// actual load
+		client.publish(currentActualLoadTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// actual wind
+		client.publish(currentActualWindTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// actual solar
+		client.publish(currentActualSolarTopic, message,  RESPONSE_FORMAT.JSON);
+
+		//forecast load
+		client.publish(currentForecastLoadTopic, message,  RESPONSE_FORMAT.JSON);
+
+		//forecast solar
+		client.publish(currentForecastSolarTopic, message,  RESPONSE_FORMAT.JSON);
+
+		//forecast wind
+		client.publish(currentForecastWindTopic, message,  RESPONSE_FORMAT.JSON);
 	}
 
 }
