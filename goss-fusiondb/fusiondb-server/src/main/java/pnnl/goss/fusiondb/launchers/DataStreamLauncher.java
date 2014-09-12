@@ -13,6 +13,8 @@ import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
@@ -45,6 +47,8 @@ public class DataStreamLauncher implements Runnable {
 	
 	GossClient client = null; 
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private static Logger log = LoggerFactory.getLogger(DataStreamLauncher.class);
 
 	String controlTopic = "goss/fusion/viz/control";
 	String errorTopic = "goss/fusion/viz/error";
@@ -127,6 +131,7 @@ public class DataStreamLauncher implements Runnable {
 			@Override
 			public void onMessage(Serializable response) {
 				try{
+					log.debug("Got request at DatastreamLauncher");
 					String message = (String)((DataResponse)response).getData();
 					if(message.contains("stop stream"))
 						isRunning= false;
@@ -155,12 +160,14 @@ public class DataStreamLauncher implements Runnable {
 										String endTimestamp = dateFormat.format(endDate);
 										Date stopTimestamp = dateFormat.parse(vizRequest.getEndTimestamp());
 										while(startDate.before(stopTimestamp) || startDate.equals(stopTimestamp)){
+											log.debug("Querying for "+startTimestamp+" to "+endTimestamp);
 											publishCurrentData(startTimestamp,endTimestamp);
 											startTimestamp = endTimestamp;
 											startDate = dateFormat.parse(startTimestamp);
 											endDate = new Date(startDate.getTime()+(vizRequest.getRange()*60*1000));
 											endTimestamp = dateFormat.format(endDate);
 										}
+										log.debug("Publishing stream stop message");
 										publishCurrentDataEnd();
 									}catch(ParseException p){
 										client.publishString(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
@@ -168,6 +175,7 @@ public class DataStreamLauncher implements Runnable {
 									}
 								}
 							});
+							log.debug("Running current stream thread");
 							thread.start();
 						}
 					}
