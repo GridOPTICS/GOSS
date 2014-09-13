@@ -1,12 +1,15 @@
 package pnnl.goss.model.generator;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -28,6 +31,8 @@ public class ModelGeneration {
 	
 	private static final Integer CLASSES_PACKAGE_COLUMN = 0;
 	private static final Integer CLASSES_CLASS_COLUMN = 1;
+	
+	private static Map<String, MetaClass> metaClasses = new HashMap<>();
 	
 	/**
 	 * Creates a package directory under ROOT_FOLDER.
@@ -138,26 +143,43 @@ public class ModelGeneration {
 					System.out.println("Skipping: " +pkgCell.getNumericCellValue());
 				}
 				else if(pkgCell.getCellType() == HSSFCell.CELL_TYPE_STRING){
-					String pkg = getPackage(pkgCell.getStringCellValue());
-					String clsName =  row.getCell(CLASSES_CLASS_COLUMN).getStringCellValue();
-					boolean createClass = true;
-					if (pkg == null){
-						createClass = false;
-						System.out.println("package is null");
-					}
-					if (clsName == null){
-						createClass = false;
-						System.out.println("class is null");
-					}
+					// Use this as a test so that we can get the mapped type and see
+					// if it's already in the collection (Hopefully it never will!)
+					MetaClass tmp = new MetaClass();
+					tmp.setPackageName(getPackage(pkgCell.getStringCellValue()));
+					tmp.setClassName(row.getCell(CLASSES_CLASS_COLUMN).getStringCellValue());
 					
-					if(createClass){
-						createClassFile(pkg, clsName, null, null);
+					if (!tmp.isValidClassDefinition()){
+						System.out.println("Invalid class detected for row: "+ r);
+					}
+					else{
+						MetaClass newMetaClass = metaClasses.get(tmp.getDataType());
+						if (newMetaClass == null){
+							newMetaClass = tmp;
+							metaClasses.put(newMetaClass.getDataType(), newMetaClass);
+						}
+						else{
+							System.out.println("Boo already has the datatype!! "+newMetaClass.getDataType());
+						}
 					}
 				}
-				
-				
 			}
 		}
+		
+		for(MetaClass meta: metaClasses.values()){
+			File classFile = new File(createPackageDir(meta.getPackageName()));
+			
+			try{
+				FileWriter writer = new FileWriter(classFile.toString() + meta.getClassName()+".java");
+				BufferedWriter out = new BufferedWriter(writer);
+				out.write(meta.getClassDefinition());
+				out.close();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
 //
 //		System.out.println("Data dump:\n");
 //
