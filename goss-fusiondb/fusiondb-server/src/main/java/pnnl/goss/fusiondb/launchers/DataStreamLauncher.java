@@ -13,6 +13,8 @@ import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
@@ -45,6 +47,8 @@ public class DataStreamLauncher implements Runnable {
 	
 	GossClient client = null; 
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private static Logger log = LoggerFactory.getLogger(DataStreamLauncher.class);
 
 	String controlTopic = "goss/fusion/viz/control";
 	String errorTopic = "goss/fusion/viz/error";
@@ -127,6 +131,7 @@ public class DataStreamLauncher implements Runnable {
 			@Override
 			public void onMessage(Serializable response) {
 				try{
+					log.debug("Got request at DatastreamLauncher");
 					String message = (String)((DataResponse)response).getData();
 					if(message.contains("stop stream"))
 						isRunning= false;
@@ -155,18 +160,22 @@ public class DataStreamLauncher implements Runnable {
 										String endTimestamp = dateFormat.format(endDate);
 										Date stopTimestamp = dateFormat.parse(vizRequest.getEndTimestamp());
 										while(startDate.before(stopTimestamp) || startDate.equals(stopTimestamp)){
+											log.debug("Querying for "+startTimestamp+" to "+endTimestamp);
 											publishCurrentData(startTimestamp,endTimestamp);
 											startTimestamp = endTimestamp;
 											startDate = dateFormat.parse(startTimestamp);
 											endDate = new Date(startDate.getTime()+(vizRequest.getRange()*60*1000));
 											endTimestamp = dateFormat.format(endDate);
 										}
+										log.debug("Publishing stream stop message");
+										publishCurrentDataEnd();
 									}catch(ParseException p){
 										client.publishString(controlTopic, "timestamp is not in correct format mm/dd/yyyy HH:mm:ss");
 										p.printStackTrace();
 									}
 								}
 							});
+							log.debug("Running current stream thread");
 							thread.start();
 						}
 					}
@@ -347,6 +356,38 @@ public class DataStreamLauncher implements Runnable {
 		response = (DataResponse)handler.handle(request);
 		client.publish(currentForecastWindTopic, (Serializable)response.getData(),  RESPONSE_FORMAT.JSON);
 
+	}
+	
+	private void publishCurrentDataEnd(){
+		
+		String message = "STREAM STOPPED";
+		
+		// capacity requirement
+		client.publish(currentCapaReqTopic, message, RESPONSE_FORMAT.JSON);
+
+		// total rted
+		client.publish(currentInterchangeScheduleTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// total interchange
+		client.publish(currentInterchangeTotalTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// actual load
+		client.publish(currentActualLoadTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// actual wind
+		client.publish(currentActualWindTopic, message,  RESPONSE_FORMAT.JSON);
+
+		// actual solar
+		client.publish(currentActualSolarTopic, message,  RESPONSE_FORMAT.JSON);
+
+		//forecast load
+		client.publish(currentForecastLoadTopic, message,  RESPONSE_FORMAT.JSON);
+
+		//forecast solar
+		client.publish(currentForecastSolarTopic, message,  RESPONSE_FORMAT.JSON);
+
+		//forecast wind
+		client.publish(currentForecastWindTopic, message,  RESPONSE_FORMAT.JSON);
 	}
 
 }
