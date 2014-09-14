@@ -32,6 +32,7 @@ public class ModelGeneration {
 	private static final Integer CLASSES_PACKAGE_COLUMN = 0;
 	private static final Integer CLASSES_CLASS_COLUMN = 1;
 	private static final Integer CLASSES_INHERITANCE_COLUMN = 3;
+	private static final Integer CLASSES_DOCUMENTATION_COLUMN = 5;
 	
 	/**
 	 * Maps the name (Equipment) to type (pnnl.goss.cim.core.Equipment)
@@ -173,6 +174,11 @@ public class ModelGeneration {
 					}
 					else{
 						System.out.println("Boo already has the datatype!! "+newMetaClass.getDataType());
+					}
+					
+					HSSFCell docCell = row.getCell(CLASSES_DOCUMENTATION_COLUMN);
+					if (docCell != null && docCell.getStringCellValue() != null){
+						newMetaClass.setClassDocumentation(docCell.getStringCellValue());
 					}
 				}
 			}

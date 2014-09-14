@@ -43,6 +43,14 @@ public class MetaClass {
 	public void setPackageName(String packageName) {
 		this.packageName = packageName;
 	}
+	
+	public String getClassDocumentation() {
+		return classDocumentation;
+	}
+
+	public void setClassDocumentation(String classDocumentation) {
+		this.classDocumentation = classDocumentation;
+	}
 
 	public void addAttribute(MetaAttribute attr){
 		attributes.add(attr);
@@ -68,6 +76,12 @@ public class MetaClass {
 		buf.append("package " + packageName + ";\n\n");
 		
 		// Do imports here.
+		
+		if (classDocumentation != null){
+			buf.append("/**\n");
+			buf.append(classDocumentation + "\n");
+			buf.append("*/\n");
+		}
 		
 		buf.append("public class " + className + " ");
 		if (extendsType != null && extendsType.length() > 0){
