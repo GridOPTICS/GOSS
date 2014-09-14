@@ -39,7 +39,7 @@ public class ModelGeneration {
 	private static final Integer ATTRIB_DATA_TYPE_COLUMN = 5;
 	private static final Integer ATTRIB_INITIAL_VALUE_COLUMN = 6;
 	private static final Integer ATTRIB_DOCUMENTATION_COLUMN = 8;
-	private static final Integer DATATYPE_PACKAGE_CoLUMN = 0;
+	private static final Integer DATATYPE_PACKAGE_COLUMN = 0;
 	private static final Integer DATATYPE_DATA_TYPE_CoLUMN = 1;
 	private static final Integer DATATYPE_NS_CoLUMN = 2;
 	private static final Integer DATATYPE_DOCUMENTATION_CoLUMN = 3;
@@ -50,7 +50,14 @@ public class ModelGeneration {
 	 * Maps the name (Equipment) to type (pnnl.goss.cim.core.Equipment)
 	 */
 	private static Map<String, String> classNameToType = new HashMap<>();
+	/**
+	 * Maps the packaged namespace class to the metaclass 
+	 */
 	private static Map<String, MetaClass> metaClasses = new HashMap<>();
+	/**
+	 * Maps the datatype name to a metadatatype structure.
+	 */
+	private static Map<String, MetaDataType> metaDataType = new HashMap<>();
 	
 	/**
 	 * Creates a package directory under ROOT_FOLDER.
@@ -60,7 +67,7 @@ public class ModelGeneration {
 	 * @param classPackage A package that should be created.
 	 * @return The directory that was attempted to make
 	 */
-	public static String createPackageDir(String classPackage){
+	private static String createPackageDir(String classPackage){
 		System.out.println("Creating package: "+classPackage);
 		String packageDir = classPackage.replace(".", "/");
 		Path dir = Paths.get(ROOT_FOLDER, packageDir);
@@ -84,7 +91,7 @@ public class ModelGeneration {
 	 * @param data Data in the cell of the first column of the classes tab in the xls file.
 	 * @return The package or null if not available.
 	 */
-	public static String getPackage(String data){
+	private static String getPackage(String data){
 		String clspackage = ROOT_PACKAGE;
 		
 		// This used the package data from the first column to generate the package
@@ -151,6 +158,35 @@ public class ModelGeneration {
 		}
 	}
 	
+	private static void createMetaDataTypes(HSSFSheet dataTypeSheet){
+		// First row is header
+		for(int r=1; r < dataTypeSheet.getPhysicalNumberOfRows(); r++){
+			HSSFRow row = dataTypeSheet.getRow(r);
+			if (row == null) {
+				continue;
+			}
+			
+			HSSFCell packageCell = row.getCell(DATATYPE_PACKAGE_COLUMN); 
+			if (packageCell != null && packageCell.getStringCellValue()!= null){
+				boolean isEnum = packageCell.getStringCellValue().contains("Enum");
+				
+				HSSFCell namespaceCell = row.getCell(CLASSES_NAMESPACE_COLUMN);
+				HSSFCell dataTypeCell = row.getCell(DATATYPE_DATA_TYPE_CoLUMN); 
+				String dataTypeName = dataTypeCell.getStringCellValue();
+				String namespace = namespaceCell.getStringCellValue();
+				
+				MetaDataType meta = new MetaDataType();
+				
+				meta.setDataTypeName(dataTypeName);
+				meta.setNamespace(namespace);
+				meta.setEnumeration(isEnum);
+
+				metaDataType.put(meta.getDataTypeName(), meta);
+				
+			}
+		}
+	}
+	
 	/**
 	 * Creates the meta-classes from the classes sheet.  After this method
 	 * is called all of the classes in the object model will be in the
@@ -208,7 +244,7 @@ public class ModelGeneration {
 		addInheritancePath(classesSheet);
 	}
 	
-	public static void createAttributes(HSSFSheet attribSheet){
+	private static void createAttributes(HSSFSheet attribSheet){
 		// First row is header
 		for(int r=1; r < attribSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = attribSheet.getRow(r);
@@ -254,13 +290,12 @@ public class ModelGeneration {
 	 * @param existingFile The downloaded xls file from ERCOT.
 	 * @throws IOException 
 	 */
-	public static void generateModels(File existingFile) throws IOException{
+	private static void generateModels(File existingFile) throws IOException{
 		System.out.println("Generating models ...");
 		HSSFWorkbook wb = readFile(existingFile);
 		
-		HSSFSheet classesSheet = wb.getSheet("Classes");
-		createMetaClasses(classesSheet);
-		
+		createMetaDataTypes(wb.getSheet("DataTypes"));
+		createMetaClasses(wb.getSheet("Classes"));		
 		createAttributes(wb.getSheet("Attributes"));
 		
 		
