@@ -31,7 +31,12 @@ public class ModelGeneration {
 	
 	private static final Integer CLASSES_PACKAGE_COLUMN = 0;
 	private static final Integer CLASSES_CLASS_COLUMN = 1;
+	private static final Integer CLASSES_INHERITANCE_COLUMN = 3;
 	
+	/**
+	 * Maps the name (Equipment) to type (pnnl.goss.cim.core.Equipment)
+	 */
+	private static Map<String, String> classNameToType = new HashMap<>();
 	private static Map<String, MetaClass> metaClasses = new HashMap<>();
 	
 	/**
@@ -96,19 +101,46 @@ public class ModelGeneration {
 		
 		return clspackage;
 	}
-
+	
 	/**
-	 * Starts the generation of the models that are in the xls file
+	 * Adds the meta-classes super class for all classes in the  xls sheet.
 	 * 
-	 * @param existingFile The downloaded xls file from ERCOT.
-	 * @throws IOException 
+	 * @param classesSheet
 	 */
-	public static void generateModels(File existingFile) throws IOException{
-		System.out.println("Generating models ...");
-		HSSFWorkbook wb = readFile(existingFile);
-		
-		HSSFSheet classesSheet = wb.getSheet("Classes");
-		
+	private static void addInheritancePath(HSSFSheet classesSheet){
+		// First row is header
+		for(int r=1; r < classesSheet.getPhysicalNumberOfRows(); r++){
+			HSSFRow row = classesSheet.getRow(r);
+			if (row == null) {
+				continue;
+			}
+			
+			HSSFCell classCell = row.getCell(CLASSES_CLASS_COLUMN); //.getStringCellValue()
+			if (classCell != null && classCell.getStringCellValue()!= null){
+				String className = classCell.getStringCellValue();
+				if (classNameToType.containsKey(className)){
+					// Pull the meta class out and set the superclass to the first
+					// item in the Inheritance Path list.
+					MetaClass meta = metaClasses.get(classNameToType.get(className));
+					String inherString = row.getCell(CLASSES_INHERITANCE_COLUMN).getStringCellValue();
+					String extendsClassName = inherString.split(";")[0];
+					meta.setExtendsType(classNameToType.get(extendsClassName));
+					
+				}
+				
+			}
+		}
+	}
+	
+	/**
+	 * Creates the meta-classes from the classes sheet.  After this method
+	 * is called all of the classes in the object model will be in the
+	 * metaClasses Map by datatype.  Each class name will also be in the
+	 * classNameToDataType map for easy retrieval and reference.
+	 * 
+	 * @param classesSheet
+	 */
+	private static void createMetaClasses(HSSFSheet classesSheet){
 		// First row is header
 		for(int r=1; r < classesSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = classesSheet.getRow(r);
@@ -129,20 +161,42 @@ public class ModelGeneration {
 					
 					if (!tmp.isValidClassDefinition()){
 						System.out.println("Invalid class detected for row: "+ r);
+						continue;
+					}
+					
+					// Store the metaclass in our hashmap of classes if necessary.
+					MetaClass newMetaClass = metaClasses.get(tmp.getDataType());
+					if (newMetaClass == null){
+						newMetaClass = tmp;
+						metaClasses.put(newMetaClass.getDataType(), newMetaClass);
+						classNameToType.put(newMetaClass.getClassName(), newMetaClass.getDataType());
 					}
 					else{
-						MetaClass newMetaClass = metaClasses.get(tmp.getDataType());
-						if (newMetaClass == null){
-							newMetaClass = tmp;
-							metaClasses.put(newMetaClass.getDataType(), newMetaClass);
-						}
-						else{
-							System.out.println("Boo already has the datatype!! "+newMetaClass.getDataType());
-						}
+						System.out.println("Boo already has the datatype!! "+newMetaClass.getDataType());
 					}
 				}
 			}
 		}
+		
+		// Now that all of the classes have been pulled out of the worksheet we can
+		// attempt to add the rest of the information for inheritance etc.
+		addInheritancePath(classesSheet);
+	}
+
+	/**
+	 * Starts the generation of the models that are in the xls file
+	 * 
+	 * @param existingFile The downloaded xls file from ERCOT.
+	 * @throws IOException 
+	 */
+	public static void generateModels(File existingFile) throws IOException{
+		System.out.println("Generating models ...");
+		HSSFWorkbook wb = readFile(existingFile);
+		
+		HSSFSheet classesSheet = wb.getSheet("Classes");
+		createMetaClasses(classesSheet);
+		
+		
 		
 		// Loop and make .java files from the class meta files.
 		for(MetaClass meta: metaClasses.values()){

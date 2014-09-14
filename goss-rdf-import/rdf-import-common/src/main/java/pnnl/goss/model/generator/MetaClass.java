@@ -9,6 +9,7 @@ public class MetaClass {
 	private String className;
 	private String packageName;
 	private String extendsType;
+	private String classDocumentation;
 	
 	public boolean isValidClassDefinition(){
 		return className != null && className.length() > 0 &&
@@ -68,7 +69,7 @@ public class MetaClass {
 		
 		// Do imports here.
 		
-		buf.append("class " + className + " ");
+		buf.append("public class " + className + " ");
 		if (extendsType != null && extendsType.length() > 0){
 			buf.append("extends " + extendsType + " ");
 		}
