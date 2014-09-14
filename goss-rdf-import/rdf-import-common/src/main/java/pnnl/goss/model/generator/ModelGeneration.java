@@ -22,7 +22,7 @@ public class ModelGeneration {
 	/**
 	 * All generated classes will be under this root.
 	 */
-	private static final String ROOT_PACKAGE = "pnnl.goss.cim";
+	private static final String ROOT_PACKAGE = "pnnl.goss.nb";
 	
 	/**
 	 * The root of the java source folder.
@@ -32,7 +32,19 @@ public class ModelGeneration {
 	private static final Integer CLASSES_PACKAGE_COLUMN = 0;
 	private static final Integer CLASSES_CLASS_COLUMN = 1;
 	private static final Integer CLASSES_INHERITANCE_COLUMN = 3;
+	private static final Integer CLASSES_NAMESPACE_COLUMN = 4;
 	private static final Integer CLASSES_DOCUMENTATION_COLUMN = 5;
+	private static final Integer ATTRIB_CLASS_COLUMN = 2;
+	private static final Integer ATTRIB_ATTRIBUTE_COLUMN = 4;
+	private static final Integer ATTRIB_DATA_TYPE_COLUMN = 5;
+	private static final Integer ATTRIB_INITIAL_VALUE_COLUMN = 6;
+	private static final Integer ATTRIB_DOCUMENTATION_COLUMN = 8;
+	private static final Integer DATATYPE_PACKAGE_CoLUMN = 0;
+	private static final Integer DATATYPE_DATA_TYPE_CoLUMN = 1;
+	private static final Integer DATATYPE_NS_CoLUMN = 2;
+	private static final Integer DATATYPE_DOCUMENTATION_CoLUMN = 3;
+	
+	
 	
 	/**
 	 * Maps the name (Equipment) to type (pnnl.goss.cim.core.Equipment)
@@ -75,29 +87,35 @@ public class ModelGeneration {
 	public static String getPackage(String data){
 		String clspackage = ROOT_PACKAGE;
 		
-		if(data.startsWith("ETXSCADA")){
-			clspackage += ".ext.scada";
-		}
-		else if(data.startsWith("CIMSCADA")){
-			clspackage += ".scada";
-		}
-		else if(data.startsWith("CIM") || data.startsWith("EXT")){
-			
-			if (data.startsWith("EXT")){
-				clspackage += "ext";
+		// This used the package data from the first column to generate the package
+		if (data.length() > 3){
+			if(data.startsWith("ETXSCADA")){
+				clspackage += ".ext.scada";
 			}
-			
-			for(int i=3; i < data.length();i++){
-				if(Character.isUpperCase(data.charAt(i))){
-					clspackage += "."+Character.toString(Character.toLowerCase(data.charAt(i)));
+			else if(data.startsWith("CIMSCADA")){
+				clspackage += ".scada";
+			}
+			else if(data.startsWith("CIM") || data.startsWith("EXT")){
+				
+				if (data.startsWith("EXT")){
+					clspackage += "ext";
 				}
-				else{
-					clspackage += data.charAt(i);
+				
+				for(int i=3; i < data.length();i++){
+					if(Character.isUpperCase(data.charAt(i))){
+						clspackage += "."+Character.toString(Character.toLowerCase(data.charAt(i)));
+					}
+					else{
+						clspackage += data.charAt(i);
+					}
 				}
+			}
+			else{
+				clspackage = null;
 			}
 		}
 		else{
-			clspackage = null;
+			clspackage += "." + data.toLowerCase();
 		}
 		
 		return clspackage;
@@ -148,7 +166,8 @@ public class ModelGeneration {
 			if (row == null) {
 				continue;
 			}
-			HSSFCell pkgCell = row.getCell(CLASSES_PACKAGE_COLUMN);
+			//HSSFCell pkgCell = row.getCell(CLASSES_PACKAGE_COLUMN);
+			HSSFCell pkgCell = row.getCell(CLASSES_NAMESPACE_COLUMN);
 			if (pkgCell != null){
 				if (pkgCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
 					System.out.println("Skipping: " +pkgCell.getNumericCellValue());
@@ -188,6 +207,46 @@ public class ModelGeneration {
 		// attempt to add the rest of the information for inheritance etc.
 		addInheritancePath(classesSheet);
 	}
+	
+	public static void createAttributes(HSSFSheet attribSheet){
+		// First row is header
+		for(int r=1; r < attribSheet.getPhysicalNumberOfRows(); r++){
+			HSSFRow row = attribSheet.getRow(r);
+			if (row == null) {
+				continue;
+			}
+			HSSFCell classCell = row.getCell(ATTRIB_CLASS_COLUMN);
+			HSSFCell attribCell = row.getCell(ATTRIB_ATTRIBUTE_COLUMN);
+			HSSFCell dataTypeCell = row.getCell(ATTRIB_DATA_TYPE_COLUMN);
+			HSSFCell documentationCell = row.getCell(ATTRIB_DOCUMENTATION_COLUMN);
+			
+			if (classCell == null || classCell.getStringCellValue() == null ||
+					attribCell == null || attribCell.getStringCellValue() == null ||
+					dataTypeCell == null || dataTypeCell.getStringCellValue() == null){
+				continue;
+			}
+			
+			String className = classCell.getStringCellValue();
+			if (classNameToType.containsKey(className)){
+				MetaClass metaClass = metaClasses.get(classNameToType.get(className));
+				MetaAttribute newAttrib = new MetaAttribute();
+				
+				newAttrib.setAttributeName(attribCell.getStringCellValue());
+				newAttrib.setDataType(dataTypeCell.getStringCellValue());
+				String dataType = dataTypeCell.getStringCellValue();
+				if (classNameToType.get(dataType) == null){
+					System.out.println("null package for datatype '"+dataType+"'");
+				}
+				newAttrib.setDataTypePackage(classNameToType.get(dataType));
+				
+				if (documentationCell != null){
+					newAttrib.setDocumentation(documentationCell.getStringCellValue());
+				}
+				
+				metaClass.addAttribute(newAttrib);
+			}
+		}
+	}
 
 	/**
 	 * Starts the generation of the models that are in the xls file
@@ -202,6 +261,7 @@ public class ModelGeneration {
 		HSSFSheet classesSheet = wb.getSheet("Classes");
 		createMetaClasses(classesSheet);
 		
+		createAttributes(wb.getSheet("Attributes"));
 		
 		
 		// Loop and make .java files from the class meta files.

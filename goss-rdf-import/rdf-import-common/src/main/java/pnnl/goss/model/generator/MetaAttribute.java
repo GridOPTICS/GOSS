@@ -1,102 +1,81 @@
 package pnnl.goss.model.generator;
 
 public class MetaAttribute {
+
+	private String documentation;
+	private String attributeName;
+	private String dataType;
+	private String initialValue;
+	private String setterFunctionName;
+	private String getterFunctionName;
+	private String dataTypePackage;
 	
-	private String getterDocumentation;
-	private String setterDocumentation;
-	private String baseName;
-	private String basenameLowerFirst;
-	private boolean isCollection;
-	private String fullType;
-	
-	public String getGetterDocumentation() {
-		return getterDocumentation;
+	public String getDataTypePackage() {
+		return dataTypePackage;
 	}
-	public void setGetterDocumentation(String getterDocumentation) {
-		this.getterDocumentation = getterDocumentation;
-	}
-	public String getSetterDocumentation() {
-		return setterDocumentation;
-	}
-	public void setSetterDocumentation(String setterDocumentation) {
-		this.setterDocumentation = setterDocumentation;
-	}
-	public String getBaseName() {
-		return baseName;
-	}
-	public void setBaseName(String baseName) {
-		this.baseName = baseName;
-		this.basenameLowerFirst = baseName.substring(0, 1).toLowerCase() 
-				+ baseName.substring(1);
-	}
-	public boolean isCollection() {
-		return isCollection;
-	}
-	public void setCollection(boolean isCollection) {
-		this.isCollection = isCollection;
-	}
-	public String getFullType() {
-		return fullType;
-	}
-	public void setFullType(String fullType) {
-		this.fullType = fullType;
+
+	public void setDataTypePackage(String dataTypePackage) {
+		this.dataTypePackage = dataTypePackage;
 	}
 	
+	public String getDocumentation() {
+		return documentation;
+	}
+
+	public void setDocumentation(String documentation) {
+		this.documentation = documentation;
+	}
+
+	public String getAttributeName() {
+		return attributeName;
+	}
+
+	public void setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+		String baseName = attributeName.substring(0, 1).toUpperCase()+
+				attributeName.substring(1);
+		this.setterFunctionName = "set"+baseName;
+		this.getterFunctionName = "get"+baseName;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+	public String getInitialValue() {
+		return initialValue;
+	}
+
+	public void setInitialValue(String initialValue) {
+		this.initialValue = initialValue;
+	}
+
 	public String getAttributeDeclaration(){
 		StringBuffer buf = new StringBuffer();		
 		
-		buf.append("private ");
-		
-		if (isCollection){
-			
+		if (documentation != null){
+			buf.append("/**\n* " + documentation+ "\n*/\n");
 		}
-		else{
-			buf.append(baseName + " ");
-		}
-		buf.append(this.basenameLowerFirst + " = ");
-		
-		if(isCollection){
-			
-		}
-		buf.append(";\n");
+		buf.append("private "+dataType+" "+ attributeName+ ";\n");
 		
 		return buf.toString();
 	}
 	
-	public String getFunctions(){
+	public String getFunctionDefinitions(){
 		StringBuffer buf = new StringBuffer();
 		
-		//buf.append(getAddDefinition());
-		buf.append(getSetterDefinition());
-		//buf.append(getGetterDefinition());
-		return buf.toString();
-	}
-	
-	public String getAddDefinition(){
-		return null;
-	}
-	
-	private String getGetterDefinition(){
-		return null;
-	}
-	
-	private String getSetterDefinition(){
-		StringBuffer buf = new StringBuffer();
+		buf.append("public void ");
+		buf.append(setterFunctionName+"("+dataType+" "+attributeName+") {\n\t");
+		buf.append("this."+attributeName+" = "+attributeName+";\n}\n\n");
 		
-		buf.append("/**\n");
-		buf.append("* " + setterDocumentation + "\n");
-		buf.append("*/\n");
-		buf.append("public ");
-		if (isCollection){
-			
-		}
-		else{
-			buf.append(baseName + "set"+ baseName + "("+ baseName + " " + basenameLowerFirst + "){\n");			
-		}
-		
-		buf.append("\tthis."+basenameLowerFirst+" = "+basenameLowerFirst+";");
-		buf.append("}\n\n");
-		
+		buf.append("public "+dataType+" ");
+		buf.append(getterFunctionName+"() {\n\t"); 
+		buf.append("return this."+attributeName+";\n}\n\n");
+
 		return buf.toString();
 	}
 	

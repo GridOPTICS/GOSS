@@ -1,7 +1,9 @@
 package pnnl.goss.model.generator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MetaClass {
 	
@@ -25,7 +27,12 @@ public class MetaClass {
 	}
 
 	public void setExtendsType(String extendsType) {
-		this.extendsType = extendsType;
+		if (extendsType.contains(this.className)){
+			this.extendsType = null;
+		}
+		else{
+			this.extendsType = extendsType;
+		}
 	}
 
 	public String getClassName() {
@@ -75,7 +82,15 @@ public class MetaClass {
 		System.out.println("Package Name: " + packageName);
 		buf.append("package " + packageName + ";\n\n");
 		
-		// Do imports here.
+		Set<String> imports = new HashSet<>();
+		for(MetaAttribute attr: attributes){
+			imports.add(attr.getDataTypePackage()+"."+attr.getDataType());
+		}
+		
+		for(String varImport: imports){
+			buf.append("import " + varImport+";\n");
+		}
+		
 		
 		if (classDocumentation != null){
 			buf.append("/**\n");
@@ -100,7 +115,7 @@ public class MetaClass {
 		buf.append("\n\n");
 		
 		for(MetaAttribute attr: attributes){
-			buf.append(tabifyLines(attr.getFunctions(), "\t"));
+			buf.append(tabifyLines(attr.getFunctionDefinitions(), "\t"));
 		}
 		
 		buf.append("}\n");
