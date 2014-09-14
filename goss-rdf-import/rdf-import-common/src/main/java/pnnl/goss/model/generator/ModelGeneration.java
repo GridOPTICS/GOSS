@@ -56,29 +56,7 @@ public class ModelGeneration {
 			System.out.println("Failed to create: "+dir.toAbsolutePath());
 			return null;
 		}
-		return dir.toAbsolutePath().toString();
-	}
-	
-	/**
-	 * Generates a class
-	 * 
-	 * @param classPackage the package the generated class will belong to.					
-	 * @param className the name of the class to be generated.
-	 * @param extendsClass a baseclass if necessary (null or "" if not)
-	 * @param attributeTypeMap a Map of attribute names -> datatype (full package notation).
-	 */
-	public static void createClassFile(String classPackage, String className,
-			String extendsClass, Map<String, String> attributeTypeMap){
-		
-		String pkgDir = createPackageDir(classPackage);
-		String classFileName = className + ".java";
-		if (pkgDir == null){
-			return;
-		}
-		
-		File file = Paths.get(pkgDir, classFileName).toFile();
-		System.out.println("Building file: " + file.getAbsolutePath());
-		
+		return dir.toString(); //.toAbsolutePath().toString();
 	}
 	
 	/**
@@ -166,11 +144,15 @@ public class ModelGeneration {
 			}
 		}
 		
+		// Loop and make .java files from the class meta files.
 		for(MetaClass meta: metaClasses.values()){
-			File classFile = new File(createPackageDir(meta.getPackageName()));
+			String packageDir = createPackageDir(meta.getPackageName());
+			File classFile = new File(packageDir);
 			
 			try{
-				FileWriter writer = new FileWriter(classFile.toString() + meta.getClassName()+".java");
+				String fullJavaFilePath = classFile.toString() + "/" + meta.getClassName()+".java";
+				System.out.println("Creating java file: "+fullJavaFilePath);
+				FileWriter writer = new FileWriter(fullJavaFilePath);
 				BufferedWriter out = new BufferedWriter(writer);
 				out.write(meta.getClassDefinition());
 				out.close();
@@ -180,56 +162,6 @@ public class ModelGeneration {
 			}
 		}
 		
-//
-//		System.out.println("Data dump:\n");
-//
-//		for (int k = 0; k < wb.getNumberOfSheets(); k++) {
-//			HSSFSheet sheet = wb.getSheetAt(k);
-//			int rows = sheet.getPhysicalNumberOfRows();
-//			System.out.println("Sheet " + k + " \"" + wb.getSheetName(k) + "\" has " + rows
-//					+ " row(s)."); 
-//			for (int r = 0; r < rows; r++) {
-//				HSSFRow row = sheet.getRow(r);
-//				if (row == null) {
-//					continue;
-//				}
-//
-//				int cells = row.getPhysicalNumberOfCells();
-//				System.out.println("\nROW " + row.getRowNum() + " has " + cells
-//						+ " cell(s).");
-//				for (int c = 0; c < cells; c++) {
-//					HSSFCell cell = row.getCell(c);
-//					String value = null;
-//					
-//					if(cell == null){
-//						System.out.println("CELL col (c)=" + c + " is null!");
-//						continue;
-//					}
-//
-//					switch (cell.getCellType()) {
-//
-//						case HSSFCell.CELL_TYPE_FORMULA:
-//							value = "FORMULA value=" + cell.getCellFormula();
-//							break;
-//
-//						case HSSFCell.CELL_TYPE_NUMERIC:
-//							value = "NUMERIC value=" + cell.getNumericCellValue();
-//							break;
-//
-//						case HSSFCell.CELL_TYPE_STRING:
-//							value = "STRING value=" + cell.getStringCellValue();
-//							break;
-//
-//						default:
-//					}
-//					
-//					System.out.println("CELL col=" + cell.getColumnIndex() + " VALUE="
-//								+ value);
-//					
-//				}
-//			}
-//		}
-//		createPackageDir("pnnl.goss.cim");
 		System.out.println("Generation complete");
 	}
 	

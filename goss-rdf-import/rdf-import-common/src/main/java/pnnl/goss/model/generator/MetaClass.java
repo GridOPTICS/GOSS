@@ -63,7 +63,7 @@ public class MetaClass {
 	
 	public String getClassDefinition(){
 		StringBuffer buf = new StringBuffer();
-		
+		System.out.println("Package Name: " + packageName);
 		buf.append("package " + packageName + ";\n\n");
 		
 		// Do imports here.
