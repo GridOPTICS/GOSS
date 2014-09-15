@@ -105,7 +105,6 @@ public class MetaDataType {
 			vt = "Long";
 			break;
 		case "DateTime":
-		case "AbsoluteDateTime":
 		case "Time":
 			vt = "Date";
 			break;
