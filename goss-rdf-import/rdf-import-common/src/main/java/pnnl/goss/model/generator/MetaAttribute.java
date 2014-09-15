@@ -4,7 +4,7 @@ public class MetaAttribute {
 
 	private String documentation;
 	private String attributeName;
-	private String dataType;
+	private MetaDataType dataType;
 	private String initialValue;
 	private String setterFunctionName;
 	private String getterFunctionName;
@@ -38,11 +38,11 @@ public class MetaAttribute {
 		this.getterFunctionName = "get"+baseName;
 	}
 
-	public String getDataType() {
+	public MetaDataType getDataType() {
 		return dataType;
 	}
 
-	public void setDataType(String dataType) {
+	public void setDataType(MetaDataType dataType) {
 		this.dataType = dataType;
 	}
 
