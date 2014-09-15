@@ -76,6 +76,7 @@ public class MetaDataType {
 		String vt = null;
 		switch (valueTypeTest){
 		case "Bool":
+		case "Boolean":
 			vt = "Boolean";
 			break;
 		case "ShortInt":
@@ -136,7 +137,20 @@ public class MetaDataType {
 		this.documentation = documentation;
 	}
 	public boolean isStandardDataType() {
-		return isStandardDataType;
+		boolean isIt = false;
+		try{
+			if (valueType != null){
+				String result = getJavaType(valueType);				
+				isIt = true;
+			}
+			else{
+				System.out.println("Why?");
+			}
+		}
+		catch(IllegalArgumentException e){
+			isIt = false;
+		}
+		return isIt;
 	}
 	
 	@Override

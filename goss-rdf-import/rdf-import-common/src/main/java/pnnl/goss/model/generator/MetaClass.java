@@ -84,7 +84,9 @@ public class MetaClass {
 		
 		Set<String> imports = new HashSet<>();
 		for(MetaAttribute attr: attributes){
-			imports.add(attr.getDataTypePackage()+"."+attr.getDataType());
+			if(!attr.getDataType().isStandardDataType()){
+				imports.add(attr.getDataTypePackage()+"."+attr.getDataType().getDataTypeName());
+			}
 		}
 		
 		for(String varImport: imports){

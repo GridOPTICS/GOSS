@@ -60,7 +60,12 @@ public class MetaAttribute {
 		if (documentation != null){
 			buf.append("/**\n* " + documentation+ "\n*/\n");
 		}
-		buf.append("private "+dataType+" "+ attributeName+ ";\n");
+		if (dataType.getValueType() != null && dataType.getValueType().length() > 0){
+			buf.append("private "+dataType.getValueType()+" "+ attributeName+ ";\n");
+		}
+		else{
+			buf.append("private "+dataType.getDataTypeName()+" "+ attributeName+ ";\n");
+		}
 		
 		return buf.toString();
 	}
@@ -69,10 +74,20 @@ public class MetaAttribute {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("public void ");
-		buf.append(setterFunctionName+"("+dataType+" "+attributeName+") {\n\t");
+		if (dataType.getValueType() != null && dataType.getValueType().length() > 0){
+			buf.append(setterFunctionName+"("+dataType.getValueType()+" "+attributeName+") {\n\t");
+		}
+		else{
+			buf.append(setterFunctionName+"("+dataType.getDataTypeName()+" "+attributeName+") {\n\t");
+		}
 		buf.append("this."+attributeName+" = "+attributeName+";\n}\n\n");
 		
-		buf.append("public "+dataType+" ");
+		if (dataType.getValueType() != null && dataType.getValueType().length() > 0){
+			buf.append("public "+dataType.getValueType()+" ");
+		}
+		else{
+			buf.append("public "+dataType.getDataTypeName()+" ");
+		}
 		buf.append(getterFunctionName+"() {\n\t"); 
 		buf.append("return this."+attributeName+";\n}\n\n");
 

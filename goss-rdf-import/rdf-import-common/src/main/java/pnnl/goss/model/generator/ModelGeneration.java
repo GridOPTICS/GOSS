@@ -330,7 +330,7 @@ public class ModelGeneration {
 								newAttrib.setDataType(metaDataType.get(dataType));
 							}
 							else{
-								System.out.println("Here man!");
+								System.out.println("MISSING ENUMERATION: " + dataType);
 							}
 						}
 						else{
