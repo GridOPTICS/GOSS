@@ -122,4 +122,18 @@ public class MetaClass {
 		
 		return buf.toString();
 	}	
+	
+	@Override
+	public String toString(){
+		StringBuffer buf = new StringBuffer();
+		buf.append("Class: "+ className);
+		if (this.packageName != null){
+			buf.append(" Package: " + packageName.trim());
+		}
+		if (this.extendsType != null){
+			buf.append(" Extends: " + extendsType);
+		}
+		return buf.toString();
+		
+	}
 }

@@ -79,5 +79,17 @@ public class MetaAttribute {
 		return buf.toString();
 	}
 	
+	@Override
+	public String toString(){
+		
+		if (dataType != null){
+			return "Attribute: "+attributeName+" "+dataType.toString();
+		}
+		else{
+			return "Attribute: "+attributeName+" ";
+		}
+	}
+		
+	
 
 }

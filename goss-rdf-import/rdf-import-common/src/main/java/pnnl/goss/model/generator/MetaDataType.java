@@ -22,32 +22,10 @@ public class MetaDataType {
 	
 	public MetaDataType(String dataTypeName){
 		this.dataTypeName = dataTypeName;
-		
-		switch (dataTypeName){
-		case "Bool":
+		this.valueType = getJavaType(dataTypeName);
+		if (valueType != null){
 			isStandardDataType = true;
-			valueType = "Boolean";
-			break;
-		case "ShortInt":
-		case "Short":
-		case "Integer":
-			isStandardDataType = true;
-			valueType = "Integer";
-			break;
-		case "DoubleFloat":
-			isStandardDataType = true;
-			valueType = "DoubleFloat";
-			break;
-		case "ULong":
-		case "ULongLong":
-			isStandardDataType = true;
-			valueType = "Long";
-			break;
-		default:
-			throw new IllegalArgumentException("This constructor must use standard java type not: " + dataTypeName);
 		}
-			
-
 	}
 	
 	public MetaDataType(MetaClass metaClass){
@@ -76,22 +54,63 @@ public class MetaDataType {
 	}
 	public void setDataTypeName(String dataTypeName) {
 		this.dataTypeName = dataTypeName;
-		// Determine if the class describes a standard java datatype
-		if (dataTypeName.contains("Integer") || 
-				dataTypeName.contains("String") ||
-				dataTypeName.contains("Long") ||
-				dataTypeName.contains("Boolean") ||
-				dataTypeName.contains("Short")){
-			isStandardDataType = true;
-			System.out.println(dataTypeName +" is a standard datatype");
+		try{
+			String vType = getJavaType(dataTypeName);
+			this.isStandardDataType = true;
+		}
+		catch(IllegalArgumentException e){
+			
 		}
 	}
 	public String getValueType() {
 		return valueType;
 	}
+	
+	public String getJavaType(String valueTypeTest){
+		String vt = null;
+		switch (valueTypeTest){
+		case "Bool":
+			vt = "Boolean";
+			break;
+		case "ShortInt":
+		case "Short":
+		case "Integer":
+			vt = "Integer";
+			break;
+		case "LongInt":
+			vt = "Long";
+			break;			
+		case "DoubleFloat":
+		case "Float":
+			vt = "Float";
+			break;
+		case "ULong":
+		case "ULongLong":
+			vt = "Long";
+			break;
+		case "DateTime":
+			vt = "DateTime";
+			break;
+		default:
+			if (valueTypeTest.startsWith("String")){
+				vt = "String";
+				break;
+			}
+			throw new IllegalArgumentException("This constructor must use standard java type not: " + dataTypeName);
+		}
+		
+		return vt;
+	}
 
 	public void setValueType(String valueType) {
-		this.valueType = valueType;
+		// If valueType is not a java type then IllegalArgument is thrown.  We catch
+		// it here so that we can put the user defined valueType.
+		try{ 
+			this.valueType = getJavaType(valueType);
+		}
+		catch(IllegalArgumentException e){
+			this.valueType = valueType;
+		}
 	}
 
 	public void setEnumeratedValues(Set<String> enumeratedValues) {
@@ -114,5 +133,26 @@ public class MetaDataType {
 		return isStandardDataType;
 	}
 	
+	@Override
+	public String toString(){
+		StringBuffer buf = new StringBuffer();
+		buf.append("DATA_TYPE: "+ this.dataTypeName);
+		if (this.valueType != null){
+			buf.append(" ValueType: " + this.valueType);
+		}
+		if (this.isEnumeration){
+			buf.append(" Is Enumeration: Yes");
+			buf.append(" Values: ");
+			for(String s: this.enumeratedValues){
+				buf.append(" "+s);
+			}
+		}
+		if (this.isStandardDataType){
+			buf.append(" Is Standard Datatype: Yes");
+		}
+		
+		return buf.toString();
+		
+	}
 	
 }

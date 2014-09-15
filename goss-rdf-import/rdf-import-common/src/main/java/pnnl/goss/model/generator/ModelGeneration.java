@@ -344,7 +344,7 @@ public class ModelGeneration {
 								MetaDataType metaData = new MetaDataType();
 								metaData.setDataTypeName(dataType);
 								metaData.setNamespace("cim");
-								metaData.setValueType("Double");
+								metaData.setValueType("Float");
 								System.out.println("AUTOCREATING: "+dataType);
 								newAttrib.setDataType(metaData);
 							}
@@ -418,13 +418,63 @@ public class ModelGeneration {
 		return new HSSFWorkbook(new FileInputStream(xlsFile));
 	}
 	
+	private static String tabifyLines(String data, String tabs){
+		StringBuffer buf = new StringBuffer();
+		
+		for(String line : data.split("\n")){
+			buf.append(tabs + line + "\n");
+		}
+		
+		return buf.toString();
+	}
+	
+	private static void writeOutputFiles(File classesFile, File dataTypesFile){
+		FileWriter writer;
+		try {
+			writer = new FileWriter(classesFile);
+			BufferedWriter out = new BufferedWriter(writer);
+			
+			for(MetaClass cls: metaClasses.values()){
+				out.write(cls.toString()+"\n");
+				for(MetaAttribute attr: cls.getAttributes()){
+					out.write(tabifyLines(attr.toString(), "\t"));
+				}
+				out.write("\n");
+			}
+			
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			writer = new FileWriter(dataTypesFile);
+			BufferedWriter out = new BufferedWriter(writer);
+			
+			for(MetaDataType dt: metaDataType.values()){
+				out.write(dt.toString()+"\n");
+			}
+			
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) throws URISyntaxException, IOException {
 		
 		// Root of the resources path at src/main/resources
-		URL url = ModelGeneration.class.getClassLoader().getResource("ERCOT_DataDictionary_1.7.xls");
-		File file = new File(url.toURI());
-		if (file.exists()){
-			generateModels(file);
+		URL xlsFileUri = ModelGeneration.class.getClassLoader().getResource("ERCOT_DataDictionary_1.7.xls");
+		File xlsFile = new File(xlsFileUri.toURI());
+		if (xlsFile.exists()){
+			generateModels(xlsFile);
+			File classesFile = new File("created-classes.txt");
+			File dataTypesFile = new File("created-datatypes.txt");
+			File attributesFile = new File("created-attributes.txt");
+			
+			writeOutputFiles(classesFile, dataTypesFile);
 		}
 
 	}
