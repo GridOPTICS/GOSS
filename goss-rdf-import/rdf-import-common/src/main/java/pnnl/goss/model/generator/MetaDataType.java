@@ -81,7 +81,7 @@ public class MetaDataType {
 	 * @param valueTypeTest
 	 * @return
 	 */
-	public String getJavaType(String valueTypeTest){
+	public String getJavaType(String valueTypeTest) throws IllegalArgumentException{
 		String vt = null;
 		switch (valueTypeTest){
 		case "Bool":
@@ -105,7 +105,9 @@ public class MetaDataType {
 			vt = "Long";
 			break;
 		case "DateTime":
-			vt = "DateTime";
+		case "AbsoluteDateTime":
+		case "Time":
+			vt = "Date";
 			break;
 		default:
 			if (valueTypeTest.startsWith("String")){
@@ -153,7 +155,7 @@ public class MetaDataType {
 				isIt = true;
 			}
 			else{
-				System.out.println("Why?");
+				System.out.println("valueType is null for datatype: " + this.dataTypeName);
 			}
 		}
 		catch(IllegalArgumentException e){

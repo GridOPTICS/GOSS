@@ -378,7 +378,13 @@ public class ModelGeneration {
 								newAttrib.setDataTypePackage(getEnumerationPackage());
 							}
 							else{
-								System.out.println("MISSING ENUMERATION: " + dataType);
+								MetaDataType dt = new MetaDataType();
+								dt.setDataTypeName(dataType);
+								dt.setEnumeration(true);
+								dt.setJavaPackage(getEnumerationPackage());
+								newAttrib.setDataType(dt);
+								newAttrib.setDataTypePackage(getEnumerationPackage());
+								metaDataType.put(dataType, dt);
 							}
 						}
 						else{
@@ -398,15 +404,7 @@ public class ModelGeneration {
 								newAttrib.setDataType(metaData);
 							}
 						}
-						//try{
-							
-//						}
-//						// Catch the case where datatype is not a standard type.
-//						catch(IllegalArgumentException e){
-//							
-//						}
-					}
-					
+					}					
 				}
 				
 				if (classNameToType.get(dataType) == null){

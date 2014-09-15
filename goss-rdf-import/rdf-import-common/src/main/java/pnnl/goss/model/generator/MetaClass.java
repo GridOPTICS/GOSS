@@ -76,8 +76,22 @@ public class MetaClass {
 		
 		Set<String> imports = new HashSet<>();
 		for(MetaAttribute attr: attributes){
-			if(!attr.getDataType().isStandardDataType()){
-				imports.add(attr.getDataTypePackage()+"."+attr.getDataType().getDataTypeName());
+			if(attr.getDataType() != null){
+				if (attr.getDataType().isStandardDataType()){
+					if (attr.getDataType().getValueType().equals("DateTime")){
+						imports.add("java.util.Date");
+					}					
+				}
+				else{
+					if (attr.getDataTypePackage()==null || attr.getDataTypePackage().contains("null")){
+						System.out.println("Ignoring package import for attribute: "+attr.getAttributeName());
+					}
+					else{
+						imports.add(attr.getDataTypePackage()+"."+attr.getDataType().getDataTypeName());
+					}
+					
+				}
+				
 			}
 		}
 		

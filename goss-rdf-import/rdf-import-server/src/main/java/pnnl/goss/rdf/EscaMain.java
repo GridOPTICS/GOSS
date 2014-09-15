@@ -30,11 +30,20 @@ import pnnl.goss.powergrid.topology.nodebreaker.ConformLoadGroup;
 import pnnl.goss.powergrid.topology.nodebreaker.ConformLoadSchedule;
 import pnnl.goss.powergrid.topology.nodebreaker.ConnectivityNode;
 import pnnl.goss.powergrid.topology.nodebreaker.CurveData;
+import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
 import pnnl.goss.powergrid.topology.nodebreaker.EquipmentContainer;
 import pnnl.goss.powergrid.topology.nodebreaker.GeographicalRegion;
 import pnnl.goss.powergrid.topology.nodebreaker.Line;
+import pnnl.goss.powergrid.topology.nodebreaker.LoadBreakSwitch;
+import pnnl.goss.powergrid.topology.nodebreaker.MeasurementType;
+import pnnl.goss.powergrid.topology.nodebreaker.PowerTransformer;
+import pnnl.goss.powergrid.topology.nodebreaker.RegularTimePoint;
+import pnnl.goss.powergrid.topology.nodebreaker.RegulationSchedule;
+import pnnl.goss.powergrid.topology.nodebreaker.SeriesCompensator;
+import pnnl.goss.powergrid.topology.nodebreaker.ShuntCompensator;
 import pnnl.goss.powergrid.topology.nodebreaker.SubGeographicalRegion;
 import pnnl.goss.powergrid.topology.nodebreaker.SynchronousMachine;
+import pnnl.goss.powergrid.topology.nodebreaker.TapChanger;
 import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
 import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 import pnnl.goss.rdf.server.Esca60Vocab;
@@ -548,7 +557,6 @@ public class EscaMain {
 			
 			if(entity != null){
 				identifiedMap.put(((IdentifiedObject)entity).getMrid(), entity);
-				nodeBreakerDao.persist(entity);
 				countAdded+=1;
 			}
 		}
@@ -597,13 +605,20 @@ public class EscaMain {
 	 * @param sinkMrid
 	 * @param sourceMrid
 	 * @param methodName
+	 * @throws InvalidArgumentException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void callMethod(String sinkMrid, String sourceMrid, String methodName){
+	public static void callMethod(String sinkMrid, String sourceMrid, String methodName) throws InvalidArgumentException{
 		Object sinkObj = identifiedMap.get(sinkMrid);
 		Object sourceObj = identifiedMap.get(sourceMrid);
 		
+		if (sinkObj == null){
+			throw new InvalidArgumentException("sinkMrid not valid. ("+sinkMrid+")");		
+		}
 		
+		if (sourceObj == null){
+			throw new InvalidArgumentException("sourceMrid not valid. ("+sourceMrid+")");		
+		}
 		Class sinkClass = sinkObj.getClass();
 		Class sourceClass = sourceObj.getClass();
 		Method method=null;
@@ -659,13 +674,13 @@ public class EscaMain {
 				String sinkMrid = t.getMrid();
 				String sourceMrid = getPropertyString(t.getResource(), escaPropertyName);
 				
-				callMethod(sinkMrid, sourceMrid, methodName);
-				
-				nodeBreakerDao.persist(identifiedMap.get(sinkMrid));				
+				try {
+					callMethod(sinkMrid, sourceMrid, methodName);
+				} catch (InvalidArgumentException e) {
+					System.err.println(e.getMessage());
+				}			
 			}
-		}
-		
-		
+		}	
 	}
 	
 	
@@ -696,18 +711,34 @@ public class EscaMain {
 				String mridChild = t.getMrid();
 				String mridParent = getPropertyString(t.getResource(), escaPropertyName);
 				
+				
 				// Assumption is that child will have a set<parentclassname> method and the
 				// child will have an add<parentclassname> method.
-				callMethod(mridChild, mridParent, "set"+parent.getSimpleName());
-				callMethod(mridParent, mridChild, "add"+child.getSimpleName());
+				try {
+					callMethod(mridChild, mridParent, "set"+parent.getSimpleName());
+				} catch (InvalidArgumentException e) {
+					System.err.println(e.getMessage());
+				}
+				try {
+					callMethod(mridParent, mridChild, "add"+child.getSimpleName());
+				} catch (InvalidArgumentException e) {
+					System.err.println(e.getMessage());
+				}
 				
-				nodeBreakerDao.persist(identifiedMap.get(mridParent));				
 			}
 		}
-		
-		
 	}
 	
+	public static void storeData(){
+		for(NodeBreakerDataType obj: identifiedMap.values()){
+			try{
+				nodeBreakerDao.persist(obj);
+			}
+			catch (Exception e){
+				System.err.println("couldn't save: "+obj.getClass().getSimpleName()+" "+obj.toString());
+			}
+		}
+	}
 
 	public static void main(String[] args) throws InvalidArgumentException, IOException {
 		
@@ -737,133 +768,58 @@ public class EscaMain {
 		System.out.println(populateDataType(ConformLoadSchedule.class, "ConformLoadSchedule"));
 		System.out.println(populateDataType(ConnectivityNode.class, "ConnectivityNode"));
 		System.out.println(populateDataType(CurveData.class, "CurveData"));
-			
+		
+		System.out.println(populateDataType(Discrete.class, "Discrete"));
 		
 		System.out.println(populateDataType(Line.class, "Line"));
+		
+		// TODO
+		System.out.println(populateDataType(LoadBreakSwitch.class, "LoadBreakSwitch"));
+		
+		System.out.println(populateDataType(MeasurementType.class, "MeasurementType"));
+		
+		// TODO
+		System.out.println(populateDataType(PowerTransformer.class, "PowerTransformer"));
+		
+		// TODO
+		System.out.println(populateDataType(RegularTimePoint.class, "RegularTimePoint"));
+		
+		// TODO
+		System.out.println(populateDataType(RegulationSchedule.class, "RegulationSchedule"));
+		
+		// TODO
+		System.out.println(populateDataType(SeriesCompensator.class, "SeriesCompensator"));
+		
+		// TODO
+		System.out.println(populateDataType(ShuntCompensator.class, "ShuntCompensator"));
+		
 		System.out.println(populateDataType(Substation.class, "Substation"));
 		
+		// TODO
+		System.out.println(populateDataType(SynchronousMachine.class, "SynchronousMachine"));
+		
+		// TODO
+		System.out.println(populateDataType(TapChanger.class, "TapChanger"));
+		
 		System.out.println(populateDataType(Terminal.class, "Terminal"));
-		System.out.println(populateDataType(Breaker.class, "Breaker"));
+		System.out.println(populateDataType(VoltageLevel.class, "VoltageLevel"));
 		
 		// Add parent child relationships.
 		addRelation(SubGeographicalRegion.class, GeographicalRegion.class, "SubGeographicalRegion", "SubGeographicalRegion.Region");
 		addRelation(Line.class, SubGeographicalRegion.class, "Line", "Line.Region");
+		addRelation(VoltageLevel.class, BaseVoltage.class, "VoltageLevel", "VoltageLevel.BaseVoltage");
 		
 		addSingularRelation(ACLineSegment.class, EquipmentContainer.class, "ACLineSegment", "Equipment.MemberOf_EquipmentContainer", 
 				"setMemberOfEquipmentContainer");
 		
+		addSingularRelation(Discrete.class, MeasurementType.class, "Discrete", "Measurement.MeasurementType",	
+				"setMeasurementType");
+		
+		
+		// One big write.
+		storeData();
 		System.out.println("Import Complete!");
-		
-		//printIdentifiedMap();
-		
-		if(true){return;}
-		
-		
-		
-		for (String d : typeMap.keySet()){
-			EscaType escaType = typeMap.get(d);
-			String dataType = escaType.getDataType();
-			NodeBreakerDataType entity = null;			
-			
-			if (Esca60Vocab.ANALOG_OBJECT.getLocalName().equals(dataType)){
-				
-			}
-			else if (Esca60Vocab.TERMINAL_OBJECT.getLocalName().equals(dataType)){
-				entity = createTerminal(escaType);						
-			}
-			else if (Esca60Vocab.SUBSTATION_OBJECT.getLocalName().equals(dataType)){
-				entity = createSubstation(escaType);
-			}
-			else if (Esca60Vocab.VOLTAGELEVEL_OBJECT.getLocalName().equals(dataType)){
-				entity = createVoltageLevel(escaType);
-			}
-			
-			if (entity != null){
-				nodeBreakerDao.persist(entity);
-				identifiedMap.put(((IdentifiedObject)entity).getMrid(), entity);
-			}
-						
-//			if(Esca60Vocab.ANALOG_OBJECT.getLocalName().equals(dataType)){
-//				storeAnalog(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if (Esca60Vocab.ANALOGLIMITSET_OBJECT.getLocalName().equals(dataType)){
-//				storeAnalogLimitSet(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.ANALOGLIMIT_OBJECT.getLocalName().equals(dataType)){
-//				storeAnalogLimit(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if (Esca60Vocab.BREAKER_OBJECT.getLocalName().equals(dataType)){
-//				storeBreaker(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.CONFORMLOAD_OBJECT.getLocalName().equals(dataType)){
-//				storeConformLoad(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName().equals(dataType)){
-//				storeConnectivityNode(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if("Disconnector".equals(dataType)){
-//				storeDisconnector(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if("Discrete".equals(dataType)){
-//				storeDiscrete(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.LINE_OBJECT.getLocalName().equals(dataType)){
-//				storeLine(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.SUBSTATION_OBJECT.getLocalName().equals(dataType)){
-//				storeSubstation(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.TERMINAL_OBJECT.getLocalName().equals(dataType)){
-//				storeTerminal(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.TRANSFORMERWINDING_OBJECT.getLocalName().equals(dataType)){
-//				storeTransformerWinding(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.VOLTAGELEVEL_OBJECT.getLocalName().equals(dataType)){
-//				storeVoltageLevel(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if("BusbarSection".equals(dataType)){
-//				storeBusBarSection(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.POWERTRANSFORMER_OBJECT.getLocalName().equals(dataType)){
-//				storePowerTransformer(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.CURVEDATA_OBJECT.getLocalName().equals(dataType)){
-//				storeCurveData(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.REGULARTIMEPOINT_OBJECT.getLocalName().equals(dataType)) {
-//				storeRegularTimePoint(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else if(Esca60Vocab.TAPCHANGER_OBJECT.getLocalName().equals(dataType)){
-//				storeTapChanger(nodeBreakerDao, typeMap.get(d));
-//			}
-//			else{
-//				System.out.println("Datatype: "+dataType);
-//			}
-			
-			//pnnl.goss.powergrid.topology.Substation
-			//System.out.println(d+typeMap.get(d).getDataType());
-		}
-		
-//		List<EscaType> connectivityNodes = window.getType("ConnectivityNode");
-//		
-//		Network network = new Network();
-//		
-//
-//		for(EscaType cn:connectivityNodes){
-//			TopologicalNode topoNode = new TopologicalNode();
-//			
-//			network.addTopologicalNode(topoNode);
-//			
-//			for(EscaType type:cn.getChildren()){
-//				
-//				System.out.println(type);
-//			}
-//			
-//			
-//			System.out.println(cn);
-//		}
-		 
+				 
 		
 		
 //		
