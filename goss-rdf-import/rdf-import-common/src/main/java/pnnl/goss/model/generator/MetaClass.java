@@ -67,15 +67,7 @@ public class MetaClass {
 		return attributes;
 	}
 	
-	private String tabifyLines(String data, String tabs){
-		StringBuffer buf = new StringBuffer();
-		
-		for(String line : data.split("\n")){
-			buf.append(tabs + line + "\n");
-		}
-		
-		return buf.toString();
-	}
+	
 	
 	public String getClassDefinition(){
 		StringBuffer buf = new StringBuffer();
@@ -111,13 +103,13 @@ public class MetaClass {
 		// second for the definition of the setter, getter and adder
 		// functions.
 		for(MetaAttribute attr: attributes){
-			buf.append(tabifyLines(attr.getAttributeDeclaration(), "\t"));
+			buf.append(Util.tabifyLines(attr.getAttributeDeclaration(), "\t"));
 		}
 		
 		buf.append("\n\n");
 		
 		for(MetaAttribute attr: attributes){
-			buf.append(tabifyLines(attr.getFunctionDefinitions(), "\t"));
+			buf.append(Util.tabifyLines(attr.getFunctionDefinitions(), "\t"));
 		}
 		
 		buf.append("}\n");

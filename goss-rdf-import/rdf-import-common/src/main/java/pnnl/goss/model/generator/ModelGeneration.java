@@ -52,8 +52,18 @@ public class ModelGeneration {
 	private static final Integer DATATYPEVALUE_DATA_TYPE_CoLUMN = 2;
 	private static final Integer DATATYPEVALUE_DATA_TYPE_NAME_CoLUMN = 1;
 	private static final Integer DATATYPEVALUE_NS_CoLUMN = 4;
+	// DataType - Enum sheet
+	private static final Integer DATATYPEENUM_PACKAGE_COLUMN = 0;
+	private static final Integer DATATYPEENUM_ENUM_TYPE_COLUMN = 1;
+	private static final Integer DATATYPEENUM_ENUM_VALUE_COLUMN = 2;
+	private static final Integer DATATYPEENUM_DOCUMENTATION_CoLUMN = 3;
+	private static final Integer DATATYPEENUM_NS_CoLUMN = 4;
 	
-	
+	private enum DataTypeSheets{
+		DataType,
+		DataTypeAndUnits,
+		DataTypeEnums
+	}
 	
 	/**
 	 * Maps the name (Equipment) to type (pnnl.goss.cim.core.Equipment)
@@ -166,23 +176,29 @@ public class ModelGeneration {
 			}
 		}
 	}
+	
+	private static String getEnumerationPackage(){
+		return ROOT_PACKAGE.concat(".enumerations");
+	}
+	
 	/**
-	 * Populates the internal metaDataTypes map from the DataTypes tab or the 
+	 * Populates the internal metaDataTypes map from the DataTypes tab, 'DataType Enums, or the 
 	 * 'DataTypes - Value&Unit' tab.  
 	 * 
 	 * @param dataTypeSheet
-	 * @param isValueAndUnitSheet
+	 * @param sheetType
 	 */
-	private static void createMetaDataTypes(HSSFSheet dataTypeSheet, boolean isValueAndUnitSheet){
+	private static void createMetaDataTypes(HSSFSheet dataTypeSheet, DataTypeSheets sheetType){
 		// First row is header
 		for(int r=1; r < dataTypeSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = dataTypeSheet.getRow(r);
 			if (row == null) {
 				continue;
 			}
-			
-			if (isValueAndUnitSheet){
-				HSSFCell packageCell = row.getCell(DATATYPEVALUE_PACKAGE_CoLUMN); 
+			HSSFCell packageCell= null;
+			switch (sheetType){
+			case DataTypeAndUnits:
+				packageCell = row.getCell(DATATYPEVALUE_PACKAGE_CoLUMN); 
 				if (packageCell != null && packageCell.getStringCellValue()!= null){
 					
 					HSSFCell namespaceCell = row.getCell(DATATYPEVALUE_NS_CoLUMN);
@@ -205,9 +221,9 @@ public class ModelGeneration {
 					metaDataType.put(meta.getDataTypeName(), meta);
 					
 				}
-			}
-			else{
-				HSSFCell packageCell = row.getCell(DATATYPE_PACKAGE_COLUMN); 
+				break;
+			case DataType:
+				packageCell = row.getCell(DATATYPE_PACKAGE_COLUMN); 
 				if (packageCell != null && packageCell.getStringCellValue()!= null){
 					boolean isEnum = packageCell.getStringCellValue().contains("Enum");
 					
@@ -223,9 +239,40 @@ public class ModelGeneration {
 					meta.setEnumeration(isEnum);
 	
 					metaDataType.put(meta.getDataTypeName(), meta);
-					
 				}
-			}
+				break;
+			case DataTypeEnums:
+				packageCell = row.getCell(DATATYPEENUM_PACKAGE_COLUMN); 
+				if (packageCell != null && packageCell.getStringCellValue()!= null){
+					boolean isEnum = packageCell.getStringCellValue().contains("Enum");
+					
+					HSSFCell namespaceCell = row.getCell(DATATYPEENUM_NS_CoLUMN);
+					HSSFCell enumTypeCell = row.getCell(DATATYPEENUM_ENUM_TYPE_COLUMN);
+					HSSFCell enumValueCell = row.getCell(DATATYPEENUM_ENUM_VALUE_COLUMN);
+					
+					String enumTypeName = enumTypeCell.getStringCellValue();
+					String enumValue = enumValueCell.getStringCellValue();
+					String namespace = namespaceCell.getStringCellValue();
+					
+					MetaDataType meta = null; 
+					// Handle the addition of enumeration values
+					if(metaDataType.containsKey(enumTypeName)){
+						meta = metaDataType.get(enumTypeName);
+						meta.addEnumeratedValue(enumValue);
+						meta.setJavaPackage(getEnumerationPackage());
+					}
+					else{
+						meta = new MetaDataType();
+						meta.setDataTypeName(enumTypeName);
+						meta.setNamespace(namespace);
+						meta.setEnumeration(isEnum);
+						meta.setJavaPackage(getEnumerationPackage());
+		
+						metaDataType.put(meta.getDataTypeName(), meta);
+					}
+				}
+				break;
+			}	
 		}
 	}
 	
@@ -328,6 +375,7 @@ public class ModelGeneration {
 							dataType = dataType.substring("Enum".length());
 							if (metaDataType.get(dataType) != null){
 								newAttrib.setDataType(metaDataType.get(dataType));
+								newAttrib.setDataTypePackage(getEnumerationPackage());
 							}
 							else{
 								System.out.println("MISSING ENUMERATION: " + dataType);
@@ -364,7 +412,9 @@ public class ModelGeneration {
 				if (classNameToType.get(dataType) == null){
 					System.out.println("null package for datatype '"+dataType+"'");
 				}
-				newAttrib.setDataTypePackage(classNameToType.get(dataType));
+				else{
+					newAttrib.setDataTypePackage(classNameToType.get(dataType));
+				}
 				
 				if (documentationCell != null){
 					newAttrib.setDocumentation(documentationCell.getStringCellValue());
@@ -385,12 +435,12 @@ public class ModelGeneration {
 		System.out.println("Generating models ...");
 		HSSFWorkbook wb = readFile(existingFile);
 		
-		createMetaDataTypes(wb.getSheet("DataTypes"), false);
-		createMetaDataTypes(wb.getSheet("DataTypes - Value&Unit"), true);
+		createMetaDataTypes(wb.getSheet("DataTypes"), DataTypeSheets.DataType);
+		createMetaDataTypes(wb.getSheet("DataTypes - Value&Unit"), DataTypeSheets.DataTypeAndUnits);
+		createMetaDataTypes(wb.getSheet("DataTypes - Enum"), DataTypeSheets.DataTypeEnums);
 		createMetaClasses(wb.getSheet("Classes"));		
 		createAttributes(wb.getSheet("Attributes"));
-		
-		
+			
 		// Loop and make .java files from the class meta files.
 		for(MetaClass meta: metaClasses.values()){
 			String packageDir = createPackageDir(meta.getPackageName());
@@ -406,6 +456,26 @@ public class ModelGeneration {
 			}
 			catch(Exception e){
 				e.printStackTrace();
+			}
+		}
+		
+		// Loop and make .java files from the class meta files.
+		for(MetaDataType meta: metaDataType.values()){
+			if (meta.isEnumeration()){
+				String packageDir = createPackageDir(getEnumerationPackage());
+				File classFile = new File(packageDir);
+				
+				try{
+					String fullJavaFilePath = classFile.toString() + "/" + meta.getDataTypeName()+".java";
+					System.out.println("Creating java enumeration file: "+fullJavaFilePath);
+					FileWriter writer = new FileWriter(fullJavaFilePath);
+					BufferedWriter out = new BufferedWriter(writer);
+					out.write(meta.getEnumeration());
+					out.close();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 		

@@ -13,6 +13,7 @@ public class MetaDataType {
 	private String valueType;
 	private String dataTypeName;
 	private String namespace;
+	private String javaPackage;
 	private String documentation;
 	private Set<String> enumeratedValues = new HashSet<>();
 	
@@ -49,6 +50,14 @@ public class MetaDataType {
 	public void setEnumeration(boolean isEnumeration) {
 		this.isEnumeration = isEnumeration;
 	}
+	public String getJavaPackage() {
+		return javaPackage;
+	}
+
+	public void setJavaPackage(String javaPackage) {
+		this.javaPackage = javaPackage;
+	}
+
 	public String getDataTypeName() {
 		return dataTypeName;
 	}
@@ -151,6 +160,37 @@ public class MetaDataType {
 			isIt = false;
 		}
 		return isIt;
+	}
+	
+	public String getEnumeration(){
+		if(!isEnumeration){
+			throw new IllegalAccessError("Datatype is not an enumeration!");
+		}
+		
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("package ");
+		buf.append(javaPackage);
+		buf.append(";\n\n");
+		
+		buf.append("public enum ");
+		buf.append(dataTypeName);
+		buf.append(" {\n");
+		boolean first = true;
+		for(String item: enumeratedValues){
+			if(first){
+				buf.append("\t");
+				buf.append(item);
+				first = false;
+			}
+			else{
+				buf.append(",\n\t");
+				buf.append(item);
+			}			
+		}
+		buf.append("\n}");
+		
+		return buf.toString();
 	}
 	
 	@Override
