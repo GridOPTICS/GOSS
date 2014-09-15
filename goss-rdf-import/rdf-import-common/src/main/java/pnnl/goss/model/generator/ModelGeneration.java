@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -428,7 +429,7 @@ public class ModelGeneration {
 		return buf.toString();
 	}
 	
-	private static void writeOutputFiles(File classesFile, File dataTypesFile){
+	private static void writeOutputFiles(File classesFile, File dataTypesFile, File classNameFile){
 		FileWriter writer;
 		try {
 			writer = new FileWriter(classesFile);
@@ -440,6 +441,24 @@ public class ModelGeneration {
 					out.write(tabifyLines(attr.toString(), "\t"));
 				}
 				out.write("\n");
+			}
+			
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			writer = new FileWriter(classNameFile);
+			BufferedWriter out = new BufferedWriter(writer);
+			ArrayList<String> clsNames = new ArrayList<>();
+			for(MetaClass cls: metaClasses.values()){
+				clsNames.add(cls.getClassName());
+			}
+			java.util.Collections.sort(clsNames);
+			for(String s: clsNames){
+				out.write(s+"\n");
 			}
 			
 			out.close();
@@ -471,10 +490,11 @@ public class ModelGeneration {
 		if (xlsFile.exists()){
 			generateModels(xlsFile);
 			File classesFile = new File("created-classes.txt");
+			File classNamesFile = new File("created-class-names.txt");
 			File dataTypesFile = new File("created-datatypes.txt");
 			File attributesFile = new File("created-attributes.txt");
 			
-			writeOutputFiles(classesFile, dataTypesFile);
+			writeOutputFiles(classesFile, dataTypesFile, classNamesFile);
 		}
 
 	}

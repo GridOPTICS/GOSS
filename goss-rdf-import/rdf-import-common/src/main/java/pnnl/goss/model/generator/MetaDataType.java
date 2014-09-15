@@ -66,6 +66,12 @@ public class MetaDataType {
 		return valueType;
 	}
 	
+	/**
+	 * Returns the standard java object type or throws exception if the
+	 * type is not specified as "Java Type"
+	 * @param valueTypeTest
+	 * @return
+	 */
 	public String getJavaType(String valueTypeTest){
 		String vt = null;
 		switch (valueTypeTest){
