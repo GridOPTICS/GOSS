@@ -19,14 +19,18 @@ import pnnl.goss.fusiondb.handlers.RequestCapacityRequirementHandler;
 import pnnl.goss.fusiondb.handlers.RequestForecastTotalHandler;
 import pnnl.goss.fusiondb.handlers.RequestGeneratorDataHandler;
 import pnnl.goss.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
+import pnnl.goss.fusiondb.handlers.RequestInterfacesViolationHandler;
 import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
+import pnnl.goss.fusiondb.handlers.RequestVoltageStabilityViolationHandler;
 import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.fusiondb.requests.RequestGeneratorData;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
+import pnnl.goss.fusiondb.requests.RequestInterfacesViolation;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
+import pnnl.goss.fusiondb.requests.RequestVoltageStabilityViolation;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.BasicDataSourceCreator;
 import pnnl.goss.server.core.GossDataServices;
@@ -139,10 +143,18 @@ public class FusionDBServerActivator {
 					RequestRTEDScheduleHandler.class);
 			registrationService.addHandlerMapping(RequestGeneratorData.class, 
 					RequestGeneratorDataHandler.class);
+			registrationService.addHandlerMapping(RequestInterfacesViolation.class,
+					RequestInterfacesViolationHandler.class);
+			registrationService.addHandlerMapping(RequestVoltageStabilityViolation.class, 
+					RequestVoltageStabilityViolationHandler.class);
 			
 			registrationService.addUploadHandlerMapping("CapacityRequirement", 
 					FusionUploadHandler.class);
 			registrationService.addUploadHandlerMapping("fusion_GeneratorData", 
+					FusionUploadHandler.class);
+			registrationService.addUploadHandlerMapping("InterfacesViolation", 
+					FusionUploadHandler.class);
+			registrationService.addUploadHandlerMapping("VoltageStabilityViolation", 
 					FusionUploadHandler.class);
 			
 			
@@ -150,20 +162,22 @@ public class FusionDBServerActivator {
 			// Fusion Security----------------------------------------------
 			registrationService.addSecurityMapping(RequestActualTotal.class,
 					AccessControlHandlerAllowAll.class);
-			registrationService.addSecurityMapping(
-					RequestCapacityRequirement.class,
+			registrationService.addSecurityMapping(RequestCapacityRequirement.class,
 					AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestForecastTotal.class,
 					AccessControlHandlerAllowAll.class);
-			registrationService.addSecurityMapping(
-					RequestHAInterchangeSchedule.class,
+			registrationService.addSecurityMapping(RequestHAInterchangeSchedule.class,
 					AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestRTEDSchedule.class,
 					AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestInterfacesViolation.class,
+					AccessControlHandlerAllowAll.class);
+			registrationService.addSecurityMapping(RequestVoltageStabilityViolation.class,
+					AccessControlHandlerAllowAll.class);
 			
 			// Fusion Launchers----------------------------------------------
-			DataStreamLauncher launcher = new DataStreamLauncher(registrationService, dataServices);
-			launcher.startLauncher();
+			//DataStreamLauncher launcher = new DataStreamLauncher(registrationService, dataServices);
+			//launcher.startLauncher();
 			
 			
 		} else {

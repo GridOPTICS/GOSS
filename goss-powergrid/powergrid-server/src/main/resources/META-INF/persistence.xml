@@ -3,6 +3,88 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
 https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src/test/resources/META-INF/persistence_2_0.xsd"
 	version="2.0">
+		
+	<persistence-unit name="nodebreaker_cass_pu">
+		<provider>com.impetus.kundera.KunderaPersistence</provider>
+		 
+		<!-- 
+			Explicitly reference the entity classes becauase they are in
+			different jar files.
+		-->	
+		<class>pnnl.goss.powergrid.topology.Substation</class>
+		
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Accumulator</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.ACLineSegment</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Analog</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet</class>
+		
+		<class>pnnl.goss.powergrid.topology.nodebreaker.BaseVoltage</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Breaker</class>
+		<!-- <class>pnnl.goss.powergrid.topology.nodebreaker.BusbarSection</class>-->
+		
+		<class>pnnl.goss.powergrid.topology.nodebreaker.ConformLoad</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.ConformLoadGroup</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.ConformLoadSchedule</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.ConnectivityNode</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.CurveData</class>
+		
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Disconnector</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Discrete</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.GeographicalRegion</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Line</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.LoadBreakSwitch</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.MeasurementType</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.PowerTransformer</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.RegularTimePoint</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.RegulationSchedule</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.SeriesCompensator</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.ShuntCompensator</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.SubGeographicalRegion</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.SynchronousMachine</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.TapChanger</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.Terminal</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.TransformerWinding</class>
+		<class>pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel</class>
+		 		
+		
+		<!-- <class>pnnl.goss.nodebreaker.Discrete</class> -->
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		
+		<!-- <class>com.impetus.kundera.datakeeper.entities.DocumentInfo</class>
+		<class>com.impetus.kundera.datakeeper.entities.Employee</class>
+		<class>com.impetus.kundera.datakeeper.entities.SubordinatesCounter</class>	 
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		-->
+		<properties>
+			<property name="kundera.nodes" value="localhost" />
+			<property name="kundera.port" value="9160" />
+			<property name="kundera.keyspace" value="nb2" />			
+			<property name="kundera.ddl.auto.prepare" value="create" />
+			
+			 
+			<property name="kundera.dialect" value="pelops" />
+            <property name="kundera.client.lookup.class"
+                value="com.impetus.client.cassandra.pelops.PelopsClientFactory" />
+             
+            <!-- 
+            <property name="kundera.dialect" value="cassandra" />
+            <property name="kundera.client.lookup.class"
+                value="com.impetus.kundera.client.cassandra.dsdriver.DSClientFactory" />
+             -->
+            <!--
+            <property name="kundera.dialect" value="cassandra" />
+			<property name="kundera.client" value="thrift" />
+			<property name="kundera.client.lookup.class"
+				value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
+			 -->
+			<!-- <property name="kundera.cache.provider.class"
+				value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />-->
+			<!-- <property name="kundera.cache.config.resource" value="/ehcache-test.xml" /> -->
+			<!-- <property name="kundera.client.property" value="kunderaCounter.xml" /> -->
+		</properties>
+	</persistence-unit>
+	
 	
 	<!-- Powergrid persisence unit for use with the powergrid datamodel. -->
 	<persistence-unit name="powergrid_cass_pu">
@@ -49,58 +131,6 @@ https://raw.github.com/impetus-opensource/Kundera/Kundera-2.0.4/kundera-core/src
 			<!-- <property name="kundera.client.property" value="kunderaCounter.xml" /> -->
 		</properties>
 		
-	</persistence-unit>
-	
-	<persistence-unit name="nodebreaker_cass_pu">
-		<provider>com.impetus.kundera.KunderaPersistence</provider>
-		 
-		<!-- <class>pnnl.goss.nodebreaker.IdentifiedObject</class> -->
-		<!-- 
-		<class>pnnl.goss.powergrid.ElementIdentifier</class>
-		<class>pnnl.goss.powergrid.IdentifiedObject</class>
-		 -->
-		
-		<class>pnnl.goss.powergrid.topology.nodebreaker.Breaker</class>
-		<class>pnnl.goss.powergrid.topology.nodebreaker.Line</class>
-		<class>pnnl.goss.powergrid.topology.Substation</class>
-		<!-- <class>pnnl.goss.nodebreaker.Terminal</class> -->
-		
-		
-		<!-- <class>pnnl.goss.nodebreaker.Discrete</class> -->
-		<exclude-unlisted-classes>false</exclude-unlisted-classes>
-		
-		<!-- <class>com.impetus.kundera.datakeeper.entities.DocumentInfo</class>
-		<class>com.impetus.kundera.datakeeper.entities.Employee</class>
-		<class>com.impetus.kundera.datakeeper.entities.SubordinatesCounter</class>	 
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
-		-->
-		<properties>
-			<property name="kundera.nodes" value="localhost" />
-			<property name="kundera.port" value="9160" />
-			<property name="kundera.keyspace" value="nodebreaker" />			
-			<property name="kundera.ddl.auto.prepare" value="create" />
-			
-			 
-			<property name="kundera.dialect" value="pelops" />
-            <property name="kundera.client.lookup.class"
-                value="com.impetus.client.cassandra.pelops.PelopsClientFactory" />
-             
-            <!-- 
-            <property name="kundera.dialect" value="cassandra" />
-            <property name="kundera.client.lookup.class"
-                value="com.impetus.kundera.client.cassandra.dsdriver.DSClientFactory" />
-             -->
-            <!--
-            <property name="kundera.dialect" value="cassandra" />
-			<property name="kundera.client" value="thrift" />
-			<property name="kundera.client.lookup.class"
-				value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
-			 -->
-			<!-- <property name="kundera.cache.provider.class"
-				value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />-->
-			<!-- <property name="kundera.cache.config.resource" value="/ehcache-test.xml" /> -->
-			<!-- <property name="kundera.client.property" value="kunderaCounter.xml" /> -->
-		</properties>
 	</persistence-unit>
 	<persistence-unit name="nodebreaker_cass_thrift_pu">
 		<provider>com.impetus.kundera.KunderaPersistence</provider>

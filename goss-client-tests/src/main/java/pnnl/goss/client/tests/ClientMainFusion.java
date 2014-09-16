@@ -44,6 +44,8 @@
 */
 package pnnl.goss.client.tests;
 
+import java.util.ArrayList;
+
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
 
@@ -61,14 +63,18 @@ import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.datamodel.ForecastTotal;
 import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.fusiondb.datamodel.HAInterchangeSchedule;
+import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
 import pnnl.goss.fusiondb.datamodel.RTEDSchedule;
+import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.fusiondb.requests.RequestGeneratorData;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
+import pnnl.goss.fusiondb.requests.RequestInterfacesViolation;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
+import pnnl.goss.fusiondb.requests.RequestVoltageStabilityViolation;
 
 public class ClientMainFusion {
 	
@@ -81,7 +87,7 @@ public class ClientMainFusion {
 	public static void main(String[] args) {
 		try{
 			
-			getActualTotal();
+			/*getActualTotal();
 			getForecastTotal();
 			getHAInterchageSchedule();
 			getRTEDSchedule();
@@ -89,6 +95,13 @@ public class ClientMainFusion {
 			requestCapacityRequirement();
 			uploadGeneratorData();
 			requestGeneratorData();
+			*/
+			
+			uploadInterfaceViolation();
+			uploadVoltageViolation();
+			requestInterfaceViolation();
+			requestVoltageViolation();
+			
 			
 		/*	GossResponseEvent event = new GossResponseEvent() {
 				
@@ -280,7 +293,59 @@ public class ClientMainFusion {
 		}
 	}
 	
+	static void uploadInterfaceViolation() throws JMSException,IllegalStateException{
+		//InterfacesViolation(timestamp, intervalId, interfaceId, probability)
+		InterfacesViolation data = new InterfacesViolation(startTimestamp, -1, -1, -1.1);
+		UploadRequest request = new UploadRequest(data, "InterfacesViolation");
+		UploadResponse response  = (UploadResponse)client.getResponse(request);
+		if(response.getMessage()!=null)
+			System.out.println(response.getMessage());
+	}
 	
+	static void uploadVoltageViolation() throws JMSException,IllegalStateException{
+		//VoltageStabilityViolation(timestamp, intervalId, budId, probability)
+		VoltageStabilityViolation data = new VoltageStabilityViolation(startTimestamp, -1, -1, -1.1);
+		UploadRequest request = new UploadRequest(data, "VoltageStabilityViolation");
+		UploadResponse response  = (UploadResponse)client.getResponse(request);
+		if(response.getMessage()!=null)
+			System.out.println(response.getMessage());
+	}
+	
+	static void requestInterfaceViolation() throws JMSException,IllegalStateException{
+		
+		RequestInterfacesViolation request = new RequestInterfacesViolation(startTimestamp);
+		DataResponse response  = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			System.out.println(((DataError)response.getData()).getMessage());
+		}
+		else{
+			ArrayList<InterfacesViolation> list = (ArrayList<InterfacesViolation>)response.getData();
+			for(InterfacesViolation data : list){
+				System.out.println(data.getTimestamp()+
+				data.getIntervalId()+
+				data.getInterfaceId()+
+				data.getProbability());
+			}
+		}
+	}
+	
+	static void requestVoltageViolation()throws JMSException,IllegalStateException{
+		RequestVoltageStabilityViolation request = new RequestVoltageStabilityViolation(startTimestamp);
+		DataResponse response  = (DataResponse)client.getResponse(request);
+		if(response.getData() instanceof DataError){
+			System.out.println(((DataError)response.getData()).getMessage());
+		}
+		else{
+			ArrayList<VoltageStabilityViolation> list = (ArrayList<VoltageStabilityViolation>)response.getData();
+			for(VoltageStabilityViolation data : list){
+				System.out.println(data.getTimestamp()+
+				data.getIntervalId()+
+				data.getBusId()+
+				data.getProbability());
+			}
+		}
+	}
 
 }
+	
 

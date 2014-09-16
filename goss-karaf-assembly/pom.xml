@@ -11,7 +11,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<packaging>karaf-assembly</packaging>	
     <properties>
         <karaf.version>3.0.1</karaf.version>
-        <goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
+        <goss-core.version>0.1.5-SNAPSHOT</goss-core.version>
         <goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
         <goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
 		<goss-tool-fncs.version>0.1.4-SNAPSHOT</goss-tool-fncs.version>
@@ -112,9 +112,9 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/5.9.0/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/2.7.10/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-core-features/${goss-core.version}/xml/features</descriptor>                                
-                                <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor>
+                                <!-- <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-powergrid-features/${goss-powergrid.version}/xml/features</descriptor>
-                                <descriptor>mvn:pnnl.goss/goss-gridpack-features/${goss-gridpack.version}/xml/features</descriptor>
+                                <descriptor>mvn:pnnl.goss/goss-gridpack-features/${goss-gridpack.version}/xml/features</descriptor> -->
                                 <descriptor>mvn:pnnl.goss/goss-demo-features/${goss-demo.version}/xml/features</descriptor>
 							</descriptors>
 							
@@ -126,6 +126,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 								<feature>region</feature>
 								<feature>package</feature>
 								<feature>http</feature>
+								<feature>war</feature>
 								<feature>ssh</feature>
 								<feature>management</feature>
 								<feature>kar</feature>
@@ -135,12 +136,12 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>cxf</feature>
                                 <feature>goss-ipojo-wrapper</feature>
                                 <feature>goss-core-features</feature>
-                                <feature>goss-fusiondb-features</feature>
+                                <!-- <feature>goss-fusiondb-features</feature>
                                 <feature>goss-gridmw-features</feature>
 								<feature>goss-tool-fncs-features</feature>
 								<feature>goss-tool-mdart-features</feature>
                                 <feature>goss-powergrid-features</feature>
-                                <feature>goss-gridpack-features</feature>
+                                <feature>goss-gridpack-features</feature> -->
                                 <feature>goss-demo-features</feature>
 
 							</features>
@@ -159,20 +160,29 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 						<feature>management</feature>
 						<feature>kar</feature>
 						<feature>http</feature>
+						<feature>war</feature>
 						<feature>jdbc</feature>
 						<feature>jpa</feature>
+						<feature>openjpa</feature>
                         <feature>goss-ipojo</feature>
                         <feature>goss-activemq-broker-nosecurity</feature>
+                        
                         <feature>goss-core-feature</feature>
+                        <feature>goss-core-web-feature</feature>
+                        
 					</bootFeatures>
 					<installedFeatures>
 						<feature>wrapper</feature>
                         <feature>http</feature>
+                        <feature>war</feature>
                         <feature>jdbc</feature>
                         <feature>jpa</feature>
+                        <feature>openjpa</feature>
                         <feature>goss-ipojo</feature>
                         <feature>activemq</feature>
                         <feature>cxf</feature>
+                        <feature>goss-core-feature</feature>
+                        <feature>goss-core-web-feature</feature>
 					</installedFeatures>
 				</configuration>
 			</plugin>

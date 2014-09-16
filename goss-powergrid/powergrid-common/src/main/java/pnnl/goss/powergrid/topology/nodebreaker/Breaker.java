@@ -1,48 +1,39 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import pnnl.goss.powergrid.topology.IdentifiedObject;
+import javax.persistence.Table;
 
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Entity
-public class Breaker {
-	public final String OBJECT_TYPE = "Breaker";
-	
-	@Id
-	private String mrid;
+@Table(name=BREAKER)
+@AttributeOverride(name="mrid", column=@Column(name=BREAKER_MRID))
+@IndexCollection(columns={@Index(name=DATA_TYPE)})
+public class Breaker extends IdentifiedObject implements NodeBreakerDataType, Switch  {
+
+	private static final long serialVersionUID = -7019934471143148743L;
+
+	@Column(name=DATA_TYPE)
+	protected String dataType;
 	private String memberOfEquipmentContainer;
 	private String conductingEquipmentBaseVoltage;	
 	
 	private Double ratedCurrent;
 	private Boolean switchNormalOpen;
 	
-	@Embedded
-	private IdentifiedObject identifiedObject;
-	
 	public Breaker(){
-		
+		dataType = BREAKER;
 	}
-	
-	
-	
+		
 	public Breaker(String mrid, String dataType, String identName, String identAlias,
 			String identPath, String identDescription, Double ratedCurrent, Boolean switchNormalOpen,
 			String memberOfEquipmentContainer, String conductingEquipmentBaseVoltage){
-		
-		this.identifiedObject = new IdentifiedObject(mrid, OBJECT_TYPE,  identName, identAlias, identPath, identDescription);
 		
 		this.ratedCurrent = ratedCurrent;
 		
@@ -51,12 +42,17 @@ public class Breaker {
 		this.conductingEquipmentBaseVoltage = conductingEquipmentBaseVoltage;
 		
 	}
+
+	@Override
+	public String getDataType() {
+		return dataType;
+	}
+
+	@Override
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
 	
-	/*private void createIdentifiedObject(){
-		identifiedObject = new IdentifiedObject(this.identName,
-				this.identAlias, this.identPathName, this.identDescription);
-	}*/
-		
 	public Double getRatedCurrent() {
 		return ratedCurrent;
 	}
@@ -68,26 +64,6 @@ public class Breaker {
 	}
 	public void setSwitchNormalOpen(Boolean normalOpen) {
 		this.switchNormalOpen = normalOpen;
-	}
-
-
-	public IdentifiedObject getIdentifiedObject() {
-//		if (identifiedObject == null){
-//			createIdentifiedObject();
-//		}
-		return identifiedObject;
-	}
-
-	public void setIdentifiedObject(IdentifiedObject identObject) {
-		this.identifiedObject = identObject;
-		this.mrid = identObject.getIdentMrid();
-		
-//		if(identObject != null){
-//			this.identAlias = identObject.getIdentAlias();
-//			this.identDescription = identObject.getIdentDescription();
-//			this.identName = identObject.getIdentName();
-//			this.identPathName = identObject.getIdentPathName();
-//		}
 	}
 
 	public String getMemberOfEquipmentContainer() {
@@ -105,9 +81,5 @@ public class Breaker {
 	public void setConductingEquipmentBaseVoltage(
 			String conductingEquipmentBaseVoltage) {
 		this.conductingEquipmentBaseVoltage = conductingEquipmentBaseVoltage;
-	}
-
-	public String getMrid() {
-		return mrid;
 	}
 }

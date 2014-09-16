@@ -6,12 +6,11 @@
 	<artifactId>goss-gridpack</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS Gridpack</name>
-	<version>0.1.4-SNAPSHOT</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.4-SNAPSHOT</version>
+		<version>0.1.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -22,8 +21,8 @@
 	</modules>
     
     <properties>
-        <goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
-        <goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
+        <goss-core.version>0.1.5-SNAPSHOT</goss-core.version>
+        <goss-powergrid.version>0.1.5-SNAPSHOT</goss-powergrid.version>
     </properties>
 
 	<dependencyManagement>
@@ -133,4 +132,5 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<version>0.1.5-SNAPSHOT</version>
 </project>

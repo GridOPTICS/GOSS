@@ -106,11 +106,4 @@ public class GridpackServerActivator {
 		log.debug("Constructing activator");
 			
 	}
-
-	@SuppressWarnings("rawtypes")
-	@Updated
-	public synchronized void updated(Dictionary config){
-		log.debug("Updating configuration for: "+this.getClass().getName());
-		log.debug("NOTE: Gridpack doesn't register its own datasource");		
-	}
 }

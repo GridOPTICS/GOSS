@@ -1,81 +1,93 @@
 package pnnl.goss.powergrid.topology;
 
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.ALIAS;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.DESCRIPTION;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.MRID;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.NAME;
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.PATH;
+
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
-@Embeddable
-public class IdentifiedObject implements Serializable{
-	
-	private static final long serialVersionUID = -7611977120083071422L;
+@MappedSuperclass
+public class IdentifiedObject implements Serializable {
+		
+	private static final long serialVersionUID = 7566807338923877903L;
 
-	protected String identMrid;
+	@Id
+	@Column(name=MRID)
+	protected String mrid;
 	
-	protected String identDataType;
+	@Column(name=NAME)
+	protected String name;
 	
-	protected String identName;
-	
-	protected String identAlias;
+	@Column(name=ALIAS)
+	protected String alias;
 
-	protected String identPathName;
+	@Column(name=PATH)
+	protected String path;
 	
-	protected String identDescription;
+	@Column(name=DESCRIPTION)
+	protected String description;
 	
 	public IdentifiedObject(){
 
 	}
 	
-	public IdentifiedObject(String mrid, String dataType, String identName, String identAlias, 
-			String identPath, String identDescription){
-		this.identMrid = mrid;
-		this.identDataType = dataType;
-		this.identAlias = identAlias;
-		this.identDescription = identDescription;
-		this.identPathName =identPath;
-		this.identName = identName;
+	public IdentifiedObject(String mrid, String name, String alias, 
+			String path, String description){
+		this.mrid = mrid;
+		this.alias = alias;
+		this.description = description;
+		this.path =path;
+		this.name = name;
 	}
 	
-	public String getIdentName() {
-		return identName;
+	public String getName() {
+		return name;
 	}
-	public void setIdentName(String identName) {
-		this.identName = identName;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getIdentAlias() {
-		return identAlias;
+	public String getAlias() {
+		return alias;
 	}
-	public void setIdentAlias(String identAlias) {
-		this.identAlias = identAlias;
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
-	public String getIdentPathName() {
-		return identPathName;
+	public String getPath() {
+		return path;
 	}
-	public void setIdentPathName(String identPathName) {
-		this.identPathName = identPathName;
-	}
-
-	public String getIdentDescription() {
-		return identDescription;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
-	public void setIdentDescription(String identDescription) {
-		this.identDescription = identDescription;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getIdentMrid() {
-		return identMrid;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public void setIdentMrid(String identMrid) {
-		this.identMrid = identMrid;
+	public String getMrid() {
+		return mrid;
 	}
 
-	public String getIdentDataType() {
-		return identDataType;
-	}
-
-	public void setIdentDataType(String identDataType) {
-		this.identDataType = identDataType;
-	}
+	public void setMrid(String mrid) {
+		this.mrid = mrid;
+	}	
 	
+	@Override
+	public String toString() {
+		String data = "MRID: "+mrid
+				+ " ALIAS: "+alias
+				+ " NAME: "+name
+				+ " PATH: "+path
+				+ " DESCRIPTION: " + description;
+		return data;
+	}
 }

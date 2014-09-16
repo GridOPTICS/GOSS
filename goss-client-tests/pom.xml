@@ -5,7 +5,7 @@
 	<artifactId>goss-client-tests</artifactId>
 	<name>GOSS Client Test Jar</name>
 	<packaging>jar</packaging>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 
 	<description>
 		A jar with multiple mains for testing output.
@@ -15,7 +15,7 @@
 		<goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
 		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
-		<goss-fusiondb.version>0.1.4-SNAPSHOT</goss-fusiondb.version>
+		<goss-fusiondb.version>0.1.5-SNAPSHOT</goss-fusiondb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-fncs.version>0.1.4-SNAPSHOT</goss-fncs.version>
 		<goss-sharedperspectives.version>0.1.3-SNAPSHOT</goss-sharedperspectives.version>

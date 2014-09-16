@@ -138,7 +138,8 @@ public class ServerMain {
 		log.debug("DATASOURCES CONFIGURATION");
 		outputConfig(dataSourcesConfig);
 		
-		GossDataServices dataServices = new GossDataServicesImpl();
+		// Pass the datasourcesconfig to the constructor so that it is available.
+		GossDataServices dataServices = new GossDataServicesImpl(dataSourcesConfig);
 		
 		GossRequestHandlerRegistrationImpl registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
 		registrationService.setCoreServerConfig(coreConfig);
@@ -165,8 +166,10 @@ public class ServerMain {
 		
 		
 		PowergridServerActivator pgActivator = new PowergridServerActivator(registrationService, dataServices);
-		pgActivator.updated(dataSourcesConfig);
 		pgActivator.start();
+		
+		GridpackServerActivator gridpackActivator = new GridpackServerActivator(registrationService, dataServices);
+		gridpackActivator.start();
 		
 //		GossSecurityDemoActivator demoActivator = new GossSecurityDemoActivator(registrationService, dataServices);
 //		demoActivator.updated(dataSourcesConfig);
