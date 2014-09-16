@@ -79,24 +79,28 @@ public class MetaClass {
 			
 			MetaDataType metaDt = attr.getDataType();
 			
-			if (metaDt.getEnumeratedValues().isEmpty()){
-				// Skip altogether
-				continue;
+			if (metaDt.isEnumeration()){
+				imports.add(metaDt.getJavaPackage()+"."+metaDt.getDataTypeName());				
 			}
-			else if (attr.getDataType().isStandardDataType()){
-				if (attr.getDataType().getValueType().equals("DateTime")){
-					imports.add("java.util.Date");
-				}					
-			}
-			else{
-				if (attr.getDataTypePackage()==null || attr.getDataTypePackage().contains("null")){
-					System.out.println("Ignoring package import for attribute: "+attr.getAttributeName());
-				}
-				else{
-					imports.add(attr.getDataTypePackage()+"."+attr.getDataType().getDataTypeName());
-				}
-				
-			}			
+			
+//			if (metaDt.getEnumeratedValues().isEmpty()){
+//				// Skip altogether
+//				continue;
+//			}
+//			else if (attr.getDataType().isStandardDataType()){
+//				if (attr.getDataType().getValueType().equals("DateTime")){
+//					imports.add("java.util.Date");
+//				}					
+//			}
+//			else{
+//				if (attr.getDataTypePackage()==null || attr.getDataTypePackage().contains("null")){
+//					System.out.println("Ignoring package import for attribute: "+attr.getAttributeName());
+//				}
+//				else{
+//					imports.add(attr.getDataTypePackage()+"."+attr.getDataType().getDataTypeName());
+//				}
+//				
+//			}			
 		}
 		
 		for(String varImport: imports){

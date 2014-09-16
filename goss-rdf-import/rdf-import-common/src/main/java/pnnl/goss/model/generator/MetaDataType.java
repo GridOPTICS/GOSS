@@ -162,7 +162,7 @@ public class MetaDataType {
 		}
 		return isIt;
 	}
-	
+		
 	public String getEnumeration(){
 		if(!isEnumeration){
 			throw new IllegalAccessError("Datatype is not an enumeration!");
