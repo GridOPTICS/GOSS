@@ -1,6 +1,7 @@
 package pnnl.goss.server.core;
 
 import java.sql.Connection;
+import java.util.Collection;
 
 /**
  * The purpose of the GossDataServices is to allow management of multiple
@@ -52,4 +53,29 @@ public interface GossDataServices {
 	 * @return
 	 */
 	boolean contains(String serviceName);
+	
+	/**
+	 * An unmodifyable collection of data service names that have been registerd
+	 * with the data services object.
+	 * 
+	 * @return a collection of services.
+	 */
+	Collection<String> getAvailableDataServices();
+	
+	/**
+	 * An unmodifyable collection of properties that have been loaded from
+	 * a configuration file.
+	 *  
+	 * @return
+	 */
+	Collection<String> getPropertyKeys();
+	
+	/**
+	 * Returns a value associated with the specified key.  The key and value are
+	 * populated from a configuration file.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	String getPropertyValue(String key);
 }

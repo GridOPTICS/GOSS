@@ -1,7 +1,14 @@
 package pnnl.goss.server.core.internal;
 
+import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.sql.DataSource;
@@ -10,6 +17,7 @@ import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Updated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,15 +25,41 @@ import pnnl.goss.server.core.GossDataServices;
 
 @Provides
 @Instantiate
-@Component(immediate=true)
+@Component(immediate=true, managedservice = PROP_DATASOURCES_CONFIG)
 public class GossDataServicesImpl implements GossDataServices {
 	
 	private static final Logger log = LoggerFactory.getLogger(GossDataServicesImpl.class);
+	/**
+	 * Holds services that have been registered with the system.
+	 */
 	private Hashtable<String, Object> dataservices;
+	/**
+	 * Configuration object that is passed to the object
+	 */
+	private Hashtable<String, String> properties = new Hashtable<String, String>();
 
 	public GossDataServicesImpl(){
 		log.debug("Constructing");
 		dataservices = new Hashtable<String, Object>();
+	}
+	
+	public GossDataServicesImpl(String configFile){
+		this();
+		log.debug("Constructing Configuration file: ");
+		
+	}
+	
+	@Updated
+	public void update(@SuppressWarnings("rawtypes") Dictionary config){
+		properties.clear();
+		@SuppressWarnings("rawtypes")
+		Enumeration nummer = config.keys();
+		
+		while(nummer.hasMoreElements()){
+			String key = (String)nummer.nextElement();
+			log.debug("Adding property key: " + key);
+			properties.put(key,  (String)config.get(key));
+		}		
 	}
 	
 	@Override
@@ -73,5 +107,20 @@ public class GossDataServicesImpl implements GossDataServices {
 	@Override
 	public boolean contains(String serviceName) {
 		return dataservices.contains(serviceName);
+	}
+
+	@Override
+	public Collection<String> getAvailableDataServices() {
+		return Collections.unmodifiableCollection(dataservices.keySet());
+	}
+
+	@Override
+	public Collection<String> getPropertyKeys() {
+		return Collections.unmodifiableCollection(properties.keySet());
+	}
+
+	@Override
+	public String getPropertyValue(String key) {
+		return properties.get(key);
 	}
 }
