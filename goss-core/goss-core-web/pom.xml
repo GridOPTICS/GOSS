@@ -14,8 +14,7 @@
 		<version>0.1.5-SNAPSHOT</version>
 	</parent>
 
-	<dependencies>
-		
+	<dependencies>		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -67,6 +66,7 @@
 						<_wab>src/main/webapp</_wab>
 						<Web-ContextPath>goss</Web-ContextPath>
 						<Web-Context>goss</Web-Context>
+						<Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
 					</instructions>
 					<Import-Package>
 						javax.servlet,

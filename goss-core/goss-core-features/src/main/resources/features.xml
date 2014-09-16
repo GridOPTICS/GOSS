@@ -7,8 +7,6 @@
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/1.12.0</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/1.12.0</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.composite/1.12.0</bundle>
-        
-        <!--<bundle>mvn:org.apache.felix/org.apache.felix.ipojo.webconsole/1.7.0</bundle>-->
     </feature>
     
     <feature name="goss-activemq-broker-nosecurity" version="${project.version}">
@@ -34,6 +32,8 @@
   		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/1.20</bundle>
     	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/1.20</bundle>
   		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/1.9</bundle>
+  		<feature>openjpa</feature>
+  		<feature>jndi</feature>
     </feature>
 
     <feature name="goss-core-feature" version="${pom.version}">
@@ -59,7 +59,9 @@
     
     <feature name="goss-core-web-feature" version="${pom.version}">
     	<feature>goss-core-feature</feature>
+    	<feature>http</feature>
+    	<feature>war</feature>
     	
-    	<bundle dependency="true">mvn:pnnl.goss/goss-core-web/${pom.version}</bundle>
+    	<bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/${pom.version}</bundle>
     </feature>
 </features>
