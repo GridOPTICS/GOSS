@@ -150,7 +150,7 @@ public class MetaDataType {
 		boolean isIt = false;
 		try{
 			if (valueType != null){
-				String result = getJavaType(valueType);				
+				getJavaType(valueType);				
 				isIt = true;
 			}
 			else{

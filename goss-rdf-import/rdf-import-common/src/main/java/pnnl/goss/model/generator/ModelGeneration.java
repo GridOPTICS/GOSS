@@ -244,8 +244,7 @@ public class ModelGeneration {
 			case DataTypeEnums:
 				packageCell = row.getCell(DATATYPEENUM_PACKAGE_COLUMN); 
 				if (packageCell != null && packageCell.getStringCellValue()!= null){
-					boolean isEnum = packageCell.getStringCellValue().contains("Enum");
-					
+										
 					HSSFCell namespaceCell = row.getCell(DATATYPEENUM_NS_CoLUMN);
 					HSSFCell enumTypeCell = row.getCell(DATATYPEENUM_ENUM_TYPE_COLUMN);
 					HSSFCell enumValueCell = row.getCell(DATATYPEENUM_ENUM_VALUE_COLUMN);
@@ -260,14 +259,16 @@ public class ModelGeneration {
 						meta = metaDataType.get(enumTypeName);
 						meta.addEnumeratedValue(enumValue);
 						meta.setJavaPackage(getEnumerationPackage());
+						meta.setEnumeration(true);
 					}
 					else{
 						meta = new MetaDataType();
 						meta.setDataTypeName(enumTypeName);
 						meta.setNamespace(namespace);
-						meta.setEnumeration(isEnum);
+						meta.setEnumeration(true);
 						meta.setJavaPackage(getEnumerationPackage());
-		
+						meta.addEnumeratedValue(enumValue);
+						
 						metaDataType.put(meta.getDataTypeName(), meta);
 					}
 				}
@@ -464,12 +465,17 @@ public class ModelGeneration {
 				File classFile = new File(packageDir);
 				
 				try{
-					String fullJavaFilePath = classFile.toString() + "/" + meta.getDataTypeName()+".java";
-					System.out.println("Creating java enumeration file: "+fullJavaFilePath);
-					FileWriter writer = new FileWriter(fullJavaFilePath);
-					BufferedWriter out = new BufferedWriter(writer);
-					out.write(meta.getEnumeration());
-					out.close();
+					if (!meta.getEnumeratedValues().isEmpty()){
+						String fullJavaFilePath = classFile.toString() + "/" + meta.getDataTypeName()+".java";
+						System.out.println("Creating java enumeration file: "+fullJavaFilePath);
+						FileWriter writer = new FileWriter(fullJavaFilePath);
+						BufferedWriter out = new BufferedWriter(writer);
+						out.write(meta.getEnumeration());
+						out.close();
+					}
+					else{
+						System.out.println("There aren't any values for enumeration: "+meta.getDataTypeName());
+					}
 				}
 				catch(Exception e){
 					e.printStackTrace();

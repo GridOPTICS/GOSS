@@ -77,7 +77,13 @@ public class MetaClass {
 		Set<String> imports = new HashSet<>();
 		for(MetaAttribute attr: attributes){
 			
-			if (attr.getDataType().isStandardDataType()){
+			MetaDataType metaDt = attr.getDataType();
+			
+			if (metaDt.getEnumeratedValues().isEmpty()){
+				// Skip altogether
+				continue;
+			}
+			else if (attr.getDataType().isStandardDataType()){
 				if (attr.getDataType().getValueType().equals("DateTime")){
 					imports.add("java.util.Date");
 				}					
@@ -115,6 +121,10 @@ public class MetaClass {
 		// second for the definition of the setter, getter and adder
 		// functions.
 		for(MetaAttribute attr: attributes){
+			if (attr.getDataType().isEnumeration() && 
+					attr.getDataType().getEnumeratedValues().isEmpty()){
+				continue;
+			}
 			buf.append(Util.tabifyLines(attr.getAttributeDeclaration(), "\t"));
 		}
 		
