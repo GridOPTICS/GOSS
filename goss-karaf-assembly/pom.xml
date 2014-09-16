@@ -18,6 +18,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 		<goss-tool-mdart.version>0.1.4-SNAPSHOT</goss-tool-mdart.version>
         <goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
         <goss-gridpack.version>0.1.4-SNAPSHOT</goss-gridpack.version>
+        <goss-demo.version>0.1.4-SNAPSHOT</goss-demo.version>
+
     </properties>
 
 	<build>
@@ -113,6 +115,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-powergrid-features/${goss-powergrid.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-gridpack-features/${goss-gridpack.version}/xml/features</descriptor>
+                                <descriptor>mvn:pnnl.goss/goss-demo-features/${goss-demo.version}/xml/features</descriptor>
 							</descriptors>
 							
 							<features>
@@ -138,7 +141,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 								<feature>goss-tool-mdart-features</feature>
                                 <feature>goss-powergrid-features</feature>
                                 <feature>goss-gridpack-features</feature>
-                                
+                                <feature>goss-demo-features</feature>
 
 							</features>
 							<repository>${basedir}/target/assembly/system</repository>
@@ -279,6 +282,14 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <classifier>features</classifier>
             <scope>runtime</scope>
             <version>${goss-gridpack.version}</version>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>pnnl.goss</groupId>
+            <artifactId>goss-demo-features</artifactId>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+            <version>${goss-demo.version}</version>
             <type>xml</type>
         </dependency>
         <dependency>

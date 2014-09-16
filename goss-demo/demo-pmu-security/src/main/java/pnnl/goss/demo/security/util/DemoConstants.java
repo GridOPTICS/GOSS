@@ -51,16 +51,18 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import pnnl.goss.demo.pmu.GossSecurityDemoActivator;
+
 
 
 public class DemoConstants {
 	
 	protected static Logger log = Logger.getLogger(DemoConstants.class);
 
-	public static final String CONST_DEF_POLL_FREQ = "defaultPollFreq";
-	public static final String CONST_DEF_POLL_INC = "defaultPollInc";
-	public static final String CONST_DEF_POLL_TIME_SHOWN = "defaultPollTimeShown";
-	public static final String CONST_DEF_START = "defaultStart";
+//	public static final String CONST_DEF_POLL_FREQ = "defaultPollFreq";
+//	public static final String CONST_DEF_POLL_INC = "defaultPollInc";
+//	public static final String CONST_DEF_POLL_TIME_SHOWN = "defaultPollTimeShown";
+//	public static final String CONST_DEF_START = "defaultStart";
 	
 
 	public static String LOGIN_URL = "index.jsp";
@@ -109,5 +111,23 @@ public class DemoConstants {
 			e.printStackTrace();
 		}
 		return props;
+	}
+	
+	
+	public static String getDefaultPollFrequency(){
+//		return getProperty(GossSecurityDemoActivator.PROP_DEMO_DEFAULT_POLL_FREQ);
+		return null;
+	}
+	public static String getDefaultPollIncrement(){
+//		return getProperty(GossSecurityDemoActivator.PROP_DEMO_DEFAULT_POLL_INC);
+		return null;
+	}
+	public static String getDefaultPollTimeShown(){
+//		return getProperty(GossSecurityDemoActivator.PROP_DEMO_DEFAULT_POLL_TIME_SHOWN);
+		return null;
+	}	
+	public static String getDefaultStart(){
+//		return getProperty(GossSecurityDemoActivator.PROP_DEMO_DEFAULT_START);
+		return null;
 	}
 }

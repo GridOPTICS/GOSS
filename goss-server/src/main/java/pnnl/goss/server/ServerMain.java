@@ -51,6 +51,7 @@ import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.demo.pmu.GossSecurityDemoActivator;
 import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.gridmw.GridMWServerActivator;
@@ -166,6 +167,11 @@ public class ServerMain {
 		PowergridServerActivator pgActivator = new PowergridServerActivator(registrationService, dataServices);
 		pgActivator.updated(dataSourcesConfig);
 		pgActivator.start();
+		
+//		GossSecurityDemoActivator demoActivator = new GossSecurityDemoActivator(registrationService, dataServices);
+//		demoActivator.updated(dataSourcesConfig);
+//		demoActivator.start();
+		//Not sure that the webapp will run under this instance
 		
 		//GridpackServerActivator gridpackActivator = new GridpackServerActivator()
 		

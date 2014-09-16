@@ -55,8 +55,6 @@ import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,34 +95,31 @@ public class GossSecurityDemoActivator {
 	}
 	
 	@Validate
-	public void start(BundleContext context) throws Exception {
+	public void start() {
 		System.out.println("Starting the "+this.getClass().getName()+" Activator");
-		
-		// Register for updates to the goss.core.security config file.
-//        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-//        properties.put(Constants.SERVICE_PID, CONFIG_PID);
-//        context.registerService(ManagedService.class.getName(), this, properties);
 	}
 
 	@Invalidate
-	public void stop(BundleContext context) throws Exception {
+	public void stop()  {
 		System.out.println("Stopping the "+this.getClass().getName()+" Activator");
 		
 	}
 
 	@Updated
-	public void updated(Dictionary properties) throws ConfigurationException {
+	public void updated(Dictionary properties)  {
 		log.debug("Updating configuration for: "+this.getClass().getName());
 		//TODO it would be nice if this could be on the GOSS Client so that it closes and restarts the session when this happens
-//		DemoConstants.setProperties(properties);
-		if (dataServices != null) {
-			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_FREQ, (String)properties.get(PROP_DEMO_DEFAULT_POLL_FREQ));
-			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_INC, (String)properties.get(PROP_DEMO_DEFAULT_POLL_INC));
-			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_TIME_SHOWN, (String)properties.get(PROP_DEMO_DEFAULT_POLL_TIME_SHOWN));
-			dataServices.registerData(PROP_DEMO_DEFAULT_START, (String)properties.get(PROP_DEMO_DEFAULT_START));
-		} else {
-			log.error("dataServices is null!");
-		}
+		DemoConstants.setProperties(properties);
+		
+		//TODO should set and access dataServies this way
+//		if (dataServices != null) {
+//			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_FREQ, (String)properties.get(PROP_DEMO_DEFAULT_POLL_FREQ));
+//			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_INC, (String)properties.get(PROP_DEMO_DEFAULT_POLL_INC));
+//			dataServices.registerData(PROP_DEMO_DEFAULT_POLL_TIME_SHOWN, (String)properties.get(PROP_DEMO_DEFAULT_POLL_TIME_SHOWN));
+//			dataServices.registerData(PROP_DEMO_DEFAULT_START, (String)properties.get(PROP_DEMO_DEFAULT_START));
+//		} else {
+//			log.error("dataServices is null!");
+//		}
 	}
 	
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="goss-demo-feature-${pom.version}"  name="goss-demo-${project.version}">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="goss-demo-${project.version}">
 
     <feature name="goss-demo-feature" version="${pom.version}" >
 <!--     	<config name="goss.demo.feature"> -->

@@ -50,7 +50,7 @@
 		if(dpStart==null || dpStart==''){
 			//var now = new Date();			
 			//dpStart = (now.getMonth()+1)+"/"+now.getDate()+"/"+now.getFullYear()+" 00:00:00";
-			dpStart = '<%=DemoConstants.getProperty(DemoConstants.CONST_DEF_START)%>'
+			dpStart = '<%=DemoConstants.getDefaultStart()%>'
 		}
 		$('#datepickerstart').datetimepicker({
 			showSecond: true,
@@ -64,7 +64,7 @@
 	
 		var timeShownStart = parseInt($( "#polltimeshown" ).val());
 			if(timeShownStart==null || isNaN(timeShownStart)){
-				timeShownStart = <%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_FREQ)%>
+				timeShownStart = <%=DemoConstants.getDefaultPollFrequency()%>
 				alert('Poll time shown not set, defaulting to "'+timeShownStart+'"');	
 				//$( "#polltimeshown" ).val(timeShown);
 			}
@@ -266,7 +266,7 @@
 			
 			var frequency = parseInt($( "#pollfreq" ).val());	
 			if(frequency==null || isNaN(frequency)){
-				frequency = <%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_FREQ)%>;
+				frequency = <%=DemoConstants.getDefaultPollFrequency()%>;
 				alert('Poll frequency not set, defaulting to "'+frequency+'"');	
 				$( "#pollfreq" ).val(frequency);
 			}
@@ -274,7 +274,7 @@
 			var increment = 60*1000;
 			/*var increment = parseInt($( "#pollinc" ).val());
 			if(increment==null || isNaN(increment)){
-				increment = <%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_INC)%>;
+				increment = <%=DemoConstants.getDefaultPollIncrement()%>;
 				alert('Poll increment not set, defaulting to "'+increment+'"');	
 				$( "#pollinc" ).val(increment);
 			}	
@@ -282,7 +282,7 @@
 			*/			
 			var timeShown = parseInt($( "#polltimeshown" ).val());
 			if(timeShown==null || isNaN(timeShown)){
-				timeShown = <%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_TIME_SHOWN)%>
+				timeShown = <%=DemoConstants.getDefaultPollTimeShown()%>
 				alert('Poll time shown not set, defaulting to "'+timeShown+'"');	
 				$( "#polltimeshown" ).val(timeShown);
 			}
@@ -414,11 +414,11 @@
 					disabled="true">
 				<ul>
 					<li>Poll Frequency: <input type="text" id="pollfreq"
-						name="pollfreq" value="<%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_FREQ)%>"> (sec)
+						name="pollfreq" value="<%=DemoConstants.getDefaultPollFrequency()%>"> (sec)
 					</li>
-					<!--<li>Poll Increment: <input type="text" id="pollinc" name="pollinc" value="<%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_INC)%>">    (min)</li>-->
+					<!--<li>Poll Increment: <input type="text" id="pollinc" name="pollinc" value="<%=DemoConstants.getDefaultPollIncrement()%>">    (min)</li>-->
 					<li>Poll Time Shown: <input type="text" id="polltimeshown"
-						name="polltimeshown" value="<%=DemoConstants.getProperty(DemoConstants.CONST_DEF_POLL_TIME_SHOWN)%>">
+						name="polltimeshown" value="<%=DemoConstants.getDefaultPollTimeShown()%>">
 						(minutes)
 					</li>
 					<li>Start: <input type="text" id="datepickerstart" name="datepickerstart">

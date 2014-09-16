@@ -40,31 +40,33 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.12.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.felix</groupId> -->
+<!-- 				<artifactId>maven-ipojo-plugin</artifactId> -->
+<!-- 				<version>1.12.0</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<goals> -->
+<!-- 							<goal>ipojo-bundle</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+			
+			
+			
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>${maven-bundle-plugin.version}</version>
 				<extensions>true</extensions>
-
 				<configuration>
+<!-- 				 	<supportedProjectTypes> -->
+<!--             			<supportedProjectType>war</supportedProjectType> -->
+<!--         			</supportedProjectTypes> -->
 					<instructions>
-						<_wab>src/main/webapp</_wab>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Web-ContextPath>demo-pmu-security</Web-ContextPath>
-						<Webapp-Context>demo-pmu-security</Webapp-Context>
 						<Export-Package>
 							pnnl.goss.demo.pmu*;version=${project.version}
 						</Export-Package>
@@ -77,17 +79,21 @@
 							org.apache.http.auth.*,
 							*
 						</Import-Package>
-						<Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
-						<Embed-Directory>WEB-INF/lib</Embed-Directory>
-						<!-- Allows import of packages that haven't been registered before 
-							this service to still gain reference. -->
-						<DynamicImport-Package>
-							*
-						</DynamicImport-Package>
-
+						
+						
+						<!-- Configurations for webapp -->
+						<_wab>src/main/webapp</_wab>
+						<Web-ContextPath>demo-pmu-security</Web-ContextPath>
+						<Webapp-Context>demo-pmu-security</Webapp-Context>
+						<Bundle-ClassPath>.,WEB-INF/classes,{maven-dependencies}</Bundle-ClassPath>
+<!-- 						<Embed-Directory>WEB-INF/classes</Embed-Directory> -->
+<!-- 						<Embed-Dependency>*;scope=compile|runtime;</Embed-Dependency> -->
+<!--             			<Embed-Transitive>true</Embed-Transitive> -->
 					</instructions>
 				</configuration>
 			</plugin>
+			
+			
 		</plugins>
 	</build>
 </project>
