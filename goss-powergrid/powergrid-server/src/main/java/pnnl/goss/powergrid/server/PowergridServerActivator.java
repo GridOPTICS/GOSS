@@ -81,10 +81,11 @@ import pnnl.goss.server.core.InvalidDatasourceException;
 import static pnnl.goss.core.GossCoreContants.*;
 
 @Instantiate
-@Component(managedservice = PROP_DATASOURCES_CONFIG)
 public class PowergridServerActivator{
 
 	public static final String PROP_POWERGRID_DATASERVICE = "goss/powergrid";
+	// These are defined in the datasources config and loaded into the dataServices object
+	// by karaf.
 	public static final String PROP_POWERGRID_USER = "powergrid.db.user";
 	public static final String PROP_POWERGRID_PASSWORD = "powergrid.db.password";
 	public static final String PROP_POWERGRID_URI = "powergrid.db.uri";
@@ -101,12 +102,7 @@ public class PowergridServerActivator{
 	
 	@Requires
 	private BasicDataSourceCreator datasourceCreator;
-	
-	private String user;
-	private String password;
-	private String uri;
-
-	
+		
 	public PowergridServerActivator(
 			@Requires GossRequestHandlerRegistrationService registrationService,
 			@Requires GossDataServices dataServices) {
@@ -117,27 +113,23 @@ public class PowergridServerActivator{
 	
 	
 	private void registerDataService() {
-		if (dataServices != null) {
-			if (!dataServices.contains(PROP_POWERGRID_DATASERVICE)) {
-				log.debug("Attempting to register dataservice: "
-						+ PROP_POWERGRID_DATASERVICE);
-				if (datasourceCreator == null){
-					datasourceCreator = new BasicDataSourceCreator();
-				}
-				if (datasourceCreator != null){
-					try {
-						dataServices.registerData(PROP_POWERGRID_DATASERVICE,
-								datasourceCreator.create(uri, user, password));
-					} catch (Exception e) {
-						log.error(e.getMessage(), e);
-					}
-				}
-				else{
-					log.error("datasourceCreator is null!");
-				}
+		if (!dataServices.contains(PROP_POWERGRID_DATASERVICE)) {
+			log.debug("Attempting to register dataservice: "
+					+ PROP_POWERGRID_DATASERVICE);
+			String user = dataServices.getPropertyValue(PROP_POWERGRID_USER);
+			String uri = dataServices.getPropertyValue(PROP_POWERGRID_URI);
+			String password = dataServices.getPropertyValue(PROP_POWERGRID_PASSWORD);
+			
+			if (datasourceCreator == null){
+				datasourceCreator = new BasicDataSourceCreator();
 			}
-		} else {
-			log.error("dataServices is null!");
+			
+			try {
+				dataServices.registerData(PROP_POWERGRID_DATASERVICE,
+						datasourceCreator.create(uri, user, password));
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
 		}
 	}
 	
@@ -152,6 +144,8 @@ public class PowergridServerActivator{
 			
 			registrationService.addSecurityMapping(RequestPowergrid.class, AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestPowergridTimeStep.class, AccessControlHandlerAllowAll.class);
+			
+			update();
 		}
 		else{
 			log.debug(GossRequestHandlerRegistrationService.class.getName()+" not found!");
@@ -178,8 +172,15 @@ public class PowergridServerActivator{
 		}
 	}
 
+	public void update() throws IllegalStateException{
+		if (dataServices == null){
+			throw new IllegalStateException("dataservices cannot be null!");
+		}
+		
+		registerDataService();
+	}
 	
-
+	/*
 	@SuppressWarnings("rawtypes")
 	@Updated
 	public synchronized void updated(Dictionary config){
@@ -192,6 +193,6 @@ public class PowergridServerActivator{
 		log.debug("updated uri: " + uri + "\n\tuser:" + user);
 		registerDataService();
 		
-	}
+	}*/
 
 }
