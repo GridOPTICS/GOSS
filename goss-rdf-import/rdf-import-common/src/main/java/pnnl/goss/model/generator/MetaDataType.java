@@ -150,8 +150,8 @@ public class MetaDataType {
 		boolean isIt = false;
 		try{
 			if (valueType != null){
-				getJavaType(valueType);				
-				isIt = true;
+				String vtCheck = getJavaType(valueType);				
+				isIt = (vtCheck != null);
 			}
 			else{
 				System.out.println("valueType is null for datatype: " + this.dataTypeName);

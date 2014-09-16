@@ -82,6 +82,12 @@ public class MetaClass {
 			if (metaDt.isEnumeration()){
 				imports.add(metaDt.getJavaPackage()+"."+metaDt.getDataTypeName());				
 			}
+			else if (metaDt.isStandardDataType()) {
+				System.out.println("DATATYPE: "+metaDt.getDataTypeName()+ " => "+ metaDt.getValueType());
+				if (metaDt.getDataTypeName().contains("Date")){
+					imports.add("java.util.Date");
+				}
+			}
 			
 //			if (metaDt.getEnumeratedValues().isEmpty()){
 //				// Skip altogether
