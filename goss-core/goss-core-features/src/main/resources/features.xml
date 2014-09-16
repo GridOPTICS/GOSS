@@ -20,21 +20,7 @@
         	mvn:pnnl.goss/goss-core-features/${pom.version}/xml/goss-broker-nosecurity
         </configfile>
     </feature>
-    
-    
-    <!-- 
-    <feature name="goss-activemq-broker" version="${project.version}">
-    	<feature version="${activemq.version}" >activemq</feature>
-    	<configfile finalname="/etc/org.apache.activemq.server-default.cfg">
-    		mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/goss-broker-config
-    	</configfile>
-    	<configfile version="/etc/pnnl-goss-activemq-broker.xml">
-    		mvn:pnnl.goss/goss-core-features/${pom.version}/xml/goss-broker
-    	</configfile>
-    	<configfile finalname="/etc/pnnl.goss.core.security.utils.cfg">
-			mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/security-utils-config    	
-    </feature> -->
-    
+        
     <feature name="goss-dependencies" version="${project.version}">
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${servicemix-xstream.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/${servicemix-commons-io.version}</bundle>
@@ -71,7 +57,7 @@
 
     </feature>   
     
-    <feature name="goss-core-web" version="${pom.version}">
+    <feature name="goss-core-web-feature" version="${pom.version}">
     	<feature>goss-core-feature</feature>
     	
     	<bundle dependency="true">mvn:pnnl.goss/goss-core-web/${pom.version}</bundle>
