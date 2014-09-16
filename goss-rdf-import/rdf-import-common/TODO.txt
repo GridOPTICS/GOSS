@@ -1,0 +1,12 @@
+For model generation
+DONE - add class documentation
+DONE - add attributes
+DONE - add inheritance
+DONE - add datatypes
+DONE - Fix issue with the output of attributes
+- add associations
+- create wrapped comments
+- add comments for attributes
+- add enumerations
+- build the conversion from/to bus branch/node breaker
+- map esca 60 onto our object model.

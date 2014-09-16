@@ -70,4 +70,10 @@
     	<bundle start-level="87" dependency="true">mvn:pnnl.goss/goss-core-server/${pom.version}</bundle>
 
     </feature>   
+    
+    <feature name="goss-core-web" version="${pom.version}">
+    	<feature>goss-core-feature</feature>
+    	
+    	<bundle dependency="true">mvn:pnnl.goss/goss-core-web/${pom.version}</bundle>
+    </feature>
 </features>

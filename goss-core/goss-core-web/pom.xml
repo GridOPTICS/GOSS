@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>goss-core-web</artifactId>
+	<packaging>bundle</packaging>
+	<name>GOSS Core Web Bundle</name>
+
+	<parent>
+		<groupId>pnnl.goss</groupId>
+		<artifactId>goss-core-parent</artifactId>
+		<version>0.1.5-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+        <plugin>
+			<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<_wab>src/main/webapp</_wab>
+						<Web-ContextPath>goss</Web-ContextPath>
+						<Web-Context>goss</Web-Context>
+					</instructions>
+					<Import-Package>
+						javax.servlet,
+						javax.servlet.http,javax.servlet.*,
+						javax.servlet.jsp.*,
+						javax.servlet.jsp.jstl.*,
+						org.apache.http.auth.*,
+					</Import-Package>
+				</configuration>
+			</plugin>			
+		</plugins>
+	</build>
+</project>

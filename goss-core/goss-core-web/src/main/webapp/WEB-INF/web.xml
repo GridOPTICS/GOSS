@@ -1,0 +1,39 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+	<filter>
+		<filter-name>checkAuthenticatedFilter</filter-name>
+		<filter-class>pnnl.goss.demo.security.filter.CheckAuthenticatedFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>checkAuthenticatedFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<servlet>
+		<servlet-name>loginServlet</servlet-name>
+		<servlet-class>pnnl.goss.demo.security.LoginServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>logoutServlet</servlet-name>
+		<servlet-class>pnnl.goss.demo.security.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>dataPMU</servlet-name>
+		<servlet-class>pnnl.goss.demo.pmu.RetrievePMUDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loginServlet</servlet-name>
+		<url-pattern>/checkLogin/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>logoutServlet</servlet-name>
+		<url-pattern>/logout/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>dataPMU</servlet-name>
+		<url-pattern>/data/pmu/*</url-pattern>
+	</servlet-mapping>
+</web-app>

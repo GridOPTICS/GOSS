@@ -20,6 +20,7 @@
 		<module>goss-security</module>
 		<module>goss-core-server</module>
 		<module>goss-core-client</module>
+		<module>goss-core-web</module>
 		<module>goss-core-features</module>
 
 	</modules>
@@ -147,5 +148,5 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 </project>
