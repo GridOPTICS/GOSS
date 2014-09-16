@@ -7,7 +7,7 @@
 	<artifactId>goss-powergrid</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS Powergrid</name>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
@@ -23,7 +23,7 @@
 	</modules>
     
     <properties>
-        <goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
+        <goss-core.version>0.1.5-SNAPSHOT</goss-core.version>
     </properties>
     
 	<dependencyManagement>
@@ -156,4 +156,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	
 </project>

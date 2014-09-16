@@ -3,18 +3,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-server</artifactId>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<name>GOSS Server Jar</name>
 
 	<properties>
 		<felix.framework.version>4.4.0</felix.framework.version>
-		<goss.version>0.1.4-SNAPSHOT</goss.version>
+		<goss.version>0.1.5-SNAPSHOT</goss.version>
+		<goss-powergrid.version>0.1.5-SNAPSHOT</goss-powergrid.version>
+		<goss-gridpack.version>0.1.5-SNAPSHOT</goss-gridpack.version>
+		
 		<goss-fusiondb.version>0.1.5-SNAPSHOT</goss-fusiondb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
-		<goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
-		<goss-gridpack.version>0.1.4-SNAPSHOT</goss-gridpack.version>
+		
 		
 		
 		<activemq.version>5.9.0</activemq.version>
