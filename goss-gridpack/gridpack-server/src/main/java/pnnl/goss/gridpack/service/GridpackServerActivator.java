@@ -84,10 +84,7 @@ public class GridpackServerActivator {
 	
 	private GossRequestHandlerRegistrationService registrationService;
 	private GossDataServices dataServices;
-	
-	@Requires
-	private BasicDataSourceCreator datasourceCreator;
-	
+		
 	@Validate
     public void start() {
 		log.info("Starting: "+this.getClass().getName());

@@ -5,6 +5,8 @@
 		
 		<feature>jdbc</feature>
 		<feature>jpa</feature>
+		<feature>openjpa</feature>
+		<feature>hibernate4</feature>
 		<feature>goss-core-feature</feature>
     	
     	<bundle start-level="88" dependency="true">mvn:pnnl.goss/goss-powergrid-common/${pom.version}</bundle>

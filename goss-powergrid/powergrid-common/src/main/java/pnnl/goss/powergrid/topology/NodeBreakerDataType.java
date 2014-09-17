@@ -68,8 +68,17 @@ public interface NodeBreakerDataType {
 	public static final String LOAD_BREAK_SWITCH = "LOAD_BREAK_SWITCH";
 	public static final String LOAD_BREAK_SWITCH_MRID = "LOAD_BREAK_SWITCH_MRID";
 	
+	public static final String MEASUREMENT_TYPE = "MEASUREMENT_TYPE";
+	public static final String MEASUREMENT_TYPE_MRID = "MEASUREMENT_TYPE_MRID";
+	
+	public static final String POWER_TRANSFORMER = "POWER_TRANSFORMER";
+	public static final String POWER_TRANSFORMER_MRID = "POWER_TRANSFORMER_MRID";
+	
 	public static final String REGULATION_SCHEDULE = "REGULATION_SCHEDULE";
 	public static final String REGULATION_SCHEDULE_MRID = "REGULATION_SCHEDULE_MRID";
+	
+	public static final String REGULAR_TIMEPOINT = "REGULAR_TIMEPOINT";
+	public static final String REGULAR_TIMEPOINT_MRID = "REGULAR_TIMEPOINT_MRID";
 	
 	public static final String SUB_GEOGRAPHICAL_REGION = "SUB_GEOGRAPHICAL_REGION";
 	public static final String SUB_GEOGRAPHICAL_REGION_MRID = "SUB_GEOGRAPHICAL_REGION_MRID";
@@ -77,15 +86,19 @@ public interface NodeBreakerDataType {
 	public static final String SUBSTATION = "SUBSTATION";
 	public static final String SUBSTATION_MRID = "SUBSTATION_MRID";
 	
+	public static final String SYNCHRONOUS_MACHINE = "SYNCHRONOUS_MACHINE";
+	public static final String SYNCHRONOUS_MACHINE_MRID = "SYNCHRONOUS_MACHINE_MRID";
+	
+	public static final String TAP_CHANGER = "TAP_CHANGER";
+	public static final String TAP_CHANGER_MRID = "TAP_CHANGER_MRID";
+	
 	public static final String TERMINAL = "TERMINAL";
 	public static final String TERMINAL_MRID = "TERMINAL_MRID";
 	
 	public static final String VOLTAGE_LEVEL = "VOLTAGE_LEVEL";
 	public static final String VOLTAGE_LEVEL_MRID = "VOLTAGE_LEVEL_MRID";
 	
-	public static final String SYNCHRONOUES_MACHINE = "SYNCHRONOUES_MACHINE";
 	
-	public static final String MEASUREMENT_TYPE = "MEASUREMENT_TYPE";
 	
 	public String getDataType();
 	

@@ -62,6 +62,6 @@
     	<feature>http</feature>
     	<feature>war</feature>
     	
-    	<bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/${pom.version}</bundle>
+    	<bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/${pom.version}/war</bundle>
     </feature>
 </features>

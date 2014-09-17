@@ -2,20 +2,29 @@
  	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
 
- 		<web-app>
 	<display-name>Goss Core Web</display-name>
 
 	<servlet>
 		<servlet-name>default</servlet-name>
 		<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>management</servlet-name>
+		<servlet-class>pnnl.goss.web.ManagerServletImpl</servlet-class>
+	</servlet>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+	
+	<servlet-mapping>
+		<servlet-name>management</servlet-name>
+		<url-pattern>manage/*</url-pattern>
+	</servlet-mapping>
+	<!--
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>-->
 	<!--
 	<filter>
 		<filter-name>checkAuthenticatedFilter</filter-name>

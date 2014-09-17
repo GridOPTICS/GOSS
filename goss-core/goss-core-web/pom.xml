@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-core-web</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>war</packaging>
 	<name>GOSS Core Web Bundle</name>
 
 	<parent>
@@ -14,12 +14,16 @@
 		<version>0.1.5-SNAPSHOT</version>
 	</parent>
 
-	<dependencies>		
+	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core-server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -45,23 +49,23 @@
 
 	<build>
 		<plugins>
-	        <plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.12.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
+					<supportedProjectTypes>
+						<supportedProjectType>war</supportedProjectType>
+					</supportedProjectTypes>
 					<instructions>
 						<_wab>src/main/webapp</_wab>
 						<Web-ContextPath>goss</Web-ContextPath>
@@ -76,7 +80,30 @@
 						org.apache.http.auth.*,
 					</Import-Package>
 				</configuration>
-			</plugin>			
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+		          <!-- Make a skinny WAR -->
+		          <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+		          <archive>
+		            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+		          </archive>
+		        </configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.12.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

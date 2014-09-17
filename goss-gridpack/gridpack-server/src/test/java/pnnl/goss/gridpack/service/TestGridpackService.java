@@ -52,11 +52,11 @@ public class TestGridpackService {
 	public static void main(String[] args) throws Exception {
 		
 
-//		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
-//		// Replaces the ${..} with values from the goss.properties file.
-//		replacePropertiesFromHome(dataSourcesConfig, "goss.properties");
-//
-//		
+		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
+		// Replaces the ${..} with values from the goss.properties file.
+		replacePropertiesFromHome(dataSourcesConfig, "goss.properties");
+
+		
 //		BasicDataSourceCreator bdc = new BasicDataSourceCreator();
 //		String uri = (String) dataSourcesConfig.get(PowergridServerActivator.PROP_POWERGRID_URI);
 //		String user = (String) dataSourcesConfig.get(PowergridServerActivator.PROP_POWERGRID_USER);

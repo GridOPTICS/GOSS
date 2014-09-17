@@ -13,10 +13,12 @@ import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 
 @Entity
-@Table(name=BASE_VOLTAGE)
-@AttributeOverride(name="mrid", column=@Column(name=BASE_VOLTAGE_MRID))
+@Table(name=MEASUREMENT_TYPE)
+@AttributeOverride(name="mrid", column=@Column(name=MEASUREMENT_TYPE_MRID))
 @IndexCollection(columns={@Index(name=DATA_TYPE)})
 public class MeasurementType extends IdentifiedObject implements NodeBreakerDataType   {
+	
+	private static final long serialVersionUID = 317614572981213820L;
 	
 	@Column(name=DATA_TYPE)
 	protected String dataType;

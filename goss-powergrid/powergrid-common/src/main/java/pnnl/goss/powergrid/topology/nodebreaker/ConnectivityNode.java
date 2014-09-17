@@ -15,7 +15,7 @@ import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Table(name=CONNECTIVITY_NODE)
 @AttributeOverride(name="mrid", column=@Column(name=CONNECTIVITY_NODE_MRID))
 @IndexCollection(columns={@Index(name=DATA_TYPE)})
-public class ConnectivityNode extends IdentifiedObject implements NodeBreakerDataType  {
+public class ConnectivityNode extends IdentifiedObject implements NodeBreakerDataType {
 	
 	private static final long serialVersionUID = 5009733893786037446L;
 	

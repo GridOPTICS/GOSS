@@ -1,5 +1,8 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +18,7 @@ import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
 @Table(name=BREAKER)
 @AttributeOverride(name="mrid", column=@Column(name=BREAKER_MRID))
 @IndexCollection(columns={@Index(name=DATA_TYPE)})
-public class Breaker extends IdentifiedObject implements NodeBreakerDataType, Switch  {
+public class Breaker extends IdentifiedObject implements NodeBreakerDataType, Switch, PowerSystemResource  {
 
 	private static final long serialVersionUID = -7019934471143148743L;
 
@@ -27,8 +30,11 @@ public class Breaker extends IdentifiedObject implements NodeBreakerDataType, Sw
 	private Double ratedCurrent;
 	private Boolean switchNormalOpen;
 	
+	//private List<Switch> switches;
+	
 	public Breaker(){
 		dataType = BREAKER;
+		//switches = new ArrayList<>();
 	}
 		
 	public Breaker(String mrid, String dataType, String identName, String identAlias,
@@ -59,9 +65,13 @@ public class Breaker extends IdentifiedObject implements NodeBreakerDataType, Sw
 	public void setRatedCurrent(Double ratedCurrent) {
 		this.ratedCurrent = ratedCurrent;
 	}
+	
+	@Override
 	public Boolean getSwitchNormalOpen() {
 		return switchNormalOpen;
 	}
+	
+	@Override
 	public void setSwitchNormalOpen(Boolean normalOpen) {
 		this.switchNormalOpen = normalOpen;
 	}
