@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import pnnl.goss.powergrid.topology.nodebreaker.Region;
 import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 
 import com.impetus.kundera.index.Index;
@@ -35,6 +36,9 @@ public class Substation extends IdentifiedObject implements NodeBreakerDataType 
 	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	@JoinColumn(name=SUBSTATION_MRID)
 	private List<VoltageLevel> voltageLevels;
+	
+	@Column(name="REGION")
+	private Region region;
 	
 	public Substation(){
 		this.dataType = SUBSTATION;
@@ -60,5 +64,13 @@ public class Substation extends IdentifiedObject implements NodeBreakerDataType 
 
 	public void setVoltageLevels(List<VoltageLevel> voltageLevels) {
 		this.voltageLevels = voltageLevels;
+	}
+
+	public Region getRegion() {
+		return region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
 	}
 }
