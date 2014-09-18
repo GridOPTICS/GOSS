@@ -3,16 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>pnnl.goss</groupId>
 	<artifactId>goss-fusiondb</artifactId>
-	<version>0.1.5-SNAPSHOT</version>
+	<version>${goss-fusion.version}</version>
 	<packaging>pom</packaging>
 	<name>GOSS Fusiondb</name>
 		
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>${goss-master.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
 	<modules>
