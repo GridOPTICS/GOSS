@@ -7,11 +7,12 @@
 	<packaging>pom</packaging>
 
 	<name>GOSS Core Parent</name>
+	<version>${goss-core.version}</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>${goss-master.version}</version>
 	</parent>
 
 	<modules>
@@ -148,5 +149,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>0.1.5-SNAPSHOT</version>
 </project>

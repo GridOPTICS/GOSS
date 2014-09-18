@@ -6,11 +6,13 @@
 
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-master-build</artifactId>
-	<version>0.1.5-SNAPSHOT</version>
+	<version>${goss-master.version}</version>
 	<packaging>pom</packaging>
 	<name>GOSS Master Builder</name>
 
 	<properties>
+	
+		<goss-master.version>0.1.6-SNAPSHOT</goss-master.version>
 		
 		<!-- The groupId of all of our bundles. -->
 		<goss.groupId>pnnl.goss</goss.groupId>

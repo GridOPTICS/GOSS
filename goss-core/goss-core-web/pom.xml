@@ -11,7 +11,8 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>${goss-core.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
@@ -86,7 +87,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 		          <!-- Make a skinny WAR -->
-		          <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+		          <!-- <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes> -->
 		          <archive>
 		            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
 		          </archive>
