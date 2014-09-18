@@ -13,6 +13,7 @@
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
 		<version>${goss-master.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modules>
