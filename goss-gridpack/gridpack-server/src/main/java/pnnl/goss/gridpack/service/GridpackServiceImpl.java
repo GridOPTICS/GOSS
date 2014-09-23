@@ -48,18 +48,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.gridpack.common.datamodel.GridpackBranch;
+import pnnl.goss.gridpack.common.datamodel.TransmissionElement;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
 import pnnl.goss.gridpack.service.impl.GridpackUtils;
@@ -67,23 +70,32 @@ import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.PowergridService;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
-import pnnl.goss.server.core.GossDataServices;
 
 @Path("/")
+@Component
 public class GridpackServiceImpl {
 	
 	private static Logger log = LoggerFactory.getLogger(GridpackServiceImpl.class);
-	private PowergridService powergridService;
 	
 	public GridpackServiceImpl(){
 		log.debug("DEFAULT CONSTRUCTOR");
 	}
 	
-	public GridpackServiceImpl(@Requires PowergridService powergridService){
-		log.debug("CONSTRUCTING USING PowergridService constructor");
-		this.powergridService = powergridService;
-	}
+//	public GridpackServiceImpl(@Requires PowergridService powergridService){
+//		log.debug("CONSTRUCTING USING PowergridService constructor");
+//	}
 	
+	private PowergridService getPowergridService(){
+		PowergridService service = null;
+		try{
+			InitialContext ic = new InitialContext();
+			service = (PowergridService) ic.lookup("osgi:service/"+PowergridService.class.getName());
+		}
+		catch(NamingException e){
+			log.error("Exception getting: " + PowergridService.class.getName()+ "\n"+e.getMessage());
+		}
+		return service;
+	}
 	
 	@GET
 	@Path("/{powergridName}/buses/{numberOfBuses}")
@@ -124,7 +136,7 @@ public class GridpackServiceImpl {
 		
 		GridpackPowergrid pg = null;
 		
-		PowergridModel powergrid = powergridService.getPowergridModel(powergridName);
+		PowergridModel powergrid = getPowergridService().getPowergridModel(powergridName);
 		
 		if (powergrid == null){
 			// Make sure the response didn't throw an error.
@@ -136,6 +148,30 @@ public class GridpackServiceImpl {
 		
 		return pg;
 	}
+	
+	@GET
+    @Path("/{powergridName}/full")
+	@Produces({MediaType.TEXT_PLAIN})
+	public String getGridpackGridWithWadl(
+			@PathParam(value = "powergridName") String powergridName, 
+			@PathParam(value="plain") String asPlain){
+		
+		GridpackPowergrid pg = null;
+		
+		PowergridModel powergrid = getPowergridService().getPowergridModel(powergridName);
+		
+		if (powergrid == null){
+			// Make sure the response didn't throw an error.
+			GridpackUtils.throwInputError("Invalid powergrid specified: "+powergridName);
+			return null;
+		}
+					
+		pg = new GridpackPowergrid(powergrid);
+		
+		return pg.toString();
+	}
+	
+	
 	
 	@GET
 	@Path("/{powergridName}/bus/count")
@@ -173,37 +209,37 @@ public class GridpackServiceImpl {
 		return model.getBranches().size();
 	}
 	
-	@GET
-	@Path("/{powergridName}/branches/{numberOfBranches}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public Collection<GridpackBranch> getBranches0ToN(
-			@PathParam(value = "powergridName") String powergridName, 
-			@PathParam(value = "numberOfBranches") int numberOfBranches){
-		
-		Collection<GridpackBranch> branches = getBranchesNToM(powergridName, 0, numberOfBranches);
-		return branches;
-	}
+//	@GET
+//	@Path("/{powergridName}/branches/{numberOfBranches}")
+//	@Produces({MediaType.APPLICATION_JSON})
+//	public Collection<GridpackBranch> getBranches0ToN(
+//			@PathParam(value = "powergridName") String powergridName, 
+//			@PathParam(value = "numberOfBranches") int numberOfBranches){
+//		
+//		Collection<GridpackBranch> branches = getBranchesNToM(powergridName, 0, numberOfBranches);
+//		return branches;
+//	}
 	
-	@GET
-	@Path("/{powergridName}/branches/{startAtIndex}/{numberOfBranches}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Collection<GridpackBranch> getBranchesNToM(
-			@PathParam(value = "powergridName") String powergridName, 
-			@PathParam(value = "startAtIndex") int startAtIndex,
-			@PathParam(value = "numberOfBranches") int numberOfBranches){
-		
-		GridpackPowergrid grid = getGridpackGrid(powergridName);
-		List<GridpackBranch> branches = new ArrayList<GridpackBranch>(grid.getBranches());
-		
-		if (branches.size() > startAtIndex + numberOfBranches){
-			return branches.subList(startAtIndex, startAtIndex+numberOfBranches);
-		}
-		else if(branches.size() > startAtIndex){
-			return branches.subList(startAtIndex, branches.size());
-		}
-		
-		return null;
-	}
+//	@GET
+//	@Path("/{powergridName}/branches/{startAtIndex}/{numberOfBranches}")
+//	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+//	public Collection<GridpackBranch> getBranchesNToM(
+//			@PathParam(value = "powergridName") String powergridName, 
+//			@PathParam(value = "startAtIndex") int startAtIndex,
+//			@PathParam(value = "numberOfBranches") int numberOfBranches){
+//		
+//		GridpackPowergrid grid = getGridpackGrid(powergridName);
+//		List<GridpackBranch> branches = new ArrayList<GridpackBranch>(grid.getBranches());
+//		
+//		if (branches.size() > startAtIndex + numberOfBranches){
+//			return branches.subList(startAtIndex, startAtIndex+numberOfBranches);
+//		}
+//		else if(branches.size() > startAtIndex){
+//			return branches.subList(startAtIndex, branches.size());
+//		}
+//		
+//		return null;
+//	}
 	
 	
 
