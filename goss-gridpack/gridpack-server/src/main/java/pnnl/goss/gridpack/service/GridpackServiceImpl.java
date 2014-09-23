@@ -44,6 +44,16 @@
 */
 package pnnl.goss.gridpack.service;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,14 +65,27 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Requires;
+import org.fusesource.hawtbuf.ByteArrayInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import pnnl.goss.core.DataResponse;
-import pnnl.goss.gridpack.common.datamodel.TransmissionElement;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
 import pnnl.goss.gridpack.service.impl.GridpackUtils;
@@ -124,7 +147,7 @@ public class GridpackServiceImpl {
 		else if(buses.size() > startAtIndex){
 			return buses.subList(startAtIndex, buses.size());
 		}
-		
+				
 		return null;
 	}
 	
@@ -168,7 +191,85 @@ public class GridpackServiceImpl {
 					
 		pg = new GridpackPowergrid(powergrid);
 		
-		return pg.toString();
+		URL url;
+	    InputStream is = null;
+	    BufferedReader br;
+	    String line;
+	    StringWriter schemaWriter = new StringWriter();
+	    StringBuffer buf = new StringBuffer();
+	    StringWriter pretty = new StringWriter();
+
+	    try {
+	        url = new URL("http://localhost:8181/cxf/gridpack?_wadl");
+	        is = url.openStream();  // throws an IOException
+	        br = new BufferedReader(new InputStreamReader(is));
+
+	        while ((line = br.readLine()) != null) {
+	        	schemaWriter.write(line);
+	        }
+	    } catch (MalformedURLException mue) {
+	         mue.printStackTrace();
+	    } catch (IOException ioe) {
+	         ioe.printStackTrace();
+	    } finally {
+	        try {
+	            if (is != null) is.close();
+	        } catch (IOException ioe) {
+	            // nothing to see here
+	        }
+	    }
+	    
+	    try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			InputStream input = new ByteArrayInputStream(schemaWriter.toString().getBytes());
+			Document document = builder.parse(input);
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			serialize(document, output);
+			buf.append(output.toString());
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    JAXBContext jaxbCtx = null;
+        StringWriter xmlWriter = null;
+        try {
+            //XML Binding code using JAXB
+         
+            jaxbCtx = JAXBContext.newInstance(GridpackPowergrid.class);
+            xmlWriter = new StringWriter();
+            Marshaller marshaller = jaxbCtx.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(pg, xmlWriter);
+            //System.out.println("XML Marshal example in Java");
+            //System.out.println(xmlWriter);
+         
+//            Booking b = (Booking) jaxbCtx.createUnmarshaller().unmarshal(
+//                                               new StringReader(xmlWriter.toString()));
+//            System.out.println("XML Unmarshal example in JAva");
+//            System.out.println(b.toString());
+        } catch (JAXBException ex) {
+        	log.error("Xml exception" , ex);
+//            Logger.getLogger(JAXBXmlBindExample.class.getName()).log(Level.SEVERE,
+//                                                                          null, ex);
+        }
+        
+        
+        //buf.append(schemaWriter.toString());
+        buf.append(xmlWriter.toString());	    
+		
+		
+		return buf.toString();
 	}
 	
 	
@@ -249,4 +350,25 @@ public class GridpackServiceImpl {
 //		return null;
 //	}
 
+	 public void serialize(Document doc, OutputStream out) throws Exception {
+
+		  TransformerFactory tfactory = TransformerFactory.newInstance();
+		  Transformer serializer;
+		  try {
+		   serializer = tfactory.newTransformer();
+		   //Setup indenting to "pretty print"
+		   serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+		   serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+		   DOMSource xmlSource = new DOMSource(doc);
+		   StreamResult outputTarget = new StreamResult(out);
+		   serializer.transform(xmlSource, outputTarget);
+		  } catch (TransformerException e) {
+		   // this is fatal, just dump the stack and throw a runtime exception
+		   e.printStackTrace();
+
+		   throw new RuntimeException(e);
+		  }
+		 }
+		
 }
