@@ -17,14 +17,14 @@ public class TestDataResponse {
 	public void canSetAndGetData(){
 		String originalData = "This is data";
 		dataResponse.setData(originalData);
-		Assert.assertEquals(originalData,  dataResponse.getData(), "Data wasn't equal");
+		Assert.assertEquals(originalData,  dataResponse.getData());
 	}
 	
 	@Test
 	public void canSetDataThroughConstructor(){
 		String originalData = "Hey original data";
 		dataResponse = new DataResponse(originalData);
-		Assert.assertEquals(originalData,  dataResponse.getData(), "Data wasn't equal through constructor");
+		Assert.assertEquals(originalData,  dataResponse.getData());
 	}
 	
 	@Test
