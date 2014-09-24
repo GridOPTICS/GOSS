@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="goss-core-${project.version}" >
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="${project.artifactId}-${project.version}" >
 
     <feature name="goss-ipojo" version="1.12.0">
     	<feature>goss-dependencies</feature>
@@ -12,10 +12,10 @@
     <feature name="goss-activemq-broker-nosecurity" version="${project.version}">
         <feature version="5.9.0">activemq</feature>
         <configfile finalname="/etc/org.apache.activemq.server-default.cfg">
-        	mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/goss-broker-config
+        	mvn:pnnl.goss/goss-core-features/${project.version}/cfg/goss-broker-config
         </configfile>        
         <configfile finalname="/etc/pnnl-goss-activemq-broker.xml">
-        	mvn:pnnl.goss/goss-core-features/${pom.version}/xml/goss-broker-nosecurity
+        	mvn:pnnl.goss/goss-core-features/${project.version}/xml/goss-broker-nosecurity
         </configfile>
     </feature>
         
@@ -36,32 +36,32 @@
   		<feature>jndi</feature>
     </feature>
 
-    <feature name="goss-core-feature" version="${pom.version}">
+    <feature name="goss-core-feature" version="${project.version}">
     	<configfile finalname="/etc/pnnl.goss.core.cfg">
-        	mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/goss-core
+        	mvn:pnnl.goss/goss-core-features/${project.version}/cfg/goss-core
         </configfile>
         <configfile finalname="/etc/pnnl.goss.datasources.cfg">
-        	mvn:pnnl.goss/goss-core-features/${pom.version}/cfg/goss-datasources
+        	mvn:pnnl.goss/goss-core-features/${project.version}/cfg/goss-datasources
         </configfile>
     	<feature>goss-dependencies</feature>
     	<feature>goss-ipojo</feature>
     	<feature version="${cxf.version}">cxf</feature>
     	    	
     	<!-- Installs all the necessary activemq info for the broker and web-console -->
-    	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/${pom.version}</bundle>
+    	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/${project.version}</bundle>
     	   	
-    	<bundle start-level="84" dependency="true">mvn:pnnl.goss/goss-core/${pom.version}</bundle>
-    	<bundle start-level="85" dependency="true">mvn:pnnl.goss/goss-core-client/${pom.version}</bundle>    	    	
-    	<bundle start-level="86" dependency="true">mvn:pnnl.goss/goss-core-security/${pom.version}</bundle>
-    	<bundle start-level="87" dependency="true">mvn:pnnl.goss/goss-core-server/${pom.version}</bundle>
+    	<bundle start-level="84" dependency="true">mvn:pnnl.goss/goss-core/${project.version}</bundle>
+    	<bundle start-level="85" dependency="true">mvn:pnnl.goss/goss-core-client/${project.version}</bundle>    	    	
+    	<bundle start-level="86" dependency="true">mvn:pnnl.goss/goss-core-security/${project.version}</bundle>
+    	<bundle start-level="87" dependency="true">mvn:pnnl.goss/goss-core-server/${project.version}</bundle>
 
     </feature>   
     
-    <feature name="goss-core-web-feature" version="${pom.version}">
+    <feature name="goss-core-web-feature" version="${project.version}">
     	<feature>goss-core-feature</feature>
     	<feature>http</feature>
     	<feature>war</feature>
     	
-    	<bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/${pom.version}/war</bundle>
+    	<bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/${project.version}/war</bundle>
     </feature>
 </features>

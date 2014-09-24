@@ -50,16 +50,16 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Updated;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mysql.jdbc.log.LogFactory;
 
 import pnnl.goss.security.core.internal.SecurityConfiguration;
 
-@Component(managedservice=PROP_CORE_CONFIG)
 public class GossSecurityActivator {
 
-	protected Logger log = Logger.getLogger(GossSecurityActivator.class);
+	private static final Logger log = LoggerFactory.getLogger(GossSecurityActivator.class);
 //	
 //	@SuppressWarnings("rawtypes")
 //	@Updated

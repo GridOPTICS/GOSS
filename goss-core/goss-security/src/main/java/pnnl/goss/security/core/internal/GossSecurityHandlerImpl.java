@@ -54,30 +54,22 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.activemq.jaas.GroupPrincipal;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Validate;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.security.core.GossSecurityHandler;
 import pnnl.goss.security.core.authorization.AbstractAccessControlHandler;
 
-@SuppressWarnings("rawtypes")
-@Component(managedservice=PROP_CORE_CONFIG)
-@Instantiate
-@Provides
 public class GossSecurityHandlerImpl implements GossSecurityHandler {
 
-	protected static Logger log = Logger.getLogger(GossSecurityHandlerImpl.class);
+	protected static Logger log = LoggerFactory.getLogger(GossSecurityHandler.class);
 	/*
 	 * We can't use Class here because of the way osgi bundles get resolved.
 	 */
 	private static HashMap<Class, Class> handlerMap = new HashMap<Class, Class>();
 	protected static Map<String, List<String>> tempTopicRoles = new HashMap<String, List<String>>();
-	
-	@Validate
+		
 	public void startingHandler(){
 		log.debug("Starting handler");
 	}
@@ -134,11 +126,11 @@ public class GossSecurityHandlerImpl implements GossSecurityHandler {
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				log.error(e);
+				log.error("InstantiationException", e);
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				log.error(e);
+				log.error("IllegalAccessException", e);
 			}
 		 } else {
 			 log.warn("Warning: Security handler class mapping not found for "+request.getClass());
@@ -274,7 +266,7 @@ public class GossSecurityHandlerImpl implements GossSecurityHandler {
 				//handlerMap.put(request, handler);
 			}
 		} catch (Exception e) {
-			log.error(e);
+			log.error("Adding handler", e);
 			e.printStackTrace();
 		}
 

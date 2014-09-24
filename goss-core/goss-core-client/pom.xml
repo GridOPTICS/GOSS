@@ -4,32 +4,48 @@
 	<artifactId>goss-core-client</artifactId>
 	<packaging>bundle</packaging>
 	<name>GOSS Core Client Bundle</name>
+	<description>
+		The goss-core-client bundle can connect to instances of the goss server through the
+		request listeners and retrieve data.  Connections can be made using pub/sub and request
+		response (blocking).
+	</description>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>${goss-core.version}</version>
+		<version>0.1.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>pnnl.goss</groupId>
-			<artifactId>goss-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>				
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId>
+			<version>${activemq.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-jaas</artifactId>
+			<version>${activemq.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+			<version>${httpclient-osgi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fusesource.stompjms</groupId>
+			<artifactId>stompjms-client</artifactId>
+			<version>${stompjms.version}</version>
+		</dependency>
+		
+			
+		<!-- <dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections-maven</artifactId>
 		</dependency>
@@ -44,6 +60,20 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
+		</dependency> -->
+		
+		<!-- The following packages are defined in the parent pom. -->
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -53,6 +83,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		
 	</dependencies>
 
 	<build>

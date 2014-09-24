@@ -55,7 +55,7 @@ import org.apache.felix.ipojo.annotations.Property;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.osgi.service.cm.ConfigurationException;
+//import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +92,7 @@ public class GossServerActivator {
 
 	@Updated
 	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config) throws ConfigurationException {
+	public void updated(Dictionary config){ // throws ConfigurationException {
 		System.out.println("Updating Goss Server configuration");
 			
 		if (gossServer != null){

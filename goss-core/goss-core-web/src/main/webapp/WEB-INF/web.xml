@@ -18,14 +18,14 @@
 	
 	<servlet-mapping>
 		<servlet-name>management</servlet-name>
-		<url-pattern>manage/*</url-pattern>
+		<url-pattern>/manage/*</url-pattern>
 	</servlet-mapping>
-	<!--
+	
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/*</url-pattern>
-	</servlet-mapping>-->
-	<!--
+	</servlet-mapping>
+	
 	<filter>
 		<filter-name>checkAuthenticatedFilter</filter-name>
 		<filter-class>pnnl.goss.demo.security.filter.CheckAuthenticatedFilter</filter-class>

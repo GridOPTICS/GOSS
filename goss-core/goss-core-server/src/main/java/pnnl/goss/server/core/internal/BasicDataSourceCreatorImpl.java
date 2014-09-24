@@ -1,4 +1,4 @@
-package pnnl.goss.server.core;
+package pnnl.goss.server.core.internal;
 
 import java.util.Properties;
 
@@ -10,12 +10,12 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.server.core.internal.GossDataServicesImpl;
+import pnnl.goss.server.core.BasicDataSourceCreator;
 
 @Provides
+@Component
 @Instantiate
-@Component(immediate=true)
-public class BasicDataSourceCreator {
+public class BasicDataSourceCreatorImpl implements BasicDataSourceCreator {
 	
 	private static final Logger log = LoggerFactory.getLogger(BasicDataSourceCreator.class);
 

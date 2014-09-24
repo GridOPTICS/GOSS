@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>${goss-core.version}</version>
+		<version>0.1.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -21,7 +21,8 @@
 			</resource>
 		</resources>
 		<filters>
-        	<filter>${global.properties.path}</filter>
+			<!-- Leave the space after properties or this will fail -->
+        	<filter>../../goss.properties </filter>
         </filters>
 		<plugins>
 			<plugin>

@@ -44,27 +44,21 @@
 */
 package pnnl.goss.core.client.internal;
 
-import static pnnl.goss.core.GossCoreContants.*;
+import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
+import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Updated;
 
-@Component(managedservice=PROP_CORE_CONFIG)
-@Instantiate
 public class ClientConfiguration {
 	private static final Log log = LogFactory.getLog(ClientConfiguration.class);
 	protected Properties properties = new Properties();
 	
 	public ClientConfiguration(Properties configuration){
+		log.debug("Constructing");
 		if (configuration != null){
 			properties= configuration;
 			
@@ -73,13 +67,12 @@ public class ClientConfiguration {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@Updated
 	public void update(Dictionary config){
 		String[] keys = {PROP_OPENWIRE_URI, PROP_STOMP_URI};
 		updateProperties(keys, config);
 	}
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "rawtypes" })
 	protected void updateProperties(String[] keys, Dictionary config){
 		for(String k: keys){
 			properties.setProperty(k, (String)config.get(k));

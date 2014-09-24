@@ -10,17 +10,17 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>${goss-core.version}</version>
+		<version>0.1.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>${goss.groupId}</groupId>
+			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${goss.groupId}</groupId>
+			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-security</artifactId>
 		</dependency>
 		<dependency>
@@ -28,26 +28,28 @@
 			<artifactId>goss-core-security-utils</artifactId>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId>
+			<version>${activemq.version}</version>
 		</dependency>
 <!--  TODO verify with security on -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections-maven</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.directory.server</groupId>
 			<artifactId>apacheds-all</artifactId>
+			<version>${apacheds.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -59,33 +61,36 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
+			<version>${servicemix-commons-dbcp.version}</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
 		</dependency>		
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.fusesource.stompjms</groupId>
 			<artifactId>stompjms-client</artifactId>
 		</dependency>
-		
+		 -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+			<version>${ipojo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

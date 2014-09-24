@@ -60,10 +60,6 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.http.auth.Credentials;
 import org.fusesource.stomp.jms.StompJmsConnection;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
@@ -72,6 +68,8 @@ import org.fusesource.stomp.jms.StompJmsTempQueue;
 import org.fusesource.stomp.jms.StompJmsTopic;
 import org.fusesource.stomp.jms.message.StompJmsBytesMessage;
 import org.fusesource.stomp.jms.message.StompJmsTextMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
@@ -85,13 +83,12 @@ import static pnnl.goss.core.GossCoreContants.*;
 import com.google.gson.Gson;
 
 import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
-@Component
+
 public class GossClient implements Client{
 
-	private static final Log log = LogFactory.getLog(GossClient.class);
+	private static final Logger log = LoggerFactory.getLogger(GossClient.class);
 	public enum PROTOCOL {OPENWIRE, STOMP};
 	
-	@Requires(nullable=false)
 	private ClientConfiguration config;
 	volatile ClientPublisher clientPublisher;
 	private Connection connection;
@@ -229,7 +226,7 @@ public class GossClient implements Client{
 
 			clientConsumer.close();
 		} catch (JMSException e) {
-			log.error(e);
+			log.error("getResponse Error", e);
 		}
 
 		return response;
@@ -262,7 +259,7 @@ public class GossClient implements Client{
 			}
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("sendRequest Error", e);
 		}
 		return null;
 	}
@@ -308,7 +305,7 @@ public class GossClient implements Client{
 			
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("Subscribe Error", e);
 		}
 	}
 	
@@ -333,7 +330,7 @@ public class GossClient implements Client{
 				
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("publish error", e);
 		}
 	}
 	
@@ -361,7 +358,7 @@ public class GossClient implements Client{
 			clientPublisher.publishTo(destination, data);
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("publishString", e);
 		}
 	}
 	
@@ -381,7 +378,7 @@ public class GossClient implements Client{
 			clientPublisher.publishTo(destination, data);
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("publish topic error", e);
 		}
 		
 	}
@@ -399,7 +396,7 @@ public class GossClient implements Client{
 			this.clientPublisher.close();
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("Close Error", e);
 		}
 		
 	}
@@ -420,7 +417,7 @@ public class GossClient implements Client{
 			clientPublisher.publishTo(destination, data);
 		}
 		catch(JMSException e){
-			log.error(e);
+			log.error("publish data error", e);
 		}
 		
 	}

@@ -59,7 +59,6 @@ import java.util.Stack;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.felix.ipojo.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

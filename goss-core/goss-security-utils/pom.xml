@@ -11,15 +11,43 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>${goss-core.version}</version>
+		<version>0.1.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<properties>
-		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
-		<slf4j.version>1.7.5</slf4j.version>
-	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-all</artifactId>
+			<version>${activemq.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-jaas</artifactId>
+			<version>${activemq.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.karaf.jaas</groupId>
+			<artifactId>org.apache.karaf.jaas.modules</artifactId>
+			<version>${karaf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.karaf.jaas</groupId>
+			<artifactId>org.apache.karaf.jaas.boot</artifactId>
+			<version>${karaf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+   			<artifactId>spring-beans</artifactId>
+   			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		
+		<!--  -->
+		<!-- 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -32,14 +60,8 @@
 			<groupId>org.apache.karaf.jaas</groupId>
 			<artifactId>org.apache.karaf.jaas.boot</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-jaas</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-all</artifactId>
-		</dependency>
+		
+		
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
@@ -51,7 +73,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
    			<artifactId>spring-beans</artifactId>
-		</dependency>
+		</dependency>-->
 	</dependencies>
 
 	<build>
