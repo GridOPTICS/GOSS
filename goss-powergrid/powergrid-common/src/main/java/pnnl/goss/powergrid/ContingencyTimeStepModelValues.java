@@ -44,14 +44,14 @@
 */
 package pnnl.goss.powergrid;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.powergrid.datamodel.ContingencyBranchViolation;
 import pnnl.goss.powergrid.datamodel.ContingencyBusViolation;
 
-public class ContingencyTimeStepModelValues extends Data {
+public class ContingencyTimeStepModelValues implements Serializable {
 
 	private int contingencyId;
 	private int powergridId;

@@ -44,16 +44,16 @@
 */
 package pnnl.goss.powergrid;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.powergrid.datamodel.Contingency;
 import pnnl.goss.powergrid.datamodel.ContingencyBranchOut;
 
-public class ContingencyModel extends Data{
+public class ContingencyModel implements Serializable{
 
 	private List<Contingency> contingencies;
 	private HashMap<Contingency, List<ContingencyBranchOut>> contingencyBranchesOut;
