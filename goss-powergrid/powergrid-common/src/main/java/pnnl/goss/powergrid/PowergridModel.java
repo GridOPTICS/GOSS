@@ -119,7 +119,7 @@ public class PowergridModel implements Serializable {
 
 	final AlertContext alertContext;
 
-	@XmlElement(name = "Powergrid")
+	//@XmlElement(name = "Powergrid")
 	Powergrid powergrid = null;
 
 	@XmlTransient
@@ -255,6 +255,7 @@ public class PowergridModel implements Serializable {
 		return areas;
 	}
 
+	@XmlElement(name = "Powergrid", type = Powergrid.class)
 	public Powergrid getPowergrid() {
 		return powergrid;
 	}

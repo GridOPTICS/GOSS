@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-powergrid</artifactId>
-		<version>${goss-powergrid.version}</version>
+		<version>0.1.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

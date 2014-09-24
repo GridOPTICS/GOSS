@@ -6,9 +6,10 @@
 		<feature>jdbc</feature>
 		<feature>jpa</feature>
 		<feature>openjpa</feature>
-		<feature>hibernate4</feature>
+		<feature>hibernate</feature>
 		<feature>goss-core-feature</feature>
-    	
+		
+    	<bundle dependency="true">wrap:mvn:com.impetus.kundera.core/kundera-core/2.13</bundle>
     	<bundle start-level="88" dependency="true">mvn:pnnl.goss/goss-powergrid-common/${pom.version}</bundle>
     	<bundle start-level="89" dependency="true">mvn:pnnl.goss/goss-powergrid-server/${pom.version}</bundle>
     	

@@ -75,7 +75,10 @@ import pnnl.goss.powergrid.topology.IdentifiedObject;
     "powergridId",
     "name",
     "coordinateSystem",
-    "mrid"
+    "mrid",
+    "caseIdentifier",
+    "sbase",
+    "identifiedObject"
 })
 @Entity
 public class Powergrid
@@ -98,11 +101,13 @@ public class Powergrid
     /**
      * PTI-Case identifier
      */
+    @XmlElement(name = "CASE_ID", required = true)
     private String caseIdentifier;
     
     /**
      * System mva base 
      */
+    @XmlElement(name = "CASE_SBASE", required = true)
     private Double sbase;	
     
     /**
@@ -112,7 +117,9 @@ public class Powergrid
     private IdentifiedObject identifiedObject;
     
     public Powergrid(){
-    	
+    	// TODO Remove hard coding here!
+    	sbase=100.0;
+    	caseIdentifier = "Greek-118-North";    	
     }
     
 

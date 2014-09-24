@@ -45,7 +45,6 @@
 package pnnl.goss.powergrid.server.handlers;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -59,7 +58,6 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.collections.PowergridList;
-import pnnl.goss.powergrid.collections.PowergridNameList;
 import pnnl.goss.powergrid.dao.PowergridDao;
 import pnnl.goss.powergrid.dao.PowergridDaoMySql;
 import pnnl.goss.powergrid.datamodel.Powergrid;
@@ -69,13 +67,13 @@ import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStepValues;
 import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
+import pnnl.goss.powergrid.server.impl.PowergridListerImpl;
 import pnnl.goss.server.core.GossRequestHandler;
 
 public class RequestPowergridHandler extends GossRequestHandler {
 
-	String datasourceKey = null;
 	private static Logger log = LoggerFactory.getLogger(RequestPowergridHandler.class);
-
+		
 	private DataResponse getPowergridModleAtTimestepResponse(PowergridDao dao, String powergridName, Timestamp timestep) {
 		Powergrid grid = dao.getPowergridByName(powergridName);
 		DataResponse response = new DataResponse();
@@ -112,7 +110,8 @@ public class RequestPowergridHandler extends GossRequestHandler {
 	}
 	
 	private DataResponse getAvailablePowergrids(PowergridDao dao){
-		PowergridList grids = new PowergridList(dao.getAvailablePowergrids());
+		PowergridListerImpl lister = new PowergridListerImpl();
+		PowergridList grids = new PowergridList(lister.getPowergrids());
 		DataResponse response = new DataResponse();
 		response.setData(grids);
 		return response;
@@ -120,7 +119,8 @@ public class RequestPowergridHandler extends GossRequestHandler {
 	
 	private DataResponse getAllPowergrids(){
 		DataResponse response = new DataResponse();
-		PowergridList powergridList = new PowergridList(PowergridDataSources.instance().getAllPowergrids());
+		PowergridListerImpl lister = new PowergridListerImpl();
+		PowergridList powergridList = new PowergridList(lister.getPowergrids());
 		response.setData(powergridList);
 		return response;
 	}
@@ -154,7 +154,9 @@ public class RequestPowergridHandler extends GossRequestHandler {
 //			return response;
 //		}
 		
-		log.debug("using datasource: " + datasourceKey);
+		log.debug("using datasource: " + PowergridServerActivator.PROP_POWERGRID_DATASERVICE);
+		// The dao uses a datasource rather than a connection so that it can have multiple
+		// connections working together.
 		PowergridDao dao = new PowergridDaoMySql((DataSource) this.dataservices.getDataService(PowergridServerActivator.PROP_POWERGRID_DATASERVICE));
 
 		if (request instanceof RequestPowergridTimeStep) {

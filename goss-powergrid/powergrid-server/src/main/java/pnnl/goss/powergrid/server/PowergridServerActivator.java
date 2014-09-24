@@ -44,43 +44,25 @@
 */
 package pnnl.goss.powergrid.server;
 
-import java.sql.SQLException;
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
-import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridList;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
-import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
-import pnnl.goss.powergrid.server.handlers.RequestAvailableDatasourcesHandler;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
-import pnnl.goss.powergrid.server.impl.PowergridContextServiceImpl;
 import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.BasicDataSourceCreator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
-import pnnl.goss.server.core.InvalidDatasourceException;
-import static pnnl.goss.core.GossCoreContants.*;
 
 @Instantiate
+@Component
 public class PowergridServerActivator{
 
 	public static final String PROP_POWERGRID_DATASERVICE = "goss/powergrid";
@@ -113,16 +95,15 @@ public class PowergridServerActivator{
 	
 	
 	private void registerDataService() {
+		if (datasourceCreator == null){
+			log.error("BaseicDataSourcCreator not created properly.");
+		}
 		if (!dataServices.contains(PROP_POWERGRID_DATASERVICE)) {
 			log.debug("Attempting to register dataservice: "
 					+ PROP_POWERGRID_DATASERVICE);
 			String user = dataServices.getPropertyValue(PROP_POWERGRID_USER);
 			String uri = dataServices.getPropertyValue(PROP_POWERGRID_URI);
 			String password = dataServices.getPropertyValue(PROP_POWERGRID_PASSWORD);
-			
-			if (datasourceCreator == null){
-				datasourceCreator = new BasicDataSourceCreator();
-			}
 			
 			try {
 				dataServices.registerData(PROP_POWERGRID_DATASERVICE,
@@ -135,6 +116,8 @@ public class PowergridServerActivator{
 	
 	@Validate
 	public void start(){
+		
+		
 				
 		if(registrationService != null){
 			// Registering service handlers here
