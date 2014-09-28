@@ -18,48 +18,19 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-public class ModelGeneration {
+public class ModelGeneration implements FindDataType, FindClass {
 	
 	/**
 	 * All generated classes will be under this root.
 	 */
-	private static final String ROOT_PACKAGE = "pnnl.goss.nb";
+	public static final String ROOT_PACKAGE = "pnnl.goss.nb";
 	
 	/**
 	 * The root of the java source folder.
 	 */
-	private static final String ROOT_FOLDER = "src/main/java";
-	
-	// Classes sheet
-	private static final Integer CLASSES_PACKAGE_COLUMN = 0;
-	private static final Integer CLASSES_CLASS_COLUMN = 1;
-	private static final Integer CLASSES_INHERITANCE_COLUMN = 3;
-	private static final Integer CLASSES_NAMESPACE_COLUMN = 4;
-	private static final Integer CLASSES_DOCUMENTATION_COLUMN = 5;
-	// Attributes sheet
-	private static final Integer ATTRIB_CLASS_COLUMN = 2;
-	private static final Integer ATTRIB_ATTRIBUTE_COLUMN = 4;
-	private static final Integer ATTRIB_DATA_TYPE_COLUMN = 5;
-	private static final Integer ATTRIB_INITIAL_VALUE_COLUMN = 6;
-	private static final Integer ATTRIB_DOCUMENTATION_COLUMN = 8;
-	// DataType sheet
-	private static final Integer DATATYPE_PACKAGE_COLUMN = 0;
-	private static final Integer DATATYPE_DATA_TYPE_CoLUMN = 1;
-	private static final Integer DATATYPE_NS_CoLUMN = 2;
-	private static final Integer DATATYPE_DOCUMENTATION_CoLUMN = 3;
-	// DataType Value & Unit sheet
-	private static final Integer DATATYPEVALUE_PACKAGE_CoLUMN = 0;
-	private static final Integer DATATYPEVALUE_DATA_TYPE_CoLUMN = 2;
-	private static final Integer DATATYPEVALUE_DATA_TYPE_NAME_CoLUMN = 1;
-	private static final Integer DATATYPEVALUE_NS_CoLUMN = 4;
-	// DataType - Enum sheet
-	private static final Integer DATATYPEENUM_PACKAGE_COLUMN = 0;
-	private static final Integer DATATYPEENUM_ENUM_TYPE_COLUMN = 1;
-	private static final Integer DATATYPEENUM_ENUM_VALUE_COLUMN = 2;
-	private static final Integer DATATYPEENUM_DOCUMENTATION_CoLUMN = 3;
-	private static final Integer DATATYPEENUM_NS_CoLUMN = 4;
-	
-	private enum DataTypeSheets{
+	public static final String ROOT_FOLDER = "src/main/java";
+		
+	public enum DataTypeSheets{
 		DataType,
 		DataTypeAndUnits,
 		DataTypeEnums
@@ -76,7 +47,8 @@ public class ModelGeneration {
 	/**
 	 * Maps the datatype name to a metadatatype structure.
 	 */
-	private static Map<String, MetaDataType> metaDataType = new HashMap<>();
+	private static Map<String, MetaDataType> metaDataTypes = new HashMap<>();
+	
 	
 	/**
 	 * Creates a package directory under ROOT_FOLDER.
@@ -103,83 +75,41 @@ public class ModelGeneration {
 		return dir.toString(); //.toAbsolutePath().toString();
 	}
 	
-	/**
-	 * Gets the string of the package that a class should be in.  The package is expected
-	 * to be from the first column of the Classes worksheet in the xls file.
-	 * 
-	 * @param data Data in the cell of the first column of the classes tab in the xls file.
-	 * @return The package or null if not available.
-	 */
-	private static String getPackage(String data){
-		String clspackage = ROOT_PACKAGE;
-		
-		// This used the package data from the first column to generate the package
-		if (data.length() > 3){
-			if(data.startsWith("ETXSCADA")){
-				clspackage += ".ext.scada";
-			}
-			else if(data.startsWith("CIMSCADA")){
-				clspackage += ".scada";
-			}
-			else if(data.startsWith("CIM") || data.startsWith("EXT")){
-				
-				if (data.startsWith("EXT")){
-					clspackage += "ext";
-				}
-				
-				for(int i=3; i < data.length();i++){
-					if(Character.isUpperCase(data.charAt(i))){
-						clspackage += "."+Character.toString(Character.toLowerCase(data.charAt(i)));
-					}
-					else{
-						clspackage += data.charAt(i);
-					}
-				}
-			}
-			else{
-				clspackage = null;
-			}
-		}
-		else{
-			clspackage += "." + data.toLowerCase();
-		}
-		
-		return clspackage;
-	}
+	
 	
 	/**
-	 * Adds the meta-classes super class for all classes in the  xls sheet.
+	 * Adds the meta-classes super class + for all classes in the  xls sheet.
 	 * 
 	 * @param classesSheet
 	 */
-	private static void addInheritancePath(HSSFSheet classesSheet){
-		// First row is header
-		for(int r=1; r < classesSheet.getPhysicalNumberOfRows(); r++){
-			HSSFRow row = classesSheet.getRow(r);
-			if (row == null) {
-				continue;
-			}
-			
-			HSSFCell classCell = row.getCell(CLASSES_CLASS_COLUMN); //.getStringCellValue()
-			if (classCell != null && classCell.getStringCellValue()!= null){
-				String className = classCell.getStringCellValue();
-				if (classNameToType.containsKey(className)){
-					// Pull the meta class out and set the superclass to the first
-					// item in the Inheritance Path list.
-					MetaClass meta = metaClasses.get(classNameToType.get(className));
-					String inherString = row.getCell(CLASSES_INHERITANCE_COLUMN).getStringCellValue();
-					String extendsClassName = inherString.split(";")[0];
-					meta.setExtendsType(classNameToType.get(extendsClassName));
-					
-				}
-				
-			}
-		}
-	}
+//	private static void addInheritancePath(HSSFSheet classesSheet){
+//		// First row is header
+//		for(int r=1; r < classesSheet.getPhysicalNumberOfRows(); r++){
+//			HSSFRow row = classesSheet.getRow(r);
+//			if (row == null) {
+//				continue;
+//			}
+//			
+//			
+//			
+//			HSSFCell classCell = row.getCell(CLASSES_CLASS_COLUMN); //.getStringCellValue()
+//			if (classCell != null && classCell.getStringCellValue()!= null){
+//				String className = classCell.getStringCellValue();
+//				if (classNameToType.containsKey(className)){
+//					// Pull the meta class out and set the superclass to the first
+//					// item in the Inheritance Path list.
+//					MetaClass meta = metaClasses.get(classNameToType.get(className));
+//					String inherString = row.getCell(CLASSES_INHERITANCE_COLUMN).getStringCellValue();
+//					String extendsClassName = inherString.split(";")[0];
+//					meta.setExtendsType(classNameToType.get(extendsClassName));
+//					
+//				}
+//				
+//			}
+//		}
+//	}
 	
-	private static String getEnumerationPackage(){
-		return ROOT_PACKAGE.concat(".enumerations");
-	}
+	
 	
 	/**
 	 * Populates the internal metaDataTypes map from the DataTypes tab, 'DataType Enums, or the 
@@ -192,96 +122,23 @@ public class ModelGeneration {
 		// First row is header
 		for(int r=1; r < dataTypeSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = dataTypeSheet.getRow(r);
-			if (row == null) {
-				continue;
+			MetaDataType dataType = MetaDataType.create(row,  sheetType);
+			if (dataType != null){
+				if (!metaDataTypes.containsKey(dataType.getDataTypeName())){
+					metaDataTypes.put(dataType.getDataTypeName(), dataType);
+				}
+				else{
+					System.out.println("Contains "+dataType.getDataTypeName() +" already.");
+				}
 			}
-			HSSFCell packageCell= null;
-			switch (sheetType){
-			case DataTypeAndUnits:
-				packageCell = row.getCell(DATATYPEVALUE_PACKAGE_CoLUMN); 
-				if (packageCell != null && packageCell.getStringCellValue()!= null){
-					
-					HSSFCell namespaceCell = row.getCell(DATATYPEVALUE_NS_CoLUMN);
-					HSSFCell dataTypeNameCell = row.getCell(DATATYPEVALUE_DATA_TYPE_NAME_CoLUMN);
-					HSSFCell dataTypeCell = row.getCell(DATATYPEVALUE_DATA_TYPE_CoLUMN);
-					String dataTypeName = dataTypeNameCell.getStringCellValue();
-					
-					String namespace = namespaceCell.getStringCellValue();
-					
-					MetaDataType meta = new MetaDataType();
-					
-					meta.setDataTypeName(dataTypeName);
-					meta.setNamespace(namespace);
-					if (dataTypeCell != null){
-						String dataTypeValue = dataTypeCell.getStringCellValue();
-						meta.setValueType(dataTypeValue);
-					}
-					
-	
-					metaDataType.put(meta.getDataTypeName(), meta);
-					
-				}
-				break;
-			case DataType:
-				packageCell = row.getCell(DATATYPE_PACKAGE_COLUMN); 
-				if (packageCell != null && packageCell.getStringCellValue()!= null){
-					boolean isEnum = packageCell.getStringCellValue().contains("Enum");
-					
-					HSSFCell namespaceCell = row.getCell(CLASSES_NAMESPACE_COLUMN);
-					HSSFCell dataTypeCell = row.getCell(DATATYPE_DATA_TYPE_CoLUMN); 
-					String dataTypeName = dataTypeCell.getStringCellValue();
-					String namespace = namespaceCell.getStringCellValue();
-					
-					MetaDataType meta = new MetaDataType();
-					
-					meta.setDataTypeName(dataTypeName);
-					meta.setNamespace(namespace);
-					meta.setEnumeration(isEnum);
-	
-					metaDataType.put(meta.getDataTypeName(), meta);
-				}
-				break;
-			case DataTypeEnums:
-				packageCell = row.getCell(DATATYPEENUM_PACKAGE_COLUMN); 
-				if (packageCell != null && packageCell.getStringCellValue()!= null){
-										
-					HSSFCell namespaceCell = row.getCell(DATATYPEENUM_NS_CoLUMN);
-					HSSFCell enumTypeCell = row.getCell(DATATYPEENUM_ENUM_TYPE_COLUMN);
-					HSSFCell enumValueCell = row.getCell(DATATYPEENUM_ENUM_VALUE_COLUMN);
-					
-					String enumTypeName = enumTypeCell.getStringCellValue();
-					String enumValue = enumValueCell.getStringCellValue();
-					String namespace = namespaceCell.getStringCellValue();
-					
-					MetaDataType meta = null; 
-					// Handle the addition of enumeration values
-					if(metaDataType.containsKey(enumTypeName)){
-						meta = metaDataType.get(enumTypeName);
-						meta.addEnumeratedValue(enumValue);
-						meta.setJavaPackage(getEnumerationPackage());
-						meta.setEnumeration(true);
-					}
-					else{
-						meta = new MetaDataType();
-						meta.setDataTypeName(enumTypeName);
-						meta.setNamespace(namespace);
-						meta.setEnumeration(true);
-						meta.setJavaPackage(getEnumerationPackage());
-						meta.addEnumeratedValue(enumValue);
-						
-						metaDataType.put(meta.getDataTypeName(), meta);
-					}
-				}
-				break;
-			}	
-		}
+		}		
 	}
 	
 	/**
 	 * Creates the meta-classes from the classes sheet.  After this method
 	 * is called all of the classes in the object model will be in the
 	 * metaClasses Map by datatype.  Each class name will also be in the
-	 * classNameToDataType map for easy retrieval and reference.
+	 * classNameToDataType map for easy retrieval and reference.dataTypeShee
 	 * 
 	 * @param classesSheet
 	 */
@@ -292,135 +149,146 @@ public class ModelGeneration {
 			if (row == null) {
 				continue;
 			}
-			//HSSFCell pkgCell = row.getCell(CLASSES_PACKAGE_COLUMN);
-			HSSFCell pkgCell = row.getCell(CLASSES_NAMESPACE_COLUMN);
-			if (pkgCell != null){
-				if (pkgCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
-					System.out.println("Skipping: " +pkgCell.getNumericCellValue());
-				}
-				else if(pkgCell.getCellType() == HSSFCell.CELL_TYPE_STRING){
-					// Use this as a test so that we can get the mapped type and see
-					// if it's already in the collection (Hopefully it never will!)
-					MetaClass tmp = new MetaClass();
-					tmp.setPackageName(getPackage(pkgCell.getStringCellValue()));
-					tmp.setClassName(row.getCell(CLASSES_CLASS_COLUMN).getStringCellValue());
-					
-					if (!tmp.isValidClassDefinition()){
-						System.out.println("Invalid class detected for row: "+ r);
-						continue;
-					}
-					
-					// Store the metaclass in our hashmap of classes if necessary.
-					MetaClass newMetaClass = metaClasses.get(tmp.getDataType());
-					if (newMetaClass == null){
-						newMetaClass = tmp;
-						metaClasses.put(newMetaClass.getDataType(), newMetaClass);
-						classNameToType.put(newMetaClass.getClassName(), newMetaClass.getDataType());
-					}
-					else{
-						System.out.println("Boo already has the datatype!! "+newMetaClass.getDataType());
-					}
-					
-					HSSFCell docCell = row.getCell(CLASSES_DOCUMENTATION_COLUMN);
-					if (docCell != null && docCell.getStringCellValue() != null){
-						newMetaClass.setClassDocumentation(docCell.getStringCellValue());
-					}
-				}
+			
+			MetaClass cls = MetaClass.create(row);
+			
+			if (!metaClasses.containsKey(cls.getPackageAndClass())){
+				metaClasses.put(cls.getPackageAndClass(), cls);
 			}
+			
+			
+//			//HSSFCell pkgCell = row.getCell(CLASSES_PACKAGE_COLUMN);
+//			HSSFCell pkgCell = row.getCell(CLASSES_NAMESPACE_COLUMN);
+//			if (pkgCell != null){
+//				if (pkgCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
+//					System.out.println("Skipping: " +pkgCell.getNumericCellValue());
+//				}
+//				else if(pkgCell.getCellType() == HSSFCell.CELL_TYPE_STRING){
+//					// Use this as a test so that we can get the mapped type and see
+//					// if it's already in the collection (Hopefully it never will!)
+//					MetaClass tmp = new MetaClass();
+//					tmp.setPackageName(getPackage(pkgCell.getStringCellValue()));
+//					tmp.setClassName(row.getCell(CLASSES_CLASS_COLUMN).getStringCellValue());
+//					
+//					if (!tmp.isValidClassDefinition()){
+//						System.out.println("Invalid class detected for row: "+ r);
+//						continue;
+//					}
+//					
+//					// Store the metaclass in our hashmap of classes if necessary.
+//					MetaClass newMetaClass = metaClasses.get(tmp.getPackageAndClass());
+//					if (newMetaClass == null){
+//						newMetaClass = tmp;
+//						metaClasses.put(newMetaClass.getPackageAndClass(), newMetaClass);
+//						classNameToType.put(newMetaClass.getClassName(), newMetaClass.getPackageAndClass());
+//					}
+//					else{
+//						System.out.println("Boo already has the datatype!! "+newMetaClass.getPackageAndClass());
+//					}
+//					
+//					HSSFCell docCell = row.getCell(CLASSES_DOCUMENTATION_COLUMN);
+//					if (docCell != null && docCell.getStringCellValue() != null){
+//						newMetaClass.setClassDocumentation(docCell.getStringCellValue());
+//					}
+//				}
+//			}
 		}
 		
 		// Now that all of the classes have been pulled out of the worksheet we can
 		// attempt to add the rest of the information for inheritance etc.
-		addInheritancePath(classesSheet);
+		//addInheritancePath(classesSheet);
 	}
 	
-	private static void createAttributes(HSSFSheet attribSheet){
+	private void createAttributes(HSSFSheet attribSheet){
 		// First row is header
 		for(int r=1; r < attribSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = attribSheet.getRow(r);
 			if (row == null) {
 				continue;
 			}
-			HSSFCell classCell = row.getCell(ATTRIB_CLASS_COLUMN);
-			HSSFCell attribCell = row.getCell(ATTRIB_ATTRIBUTE_COLUMN);
-			HSSFCell dataTypeCell = row.getCell(ATTRIB_DATA_TYPE_COLUMN);
-			HSSFCell documentationCell = row.getCell(ATTRIB_DOCUMENTATION_COLUMN);
 			
-			if (classCell == null || classCell.getStringCellValue() == null ||
-					attribCell == null || attribCell.getStringCellValue() == null ||
-					dataTypeCell == null || dataTypeCell.getStringCellValue() == null){
-				continue;
-			}
+			MetaAttribute attrib = MetaAttribute.create(row, this, this);
 			
-			String className = classCell.getStringCellValue();
-			if (classNameToType.containsKey(className)){
-				MetaClass metaClass = metaClasses.get(classNameToType.get(className));
-				MetaAttribute newAttrib = new MetaAttribute();
-				
-				newAttrib.setAttributeName(attribCell.getStringCellValue());
-				String dataType = dataTypeCell.getStringCellValue();
-				if (metaDataType.get(dataType) != null){
-					newAttrib.setDataType(metaDataType.get(dataType));
-				}
-				else{
-					// Handle the case where the dataType is not an enumeration
-					// nor isn't in the DataType's sheet in the ercot xls.
-					if (classNameToType.get(dataType) != null){
-						MetaDataType metaData = new MetaDataType(metaClass);
-						newAttrib.setDataType(metaData);						
-					}
-					else{
-						// Handle the case where Enum is prefixed on the attributes sheet, 
-						// however on the DataTypes sheet the enums aren't prefixed.
-						if (dataType.startsWith("Enum")){
-							dataType = dataType.substring("Enum".length());
-							if (metaDataType.get(dataType) != null){
-								newAttrib.setDataType(metaDataType.get(dataType));
-								newAttrib.setDataTypePackage(getEnumerationPackage());
-							}
-							else{
-								MetaDataType dt = new MetaDataType();
-								dt.setDataTypeName(dataType);
-								dt.setEnumeration(true);
-								dt.setJavaPackage(getEnumerationPackage());
-								newAttrib.setDataType(dt);
-								newAttrib.setDataTypePackage(getEnumerationPackage());
-								metaDataType.put(dataType, dt);
-							}
-						}
-						else{
-							try{
-								MetaDataType metaData = new MetaDataType(dataType);
-								newAttrib.setDataType(metaData);
-							}
-							catch(IllegalArgumentException e){
-								// Handle the case temporarily that the datatype isn't
-								// specified in the DataType listing by auto creating
-								// with a float datatype.
-								MetaDataType metaData = new MetaDataType();
-								metaData.setDataTypeName(dataType);
-								metaData.setNamespace("cim");
-								metaData.setValueType("Float");
-								System.out.println("AUTOCREATING: "+dataType);
-								newAttrib.setDataType(metaData);
-							}
-						}
-					}					
-				}
-				
-				if (classNameToType.get(dataType) == null){
-					System.out.println("null package for datatype '"+dataType+"'");
-				}
-				else{
-					newAttrib.setDataTypePackage(classNameToType.get(dataType));
-				}
-				
-				if (documentationCell != null){
-					newAttrib.setDocumentation(documentationCell.getStringCellValue());
-				}
-				
-				metaClass.addAttribute(newAttrib);
-			}
+//			HSSFCell classCell = row.getCell(ATTRIB_CLASS_COLUMN);
+//			HSSFCell attribCell = row.getCell(ATTRIB_ATTRIBUTE_COLUMN);
+//			HSSFCell dataTypeCell = row.getCell(ATTRIB_DATA_TYPE_COLUMN);
+//			HSSFCell documentationCell = row.getCell(ATTRIB_DOCUMENTATION_COLUMN);
+//			
+//			if (classCell == null || classCell.getStringCellValue() == null ||
+//					attribCell == null || attribCell.getStringCellValue() == null ||
+//					dataTypeCell == null || dataTypeCell.getStringCellValue() == null){
+//				continue;
+//			}
+//			
+//			String className = classCell.getStringCellValue();
+//			if (classNameToType.containsKey(className)){
+//				MetaClass metaClass = metaClasses.get(classNameToType.get(className));
+//				MetaAttribute newAttrib = new MetaAttribute();
+//				
+//				newAttrib.setAttributeName(attribCell.getStringCellValue());
+//				String dataType = dataTypeCell.getStringCellValue();
+//				if (metaDataTypes.get(dataType) != null){
+//					newAttrib.setDataType(metaDataTypes.get(dataType));
+//				}
+//				else{
+//					// Handle the case where the dataType is not an enumeration
+//					// nor isn't in the DataType's sheet in the ercot xls.
+//					if (classNameToType.get(dataType) != null){
+//						MetaDataType metaData = new MetaDataType(metaClass);
+//						newAttrib.setDataType(metaData);						
+//					}
+//					else{
+//						// Handle the case where Enum is prefixed on the attributes sheet, 
+//						// however on the DataTypes sheet the enums aren't prefixed.
+//						if (dataType.startsWith("Enum")){
+//							dataType = dataType.substring("Enum".length());
+//							if (metaDataTypes.get(dataType) != null){
+//								newAttrib.setDataType(metaDataTypes.get(dataType));
+//								newAttrib.setDataTypePackage(getEnumerationPackage());
+//							}
+//							else{
+//								MetaDataType dt = new MetaDataType();
+//								dt.setDataTypeName(dataType);
+//								dt.setEnumeration(true);
+//								dt.setJavaPackage(getEnumerationPackage());
+//								newAttrib.setDataType(dt);
+//								newAttrib.setDataTypePackage(getEnumerationPackage());
+//								metaDataTypes.put(dataType, dt);
+//							}
+//						}
+//						else{
+//							try{
+//								MetaDataType metaData = new MetaDataType(dataType);
+//								newAttrib.setDataType(metaData);
+//							}
+//							catch(IllegalArgumentException e){
+//								// Handle the case temporarily that the datatype isn't
+//								// specified in the DataType listing by auto creating
+//								// with a float datatype.
+//								MetaDataType metaData = new MetaDataType();
+//								metaData.setDataTypeName(dataType);
+//								metaData.setNamespace("cim");
+//								metaData.setValueType("Float");
+//								System.out.println("AUTOCREATING: "+dataType);
+//								newAttrib.setDataType(metaData);
+//							}
+//						}
+//					}					
+//				}
+//				
+//				if (classNameToType.get(dataType) == null){
+//					System.out.println("null package for datatype '"+dataType+"'");
+//				}
+//				else{
+//					newAttrib.setDataTypePackage(classNameToType.get(dataType));
+//				}
+//				
+//				if (documentationCell != null){
+//					newAttrib.setDocumentation(documentationCell.getStringCellValue());
+//				}
+//				
+//				metaClass.addAttribute(newAttrib);
+//			}
 		}
 	}
 
@@ -430,7 +298,7 @@ public class ModelGeneration {
 	 * @param existingFile The downloaded xls file from ERCOT.
 	 * @throws IOException 
 	 */
-	private static void generateModels(File existingFile) throws IOException{
+	private void generateModels(File existingFile) throws IOException{
 		System.out.println("Generating models ...");
 		HSSFWorkbook wb = readFile(existingFile);
 		
@@ -459,9 +327,9 @@ public class ModelGeneration {
 		}
 		
 		// Loop and make .java files from the class meta files.
-		for(MetaDataType meta: metaDataType.values()){
+		for(MetaDataType meta: metaDataTypes.values()){
 			if (meta.isEnumeration()){
-				String packageDir = createPackageDir(getEnumerationPackage());
+				String packageDir = createPackageDir(MetaDataType.getEnumerationPackage());
 				File classFile = new File(packageDir);
 				
 				try{
@@ -503,7 +371,7 @@ public class ModelGeneration {
 		return buf.toString();
 	}
 	
-	private static void writeOutputFiles(File classesFile, File dataTypesFile, File classNameFile){
+	private void writeOutputFiles(File classesFile, File dataTypesFile, File classNameFile){
 		FileWriter writer;
 		try {
 			writer = new FileWriter(classesFile);
@@ -545,7 +413,7 @@ public class ModelGeneration {
 			writer = new FileWriter(dataTypesFile);
 			BufferedWriter out = new BufferedWriter(writer);
 			
-			for(MetaDataType dt: metaDataType.values()){
+			for(MetaDataType dt: metaDataTypes.values()){
 				out.write(dt.toString()+"\n");
 			}
 			
@@ -562,15 +430,32 @@ public class ModelGeneration {
 		URL xlsFileUri = ModelGeneration.class.getClassLoader().getResource("ERCOT_DataDictionary_1.7.xls");
 		File xlsFile = new File(xlsFileUri.toURI());
 		if (xlsFile.exists()){
-			generateModels(xlsFile);
+			ModelGeneration model = new ModelGeneration();
+			model.generateModels(xlsFile);
+			//generateModels(xlsFile);
 			File classesFile = new File("created-classes.txt");
 			File classNamesFile = new File("created-class-names.txt");
 			File dataTypesFile = new File("created-datatypes.txt");
 			File attributesFile = new File("created-attributes.txt");
 			
-			writeOutputFiles(classesFile, dataTypesFile, classNamesFile);
+			model.writeOutputFiles(classesFile, dataTypesFile, classNamesFile);
+			
 		}
 
+	}
+
+
+
+	@Override
+	public MetaDataType getDataType(String dataTypeName) {
+		return metaDataTypes.get(dataTypeName);
+	}
+
+
+
+	@Override
+	public MetaClass getClass(String className) {
+		return metaClasses.get(className);
 	}
 
 }

@@ -49,7 +49,7 @@ public class MetaDataType {
 		
 	}
 	
-	private static String getEnumerationPackage(){
+	public static String getEnumerationPackage(){
 		return ModelGeneration.ROOT_PACKAGE.concat(".enumerations");
 	}
 	
