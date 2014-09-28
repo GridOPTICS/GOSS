@@ -39,15 +39,15 @@ public class ModelGeneration implements FindDataType, FindClass {
 	/**
 	 * Maps the name (Equipment) to type (pnnl.goss.cim.core.Equipment)
 	 */
-	private static Map<String, String> classNameToType = new HashMap<>();
+	private Map<String, String> classNameToType = new HashMap<>();
 	/**
 	 * Maps the packaged namespace class to the metaclass 
 	 */
-	private static Map<String, MetaClass> metaClasses = new HashMap<>();
+	private Map<String, MetaClass> metaClasses = new HashMap<>();
 	/**
 	 * Maps the datatype name to a metadatatype structure.
 	 */
-	private static Map<String, MetaDataType> metaDataTypes = new HashMap<>();
+	private Map<String, MetaDataType> metaDataTypes = new HashMap<>();
 	
 	
 	/**
@@ -118,11 +118,23 @@ public class ModelGeneration implements FindDataType, FindClass {
 	 * @param dataTypeSheet
 	 * @param sheetType
 	 */
-	private static void createMetaDataTypes(HSSFSheet dataTypeSheet, DataTypeSheets sheetType){
+	private void createMetaDataTypes(HSSFSheet dataTypeSheet, DataTypeSheets sheetType){
+		
+		MetaDataType dataType = MetaDataType.create("String");
+		metaDataTypes.put(dataType.getDataTypeName(), dataType);
+		dataType = MetaDataType.create("Float");
+		metaDataTypes.put(dataType.getDataTypeName(), dataType);
+		dataType = MetaDataType.create("Long");
+		metaDataTypes.put(dataType.getDataTypeName(), dataType);
+		dataType = MetaDataType.create("Integer");
+		metaDataTypes.put(dataType.getDataTypeName(), dataType);
+		dataType = MetaDataType.create("Boolean");
+		metaDataTypes.put(dataType.getDataTypeName(), dataType);
+		
 		// First row is header
 		for(int r=1; r < dataTypeSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = dataTypeSheet.getRow(r);
-			MetaDataType dataType = MetaDataType.create(row,  sheetType);
+			dataType = MetaDataType.create(row,  sheetType);
 			if (dataType != null){
 				if (!metaDataTypes.containsKey(dataType.getDataTypeName())){
 					metaDataTypes.put(dataType.getDataTypeName(), dataType);
@@ -153,7 +165,7 @@ public class ModelGeneration implements FindDataType, FindClass {
 	 * 
 	 * @param classesSheet
 	 */
-	private static void createMetaClasses(HSSFSheet classesSheet){
+	private void createMetaClasses(HSSFSheet classesSheet){
 		// First row is header
 		for(int r=1; r < classesSheet.getPhysicalNumberOfRows(); r++){
 			HSSFRow row = classesSheet.getRow(r);
@@ -163,8 +175,11 @@ public class ModelGeneration implements FindDataType, FindClass {
 			
 			MetaClass cls = MetaClass.create(row);
 			
-			if (!metaClasses.containsKey(cls.getPackageAndClass())){
-				metaClasses.put(cls.getPackageAndClass(), cls);
+			if (!metaClasses.containsKey(cls.getClassName())){
+				metaClasses.put(cls.getClassName(), cls);
+			}
+			else{
+				System.err.println("Duplicate class detected "+cls.getClassName());
 			}
 			
 			
@@ -219,6 +234,8 @@ public class ModelGeneration implements FindDataType, FindClass {
 			}
 			
 			MetaAttribute attrib = MetaAttribute.create(row, this, this);
+			
+			
 			
 //			HSSFCell classCell = row.getCell(ATTRIB_CLASS_COLUMN);
 //			HSSFCell attribCell = row.getCell(ATTRIB_ATTRIBUTE_COLUMN);

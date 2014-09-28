@@ -255,6 +255,13 @@ public class MetaDataType {
 		
 	}
 	
+	public static MetaDataType create(String dataTypeName){
+		MetaDataType dataType = new MetaDataType();
+		dataType.setDataTypeName(dataTypeName);
+		return dataType;
+		
+	}
+	
 	public static MetaDataType create(HSSFRow row, DataTypeSheets sheetType){
 		
 		if (row == null) {

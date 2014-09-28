@@ -14,20 +14,19 @@ public class MetaAttribute {
 	
 	private String documentation;
 	private String attributeName;
-	private MetaDataType dataType;
+	private MetaDataType attributeDataType;
 	private String initialValue;
 	private String setterFunctionName;
 	private String getterFunctionName;
-	private String dataTypePackage;
 	
-	public String getDataTypePackage() {
-		return dataTypePackage;
+	public MetaDataType getAttributeDataType() {
+		return attributeDataType;
 	}
 
-	public void setDataTypePackage(String dataTypePackage) {
-		this.dataTypePackage = dataTypePackage;
+	public void setAttributeDataType(MetaDataType attributeDataType) {
+		this.attributeDataType = attributeDataType;
 	}
-	
+
 	public String getDocumentation() {
 		return documentation;
 	}
@@ -48,14 +47,6 @@ public class MetaAttribute {
 		this.getterFunctionName = "get"+baseName;
 	}
 
-	public MetaDataType getDataType() {
-		return dataType;
-	}
-
-	public void setDataType(MetaDataType dataType) {
-		this.dataType = dataType;
-	}
-
 	public String getInitialValue() {
 		return initialValue;
 	}
@@ -64,13 +55,34 @@ public class MetaAttribute {
 		this.initialValue = initialValue;
 	}
 	
+	private static String cleanedDataTypeName(String dataType){
+		if (dataType.startsWith("String")){
+			return "String";
+		}
+		else if (dataType.startsWith("Enum")){
+			return dataType.substring(4);
+		}
+		else if (dataType.startsWith("LongInt")){
+			return "Long";
+		}
+		else if (dataType.startsWith("LongLength")){
+			return "Long";
+		}
+		else if (dataType.startsWith("ShortLength")){
+			return "Integer";
+		}
+		else if (dataType.startsWith("Bool")){
+			return "Boolean";
+		}
+		
+		return dataType;
+	}
+	
 	public static MetaAttribute create(HSSFRow row, FindDataType dataTypeFinder, FindClass classFinder){
 		HSSFCell classCell = row.getCell(ATTRIB_CLASS_COLUMN);
 		HSSFCell attribCell = row.getCell(ATTRIB_ATTRIBUTE_COLUMN);
 		HSSFCell dataTypeCell = row.getCell(ATTRIB_DATA_TYPE_COLUMN);
-		HSSFCell documentationCell = row.getCell(ATTRIB_DOCUMENTATION_COLUMN);
-		
-		MetaAttribute attribute = null;
+		HSSFCell documentationCell = row.getCell(ATTRIB_DOCUMENTATION_COLUMN);		
 		
 		if (classCell == null || classCell.getStringCellValue() == null ||
 				attribCell == null || attribCell.getStringCellValue() == null ||
@@ -78,25 +90,45 @@ public class MetaAttribute {
 			System.err.println("All fields that I care about are empty!");
 			return null;
 		}
-		String className = classCell.getStringCellValue();
-		MetaDataType metaDataType = dataTypeFinder.getDataType(className);
-		MetaClass classType = classFinder.getClass(className);
 		
-		if (metaDataType != null && classType != null){
-			System.err.println("Both class and datatype???");
+		MetaAttribute attribute = new MetaAttribute();
+		
+		// Sets the getter and setter function names as well.
+		attribute.setAttributeName(attribCell.getStringCellValue());
+		
+		// Class name is the class that this attribute resides in.
+		String className = classCell.getStringCellValue();
+		String dataTypeString = cleanedDataTypeName(dataTypeCell.getStringCellValue());
+		
+		MetaDataType metaDataType = dataTypeFinder.getDataType(dataTypeString);
+		MetaClass metaClassType = classFinder.getClass(className);
+		
+		if (metaClassType == null){
+			System.err.println("Invalid metaclass "+className+" for attributed: "+attribute.getAttributeName());
 		}
-		else if (metaDataType==null && classType == null){
-			System.err.println("Both class and datatype are null!");
+		if (metaDataType == null){
+			System.err.println("Invalid metaDataType "+dataTypeString+" for attributed: "+attribute.getAttributeName());
 		}
-		else if (metaDataType == null){
-			System.err.println("Missing dataType "+className);
+		
+		attribute.setAttributeDataType(metaDataType);
+		if (documentationCell != null){
+			attribute.setDocumentation(documentationCell.getStringCellValue());	
 		}
-		else {
-			
-			MetaAttribute newAttrib = new MetaAttribute();
-			
-			newAttrib.setAttributeName(attribCell.getStringCellValue());
-			String dataType = dataTypeCell.getStringCellValue();
+		
+		metaClassType.addAttribute(attribute);
+		
+//			if (metaDataType == null){
+//				metaClassType.addAttribute(attribute);
+//			}
+//			else{
+//				attribute.setDataType(metaDataType);
+//				// Its a datatype
+//				System.out.println("Adding to datatype: "+metaDataType.getDataTypeName());
+//			}
+//			MetaAttribute newAttrib = new MetaAttribute();
+//			
+//			newAttrib.setAttributeName(attribCell.getStringCellValue());
+//			String dataType = dataTypeCell.getStringCellValue();
 //			if (metaDataTypes.get(dataType) != null){
 //				newAttrib.setDataType(metaDataTypes.get(dataType));
 //			}
@@ -145,7 +177,7 @@ public class MetaAttribute {
 //					}
 //				}					
 //			}
-		}
+		
 		return attribute;
 	}
 
@@ -155,11 +187,11 @@ public class MetaAttribute {
 		if (documentation != null){
 			buf.append("/**\n* " + documentation+ "\n*/\n");
 		}
-		if (dataType.getValueType() != null && dataType.getValueType().length() > 0){
-			buf.append("private "+dataType.getValueType()+" "+ attributeName+ ";\n");
+		if (attributeDataType.getValueType() != null && attributeDataType.getValueType().length() > 0){
+			buf.append("private "+attributeDataType.getValueType()+" "+ attributeName+ ";\n");
 		}
 		else{
-			buf.append("private "+dataType.getDataTypeName()+" "+ attributeName+ ";\n");
+			buf.append("private "+attributeDataType.getDataTypeName()+" "+ attributeName+ ";\n");
 		}
 		
 		return buf.toString();
@@ -169,19 +201,19 @@ public class MetaAttribute {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("public void ");
-		if (dataType.getValueType() != null && dataType.getValueType().length() > 0){
-			buf.append(setterFunctionName+"("+dataType.getValueType()+" "+attributeName+") {\n\t");
+		if (attributeDataType.getValueType() != null && attributeDataType.getValueType().length() > 0){
+			buf.append(setterFunctionName+"("+attributeDataType.getValueType()+" "+attributeName+") {\n\t");
 		}
 		else{
-			buf.append(setterFunctionName+"("+dataType.getDataTypeName()+" "+attributeName+") {\n\t");
+			buf.append(setterFunctionName+"("+attributeDataType.getDataTypeName()+" "+attributeName+") {\n\t");
 		}
 		buf.append("this."+attributeName+" = "+attributeName+";\n}\n\n");
 		
-		if (dataType.getValueType() != null && dataType.getValueType().length() > 0){
-			buf.append("public "+dataType.getValueType()+" ");
+		if (attributeDataType.getValueType() != null && attributeDataType.getValueType().length() > 0){
+			buf.append("public "+attributeDataType.getValueType()+" ");
 		}
 		else{
-			buf.append("public "+dataType.getDataTypeName()+" ");
+			buf.append("public "+attributeDataType.getDataTypeName()+" ");
 		}
 		buf.append(getterFunctionName+"() {\n\t"); 
 		buf.append("return this."+attributeName+";\n}\n\n");
@@ -192,8 +224,8 @@ public class MetaAttribute {
 	@Override
 	public String toString(){
 		
-		if (dataType != null){
-			return "Attribute: "+attributeName+" "+dataType.toString();
+		if (attributeDataType != null){
+			return "Attribute: "+attributeName+" "+attributeDataType.toString();
 		}
 		else{
 			return "Attribute: "+attributeName+" ";
