@@ -128,7 +128,18 @@ public class ModelGeneration implements FindDataType, FindClass {
 					metaDataTypes.put(dataType.getDataTypeName(), dataType);
 				}
 				else{
-					System.out.println("Contains "+dataType.getDataTypeName() +" already.");
+					MetaDataType dataTypeInCollection = metaDataTypes.get(dataType.getDataTypeName());
+					if (dataTypeInCollection.isEnumeration()){
+						if (!dataTypeInCollection.containsEnumeratedValue(dataType.getEnumeratedValues().get(0))){
+							dataTypeInCollection.addEnumeratedValue(dataType.getEnumeratedValues().get(0));
+						}
+						else{
+							System.err.println("Already has enumerated value type: "+dataType.getEnumeratedValues().get(0));
+						}
+					}
+					else{
+						System.out.println("Contains "+dataType.getDataTypeName() +" already.");
+					}
 				}
 			}
 		}		

@@ -215,7 +215,9 @@ public class MetaClass {
 				
 				cls.setInheritancePath(row.getCell(CLASSES_INHERITANCE_COLUMN).getStringCellValue());
 				cls.packageAndClass = cls.getPackageName() + "." + cls.getClassName();
-				cls.classDocumentation = row.getCell(CLASSES_DOCUMENTATION_COLUMN).getStringCellValue();			
+				if (row.getCell(CLASSES_DOCUMENTATION_COLUMN) != null){
+					cls.classDocumentation = row.getCell(CLASSES_DOCUMENTATION_COLUMN).getStringCellValue();
+				}
 			}
 //				// Use this as a test so that we can get the mapped type and see
 //				// if it's already in the collection (Hopefully it never will!)

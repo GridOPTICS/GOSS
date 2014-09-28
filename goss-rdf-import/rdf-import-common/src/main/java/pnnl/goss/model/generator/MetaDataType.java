@@ -1,6 +1,9 @@
 package pnnl.goss.model.generator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -72,8 +75,12 @@ public class MetaDataType {
 		enumeratedValues.add(value);
 	}
 	
-	public Set<String> getEnumeratedValues(){
-		return this.enumeratedValues;
+	public boolean containsEnumeratedValue(String value){
+		return enumeratedValues.contains(value);
+	}
+	
+	public List<String> getEnumeratedValues(){
+		return new ArrayList(this.enumeratedValues);
 	}
 	
 	public boolean isEnumeration() {
@@ -259,6 +266,7 @@ public class MetaDataType {
 		HSSFCell packageCell= null;
 		switch (sheetType){
 		case DataTypeAndUnits:
+			System.out.println("DatatypeandUnits");
 			packageCell = row.getCell(DATATYPEVALUE_PACKAGE_CoLUMN); 
 			if (packageCell != null && packageCell.getStringCellValue()!= null){
 				
@@ -279,6 +287,7 @@ public class MetaDataType {
 			}
 			break;
 		case DataType:
+			System.out.println("It's Datatype Enumeration");
 			packageCell = row.getCell(DATATYPE_PACKAGE_COLUMN); 
 			if (packageCell != null && packageCell.getStringCellValue()!= null){
 				boolean isEnum = packageCell.getStringCellValue().contains("Enum");
@@ -297,6 +306,7 @@ public class MetaDataType {
 			}
 			break;
 		case DataTypeEnums:
+			System.out.println("DatatypeEnum");
 			packageCell = row.getCell(DATATYPEENUM_PACKAGE_COLUMN); 
 			if (packageCell != null && packageCell.getStringCellValue()!= null){
 									
@@ -330,6 +340,9 @@ public class MetaDataType {
 			break;
 		}	
 	
+		if (cls != null){
+			System.out.println("Created datatype: "+cls.getDataTypeName());
+		}
 		
 		return cls;
 	}
