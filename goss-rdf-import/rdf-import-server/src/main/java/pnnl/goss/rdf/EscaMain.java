@@ -94,13 +94,14 @@ public class EscaMain {
 		String breakerMrid = "_5273505719686324070";
 		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
 		
-		EscaType root = breaker.getParent();
-		
-		while(root.getParent() != null){
-			root = root.getParent();
-		}
-		
-		System.out.println("Root: "+root);
+		System.out.println("Breaker is connected to: ");
+		System.out.println(breaker);
+//		for(EscaType t:breaker.getLinks().values()){
+//			System.out.println(t);
+//			for(String property: t.getLiterals().keySet()){
+//				System.out.println("p: "+property+" v: "+ t.getLiterals().get(property));
+//			}
+//		}
 		
 		//mainProg.printObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
 		

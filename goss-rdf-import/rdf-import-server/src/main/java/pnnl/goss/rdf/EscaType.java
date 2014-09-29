@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -20,20 +23,35 @@ public class EscaType {
 	private String mrid;
 	private Set<EscaType> children = new HashSet<EscaType>();
 	private EscaType parent = null;
+	private static Logger log = LoggerFactory.getLogger(EscaType.class);
 	
+	// Property name-> Literal value (i.e. String, Integer, Float etc)
 	private Map<String, Literal> literals = new HashMap<>();
+	// Property name->esca type
+	private Map<String, EscaType> links = new HashMap<>();
 	
-	private Set<EscaType> links = new HashSet<EscaType>();
-	
-	public void addLink(EscaType link){
-		links.add(link);
+	public void addLink(String propertyName, EscaType link){
+		log.debug("Adding link property: "+propertyName+" to esca obj: "+link);
+		links.put(propertyName, link);
 	}
 	
-	public Collection<EscaType> getLinks(){
-		return Collections.unmodifiableCollection(links);
+	public Map<String, EscaType> getLinks(){
+		return links;
 	}
 	
+	/**
+	 * Add literal value to the escatype.  If the key contains the same
+	 * datatype as a prefix then that prefix is stripped off and is assumed
+	 * to be "contained" as part of the object.
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	public void addLiteral(String key, Literal value){
+		if (key.startsWith(dataType+".")){
+			key = key.substring(dataType.length()+1);			
+		}
+		log.debug("Adding literal key: "+key+" value "+ value+" to datatype: "+dataType);
 		literals.put(key,  value);
 	}
 	
@@ -131,7 +149,19 @@ public class EscaType {
 	
 	@Override
 	public String toString() {
-		return toString(getLevel());
+		StringBuilder sb = new StringBuilder();
+		sb.append("------------------------------------------------\n");
+		sb.append(this.dataType + " ("+this.mrid+")\n");
+		for (String s: literals.keySet()){
+			sb.append("\tproperty: "+s+" => "+this.literals.get(s)+"\n");
+		}
+		sb.append("------------------------------------------------\n\n");
+		
+		for(EscaType t: links.values()){
+			sb.append(t);
+		}
+		
+		return sb.toString();
 	}	
 	
 	private String repeat(String s, int n) {

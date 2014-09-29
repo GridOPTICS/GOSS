@@ -21,6 +21,10 @@ import java.util.Stack;
 
 import javax.sql.rowset.Predicate;
 
+import org.apache.jena.atlas.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -39,6 +43,8 @@ import pnnl.goss.rdf.server.Esca60Vocab;
 
 public class EscaTreeWindow implements KnownTree {
 
+	private static Logger log = LoggerFactory.getLogger(EscaTreeWindow.class);
+	
 	private Model rdfModel;
 	private List<EscaTree> substations;
 	private Map<String, EscaTree> mridTreeMap = new HashMap<String, EscaTree>();
@@ -183,6 +189,11 @@ public class EscaTreeWindow implements KnownTree {
 		}
 	}
 	
+	/**
+	 * Load all of the literals into the passed escatype parameter.
+	 * 
+	 * @param esca
+	 */
 	private void loadLiterals(EscaType esca){
 		StmtIterator itr = esca.getResource().listProperties();
 		
@@ -192,38 +203,37 @@ public class EscaTreeWindow implements KnownTree {
 			Property prop = stmt.getPredicate();
 			
 			if (node.isLiteral()){
-				System.out.println("Literal: "+stmt.getLiteral());
+				esca.addLiteral(prop.getLocalName(), stmt.getLiteral());
+				
 				//esca.addLiteral(node.get, value);
 			}
 		}
 	}
 	
-	private void loadLinks(EscaType e){
-//		StmtIterator itr = subject.getResource().listProperties();
-//
-//		while (itr.hasNext()) {
-//			Statement stmt = itr.nextStatement();
-//			RDFNode node = stmt.getObject();
-//			Property prop = stmt.getPredicate();
-//			if (node.isResource()) {
-//				Resource res = node.asResource();
-//
-//				// Can't have circular references.
-//				if (escaTypeMap.containsKey(res.getLocalName()) && !subject.getMrid().equals(res.getLocalName())) {
-//					// System.out.println(subject);
-//					// System.out.println("Connection from " + subject+
-//					// " to "+escaTypeMap.get(res.getLocalName()));
-//					EscaType type = escaTypeMap.get(res.getLocalName());
-//					subject.addChild(type);
-//				}
-//
-//			}
-//
-//		}
-//
-//		for (EscaType child : subject.getChildren()) {
-//			loadChildren(child);
-//		}
+	/**
+	 * Loads all of the links to different elements in the graph
+	 * 
+	 * @param esca
+	 */
+	private void loadLinks(EscaType esca){
+		StmtIterator itr = esca.getResource().listProperties();
+
+		while (itr.hasNext()) {
+			Statement stmt = itr.nextStatement();
+			RDFNode node = stmt.getObject();
+			Property prop = stmt.getPredicate();
+			if (node.isResource()) {
+				Resource res = node.asResource();
+				
+				// Skip the type because it has already been loaded.
+				if (prop.getLocalName().equals("type")){
+					log.debug("Skipping type property: "+prop.getLocalName()+" on resource "+res.getLocalName());
+				}
+				else{
+					esca.addLink(prop.getLocalName(), escaTypeMap.get(res.getLocalName()));
+				}
+			}
+		}
 	}
 	
 	
