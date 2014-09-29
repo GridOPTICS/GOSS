@@ -34,6 +34,12 @@ public class EscaMain {
 	
 	private static Logger log = LoggerFactory.getLogger(EscaMain.class);
 	
+	/**
+	 * A loaded mapping from mrid to escatype which is loaded from the cim model
+	 * file.
+	 */
+	private Map<String, EscaType> typeMap = null;
+	
 	private EscaMain(String inputFile, boolean isCim, String outputFile) throws Exception{
 		
 		EscaTreeWindow window = new EscaTreeWindow(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
@@ -66,11 +72,10 @@ public class EscaMain {
 		}
 	}
 	
-	/**
-	 * A loaded mapping from mrid to escatype which is loaded from the cim model
-	 * file.
-	 */
-	private static Map<String, EscaType> typeMap = null;
+	private EscaType getTypeByMrid(String mrid){
+		return typeMap.get(mrid);
+	}
+	
 	
 	//private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 	
@@ -80,9 +85,23 @@ public class EscaMain {
 		
 		int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
 		int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
-		
+		int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
+				
+		System.out.println("Breaker count: "+ terminalCount);
 		System.out.println("Terminal count: "+ terminalCount);
 		System.out.println("Connectivity Node count: "+ connectivityCount);
+		
+		String breakerMrid = "_5273505719686324070";
+		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
+		
+		EscaType root = breaker.getParent();
+		
+		while(root.getParent() != null){
+			root = root.getParent();
+		}
+		
+		System.out.println("Root: "+root);
+		
 		//mainProg.printObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
 		
 		//setBufferedOut();

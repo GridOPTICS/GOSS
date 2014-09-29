@@ -1,9 +1,13 @@
 package pnnl.goss.rdf;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -11,12 +15,32 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class EscaType {
-	Resource resource;
-	String dataType;
-	String mrid;
-	Set<EscaType> children = new HashSet<EscaType>();
-	EscaType parent = null;
+	private Resource resource;
+	private String dataType;
+	private String mrid;
+	private Set<EscaType> children = new HashSet<EscaType>();
+	private EscaType parent = null;
 	
+	private Map<String, Literal> literals = new HashMap<>();
+	
+	private Set<EscaType> links = new HashSet<EscaType>();
+	
+	public void addLink(EscaType link){
+		links.add(link);
+	}
+	
+	public Collection<EscaType> getLinks(){
+		return Collections.unmodifiableCollection(links);
+	}
+	
+	public void addLiteral(String key, Literal value){
+		literals.put(key,  value);
+	}
+	
+	public Map<String, Literal> getLiterals(){
+		return literals;
+	}
+			
 	public int getLevel(){
 		if (parent == null){
 			return 0;

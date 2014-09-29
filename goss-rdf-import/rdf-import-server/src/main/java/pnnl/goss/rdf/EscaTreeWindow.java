@@ -160,9 +160,12 @@ public class EscaTreeWindow implements KnownTree {
 
 	/**
 	 * Loads all of the subjects into an internal structure that we can use to
-	 * find different types of data based upon the mrid.
+	 * find different types of data based upon the mrid.  After this function
+	 * is run there should be links from and to all of the different types.
 	 */
 	public void loadTypeMap() {
+		
+		// Load all of the subjects into the subject map
 		ResIterator resItr = rdfModel.listSubjects();
 
 		while (resItr.hasNext()) {
@@ -172,14 +175,58 @@ public class EscaTreeWindow implements KnownTree {
 			// System.out.println(mrid+" ("+dataType+")");
 			escaTypeMap.put(mrid, new EscaType(res, dataType, mrid));
 		}
-
-		for (String k : escaTypeMap.keySet()) {
-			EscaType type = escaTypeMap.get(k);
-			if (!type.hasChildren()) {
-				loadChildren(escaTypeMap.get(k));
+		
+		// Load all of the links between the subjects.
+		for (EscaType e: escaTypeMap.values()) {
+			loadLiterals(e);
+			loadLinks(e);
+		}
+	}
+	
+	private void loadLiterals(EscaType esca){
+		StmtIterator itr = esca.getResource().listProperties();
+		
+		while (itr.hasNext()){
+			Statement stmt = itr.nextStatement();
+			RDFNode node = stmt.getObject();
+			Property prop = stmt.getPredicate();
+			
+			if (node.isLiteral()){
+				System.out.println("Literal: "+stmt.getLiteral());
+				//esca.addLiteral(node.get, value);
 			}
 		}
 	}
+	
+	private void loadLinks(EscaType e){
+//		StmtIterator itr = subject.getResource().listProperties();
+//
+//		while (itr.hasNext()) {
+//			Statement stmt = itr.nextStatement();
+//			RDFNode node = stmt.getObject();
+//			Property prop = stmt.getPredicate();
+//			if (node.isResource()) {
+//				Resource res = node.asResource();
+//
+//				// Can't have circular references.
+//				if (escaTypeMap.containsKey(res.getLocalName()) && !subject.getMrid().equals(res.getLocalName())) {
+//					// System.out.println(subject);
+//					// System.out.println("Connection from " + subject+
+//					// " to "+escaTypeMap.get(res.getLocalName()));
+//					EscaType type = escaTypeMap.get(res.getLocalName());
+//					subject.addChild(type);
+//				}
+//
+//			}
+//
+//		}
+//
+//		for (EscaType child : subject.getChildren()) {
+//			loadChildren(child);
+//		}
+	}
+	
+	
 	
 	public List<EscaType> getType(String dataType){
 		List<EscaType> items = new ArrayList<EscaType>();
