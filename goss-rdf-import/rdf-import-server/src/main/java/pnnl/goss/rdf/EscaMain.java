@@ -91,11 +91,22 @@ public class EscaMain {
 		System.out.println("Terminal count: "+ terminalCount);
 		System.out.println("Connectivity Node count: "+ connectivityCount);
 		
-		String breakerMrid = "_5273505719686324070";
-		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
+//		String breakerMrid = "_5273505719686324070";
+//		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
+//		
+//		System.out.println("Breaker "+breakerMrid+" is connected to: ");
+//		System.out.println(breaker);
 		
-		System.out.println("Breaker is connected to: ");
-		System.out.println(breaker);
+//		for(EscaType t: mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT)){
+//			System.out.println(t);
+//		}
+		
+		
+		
+		String terminalMrid = "_23797624181204055";
+		EscaType terminal = mainProg.getTypeByMrid(terminalMrid);
+		//System.out.println("Terminal "+terminalMrid+" is connected to:");
+		System.out.println(terminal);
 //		for(EscaType t:breaker.getLinks().values()){
 //			System.out.println(t);
 //			for(String property: t.getLiterals().keySet()){

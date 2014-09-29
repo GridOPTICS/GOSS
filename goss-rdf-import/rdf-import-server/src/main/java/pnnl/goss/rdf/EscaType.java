@@ -158,6 +158,7 @@ public class EscaType {
 		sb.append("------------------------------------------------\n\n");
 		
 		for(EscaType t: links.values()){
+			sb.append(this.dataType + " ("+this.mrid+") direct connect to\n");
 			sb.append(t);
 		}
 		
