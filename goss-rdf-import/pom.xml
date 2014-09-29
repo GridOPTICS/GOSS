@@ -17,7 +17,7 @@
 		<jena-libs.version>2.11.1</jena-libs.version>
         <maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
         <ipojo.version>1.12.0</ipojo.version>
-        <goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
+        <goss-powergrid.version>0.1.6-SNAPSHOT</goss-powergrid.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>		

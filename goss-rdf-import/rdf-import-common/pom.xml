@@ -11,11 +11,11 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-common</artifactId>
 			<version>${goss-powergrid.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>apache-jena-libs</artifactId>
