@@ -59,6 +59,16 @@ public class EscaType {
 		return Collections.unmodifiableCollection(types);
 	}
 	
+	public EscaType getLinkedObjectTypeSingle(Resource resource){
+		
+		for(EscaType t: links.values()){
+			if (t.getDataType().equals(resource.getLocalName())){
+				return t;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Add literal value to the escatype.  If the key contains the same
 	 * datatype as a prefix then that prefix is stripped off and is assumed
