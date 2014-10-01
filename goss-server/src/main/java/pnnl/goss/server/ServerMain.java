@@ -51,7 +51,6 @@ import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.demo.pmu.GossSecurityDemoActivator;
 import pnnl.goss.fusiondb.FusionDBServerActivator;
 import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.gridmw.GridMWServerActivator;

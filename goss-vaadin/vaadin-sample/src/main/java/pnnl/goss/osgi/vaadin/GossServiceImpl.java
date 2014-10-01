@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
 
 import javax.jms.IllegalStateException;
@@ -65,8 +66,9 @@ public class GossServiceImpl implements GossService  {
 	public GossServiceImpl(@Requires GossRequestHandlerRegistrationService registrationService, @Requires GossDataServices dataServices){
 		this.registrationService = registrationService;
 		this.dataServices = dataServices;
-		client = new GossClient(PROTOCOL.STOMP);
-		client.setConfiguration(this.registrationService.getCoreServerConfig());
+		client = new GossClient(PROTOCOL.OPENWIRE);
+		Dictionary config = this.registrationService.getCoreServerConfig();
+		client.setConfiguration(config);
 		
 	}
 	

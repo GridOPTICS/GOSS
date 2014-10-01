@@ -46,6 +46,8 @@ package pnnl.goss.kairosdb;
 
 import java.util.Dictionary;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Updated;
@@ -64,6 +66,9 @@ import pnnl.goss.security.core.authorization.basic.AccessControlHandlerAllowAll;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
+
+@Component
+@Instantiate
 public class KairosDBServerActivator{
 
 	
