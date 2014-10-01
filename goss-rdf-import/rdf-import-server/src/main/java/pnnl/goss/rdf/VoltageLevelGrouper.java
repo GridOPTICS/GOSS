@@ -30,11 +30,15 @@ public class VoltageLevelGrouper {
 		//this.buildVoltageLevelGroups();
 	}
 	
+	public Collection<EscaType> getVoltageLevelObjects(){
+		return Collections.unmodifiableCollection(voltageLevels.values());
+	}
+	
 	public Collection<Double> getVoltageLevels(){
 		List<Double> nominalLevels = new ArrayList<>();
 		for(EscaType t: voltageLevels.values()){
 			for (EscaType b: t.getLinkedObjectType(Esca60Vocab.BASEVOLTAGE_OBJECT)){
-				nominalLevels.add(Double.parseDouble(b.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE.getLocalName()).toString()));
+				nominalLevels.add(Double.parseDouble(b.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE).toString()));
 			}
 		}
 		return Collections.unmodifiableCollection(nominalLevels);
