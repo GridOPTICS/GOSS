@@ -45,6 +45,7 @@
 package pnnl.goss.kairosdb;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -71,7 +72,6 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 @Instantiate
 public class KairosDBServerActivator{
 
-	
 	public static final String PROP_KAIROSDB_HOST = "kairosdb.db.uri";
 	public static final String PROP_KAIROSDB_PORT = "kairosdb.db.port";
 	
@@ -85,6 +85,7 @@ public class KairosDBServerActivator{
 	 */
 	private GossRequestHandlerRegistrationService registrationService;
 	private GossDataServices dataServices;
+	
 	
 	/**
 	 * <p>
@@ -100,6 +101,12 @@ public class KairosDBServerActivator{
 		this.registrationService = registrationService;
 		this.dataServices = dataServices;
 		log.debug("Constructing activator");
+		
+		Dictionary<String, String> config = new Hashtable<String, String>();
+		config.put(PROP_KAIROSDB_HOST, dataServices.getPropertyValue(PROP_KAIROSDB_HOST));
+		config.put(PROP_KAIROSDB_PORT, dataServices.getPropertyValue(PROP_KAIROSDB_PORT));
+		update(config);
+		
 	}
 	
 	@Validate
@@ -141,7 +148,7 @@ public class KairosDBServerActivator{
 
     
     @SuppressWarnings("rawtypes")
-	@Updated
+//	@Updated
 	public void update(Dictionary config) {
 		log.debug("updating");
 		try{
