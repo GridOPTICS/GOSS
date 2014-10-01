@@ -105,6 +105,8 @@ public class EscaMain {
 		Collection<EscaType> voltageLevels = mainProg.getObjectType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		Map<String, VoltageLevelGrouper> substations = new HashMap<>();
 		
+		List<TopologicalNode> nodes = new ArrayList<>();
+		
 		for(EscaType vl: voltageLevels){
 			VoltageLevelGrouper vlGrouper = null;
 			for (EscaType sub: vl.getLinkedObjectType(Esca60Vocab.SUBSTATION_OBJECT)){
@@ -125,11 +127,18 @@ public class EscaMain {
 		for(String mrid: substations.keySet()){
 			VoltageLevelGrouper vlGrouper = substations.get(mrid);
 			log.debug("substation: " + vlGrouper.getSubstation().getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME.getLocalName()));
-			for(Double dbl: vlGrouper.getVoltageLevels()){
-				log.debug("vl: " + dbl);
+			for(EscaType e: vlGrouper.getVoltageLevelObjects()){
+				nodes.add(new TopologicalNode(vlGrouper.getSubstation(), e));
 			}
+//			for(Double dbl: vlGrouper.getVoltageLevels()){
+//				log.debug("vl: " + dbl);
+//			}
 		}
 		
+		
+		for(TopologicalNode tn: nodes){
+			log.debug(tn.toString());
+		}
 		
 //		String breakerMrid = "_5273505719686324070";
 //		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);

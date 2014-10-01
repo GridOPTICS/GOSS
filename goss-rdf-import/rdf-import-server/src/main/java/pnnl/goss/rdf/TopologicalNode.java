@@ -3,6 +3,8 @@ package pnnl.goss.rdf;
 import java.util.HashSet;
 import java.util.Set;
 
+import pnnl.goss.rdf.server.Esca60Vocab;
+
 /**
  * For a detailed substation model a TopologicalNode is a set of 
  * connectivity nodes that, in the current network state, are 
@@ -23,7 +25,22 @@ public class TopologicalNode {
 	// For all connectivity nodes 
 	
 	// one bus per voltage level per substations
+	private EscaType substation;
+	private EscaType voltageLevel;
 	
+	public TopologicalNode(EscaType substation, EscaType voltageLevel){
+		this.substation = substation;
+		this.voltageLevel = voltageLevel;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "TN: " + substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME).toString()+ 
+				" vl: " + voltageLevel.getLinkedObjectTypeSingle(Esca60Vocab.BASEVOLTAGE_OBJECT)
+										.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE)
+										.getDouble();
+	}
 	
 	
 }
