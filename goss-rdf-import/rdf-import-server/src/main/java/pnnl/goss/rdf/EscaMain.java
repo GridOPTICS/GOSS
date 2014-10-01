@@ -1,6 +1,5 @@
 package pnnl.goss.rdf;
 
-import java.util.List;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +8,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import pnnl.goss.rdf.server.Esca60Vocab;
 //import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
-
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -91,6 +91,46 @@ public class EscaMain {
 		System.out.println("Terminal count: "+ terminalCount);
 		System.out.println("Connectivity Node count: "+ connectivityCount);
 		
+//		Collection<EscaType> substations = mainProg.getObjectType(Esca60Vocab.SUBSTATION_OBJECT);
+//		
+//		for(EscaType s: substations){
+//			VoltageLevelGrouper vlg = new VoltageLevelGrouper(s);
+//			log.debug("For substation: "+ s.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME.getLocalName()));
+//			
+//			for (Double d: vlg.getVoltageLevels()){
+//				log.debug("VoltageLevel: " + d);
+//			}
+//		}
+		
+		Collection<EscaType> voltageLevels = mainProg.getObjectType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
+		Map<String, VoltageLevelGrouper> substations = new HashMap<>();
+		
+		for(EscaType vl: voltageLevels){
+			VoltageLevelGrouper vlGrouper = null;
+			for (EscaType sub: vl.getLinkedObjectType(Esca60Vocab.SUBSTATION_OBJECT)){
+				if (!substations.containsKey(sub.getMrid())){
+					log.debug("Adding substation: " + sub.getMrid());
+					vlGrouper = new VoltageLevelGrouper(sub);
+					substations.put(sub.getMrid(), vlGrouper);
+				}
+				else{
+					vlGrouper = substations.get(sub.getMrid());
+				}
+				
+				vlGrouper.addVoltageLevel(vl);
+				
+			}
+		}
+		
+		for(String mrid: substations.keySet()){
+			VoltageLevelGrouper vlGrouper = substations.get(mrid);
+			log.debug("substation: " + vlGrouper.getSubstation().getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME.getLocalName()));
+			for(Double dbl: vlGrouper.getVoltageLevels()){
+				log.debug("vl: " + dbl);
+			}
+		}
+		
+		
 //		String breakerMrid = "_5273505719686324070";
 //		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
 //		
@@ -103,10 +143,10 @@ public class EscaMain {
 		
 		
 		
-		String terminalMrid = "_23797624181204055";
-		EscaType terminal = mainProg.getTypeByMrid(terminalMrid);
-		//System.out.println("Terminal "+terminalMrid+" is connected to:");
-		System.out.println(terminal);
+//		String terminalMrid = "_23797624181204055";
+//		EscaType terminal = mainProg.getTypeByMrid(terminalMrid);
+//		//System.out.println("Terminal "+terminalMrid+" is connected to:");
+//		System.out.println(terminal);
 //		for(EscaType t:breaker.getLinks().values()){
 //			System.out.println(t);
 //			for(String property: t.getLiterals().keySet()){

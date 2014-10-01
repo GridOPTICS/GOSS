@@ -39,6 +39,27 @@ public class EscaType {
 		return links;
 	}
 	
+	public Literal getLiteralValue(Property property){
+		return getLiteralValue(property.getLocalName());
+	}
+	
+	public Literal getLiteralValue(String property){
+		if (property.contains(this.dataType)){
+			property = property.substring(this.dataType.length()+1);
+		}
+		return literals.get(property);
+	}
+	
+	public Collection<EscaType> getLinkedObjectType(Resource resource){
+		Set<EscaType> types = new HashSet<EscaType>();
+		for(EscaType t: links.values()){
+			if (t.getDataType().equals(resource.getLocalName())){
+				types.add(t);
+			}
+		}
+		return Collections.unmodifiableCollection(types);
+	}
+	
 	/**
 	 * Add literal value to the escatype.  If the key contains the same
 	 * datatype as a prefix then that prefix is stripped off and is assumed
