@@ -62,8 +62,9 @@ import pnnl.goss.demo.security.util.DemoConstants;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
-@Instantiate
-@Component(managedservice = PROP_DATASOURCES_CONFIG)
+
+//@Instantiate
+@Component
 public class GossSecurityDemoActivator {
 
 	public static final String PROP_DEMO_DEFAULT_POLL_FREQ = "demo.defaultPollFreq";

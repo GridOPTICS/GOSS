@@ -16,7 +16,7 @@
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
-		<goss-demo.version>0.1.4-SNAPSHOT</goss-demo.version>
+<!-- 		<goss-demo.version>0.1.5-SNAPSHOT</goss-demo.version> -->
 		
 		
 		
@@ -130,11 +130,11 @@
 			<version>${goss-fusiondb.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>pnnl.goss</groupId>
-			<artifactId>goss-demo-pmu-security</artifactId>
-			<version>${goss-demo.version}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>pnnl.goss</groupId> -->
+<!-- 			<artifactId>goss-demo-pmu-security</artifactId> -->
+<!-- 			<version>${goss-demo.version}</version> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.apache.activemq</groupId>

@@ -59,6 +59,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
@@ -71,10 +74,15 @@ import pnnl.goss.demo.security.util.DemoConstants;
 import pnnl.goss.gridmw.datamodel.PMUData;
 import pnnl.goss.gridmw.requests.RequestPMU;
 
+import org.osgi.service.http.HttpService;
+
+@Component
+@Instantiate
 @SuppressWarnings("serial")
 public class RetrievePMUDataServlet extends HttpServlet { 
 	private static final Logger log = LoggerFactory.getLogger(RetrievePMUDataServlet.class);
 
+	@Requires HttpService httpService;
 	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)

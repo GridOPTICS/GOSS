@@ -19,10 +19,10 @@
 		
 		<feature>war</feature>
 		<feature version="${goss-core.version}">goss-core-feature</feature>
-		<feature version="${pom.version}">goss-gridmw-feature</feature>
+		<feature version="${goss-gridmw.version}">goss-gridmw-feature</feature>
 		
 		<bundle start-level="92" dependency="true">mvn:pnnl.goss/goss-core-client/${goss-core.version}</bundle>
-    	<bundle start-level="93" dependency="true">mvn:pnnl.goss/goss-demo-pmu-security/${pom.version}</bundle>
+    	<bundle start-level="93" dependency="true">mvn:pnnl.goss/goss-demo-pmu-security/${pom.version}/war</bundle>
     	
     	
     </feature>

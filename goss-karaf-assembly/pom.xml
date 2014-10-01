@@ -13,12 +13,15 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <karaf.version>3.0.1</karaf.version>
         <goss-core.version>0.1.5-SNAPSHOT</goss-core.version>
         <goss-fusiondb.version>0.1.5-SNAPSHOT</goss-fusiondb.version>
+        <goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>
         <goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
 		<goss-tool-fncs.version>0.1.4-SNAPSHOT</goss-tool-fncs.version>
 		<goss-tool-mdart.version>0.1.4-SNAPSHOT</goss-tool-mdart.version>
         <goss-powergrid.version>0.1.5-SNAPSHOT</goss-powergrid.version>
         <goss-gridpack.version>0.1.5-SNAPSHOT</goss-gridpack.version>
         <goss-demo.version>0.1.5-SNAPSHOT</goss-demo.version>
+        <goss-vaadin.version>0.1.5-SNAPSHOT</goss-vaadin.version>
+        
 
     </properties>
 
@@ -113,9 +116,13 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/2.7.10/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-core-features/${goss-core.version}/xml/features</descriptor>                                
                                 <!-- <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor> -->
+                                <descriptor>mvn:pnnl.goss/goss-kairosdb-features/${goss-kairosdb.version}/xml/features</descriptor> 
                                 <descriptor>mvn:pnnl.goss/goss-powergrid-features/${goss-powergrid.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-gridpack-features/${goss-gridpack.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-demo-features/${goss-demo.version}/xml/features</descriptor>
+                                <descriptor>mvn:de.mhus.karaf/vaadin-feature/1.0.0/xml/features</descriptor>
+                                <descriptor>mvn:pnnl.goss/goss-vaadin-features/0.1.5-SNAPSHOT/xml/features</descriptor>
+                                
 							</descriptors>
 							
 							<features>
@@ -138,6 +145,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>cxf</feature>
                                 <feature>goss-ipojo-wrapper</feature>
                                 <feature>goss-core-features</feature>
+                                <feature>goss-kairosdb-features</feature>
                                 <!-- <feature>goss-fusiondb-features</feature>
                                 <feature>goss-gridmw-features</feature>
 								<feature>goss-tool-fncs-features</feature>
@@ -145,6 +153,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>goss-powergrid-features</feature>
                                 <feature>goss-gridpack-features</feature>
                                 <feature>goss-demo-features</feature>
+                                <feature>vaadin-feature</feature>
+                                <feature>goss-vaadin-features</feature>
 
 							</features>
 							<repository>${basedir}/target/assembly/system</repository>
@@ -260,6 +270,14 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         </dependency>
         <dependency>
             <groupId>pnnl.goss</groupId>
+            <artifactId>goss-kairosdb-features</artifactId>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+            <version>${goss-kairosdb.version}</version>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>pnnl.goss</groupId>
             <artifactId>goss-gridmw-features</artifactId>
             <classifier>features</classifier>
             <scope>runtime</scope>
@@ -307,11 +325,20 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <type>xml</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.features</artifactId>
-            <version>1.12.0</version>
+            <groupId>de.mhus.karaf</groupId>
+            <artifactId>vaadin-feature</artifactId>
+            <classifier>features</classifier>
             <scope>runtime</scope>
-			<type>xml</type>
+            <version>1.0.0</version>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>pnnl.goss</groupId>
+            <artifactId>goss-vaadin-features</artifactId>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+            <version>${goss-vaadin.version}</version>
+            <type>xml</type>
         </dependency>
 	</dependencies>
 
