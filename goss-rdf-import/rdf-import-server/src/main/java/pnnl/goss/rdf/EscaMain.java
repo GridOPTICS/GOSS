@@ -102,6 +102,18 @@ public class EscaMain {
 //			}
 //		}
 		
+		Collection<EscaType> elements = mainProg.getObjectType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
+		
+		for(EscaType t: elements){
+			log.debug(t.getDataType() + " CONNECTIONS: "+ t.getName());
+			for(EscaType r: t.getRefersToMe()){
+				log.debug(r.getDataType()+ " "+ r.getName());
+			}
+		}
+		
+		if(true){
+			return;
+		}
 		Collection<EscaType> voltageLevels = mainProg.getObjectType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		Map<String, VoltageLevelGrouper> substations = new HashMap<>();
 		
