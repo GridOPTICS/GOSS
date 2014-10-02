@@ -10,6 +10,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.server.Esca60Vocab;
+
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -29,15 +31,35 @@ public class EscaType {
 	// Property name->esca type
 	private Map<String, EscaType> links = new HashMap<>();
 	
+	private Set<EscaType> refersToMe = new HashSet<>();
+	
 	public void addLink(String propertyName, EscaType link){
-		log.debug("Adding link property: "+propertyName+" to esca obj: "+link);
+		if (link != null){
+			log.debug("Adding link property: "+propertyName+" to esca obj: "+link.getName());
+		}
+		else{
+			log.debug("Adding null property for: " + propertyName);
+		}
 		links.put(propertyName, link);
+		// TODO Add the "types" to the dataset so that we don't end up with null pointers here.
+		if (link != null){
+			link.addRefersToMe(this);
+		}
+	}
+	
+	public void addRefersToMe(EscaType refersToMe){
+		this.refersToMe.add(refersToMe);
 	}
 	
 	public Map<String, EscaType> getLinks(){
 		return links;
 	}
 	
+	public Collection<EscaType> getRefersToMe() {
+		return Collections.unmodifiableCollection(refersToMe);		
+	}
+	
+		
 	public Literal getLiteralValue(Property property){
 		return getLiteralValue(property.getLocalName());
 	}
