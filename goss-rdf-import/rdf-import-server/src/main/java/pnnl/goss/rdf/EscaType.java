@@ -25,12 +25,20 @@ public class EscaType {
 	private String mrid;
 	private static Logger log = LoggerFactory.getLogger(EscaType.class);
 	
-	// Property name-> Literal value (i.e. String, Integer, Float etc)
+	/*
+	 * Property name-> Literal value (i.e. String, Integer, Float etc) mapping.
+	 */
 	private Map<String, Literal> literals = new HashMap<>();
 
-	// Property name->esca type
+	/*
+	 * Property name->esca type (links to other Resource types)
+	 */
 	private Map<String, EscaType> directLinks = new HashMap<>();
 	
+	/*
+	 *  Items that have called the addDirectLink function will be added
+	 *  to this set.
+	 */
 	private Set<EscaType> refersToMe = new HashSet<>();
 	
 	
@@ -48,7 +56,7 @@ public class EscaType {
 		}
 	}
 	
-	public void addRefersToMe(EscaType refersToMe){
+	private void addRefersToMe(EscaType refersToMe){
 		this.refersToMe.add(refersToMe);
 	}
 	
@@ -82,7 +90,7 @@ public class EscaType {
 		return Collections.unmodifiableCollection(types);
 	}
 	
-	public EscaType getLinkedResourceSingle(Resource resource){
+	public EscaType getDirectLinkedResourceSingle(Resource resource){
 		
 		for(EscaType t: directLinks.values()){
 			if (t.getDataType().equals(resource.getLocalName())){

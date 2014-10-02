@@ -37,7 +37,7 @@ public class TopologicalNode {
 	@Override
 	public String toString() {
 		return "TN: " + substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME).toString()+ 
-				" vl: " + voltageLevel.getLinkedResourceSingle(Esca60Vocab.BASEVOLTAGE_OBJECT)
+				" vl: " + voltageLevel.getDirectLinkedResourceSingle(Esca60Vocab.BASEVOLTAGE_OBJECT)
 										.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE)
 										.getDouble();
 	}
