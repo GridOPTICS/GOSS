@@ -99,6 +99,7 @@ public class EscaMain {
 //				log.debug("VoltageLevel: " + d);
 //			}
 //		}
+		/*
 		
 		Collection<EscaType> elements = mainProg.getEscaTypes().getByResourceType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		
@@ -107,7 +108,7 @@ public class EscaMain {
 			for(EscaType r: t.getRefersToMe()){
 				log.debug(r.getDataType()+ " "+ r.getName());
 			}
-		}
+		}*/
 		
 		if(true){
 			return;
