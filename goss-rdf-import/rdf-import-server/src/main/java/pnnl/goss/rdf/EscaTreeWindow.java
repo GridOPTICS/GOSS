@@ -57,14 +57,14 @@ public class EscaTreeWindow implements KnownTree {
 	/*
 	 * A mapping from the mrid to an EscaType.
 	 */
-	private Map<String, EscaType> escaTypeMap = new HashMap<String, EscaType>();
+	private EscaTypes escaTypeMap = new EscaTypes();
 	private Map<String, EscaType> escaTypeSubstationMap = new HashMap<String, EscaType>();
 	
 	/**
 	 * Returns access to an mrid -> EscaType generic mapping
 	 * @return
 	 */
-	public Map<String, EscaType> getEscaTypeMap(){
+	public EscaTypes getEscaTypeMap(){
 		return escaTypeMap;
 	}
 	

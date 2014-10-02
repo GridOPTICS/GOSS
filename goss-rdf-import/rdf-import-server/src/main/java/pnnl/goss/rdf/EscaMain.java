@@ -38,7 +38,7 @@ public class EscaMain {
 	 * A loaded mapping from mrid to escatype which is loaded from the cim model
 	 * file.
 	 */
-	private Map<String, EscaType> typeMap = null;
+	private EscaTypes escaTypes = null;
 	
 	private EscaMain(String inputFile, boolean isCim, String outputFile) throws Exception{
 		
@@ -49,13 +49,13 @@ public class EscaMain {
 		// in the system.
 		window.loadTypeMap();
 		
-		typeMap = window.getEscaTypeMap();		
+		escaTypes = window.getEscaTypeMap();		
 	}
 	
 	private Collection<EscaType> getObjectType(Resource subject){
 		List<EscaType> collection = new ArrayList<>();
 		
-		for(EscaType t: typeMap.values()){
+		for(EscaType t: escaTypes.values()){
 			if (t.getDataType().equals(subject.getLocalName())){
 				collection.add(t);
 			}
@@ -65,7 +65,7 @@ public class EscaMain {
 	}
 	
 	private void printObjectType(Resource subject){
-		for(EscaType t: typeMap.values()){
+		for(EscaType t: escaTypes.values()){
 			if (t.getDataType().equals(subject.getLocalName())){
 				System.out.println(t);
 			}
@@ -73,7 +73,7 @@ public class EscaMain {
 	}
 	
 	private EscaType getTypeByMrid(String mrid){
-		return typeMap.get(mrid);
+		return escaTypes.get(mrid);
 	}
 	
 	

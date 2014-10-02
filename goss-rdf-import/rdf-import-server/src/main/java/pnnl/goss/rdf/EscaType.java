@@ -33,6 +33,7 @@ public class EscaType {
 	
 	private Set<EscaType> refersToMe = new HashSet<>();
 	
+	
 	public void addDirectLink(String propertyName, EscaType link){
 		if (link != null){
 			log.debug("Adding link property: "+propertyName+" to esca obj: "+link.getName());
