@@ -27,13 +27,41 @@ public class TopologicalNode {
 	// one bus per voltage level per substations
 	private EscaType substation;
 	private EscaType voltageLevel;
+	private Set<EscaType> connectivityNodes = new HashSet<EscaType>();
+	
+	public TopologicalNode(){
+		
+	}
 	
 	public TopologicalNode(EscaType substation, EscaType voltageLevel){
 		this.substation = substation;
 		this.voltageLevel = voltageLevel;
 	}
 	
+	public void addConnectivityNode(EscaType connectivityNode) throws InvalidArgumentException{
+		if(!connectivityNode.getDataType().equals(Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName())){
+			throw new InvalidArgumentException("Must be a connectivity node escatype");
+		}
+		connectivityNodes.add(connectivityNode);
+	}
 	
+	
+	public EscaType getSubstation() {
+		return substation;
+	}
+
+	public void setSubstation(EscaType substation) {
+		this.substation = substation;
+	}
+
+	public EscaType getVoltageLevel() {
+		return voltageLevel;
+	}
+
+	public void setVoltageLevel(EscaType voltageLevel) {
+		this.voltageLevel = voltageLevel;
+	}
+
 	@Override
 	public String toString() {
 		return "TN: " + substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME).toString()+ 

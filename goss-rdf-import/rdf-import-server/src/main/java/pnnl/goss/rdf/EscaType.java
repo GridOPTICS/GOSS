@@ -1,9 +1,11 @@
 package pnnl.goss.rdf;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,10 +16,7 @@ import pnnl.goss.rdf.server.Esca60Vocab;
 
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class EscaType {
 	private Resource resource;
@@ -56,6 +55,10 @@ public class EscaType {
 		}
 	}
 	
+	public boolean isResourceType(Resource resourceType){
+		return dataType.equals(resourceType.getLocalName());
+	}
+	
 	private void addRefersToMe(EscaType refersToMe){
 		this.refersToMe.add(refersToMe);
 	}
@@ -67,6 +70,25 @@ public class EscaType {
 	public Collection<EscaType> getRefersToMe() {
 		return Collections.unmodifiableCollection(refersToMe);		
 	}
+	
+//	public List<List<EscaType>> getPathToResourceType(Resource resourceType){
+//		List<List<EscaType>> paths = new ArrayList<>();
+//		
+//		for (EscaType t: getLinks().values()){
+//			List<EscaType> p = new ArrayList<>();
+//			
+//			EscaType current = t;
+//			p.add(current);
+//			
+//			while(current != null){
+//				
+//			}
+//			
+//		}
+//		
+//		
+//		return paths;
+//	}
 	
 		
 	public Literal getLiteralValue(Property property){
