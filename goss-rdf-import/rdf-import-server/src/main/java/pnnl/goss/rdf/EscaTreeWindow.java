@@ -41,18 +41,14 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import pnnl.goss.rdf.server.Esca60Vocab;
 
-public class EscaTreeWindow implements KnownTree {
+public class EscaTreeWindow {
 
 	private static Logger log = LoggerFactory.getLogger(EscaTreeWindow.class);
 	
-	private Model rdfModel;
-	private List<EscaTree> substations;
-	private Map<String, EscaTree> mridTreeMap = new HashMap<String, EscaTree>();
-	
+	private Model rdfModel;	
 	private String dataFilePath;
 	private boolean isCimFile;
 	private String outputFile;
-	private HashSet<EscaType> printed = new HashSet<EscaType>();
 
 	/*
 	 * A mapping from the mrid to an EscaType.
@@ -210,59 +206,6 @@ public class EscaTreeWindow implements KnownTree {
 		}
 	}
 
-	private List<EscaTree> loadTreeFile(File file) {
-		BufferedReader br = null;
-		List<EscaTree> substations = new ArrayList<EscaTree>();
-
-		try {
-
-			String sCurrentLine;
-
-			int numTabs = 0;
-			EscaTree lastElement = null;
-
-			br = new BufferedReader(new FileReader(file));
-
-			while ((sCurrentLine = br.readLine()) != null) {
-				numTabs = sCurrentLine.length();
-				sCurrentLine = sCurrentLine.trim();
-				numTabs -= sCurrentLine.length();
-				sCurrentLine = sCurrentLine.substring(0, sCurrentLine.length() - 1);
-
-				if (numTabs == 0) {
-					lastElement = new EscaTree(null, sCurrentLine);
-					substations.add(lastElement);
-				}
-				// Add child of the last element because the tabs are one
-				// larger.
-				else if (numTabs == lastElement.getLevelsToRoot() + 1) {
-					lastElement = new EscaTree(lastElement, sCurrentLine);
-				}
-				// Sibling of the last element.
-				else if (numTabs == lastElement.getLevelsToRoot()) {
-					lastElement = new EscaTree(lastElement.getParent(), sCurrentLine);
-				} else {
-					// Move up the tree to find the parent for this element.
-					while (lastElement.getParent().getLevelsToRoot() + 1 > numTabs) {
-						lastElement = lastElement.getParent();
-					}
-					lastElement = new EscaTree(lastElement, sCurrentLine);
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-		return substations;
-	}
-
 	private String repeat(String s, int n) {
 		if (s == null) {
 			return null;
@@ -378,81 +321,6 @@ public class EscaTreeWindow implements KnownTree {
 		return subject.hasProperty(Esca60Vocab.TYPE);
 	}
 
-	private List<EscaTree> loadCimFile(File file) throws InvalidArgumentException {
-		// creates a new, empty in-memory model
-		rdfModel = Esca60Vocab.readModel(file.getAbsoluteFile());
-		List<Resource> substations = findSubstations();
-		String tabs = "";
-		List<EscaTree> parents = new ArrayList<EscaTree>();
-
-		ResIterator resItr = rdfModel.listSubjectsWithProperty(Esca60Vocab.TYPE);
-		while (resItr.hasNext()) {
-			Resource res = resItr.nextResource();
-			StmtIterator propItr = res.listProperties();
-			System.out.println(res.getURI());
-			// while (propItr.hasNext()){
-			// Statement stmt = propItr.nextStatement();
-			// RDFNode n = stmt.getObject();
-			//
-			// if(n.)
-			// }
-		}
-
-		int count = 0;
-		List<EscaTreeElement> roots = new ArrayList<EscaTreeElement>();
-
-		for (Resource resource : substations) {
-			EscaTreeElement treeRoot = buildTreeElement(null, resource, 0);
-			roots.add(treeRoot);
-
-			System.out.println("Mrid: " + treeRoot.getMrid());
-			System.out.println("DataType: " + treeRoot.getDataType());
-			System.out.println("Name: " + treeRoot.getName());
-			System.out.println("Alias: " + treeRoot.getAliasName());
-			System.out.println("Path: " + treeRoot.getPath());
-			int childCount = 0;
-
-			for (EscaTreeElement child : treeRoot.getChildren()) {
-				System.out.println("Count: " + childCount++);
-				System.out.println("Mrid: " + child.getMrid());
-				System.out.println("DataType: " + child.getDataType());
-				System.out.println("Name: " + child.getName());
-				System.out.println("Alias: " + child.getAliasName());
-				System.out.println("Path: " + treeRoot.getPath());
-			}
-			// System.out.println("DataType: "+ treeRoot.getDataType());
-			// System.out.println("Name: " + treeRoot.getName());
-			// System.out.println("Alias: " + treeRoot.getAliasName());
-			count++;
-			if (count >= 0) {
-				break;
-			}
-			// EscaTree parent = new EscaTree(this, null,
-			// Esca60Vocab.SUBSTATION_OBJECT.getLocalName(), mrid, resource);
-			// mridTreeMap.put(mrid, parent);
-			// //System.out.println(parent);
-			// //addChildren(parent);
-			// parents.add(parent);
-			// parent.addChildren();
-
-		}
-
-		return parents;
-	}
-
-	private void printTree(List<EscaTree> roots, Writer writer) {
-		for (EscaTree ele : roots) {
-			try {
-				writer.write(ele.toString() + "\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// System.out.println(ele);
-			printTree(ele.getChildren(), writer);
-		}
-	}
-
 	private List<Resource> findRdfType(Resource resource) {
 		List<Resource> resources = new ArrayList<Resource>();
 		StmtIterator stmtIter = rdfModel.listStatements(new SimpleSelector(null, RDF.type, resource));
@@ -481,26 +349,6 @@ public class EscaTreeWindow implements KnownTree {
 		// resources.add(subject);
 		// }
 		// return resources;
-	}
-
-	@Override
-	public boolean isKnown(String mrid) {
-		return mridTreeMap.containsKey(mrid);
-	}
-
-	@Override
-	public void addNew(String mrid, EscaTree tree) throws InvalidArgumentException {
-		if (isKnown(mrid))
-			throw new InvalidArgumentException("Mrid: " + mrid + " is already known!");
-		mridTreeMap.put(mrid, tree);
-
-	}
-
-	@Override
-	public EscaTree getTree(String mrid) throws InvalidArgumentException {
-		if (isKnown(mrid))
-			throw new InvalidArgumentException("Mrid: " + mrid + " isn't known!");
-		return mridTreeMap.get(mrid);
 	}
 
 }
