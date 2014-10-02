@@ -52,17 +52,7 @@ public class EscaMain {
 		escaTypes = window.getEscaTypeMap();		
 	}
 	
-	private Collection<EscaType> getObjectType(Resource subject){
-		List<EscaType> collection = new ArrayList<>();
-		
-		for(EscaType t: escaTypes.values()){
-			if (t.getDataType().equals(subject.getLocalName())){
-				collection.add(t);
-			}
-		}
-		
-		return Collections.unmodifiableList(collection);
-	}
+	
 	
 	private void printObjectType(Resource subject){
 		for(EscaType t: escaTypes.values()){
@@ -76,6 +66,10 @@ public class EscaMain {
 		return escaTypes.get(mrid);
 	}
 	
+	public EscaTypes getEscaTypes(){
+		return escaTypes;
+	}
+	
 	
 	//private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 	
@@ -83,13 +77,17 @@ public class EscaMain {
 		
 		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
 		
-		int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
-		int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
-		int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
-				
-		System.out.println("Breaker count: "+ terminalCount);
-		System.out.println("Terminal count: "+ terminalCount);
-		System.out.println("Connectivity Node count: "+ connectivityCount);
+		Network network = new Network(mainProg.getEscaTypes());
+		
+		
+//		
+//		int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
+//		int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
+//		int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
+//				
+//		System.out.println("Breaker count: "+ terminalCount);
+//		System.out.println("Terminal count: "+ terminalCount);
+//		System.out.println("Connectivity Node count: "+ connectivityCount);
 		
 //		Collection<EscaType> substations = mainProg.getObjectType(Esca60Vocab.SUBSTATION_OBJECT);
 //		
@@ -102,7 +100,7 @@ public class EscaMain {
 //			}
 //		}
 		
-		Collection<EscaType> elements = mainProg.getObjectType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
+		Collection<EscaType> elements = mainProg.getEscaTypes().getByResourceType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		
 		for(EscaType t: elements){
 			log.debug(t.getDataType() + " CONNECTIONS: "+ t.getName());
@@ -114,7 +112,7 @@ public class EscaMain {
 		if(true){
 			return;
 		}
-		Collection<EscaType> voltageLevels = mainProg.getObjectType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
+		Collection<EscaType> voltageLevels = mainProg.getEscaTypes().getByResourceType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		Map<String, VoltageLevelGrouper> substations = new HashMap<>();
 		
 		List<TopologicalNode> nodes = new ArrayList<>();
