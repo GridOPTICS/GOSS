@@ -37,7 +37,7 @@ public class VoltageLevelGrouper {
 	public Collection<Double> getVoltageLevels(){
 		List<Double> nominalLevels = new ArrayList<>();
 		for(EscaType t: voltageLevels.values()){
-			for (EscaType b: t.getLinkedObjectType(Esca60Vocab.BASEVOLTAGE_OBJECT)){
+			for (EscaType b: t.getDirectLinkedResources(Esca60Vocab.BASEVOLTAGE_OBJECT)){
 				nominalLevels.add(Double.parseDouble(b.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE).toString()));
 			}
 		}

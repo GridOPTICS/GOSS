@@ -166,7 +166,7 @@ public class EscaTreeWindow implements KnownTree {
 					log.debug("Skipping type property: "+prop.getLocalName()+" on resource "+res.getLocalName());
 				}
 				else{
-					esca.addLink(prop.getLocalName(), escaTypeMap.get(res.getLocalName()));
+					esca.addDirectLink(prop.getLocalName(), escaTypeMap.get(res.getLocalName()));
 				}
 			}
 		}

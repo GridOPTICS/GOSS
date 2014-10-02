@@ -121,7 +121,7 @@ public class EscaMain {
 		
 		for(EscaType vl: voltageLevels){
 			VoltageLevelGrouper vlGrouper = null;
-			for (EscaType sub: vl.getLinkedObjectType(Esca60Vocab.SUBSTATION_OBJECT)){
+			for (EscaType sub: vl.getDirectLinkedResources(Esca60Vocab.SUBSTATION_OBJECT)){
 				if (!substations.containsKey(sub.getMrid())){
 					log.debug("Adding substation: " + sub.getMrid());
 					vlGrouper = new VoltageLevelGrouper(sub);

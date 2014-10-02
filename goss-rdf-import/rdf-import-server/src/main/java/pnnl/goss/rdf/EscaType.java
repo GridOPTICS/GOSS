@@ -29,18 +29,18 @@ public class EscaType {
 	private Map<String, Literal> literals = new HashMap<>();
 
 	// Property name->esca type
-	private Map<String, EscaType> links = new HashMap<>();
+	private Map<String, EscaType> directLinks = new HashMap<>();
 	
 	private Set<EscaType> refersToMe = new HashSet<>();
 	
-	public void addLink(String propertyName, EscaType link){
+	public void addDirectLink(String propertyName, EscaType link){
 		if (link != null){
 			log.debug("Adding link property: "+propertyName+" to esca obj: "+link.getName());
 		}
 		else{
 			log.debug("Adding null property for: " + propertyName);
 		}
-		links.put(propertyName, link);
+		directLinks.put(propertyName, link);
 		// TODO Add the "types" to the dataset so that we don't end up with null pointers here.
 		if (link != null){
 			link.addRefersToMe(this);
@@ -52,7 +52,7 @@ public class EscaType {
 	}
 	
 	public Map<String, EscaType> getLinks(){
-		return links;
+		return directLinks;
 	}
 	
 	public Collection<EscaType> getRefersToMe() {
@@ -71,9 +71,9 @@ public class EscaType {
 		return literals.get(property);
 	}
 	
-	public Collection<EscaType> getLinkedObjectType(Resource resource){
+	public Collection<EscaType> getDirectLinkedResources(Resource resource){
 		Set<EscaType> types = new HashSet<EscaType>();
-		for(EscaType t: links.values()){
+		for(EscaType t: directLinks.values()){
 			if (t.getDataType().equals(resource.getLocalName())){
 				types.add(t);
 			}
@@ -81,9 +81,9 @@ public class EscaType {
 		return Collections.unmodifiableCollection(types);
 	}
 	
-	public EscaType getLinkedObjectTypeSingle(Resource resource){
+	public EscaType getLinkedResourceSingle(Resource resource){
 		
-		for(EscaType t: links.values()){
+		for(EscaType t: directLinks.values()){
 			if (t.getDataType().equals(resource.getLocalName())){
 				return t;
 			}
@@ -170,22 +170,11 @@ public class EscaType {
 		}
 		sb.append("------------------------------------------------\n\n");
 		
-		for(EscaType t: links.values()){
+		for(EscaType t: directLinks.values()){
 			sb.append(this.dataType + " ("+this.mrid+") direct connect to\n");
 			sb.append(t);
 		}
 		
-		return sb.toString();
-	}	
-	
-	private String repeat(String s, int n) {
-		if (s == null) {
-			return null;
-		}
-		final StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < n; i++) {
-			sb.append(s);
-		}
 		return sb.toString();
 	}
 }
