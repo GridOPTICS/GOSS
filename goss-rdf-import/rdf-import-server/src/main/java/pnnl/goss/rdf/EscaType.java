@@ -110,6 +110,23 @@ public class EscaType {
 		return mrid;
 	}
 	
+	/**
+	 * Returns the identifiedobject.name parameter from the rdf code.  If it does not exist
+	 * then returns the mrid of the element.
+	 * 
+	 * @return String
+	 */
+	public String getName(){
+		// Not all of the elements have a name so if they don't then use the mrid
+		// as the name until we have something better.
+		// TODO find something better that is unique than the mrid
+		Literal val = this.literals.get(Esca60Vocab.IDENTIFIEDOBJECT_NAME);
+		if (val != null){
+			return val.getString();
+		}
+		return mrid;
+	}
+	
 	public EscaType(EscaType copy){
 		this(copy.getResource(), copy.getDataType(), copy.getMrid());
 	}
