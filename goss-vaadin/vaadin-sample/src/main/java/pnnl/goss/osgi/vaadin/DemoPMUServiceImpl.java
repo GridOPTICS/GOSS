@@ -19,10 +19,12 @@ package pnnl.goss.osgi.vaadin;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
@@ -53,17 +55,17 @@ import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 @Component
 @Provides
 @Instantiate
-public class GossServiceImpl implements GossService  {
-    
+public class DemoPMUServiceImpl implements DemoPMUService  {
+    //TODO rename
 	private volatile GossRequestHandlerRegistrationService registrationService;
 	private volatile GossDataServices dataServices;
 	GossClient client = null; 
 	
-	private static final Logger log = LoggerFactory.getLogger(GossServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(DemoPMUServiceImpl.class);
 
 
 	
-	public GossServiceImpl(@Requires GossRequestHandlerRegistrationService registrationService, @Requires GossDataServices dataServices){
+	public DemoPMUServiceImpl(@Requires GossRequestHandlerRegistrationService registrationService, @Requires GossDataServices dataServices){
 		this.registrationService = registrationService;
 		this.dataServices = dataServices;
 		client = new GossClient(PROTOCOL.OPENWIRE);
@@ -85,12 +87,39 @@ public class GossServiceImpl implements GossService  {
 	
 	@Invalidate
 	public void stop(){
-		System.out.println("STOPING GOSS VAADIN SERVICE");
+		System.out.println("STOPPING GOSS VAADIN SERVICE");
+	}
+	
+	
+	public List<String> requestPMUList(){
+		List<String> phasorNames = new ArrayList<String>();
+		RequestPMUMetaData request = new RequestPMUMetaData();
+		DataResponse response;
+		try {
+			//Get all of the channels through the request metadata  call and return the frequency channels
+			response = (DataResponse)client.getResponse(request);
+			if(response.getData() instanceof ArrayList){
+				ArrayList<String> channels = (ArrayList)response.getData();
+				for(String channel: channels){
+					if(channel.endsWith(".frequency")){
+						String phasorName = channel.substring(0, channel.length()-10);
+						if(!phasorNames.contains(phasorName)){
+							phasorNames.add(phasorName);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("Error while retrieving PMU list ", e);
+			throw new RuntimeException(e);
+		} 
+		
+		return phasorNames;
 	}
 	
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-	public String requestPMUData(String startTime, String endTime, String pmus){
+	public String requestPMUData(Date startTime, Date endTime, Collection<String> pmus){
 		String json = "";
 		try{
 //			String startTimeStr = request.getParameter("start");
@@ -132,10 +161,10 @@ public class GossServiceImpl implements GossService  {
 //				endTimeLong = finalEndTimeLong;
 //			}
 			
-			boolean bDone = false;
+//			boolean bDone = false;
 			String[] names = null;
 			HashMap<String,HashMap<Long,String>> dataValues = new HashMap<String,HashMap<Long,String>>();
-			while(!bDone){
+//			while(!bDone){
 				Date s = new Date();//new Date(startTimeLong);
 				Date e = new Date();//new Date(endTimeLong);
 				String sStr = sdf.format(s);
@@ -143,84 +172,82 @@ public class GossServiceImpl implements GossService  {
 				System.out.println(sStr+"     ----      "+eStr);
 				RequestPMU requestObj = new RequestPMU("PMU_RAW", sStr,eStr);
 				
+				//send a request for each channel
+				for(String pmu: pmus){
+					RequestPMUKairos requestKairos = new RequestPMUKairos(pmu+".frequency", startTime.getTime(), endTime.getTime());
+					DataResponse response = (DataResponse)client.getResponse(requestKairos);
+					System.out.println("   DATA RESPONSE "+response);
 				
-				RequestPMUMetaData request = new RequestPMUMetaData();
-				DataResponse response = (DataResponse)client.getResponse(request);
-				System.out.println("RESPONSE "+response);
-				ArrayList<String> channels = (ArrayList)response.getData();
-				
-				RequestPMUKairos requestKairos = new RequestPMUKairos("channel", s.getTime(), e.getTime());
-				//first request metadata to figure otu which channels, then send a request for each channel
-				
-				
-				String[] requestFor = {"frequency"};
-				//int[] pmuIds = {5,6,7,8,9,10,11,12,14,15};
-				int[] pmuIds = {5,6};
-				requestObj.setPmuNo(pmuIds);
-				requestObj.setResponsefor(requestFor);
-				//main.sendRequest(requestObj);
-				//main.waitForResponse(requestObj);
-//				System.out.println("ABOUT TO SEND REQUEST");
-				DataResponse responseObj = null;
-				try {
-					System.out.println("BEFORE RESPONSE");
-					responseObj = (DataResponse)client.getResponse(requestObj);
-					System.out.println("AFTER RESPONSE");
-				} catch (IllegalStateException e1) {
-					e1.printStackTrace();
-					throw new RuntimeException(e1);
-				} catch (JMSException e1) {
-					e1.printStackTrace();
-					throw new RuntimeException(e1);
-				}finally{
-					System.out.println("FINALLY");
 				}
-				System.out.println("GOT RESPONSE OBJ "+responseObj);
 				
-				if(responseObj!=null){
-					Object obj = responseObj.getData();
-					if(obj instanceof DataError){
-						System.out.println("ERROR OCCURED "+((DataError)obj).getMessage());
-						if(((DataError)obj).getMessage().startsWith("Access Denied")){
-							//response.setStatus(HttpStatus.SC_FORBIDDEN);
-							//TODO throw exception
-							throw new Exception("forbidden");
-						} else {
-//							response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-							throw new Exception("data error "+((DataError)obj).getMessage());
-							//TODO throw exception
-						}
-					} else {
-					
-						PMUData dataObj = (PMUData)obj;
-						String[][] data = dataObj.getValues();
-						names = data[0];
-						for(int col=1;col<names.length;col++){	
-							//String[] dataCol = data[col];
-							String name = names[col];
-//							System.out.println("NAME "+name);
-							log.debug("FIELD NAME "+name);
-							HashMap<Long,String> dataMap = new HashMap<Long,String>();
-							if(dataValues.containsKey(name)){
-								dataMap = dataValues.get(name);
-							} else {
-								dataValues.put(name, dataMap);
-							}
-							for(int row=1;row<data.length;){
-								Date d = sdf.parse(data[row][0]);
-								String val = data[row][col];
-								if(!"0.0".equals(val)){
-									dataMap.put(d.getTime(),data[row][col]);
-									row +=30;					
-								} else {
-									row +=30;
-								}
-							}
-						}
-					}	
-				} else {
-					throw new Exception("Empty response");
-				}
+//				String[] requestFor = {"frequency"};
+//				//int[] pmuIds = {5,6,7,8,9,10,11,12,14,15};
+//				int[] pmuIds = {5,6};
+//				requestObj.setPmuNo(pmuIds);
+//				requestObj.setResponsefor(requestFor);
+//				//main.sendRequest(requestObj);
+//				//main.waitForResponse(requestObj);
+////				System.out.println("ABOUT TO SEND REQUEST");
+//				DataResponse responseObj = null;
+//				try {
+//					System.out.println("BEFORE RESPONSE");
+//					responseObj = (DataResponse)client.getResponse(requestObj);
+//					System.out.println("AFTER RESPONSE");
+//				} catch (IllegalStateException e1) {
+//					e1.printStackTrace();
+//					throw new RuntimeException(e1);
+//				} catch (JMSException e1) {
+//					e1.printStackTrace();
+//					throw new RuntimeException(e1);
+//				}finally{
+//					System.out.println("FINALLY");
+//				}
+//				System.out.println("GOT RESPONSE OBJ "+responseObj);
+//				
+//				if(responseObj!=null){
+//					Object obj = responseObj.getData();
+//					if(obj instanceof DataError){
+//						System.out.println("ERROR OCCURED "+((DataError)obj).getMessage());
+//						if(((DataError)obj).getMessage().startsWith("Access Denied")){
+//							//response.setStatus(HttpStatus.SC_FORBIDDEN);
+//							//TODO throw exception
+//							throw new Exception("forbidden");
+//						} else {
+////							response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+//							throw new Exception("data error "+((DataError)obj).getMessage());
+//							//TODO throw exception
+//						}
+//					} else {
+//					
+//						PMUData dataObj = (PMUData)obj;
+//						String[][] data = dataObj.getValues();
+//						names = data[0];
+//						for(int col=1;col<names.length;col++){	
+//							//String[] dataCol = data[col];
+//							String name = names[col];
+////							System.out.println("NAME "+name);
+//							log.debug("FIELD NAME "+name);
+//							HashMap<Long,String> dataMap = new HashMap<Long,String>();
+//							if(dataValues.containsKey(name)){
+//								dataMap = dataValues.get(name);
+//							} else {
+//								dataValues.put(name, dataMap);
+//							}
+//							for(int row=1;row<data.length;){
+//								Date d = sdf.parse(data[row][0]);
+//								String val = data[row][col];
+//								if(!"0.0".equals(val)){
+//									dataMap.put(d.getTime(),data[row][col]);
+//									row +=30;					
+//								} else {
+//									row +=30;
+//								}
+//							}
+//						}
+//					}	
+//				} else {
+//					throw new Exception("Empty response");
+//				}
 //				if(endTimeLong==finalEndTimeLong){
 //					bDone = true;
 //				}
@@ -231,35 +258,35 @@ public class GossServiceImpl implements GossService  {
 //					endTimeLong = finalEndTimeLong;
 //				}
 				//System.out.println("requesting data complete "+data.length);
-			}
+//			}
 			
-			if(names!=null){
-				for(int col=1;col<names.length;col++){	
-				
-					json+="{\"data\":[";
-					//System.out.println("COLUMN "+names[col]);	
-					//String[] dataCol = data[col];
-					String name = names[col];
-					HashMap<Long,String> dataMap = dataValues.get(name);
-					//System.out.println("FIRST VAL "+dataCol.length);
-					ArrayList<Long> keys = new ArrayList<Long>();
-					keys.addAll(dataMap.keySet());
-					Collections.sort(keys);
-					for(long key:keys){			
-						json += "["+key+",\""+dataMap.get(key)+"\"],";
-					}
-					log.debug("data for "+name+"  "+dataMap.size());
-					//need this check because sometimes when it gets 0 values it thinks there are more values, even when there aren't
-					if(json.endsWith(",")){
-						json = json.substring(0,json.length()-1);
-					}
-					
-					json += "],\"label\":\""+name+"....\"}";
-					if(col<names.length-1){
-						json += ",";
-					}
-				}
-				
+//			if(names!=null){
+//				for(int col=1;col<names.length;col++){	
+//				
+//					json+="{\"data\":[";
+//					//System.out.println("COLUMN "+names[col]);	
+//					//String[] dataCol = data[col];
+//					String name = names[col];
+//					HashMap<Long,String> dataMap = dataValues.get(name);
+//					//System.out.println("FIRST VAL "+dataCol.length);
+//					ArrayList<Long> keys = new ArrayList<Long>();
+//					keys.addAll(dataMap.keySet());
+//					Collections.sort(keys);
+//					for(long key:keys){			
+//						json += "["+key+",\""+dataMap.get(key)+"\"],";
+//					}
+//					log.debug("data for "+name+"  "+dataMap.size());
+//					//need this check because sometimes when it gets 0 values it thinks there are more values, even when there aren't
+//					if(json.endsWith(",")){
+//						json = json.substring(0,json.length()-1);
+//					}
+//					
+//					json += "],\"label\":\""+name+"....\"}";
+//					if(col<names.length-1){
+//						json += ",";
+//					}
+//				}
+//				
 				
 				
 //				 ListSeries ls = new ListSeries();
@@ -285,7 +312,7 @@ public class GossServiceImpl implements GossService  {
 				
 //				double getyAxisValue = event.getyAxisValue();
 //                series.addData(getyAxisValue);
-			}
+//			}
 		}catch(Exception e){
 			log.error("Error while retrieving PMU data "+e.getMessage(), e);
 			throw new RuntimeException(e);

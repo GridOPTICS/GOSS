@@ -16,8 +16,12 @@
  */
 package pnnl.goss.osgi.vaadin;
 
-public interface GossService {
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+public interface DemoPMUService {
     
-//    public String echo(String message);
-	public String requestPMUData(String startTime, String endTime, String pmus);
+	public List<String> requestPMUList();
+	public String requestPMUData(Date startTime, Date endTime, Collection<String> pmus);
 }

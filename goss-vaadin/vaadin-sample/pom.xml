@@ -3,7 +3,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pnnl.goss</groupId>
     <artifactId>goss-vaadin-sample</artifactId>
     <packaging>bundle</packaging>
     <name>goss-vaadin-sample</name>
@@ -126,38 +125,31 @@
         <dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
-			<version>${ipojo.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core</artifactId>
-			<version>${goss-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-security</artifactId>
-			<version>${goss-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-server</artifactId>
-			<version>${goss-core.version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core-client</artifactId>
-			<version>${goss-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-kairosdb-common</artifactId>
-			<version>${goss-kariosdb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-common</artifactId>
-			<version>${goss-gridmw.version}</version>
 		</dependency>
     </dependencies>
     
