@@ -19,8 +19,12 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class Network {
 	
 	private static Logger log = LoggerFactory.getLogger(Network.class);
+	/*
+	 * Full network of esca types.
+	 */
 	private EscaTypes escaTypes;
 	private TopologicalNodes topoNodes = new TopologicalNodes();
+	private Set<EscaType> markedConnectivityNode = new HashSet<>();
 	
 	public Network(EscaTypes escaTypes){
 		log.debug("Creating nework with: " + escaTypes.keySet().size() + " elements.");
@@ -62,9 +66,10 @@ public class Network {
 //		}
 		//debugReferralTree(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		//debugReferralTree(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
-		debugSetOfLiterals(Esca60Vocab.BREAKER_OBJECT);
-		debugSetOfLiterals(Esca60Vocab.CONFORMLOAD_OBJECT);
-		debugSetOfLiterals(Esca60Vocab.SYNCHRONOUSMACHINE_OBJECT);
+		debugReferralTree(Esca60Vocab.BREAKER_OBJECT);
+		//debugSetOfLiterals(Esca60Vocab.BREAKER_OBJECT);
+		//debugSetOfLiterals(Esca60Vocab.CONFORMLOAD_OBJECT);
+		//debugSetOfLiterals(Esca60Vocab.SYNCHRONOUSMACHINE_OBJECT);
 		//debugReferralTree(Esca60Vocab.TERMINAL_OBJECT);
 		//debugSetOfDirectConnections(Esca60Vocab.TERMINAL_OBJECT);
 
@@ -87,14 +92,20 @@ public class Network {
 					if (breaker != null){
 						if (breaker.getLiteralValue(Esca60Vocab.SWITCH_NORMALOPEN).getBoolean() == false){
 							if (currentTopoNode == null){
-								log.debug("Creating new topological node");
+								//log.debug("Creating new topological node");
 								currentTopoNode = new TopologicalNode();
 								topoNodes.add(currentTopoNode);
 							}
 							currentTopoNode.addConnectivityNode(connectivityNode);
 							addedConnectivityNodes.add(connectivityNode);
 						}
+						Collection<EscaType> bTerminals = breaker.getRefersToMe().getDirectLinkedResources(Esca60Vocab.TERMINAL_OBJECT);
+						for(EscaType bt: bTerminals){
+							System.out.println(bt);
+						}
 					}
+					
+					
 				}
 			}
 		}
@@ -102,6 +113,8 @@ public class Network {
 			log.debug("Node already accounted for");
 		}
 	}
+	
+
 	
 	private void debugSetOfLiterals(Resource resourceType){
 		Set<String> properties = new HashSet<>();

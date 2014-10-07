@@ -71,6 +71,12 @@ public class EscaType {
 		return Collections.unmodifiableCollection(refersToMe);		
 	}
 	
+	public Collection<EscaType> getRefersToMe(Resource resourceType) {
+		
+	}
+	
+	
+	
 //	public List<List<EscaType>> getPathToResourceType(Resource resourceType){
 //		List<List<EscaType>> paths = new ArrayList<>();
 //		

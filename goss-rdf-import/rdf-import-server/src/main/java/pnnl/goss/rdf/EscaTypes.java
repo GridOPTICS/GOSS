@@ -34,4 +34,17 @@ public class EscaTypes extends HashMap<String, EscaType> {
 		
 		return Collections.unmodifiableList(collection);
 	}
+	
+	public Collection<EscaType> where(Resource resourceType){
+		List<EscaType> collection = new ArrayList<>();
+		
+		for(EscaType t: values()){
+			if (t.getDataType().equals(resourceType.getLocalName())){
+				collection.add(t);
+			}
+		}
+		
+		return Collections.unmodifiableList(collection);
+	}
+	
 }
