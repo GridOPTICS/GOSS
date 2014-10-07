@@ -64,7 +64,7 @@ public interface GossRequestHandlerRegistrationService {
 	
 	Response handle(Request request, String dataType);
 	
-	GossRequestHandler getHandler(Request request);
+	AbstractGossRequestHandler getHandler(Request request);
 	
 	void addHandlerMapping(Class request, Class handler);
 	

@@ -47,7 +47,7 @@ package pnnl.goss.server.core;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 
-public abstract class GossRequestHandler {
+public abstract class AbstractGossRequestHandler {
 	
 	protected GossRequestHandlerRegistrationService requestHandlerService;
 	protected GossDataServices dataservices;

@@ -63,9 +63,9 @@ import pnnl.goss.powergrid.datamodel.Powergrid;
 import pnnl.goss.powergrid.requests.RequestContingencyModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestContingencyModelHandler extends GossRequestHandler {
+public class RequestContingencyModelHandler extends AbstractGossRequestHandler {
 
 	@Override
 	public Response handle(Request request) {

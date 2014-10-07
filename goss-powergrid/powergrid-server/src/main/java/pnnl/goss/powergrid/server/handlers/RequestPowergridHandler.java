@@ -51,6 +51,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.annotations.RequestHandler;
 import pnnl.goss.core.Data;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
@@ -66,11 +67,14 @@ import pnnl.goss.powergrid.requests.RequestPowergridList;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStepValues;
 import pnnl.goss.powergrid.server.PowergridServerActivator;
-import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
 import pnnl.goss.powergrid.server.impl.PowergridListerImpl;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestPowergridHandler extends GossRequestHandler {
+@RequestHandler(requests={RequestPowergrid.class, 
+								RequestPowergridList.class,
+								RequestPowergridTimeStep.class,
+								RequestPowergridTimeStepValues.class})
+public class RequestPowergridHandler extends AbstractGossRequestHandler {
 
 	private static Logger log = LoggerFactory.getLogger(RequestPowergridHandler.class);
 		

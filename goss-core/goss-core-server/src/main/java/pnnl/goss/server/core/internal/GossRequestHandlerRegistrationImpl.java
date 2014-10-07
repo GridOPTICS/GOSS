@@ -64,7 +64,7 @@ import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.security.core.GossSecurityHandler;
 import pnnl.goss.server.core.GossDataServices;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @SuppressWarnings("rawtypes")
@@ -156,7 +156,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			
 			while(superClassTester != null){
 				
-				if(superClassTester.equals(GossRequestHandler.class)){
+				if(superClassTester.equals(AbstractGossRequestHandler.class)){
 					foundSuperClassHandler = true;
 					break;
 				}
@@ -164,7 +164,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			}
 			
 			if(!foundSuperClassHandler){
-				throw new Exception("Invalid handler, must be subclass of "+GossRequestHandler.class.toString());
+				throw new Exception("Invalid handler, must be subclass of "+AbstractGossRequestHandler.class.toString());
 			}
 			
 			if(!foundSuperClassRequest){
@@ -232,7 +232,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			
 			while(superClassTester != null){
 				
-				if(superClassTester.equals(GossRequestHandler.class)){
+				if(superClassTester.equals(AbstractGossRequestHandler.class)){
 					foundSuperClassHandler = true;
 					break;
 				}
@@ -240,7 +240,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			}
 			
 			if(!foundSuperClassHandler){
-				throw new Exception("Invalid handler, must be subclass of "+GossRequestHandler.class.toString());
+				throw new Exception("Invalid handler, must be subclass of "+AbstractGossRequestHandler.class.toString());
 			}
 			
 			// Keep the string of the class.
@@ -273,7 +273,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 
 	public Response handle(Request request) {
 		Response response = null;
-		GossRequestHandler handler = null;
+		AbstractGossRequestHandler handler = null;
 		if (request != null) {
 			log.debug("handling request for:\n\t " + request.getClass().getName() + " => " + handlerMap.get(request.getClass().getName()));
 
@@ -281,7 +281,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 				try {
 					Class handlerClass = handlerToClasss.get(request.getClass().getName());
 					//Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
-					handler = (GossRequestHandler) handlerClass.newInstance();
+					handler = (AbstractGossRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
 						handler.setGossDataservices(dataServices);
 						handler.setHandlerService(this);
@@ -321,13 +321,13 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	@Override
 	public Response handle(Request request, String dataType) {
 		Response response = null;
-		GossRequestHandler handler = null;
+		AbstractGossRequestHandler handler = null;
 		if (dataType != null) {
 			log.debug("handling request for: " + dataType);
 			if (handlerMap.containsKey(dataType)) {
 				try {
 					Class handlerClass = Class.forName(handlerMap.get(dataType));
-					handler = (GossRequestHandler) handlerClass.newInstance();
+					handler = (AbstractGossRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
 						handler.setGossDataservices(dataServices);
 						handler.setHandlerService(this);
@@ -392,15 +392,15 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	}
 
 	
-	public GossRequestHandler getHandler(Request request) {
-		GossRequestHandler handler = null;
+	public AbstractGossRequestHandler getHandler(Request request) {
+		AbstractGossRequestHandler handler = null;
 		if (request != null) {
 			log.debug("handling request for: " + request.getClass().getName());
 
 			if (handlerMap.containsKey(request.getClass().getName())) {
 				try {
 					Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
-					handler = (GossRequestHandler) handlerClass.newInstance();
+					handler = (AbstractGossRequestHandler) handlerClass.newInstance();
 				} catch (Exception e) {
 					log.error("Handle error exception", e);
 				}
