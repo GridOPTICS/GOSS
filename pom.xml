@@ -6,52 +6,52 @@
 
 	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-master-build</artifactId>
-	<version>0.1.5-SNAPSHOT</version>
+	<version>${goss-master.version}</version>
 	<packaging>pom</packaging>
 	<name>GOSS Master Builder</name>
 
 	<properties>
-		
+
+		<goss-master.version>0.1.6-SNAPSHOT</goss-master.version>
+
 		<!-- The groupId of all of our bundles. -->
 		<goss.groupId>pnnl.goss</goss.groupId>
 
 		<!-- Goss properties that are listed below in the dependencymanagement 
 			section. -->
-		<goss-core.version>0.1.4-SNAPSHOT</goss-core.version>
+		<goss-core.version>0.1.5-SNAPSHOT</goss-core.version>
 		<goss-demo.version>0.1.3-SNAPSHOT</goss-demo.version>
 		<goss-dsa.version>0.1.3-SNAPSHOT</goss-dsa.version>
 		<goss-fncs.version>0.1.4-SNAPSHOT</goss-fncs.version>
 		<goss-fusion.version>0.1.5-SNAPSHOT</goss-fusion.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
-		<goss-gridpack.version>0.1.4-SNAPSHOT</goss-gridpack.version>
+		<goss-powergrid.version>0.1.5-SNAPSHOT</goss-powergrid.version>
+		<goss-gridpack.version>0.1.5-SNAPSHOT</goss-gridpack.version>
 		<goss-kariosdb.version>0.1.4-SNAPSHOT</goss-kariosdb.version>
 		<goss-mdart.version>0.1.4-SNAPSHOT</goss-mdart.version>
 		<goss-pmuevents.version>0.1.4-SNAPSHOT</goss-pmuevents.version>
-		<goss-powergrid.version>0.1.4-SNAPSHOT</goss-powergrid.version>
 		<goss-sharedperspective.version>0.1.3-SNAPSHOT</goss-sharedperspective.version>
 
-		
-		
 		<maven-dependency-plugin.version>2.3.7</maven-dependency-plugin.version>
-		
-		
+
+
 		<!-- Required dependency versions ALPHA ORDEReD -->
 		<apacheds.version>2.0.0-M15</apacheds.version>
 		<activemq.version>5.9.0</activemq.version>
 		<camel.version>2.12.3</camel.version>
 		<commons-lang.version>2.6</commons-lang.version>
 		<cxf.version>2.7.10</cxf.version>
-		
+
 		<ipojo.version>1.12.0</ipojo.version>
-		
+
 		<!-- javax stuff -->
 		<javax-jms.version>2.0</javax-jms.version>
 		<javax-xml.version>2.2.6</javax-xml.version>
 		<javax-persist.version>1.0.2</javax-persist.version>
 		<javax.servlet.version>2.5</javax.servlet.version>
 		<javax.web.api.version>6.0</javax.web.api.version>
-		
-		<jaxb.version>2.2.6</jaxb.version>		
+
+		<jaxb.version>2.2.6</jaxb.version>
 		<junit.version>4.11</junit.version>
 		<karaf.version>3.0.0</karaf.version>
 		<gson.version>2.2.4</gson.version>
@@ -61,48 +61,45 @@
 		<mysql-connector.version>5.1.28</mysql-connector.version>
 		<org-reflections.version>0.9.8</org-reflections.version>
 		<osgi.version>4.2.0</osgi.version>
-		
+
 		<!-- Servicemix wrappers -->
 		<servicemix-commons-dbcp.version>1.4_3</servicemix-commons-dbcp.version>
 		<servicemix-commons-io.version>1.4_3</servicemix-commons-io.version>
 		<servicemix-specs.version>2.4.0</servicemix-specs.version>
 		<servicemix-xstream.version>1.4.6_1</servicemix-xstream.version>
-		
+
 		<slf4j.version>1.7.5</slf4j.version>
-		
+
 
 		<!-- Spring versions -->
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<spring.security.version>3.1.3.RELEASE</spring.security.version>
 		<spring.integration.version>2.2.1.RELEASE</spring.integration.version>
-		
+
 		<woodstox.version>4.2.0</woodstox.version>
 	</properties>
 
 	<modules>
 		<module>goss-core</module>
-        <module>goss-fusiondb</module>
 		<module>goss-powergrid</module>
-        <module>goss-gridpack</module>
- 		<module>goss-gridmw</module> 
-        
-<!-- 		<module>goss-tool-gridpack-feature</module> -->
-		<module>goss-tool-fncs</module>
+		<module>goss-gridpack</module>
+		<!-- <module>goss-fusiondb</module> <module>goss-gridmw</module> -->
 
- 		<module>goss-tool-sharedperspective-feature</module> 
- 		<module>goss-kairosdb</module>
+		<!-- <module>goss-tool-gridpack-feature</module> -->
+		<!-- <module>goss-tool-fncs</module> -->
+
+		<!-- <module>goss-tool-sharedperspective-feature</module> -->
+		<!-- <module>goss-kairosdb</module> -->
 		<!--<module>goss-hpc-server</module> -->
-		
-<!-- 		<module>goss-dsa-feature</module> -->
-		<module>goss-tool-mdart</module>
+
+		<!-- <module>goss-dsa-feature</module> -->
+		<!-- <module>goss-tool-mdart</module> -->
 
 		<!-- Above this line are bundles that can be added to karaf, whilest below 
 			this line are standalone jars that can be run from a terminal. -->
 		<!-- <module>goss-demo-feature</module> -->
-		<module>goss-server</module>
-		<module>goss-demo-feature</module>
-		<module>goss-tool-pmuevents</module>
-		<module>goss-client-tests</module>
+		<!-- <module>goss-server</module> <module>goss-demo-feature</module> <module>goss-tool-pmuevents</module> 
+			<module>goss-client-tests</module> -->
 	</modules>
 	<scm>
 		<developerConnection>scm:git:https://git.pnnl.gov/GOSS/</developerConnection>
@@ -119,12 +116,10 @@
 			<url>http://maven.pnnl.gov/artifactory/mvn-pnnl-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<profiles>
-		<!-- 
-			This is the default profile if the user doesn't specify a profile
-			on the command line
-		-->
+		<!-- This is the default profile if the user doesn't specify a profile 
+			on the command line -->
 		<profile>
 			<id>local-devdeveloper</id>
 			<activation>
@@ -132,7 +127,7 @@
 			</activation>
 			<properties>
 				<global.properties.path>${user.home}/.goss/goss.properties</global.properties.path>
-			</properties>			
+			</properties>
 		</profile>
 		<profile>
 			<id>eioc-north</id>
@@ -140,7 +135,7 @@
 				<property>
 					<name>env</name>
 					<value>eioc-north</value>
-				</property>				
+				</property>
 			</activation>
 			<properties>
 				<global.properties.path>${user.home}/.goss/goss.north.properties</global.properties.path>
@@ -152,7 +147,7 @@
 				<property>
 					<name>env</name>
 					<value>eioc-south</value>
-				</property>				
+				</property>
 			</activation>
 			<properties>
 				<global.properties.path>${user.home}/.goss/goss.south.properties</global.properties.path>
@@ -163,6 +158,11 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- GOSS Core -->
+			<dependency>
+				<groupId>${goss.groupId}</groupId>
+				<artifactId>goss-core-parent</artifactId>
+				<version>${goss-core.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core</artifactId>
@@ -279,7 +279,8 @@
 			</dependency>
 
 			<!-- Karaf specific -->
-			<!--  --><dependency>
+			<!-- -->
+			<dependency>
 				<groupId>org.apache.karaf.jaas</groupId>
 				<artifactId>org.apache.karaf.jaas.modules</artifactId>
 				<version>${karaf.version}</version>
@@ -303,14 +304,14 @@
 				<artifactId>activemq-all</artifactId>
 				<version>${activemq.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 				<version>${ipojo.version}</version>
 			</dependency>
 
-			<!-- Servicemix  -->
+			<!-- Servicemix -->
 			<dependency>
 				<groupId>org.apache.servicemix.bundles</groupId>
 				<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
@@ -320,7 +321,7 @@
 				<groupId>org.apache.servicemix.bundles</groupId>
 				<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
 				<version>${servicemix-xstream.version}</version>
-		    </dependency>
+			</dependency>
 
 			<!-- http -->
 			<dependency>
@@ -439,36 +440,33 @@
 						<target>1.7</target>
 					</configuration>
 				</plugin>
-                <plugin>
-	               <groupId>org.codehaus.mojo</groupId>
-	               <artifactId>properties-maven-plugin</artifactId>
-	               <version>1.0-alpha-2</version>
-                </plugin>				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>properties-maven-plugin</artifactId>
+					<version>1.0-alpha-2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>com.sap.prd.mobile.ios.maven.plugins</groupId>
+					<artifactId>resolve-pom-maven-plugin</artifactId>
+					<version>1.0</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
-		<!--
 		<plugins>
 			<plugin>
-	               <groupId>org.codehaus.mojo</groupId>
-	               <artifactId>properties-maven-plugin</artifactId>
-	               <executions>
-	                   <execution>
-	                       <id>read-properties</id>
-	                       <phase>initialize</phase>
-	                       <goals>
-	                           <goal>read-project-properties</goal>
-	                       </goals>
-	                       <configuration>-->
-	                       <!-- TODO add release profile and use file in git if release, set property up above -->
-                           <!--
-			                   <files>
-			                       <file>${global.properties.path}</file>
-			                   </files>
-			               </configuration>
-	                   </execution>
-	               </executions>
-	     	</plugin>
-	     </plugins>-->
+				<groupId>com.sap.prd.mobile.ios.maven.plugins</groupId>
+				<artifactId>resolve-pom-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>resolve-pom-props</id>
+						<goals>
+							<goal>resolve-pom-props</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
-
 </project>

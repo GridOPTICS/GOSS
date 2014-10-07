@@ -7,11 +7,13 @@
 	<packaging>pom</packaging>
 
 	<name>GOSS Core Parent</name>
+	<version>${goss-core.version}</version>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-master-build</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>${goss-master.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<modules>
@@ -29,27 +31,27 @@
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core</artifactId>
-				<version>0.1.4-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-client</artifactId>
-				<version>0.1.4-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-security</artifactId>
-				<version>0.1.4-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${goss.groupId}</groupId>
 				<artifactId>goss-core-server</artifactId>
-				<version>0.1.4-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security-utils</artifactId>
-				<version>0.1.4-SNAPSHOT</version>
+				<version>${goss-core.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
@@ -148,5 +150,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<version>0.1.5-SNAPSHOT</version>
 </project>

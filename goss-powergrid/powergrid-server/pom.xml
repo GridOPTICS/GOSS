@@ -15,7 +15,8 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-powergrid</artifactId>
-		<version>0.1.4-SNAPSHOT</version>
+		<version>${goss-powergrid.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
@@ -157,7 +158,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>pnnl.goss.powergrid.PowergridCommonActivator</Bundle-Activator>
 						<Import-Package>
 							*
 						</Import-Package>

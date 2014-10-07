@@ -1,17 +1,28 @@
 package pnnl.goss.powergrid.topology.nodebreaker;
 
+import static pnnl.goss.powergrid.topology.NodeBreakerDataType.*;
+
+
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import pnnl.goss.powergrid.topology.IdentifiedObject;
 import pnnl.goss.powergrid.topology.NodeBreakerDataType;
 
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
+
 @Entity
+@Table(name=SYNCHRONOUS_MACHINE)
+@AttributeOverride(name="mrid", column=@Column(name=SYNCHRONOUS_MACHINE_MRID))
+@IndexCollection(columns={@Index(name=DATA_TYPE)})
 public class SynchronousMachine extends IdentifiedObject implements NodeBreakerDataType  {
 
 	private static final long serialVersionUID = 4572687743938308150L;
 
-	@Column
+	@Column(name=DATA_TYPE)
 	protected String dataType;
 	@Column
 	private Double min0;
@@ -28,8 +39,9 @@ public class SynchronousMachine extends IdentifiedObject implements NodeBreakerD
 	@Column
 	private Double rated;
 	
+	
 	public SynchronousMachine(){
-		dataType = SYNCHRONOUES_MACHINE;
+		dataType = SYNCHRONOUS_MACHINE;
 	}
 	
 	@Override

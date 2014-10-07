@@ -48,26 +48,42 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.datamodel.Branch;
 import pnnl.goss.powergrid.datamodel.Bus;
+import pnnl.goss.powergrid.datamodel.Line;
 import pnnl.goss.powergrid.datamodel.Load;
 import pnnl.goss.powergrid.datamodel.Machine;
+import pnnl.goss.powergrid.datamodel.Powergrid;
 import pnnl.goss.powergrid.datamodel.SwitchedShunt;
+import pnnl.goss.powergrid.datamodel.Transformer;
 
 @XmlRootElement(name="GridpackPowergrid")
 public class GridpackPowergrid {
+	private static Logger log = LoggerFactory.getLogger(GridpackPowergrid.class);
+	
 	PowergridModel grid;
+	String caseId;
+	Double sBase;
+	String mrid;
 	List<GridpackBus> buses = new ArrayList<GridpackBus>();
-	List<GridpackBranch> branches = new ArrayList<GridpackBranch>();
+	List<TransmissionElement> branches = new ArrayList<TransmissionElement>();
 	
 	HashMap<Integer, List<GridpackShunt>> busShuntMap = new HashMap<Integer, List<GridpackShunt>>();
 	HashMap<Integer, List<GridpackGenerator>> busGeneratorMap = new HashMap<Integer, List<GridpackGenerator>>();
 	HashMap<Integer, List<GridpackLoad>> busLoadMap = new HashMap<Integer, List<GridpackLoad>>();
+	// String frombus/tobus and the list of branches associated with that.
+	HashMap<String, GridpackBranch> branchFromToMap = new HashMap<>();
 	
 	/**
 	 * Required or the jaxb will complain.
@@ -77,8 +93,25 @@ public class GridpackPowergrid {
 		
 	}
 	
+	@XmlElement(name="CASE_SBASE")
+	public Double getSBase(){
+		return sBase;
+	}
+	
+	@XmlElement(name="CASE_ID")
+	public String getCaseId(){
+		return caseId;
+	}
+	@XmlElement(name="Mrid")	
+	public String getMrid(){
+		return mrid;
+	}
+	
 	public GridpackPowergrid(PowergridModel grid){
 		this.grid = grid;
+		this.caseId = grid.getPowergrid().getCaseIdentifier();
+		this.mrid = grid.getPowergrid().getMrid();
+		this.sBase = grid.getPowergrid().getSbase();
 		
 		for(SwitchedShunt item:grid.getSwitchedShunts()){
 			if (!busShuntMap.containsKey(item.getBusNumber())){
@@ -123,9 +156,72 @@ public class GridpackPowergrid {
 		}
 		
 		for(Branch branch:this.grid.getBranches()){
-			GridpackBranch newBranch = GridpackBranch.buildFromObject(this.grid, branch);
-			branches.add(newBranch);	
+			TransmissionElement element = null;
+			boolean isLine = false;
+			if (isLine(branch)){
+				element = TransmissionElementLine.buildFromObject(this.grid, branch);
+				isLine = true;
+			}
+			else if (isTransformer(branch)){
+				element = TransmissionElementTransformer.buildFromObject(this.grid, branch);
+			}
+			else{
+				log.error("Branch: "+branch.getBranchId()+ " is marked as neither line nor transformer!");
+				continue;
+			}
+
+			String fromToKey = String.format("%d/%d", element.getFromBusNumber(), element.getToBusNumber());
+			String toFromKey = String.format("%d/%d", element.getToBusNumber(), element.getFromBusNumber());
+			
+			if (branchFromToMap.containsKey(fromToKey)){
+				if(isLine){
+					branchFromToMap.get(fromToKey).addItem((TransmissionElementLine)element);
+				}
+				else{
+					branchFromToMap.get(fromToKey).addItem((TransmissionElementTransformer)element);
+				}
+			}
+			else if(branchFromToMap.containsKey(toFromKey)){
+				element.setSwitched(true);
+				if(isLine){
+					branchFromToMap.get(toFromKey).addItem((TransmissionElementLine)element);
+				}
+				else{
+					branchFromToMap.get(toFromKey).addItem((TransmissionElementTransformer)element);
+				}
+			}
+			else{
+				GridpackBranch newBranch = new GridpackBranch();
+				newBranch.setFromBusNumber(branch.getFromBusNumber());
+				newBranch.setTobusNumber(branch.getToBusNumber());
+				newBranch.setBranchMrid(branch.getMrid());
+				if (isLine){
+					newBranch.addItem((TransmissionElementLine)element);
+				}
+				else{
+					newBranch.addItem((TransmissionElementTransformer)element);
+				}
+				branchFromToMap.put(fromToKey, newBranch);
+			}	
 		}
+	}
+	
+	private boolean isLine(Branch branch){
+		for(Line x: grid.getLines()){
+			if (branch.getBranchId()==x.getBranchId()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isTransformer(Branch branch){
+		for(Transformer x: grid.getTransformers()){
+			if (branch.getBranchId()==x.getBranchId()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@XmlElementWrapper(name="Buses")
@@ -136,7 +232,14 @@ public class GridpackPowergrid {
 	
 	@XmlElementWrapper(name="Branches")
 	@XmlElement(name="Branch", type=GridpackBranch.class)
+	public Collection<GridpackBranch> getGridpackBranches(){
+		return branchFromToMap.values();
+	}
+	
+	/*
+	@XmlElementWrapper(name="Branches")
+	@XmlElement(name="Branch", type=GridpackBranch.class)
 	public Collection<GridpackBranch> getBranches(){
 		return this.branches;
-	}
+	}*/
 }

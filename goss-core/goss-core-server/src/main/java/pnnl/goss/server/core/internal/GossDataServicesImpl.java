@@ -49,6 +49,13 @@ public class GossDataServicesImpl implements GossDataServices {
 		
 	}
 	
+	@SuppressWarnings("rawtypes")
+	public GossDataServicesImpl(Dictionary config){
+		this();
+		log.debug("Constructing Configuration file: ");
+		update(config);
+	}
+	
 	@Updated
 	public void update(@SuppressWarnings("rawtypes") Dictionary config){
 		properties.clear();

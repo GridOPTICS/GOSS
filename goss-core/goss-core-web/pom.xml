@@ -5,22 +5,26 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>goss-core-web</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>war</packaging>
 	<name>GOSS Core Web Bundle</name>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>${goss-core.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
-		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-core-server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -46,8 +50,51 @@
 
 	<build>
 		<plugins>
-        <plugin>
-			<groupId>org.apache.felix</groupId>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<supportedProjectTypes>
+						<supportedProjectType>war</supportedProjectType>
+					</supportedProjectTypes>
+					<instructions>
+						<_wab>src/main/webapp</_wab>
+						<Web-ContextPath>goss</Web-ContextPath>
+						<Web-Context>goss</Web-Context>
+						<Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
+					</instructions>
+					<Import-Package>
+						javax.servlet,
+						javax.servlet.http,javax.servlet.*,
+						javax.servlet.jsp.*,
+						javax.servlet.jsp.jstl.*,
+						org.apache.http.auth.*,
+					</Import-Package>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+		          <!-- Make a skinny WAR -->
+		          <!-- <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes> -->
+		          <archive>
+		            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+		          </archive>
+		        </configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-ipojo-plugin</artifactId>
 				<version>1.12.0</version>
 				<executions>
@@ -58,25 +105,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<_wab>src/main/webapp</_wab>
-						<Web-ContextPath>goss</Web-ContextPath>
-						<Web-Context>goss</Web-Context>
-					</instructions>
-					<Import-Package>
-						javax.servlet,
-						javax.servlet.http,javax.servlet.*,
-						javax.servlet.jsp.*,
-						javax.servlet.jsp.jstl.*,
-						org.apache.http.auth.*,
-					</Import-Package>
-				</configuration>
-			</plugin>			
 		</plugins>
 	</build>
 </project>

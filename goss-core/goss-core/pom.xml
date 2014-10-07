@@ -7,26 +7,38 @@
 	<artifactId>goss-core</artifactId>
 	<packaging>bundle</packaging>
 	<name>GOSS Core Bundle</name>
+	<description>
+		The goss-core contains common interfaces and classes that can be transferred and used
+		throughout both client and server bundles.
+	</description>
 
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>0.1.6-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<dependencies>
+	<dependencies>		
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
+			<artifactId>org.apache.servicemix.bundles.commons-lang</artifactId>
+			<version>${servicemix-commons-lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
+			<version>${servicemix-xstream.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
+			<version>${servicemix-commons-io.version}</version>
+		</dependency>
+
+		<!--
+			Dependencies that are declared in the parent pom. 
+		 -->
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
@@ -34,10 +46,6 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

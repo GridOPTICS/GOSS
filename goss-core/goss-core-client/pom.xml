@@ -8,7 +8,8 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-core-parent</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>${goss-core.version}</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>

@@ -1,9 +1,5 @@
 package pnnl.goss.core;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
-
 public class GossCoreContants {
 	
 	// Confguration file to use
