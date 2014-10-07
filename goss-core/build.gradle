@@ -3,6 +3,21 @@ ext. projectIds = ['group': 'pnnl.goss.core', 'version': '0.1.6-SNAPSHOT']
 group = projectIds.group
 version = projectIds.version
 
+allprojects {
+	group = 'pnnl.goss.core'
+	version = '0.1.6-SNAPSHOT'
+}
+
+subprojects {
+	apply plugin: 'java'
+	
+	repositories {
+		mavenCentral()
+	}
+}
+
+// Set up properties for each of the subprojects.
+/*
 project(':goss-core') {
 	group = projectIds.group
 	version = projectIds.version
@@ -13,12 +28,9 @@ project(':goss-core-server') {
 	group = projectIds.group
 	version = projectIds.version
 	apply plugin: 'java'
-}
-
-project(':goss-core-web') {
-	group = projectIds.group
-	version = projectIds.version
-	apply plugin: 'java'
+	dependencies {
+		compile project{':goss-core'}
+	}
 }
 
 project(':goss-core-security') {
@@ -32,3 +44,18 @@ project(':goss-core-security-utils') {
 	version = projectIds.version
 	apply plugin: 'java'
 }
+
+project(':goss-core-web') {
+	group = projectIds.group
+	version = projectIds.version
+	apply plugin: 'java'
+	apply plugin: 'war'
+	apply plugin: 'jetty'
+	repositories {
+		mavenCentral()
+	}
+	
+	dependencies {
+		providedCompile 'javax.servlet:servlet-api:3.0'
+	}
+}*/

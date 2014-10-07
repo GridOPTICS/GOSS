@@ -1,4 +1,4 @@
-include 'goss-core', 'goss-core-server', 'goss-core-web', 'goss-core-security', 'goss-core-security-utils'
+include 'goss-core', 'goss-core-client', 'goss-core-server', 'goss-core-web', 'goss-core-security', 'goss-core-security-utils'
 
 
 
