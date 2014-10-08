@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.gridpack.service;
+package pnnl.goss.gridpack.service.impl;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -88,7 +88,7 @@ import org.xml.sax.SAXException;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.gridpack.common.datamodel.GridpackBus;
 import pnnl.goss.gridpack.common.datamodel.GridpackPowergrid;
-import pnnl.goss.gridpack.service.impl.GridpackUtils;
+import pnnl.goss.gridpack.service.GridpackService;
 import pnnl.goss.powergrid.PowergridModel;
 import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.server.PowergridService;
@@ -96,7 +96,7 @@ import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 
 @Path("/")
 @Component
-public class GridpackServiceImpl {
+public class GridpackServiceImpl implements GridpackService {
 	
 	private static Logger log = LoggerFactory.getLogger(GridpackServiceImpl.class);
 	
@@ -120,6 +120,10 @@ public class GridpackServiceImpl {
 		return service;
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#getBuses0ToN(java.lang.String, int)
+	 */
+	@Override
 	@GET
 	@Path("/{powergridName}/buses/{numberOfBuses}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -130,6 +134,10 @@ public class GridpackServiceImpl {
 		return getBusesNToM(powergridName, 0, numberOfBuses);
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#getBusesNToM(java.lang.String, int, int)
+	 */
+	@Override
 	@GET
 	@Path("/{powergridName}/buses/{startAtIndex}/{numberOfBuses}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -151,6 +159,10 @@ public class GridpackServiceImpl {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#getGridpackGrid(java.lang.String)
+	 */
+	@Override
 	@GET
     @Path("/{powergridName}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -172,6 +184,10 @@ public class GridpackServiceImpl {
 		return pg;
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#getGridpackGridWithWadl(java.lang.String, java.lang.String)
+	 */
+	@Override
 	@GET
     @Path("/{powergridName}/full")
 	@Produces({MediaType.TEXT_PLAIN})
@@ -274,6 +290,10 @@ public class GridpackServiceImpl {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#getNumberOfBuses(java.lang.String)
+	 */
+	@Override
 	@GET
 	@Path("/{powergridName}/bus/count")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -292,6 +312,10 @@ public class GridpackServiceImpl {
 		return model.getBuses().size();
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#getNumberOfBranches(java.lang.String)
+	 */
+	@Override
 	@GET
 	@Path("/{powergridName}/branch/count")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -350,7 +374,11 @@ public class GridpackServiceImpl {
 //		return null;
 //	}
 
-	 public void serialize(Document doc, OutputStream out) throws Exception {
+	 /* (non-Javadoc)
+	 * @see pnnl.goss.gridpack.service.GridpackService#serialize(org.w3c.dom.Document, java.io.OutputStream)
+	 */
+	@Override
+	public void serialize(Document doc, OutputStream out) throws Exception {
 
 		  TransformerFactory tfactory = TransformerFactory.newInstance();
 		  Transformer serializer;
