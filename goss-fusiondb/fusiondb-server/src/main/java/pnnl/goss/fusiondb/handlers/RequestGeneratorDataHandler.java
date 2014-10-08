@@ -12,8 +12,10 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.fusiondb.requests.RequestGeneratorData;
+import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 
+@RequestHandler(requests=RequestGeneratorData.class)
 public class RequestGeneratorDataHandler extends AbstractGossRequestHandler {
 
 	@Override

@@ -13,8 +13,10 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
 import pnnl.goss.fusiondb.requests.RequestVoltageStabilityViolation;
+import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 
+@RequestHandler(requests=RequestVoltageStabilityViolation.class)
 public class RequestVoltageStabilityViolationHandler extends AbstractGossRequestHandler {
 
 	@Override

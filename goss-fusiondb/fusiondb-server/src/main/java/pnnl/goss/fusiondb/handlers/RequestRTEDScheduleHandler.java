@@ -58,8 +58,10 @@ import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.RTEDSchedule;
 import pnnl.goss.fusiondb.datamodel.RTEDScheduleData;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
+import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 
+@RequestHandler(requests=RequestRTEDSchedule.class)
 public class RequestRTEDScheduleHandler extends AbstractGossRequestHandler{
 	
 	public boolean viz = false;

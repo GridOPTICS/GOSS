@@ -13,8 +13,10 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
 import pnnl.goss.fusiondb.requests.RequestInterfacesViolation;
+import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 
+@RequestHandler(requests=RequestInterfacesViolation.class)
 public class RequestInterfacesViolationHandler extends AbstractGossRequestHandler {
 
 	@Override

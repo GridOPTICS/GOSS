@@ -57,8 +57,10 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.HAInterchangeSchedule;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
+import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 
+@RequestHandler(requests=RequestHAInterchangeSchedule.class)
 public class RequestHAInterchangeScheduleHandler extends AbstractGossRequestHandler{
 	
 	public DataResponse handle(Request request) {
