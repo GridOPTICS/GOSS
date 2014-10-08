@@ -317,11 +317,7 @@
 				<artifactId>org.apache.servicemix.bundles.commons-io</artifactId>
 				<version>${servicemix-commons-io.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.servicemix.bundles</groupId>
-				<artifactId>org.apache.servicemix.bundles.xstream</artifactId>
-				<version>${servicemix-xstream.version}</version>
-			</dependency>
+			
 
 			<!-- http -->
 			<dependency>
@@ -446,27 +442,13 @@
 					<version>1.0-alpha-2</version>
 				</plugin>
 
-				<plugin>
-					<groupId>com.sap.prd.mobile.ios.maven.plugins</groupId>
-					<artifactId>resolve-pom-maven-plugin</artifactId>
-					<version>1.0</version>
-				</plugin>
-
+				<!-- <plugin> <groupId>com.sap.prd.mobile.ios.maven.plugins</groupId> 
+					<artifactId>resolve-pom-maven-plugin</artifactId> <version>1.0</version> 
+					</plugin> -->
+				<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>flatten-maven-plugin</artifactId> 
+					<version>1.0.0-beta-2</version> </plugin> -->
+		
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>com.sap.prd.mobile.ios.maven.plugins</groupId>
-				<artifactId>resolve-pom-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>resolve-pom-props</id>
-						<goals>
-							<goal>resolve-pom-props</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 </project>
