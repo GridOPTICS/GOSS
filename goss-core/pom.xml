@@ -24,9 +24,13 @@
 		<activemq.version>5.10.0</activemq.version>
 		<apacheds.version>2.0.0-M17</apacheds.version>
 		
+		<cxf.version>2.7.12</cxf.version>
+		
 		<gson.version>2.2.4</gson.version>
 		
 		<httpclient-osgi.version>4.3.1</httpclient-osgi.version>
+		<hawt.version>1.20</hawt.version>
+		<hawtbuf.version>1.11</hawtbuf.version>
 		
 		<ipojo.version>1.12.0</ipojo.version>
 		
@@ -84,7 +88,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

@@ -11,7 +11,7 @@
 		A jar with multiple mains for testing output.
 	</description>
 	<properties>
-		<goss-core.version>0.1.5-SNAPSHOT</goss-core.version>
+		<goss-core.version>0.1.6-SNAPSHOT</goss-core.version>
 		<goss-powergrid.version>0.1.5-SNAPSHOT</goss-powergrid.version>
 		<goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version>
 		<goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version>

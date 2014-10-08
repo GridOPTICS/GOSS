@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="${project.artifactId}-${project.version}" >
 
-    <feature name="goss-ipojo" version="1.12.0">
+    <feature name="goss-ipojo" version="${ipojo.version}">
     	<feature>goss-dependencies</feature>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/1.12.0</bundle>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/1.12.0</bundle>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/1.12.0</bundle>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.composite/1.12.0</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/${ipojo.version}</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/${ipojo.version}</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/${ipojo.version}</bundle>
+        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.composite/${ipojo.version}</bundle>
     </feature>
     
     <feature name="goss-activemq-broker-nosecurity" version="${project.version}">
@@ -28,10 +28,10 @@
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${httpclient-osgi.version}</bundle>
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${httpclient-osgi.version}</bundle>
     	
-    	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/1.19</bundle>
-  		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/1.20</bundle>
-    	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/1.20</bundle>
-  		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/1.9</bundle>
+    	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/${stompjms.version}</bundle>
+  		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/${hawt.version}</bundle>
+    	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/${hawt.version}</bundle>
+  		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/${hawtbuf.version}</bundle>
   		<feature>openjpa</feature>
   		<feature>jndi</feature>
     </feature>
