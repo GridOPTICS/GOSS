@@ -39,6 +39,7 @@
 		<!--
 			Dependencies that are declared in the parent pom. 
 		 -->
+		 <!-- OSGI Related -->
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
@@ -47,6 +48,12 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+		</dependency>
+		
+		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -58,10 +65,12 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
