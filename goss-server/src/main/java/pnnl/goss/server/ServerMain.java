@@ -44,32 +44,36 @@
 */
 package pnnl.goss.server;
 
+import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
+import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.fusiondb.FusionDBServerActivator;
-import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
-import pnnl.goss.gridmw.GridMWServerActivator;
-import pnnl.goss.gridpack.service.GridpackServerActivator;
-import pnnl.goss.kairosdb.KairosDBServerActivator;
-import pnnl.goss.mdart.MDARTServerActivator;
-import pnnl.goss.powergrid.server.PowergridServerActivator;
+//import pnnl.goss.fusiondb.FusionDBServerActivator;
+//import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
+//import pnnl.goss.gridmw.GridMWServerActivator;
+//import pnnl.goss.gridpack.service.GridpackServerActivator;
+//import pnnl.goss.kairosdb.KairosDBServerActivator;
+//import pnnl.goss.mdart.MDARTServerActivator;
+//import pnnl.goss.powergrid.server.PowergridServerActivator;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.internal.GossDataServicesImpl;
 import pnnl.goss.server.core.internal.GossRequestHandlerRegistrationImpl;
 import pnnl.goss.server.core.internal.GridOpticsServer;
+import pnnl.goss.server.core.internal.RequestHandlerFinder;
 import pnnl.goss.util.Utilities;
-import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
-import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
 
 
 public class ServerMain {
 	
 	private static Logger log = LoggerFactory.getLogger(ServerMain.class);
+	
 
 	public void attachShutdownHook(){
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -120,11 +124,13 @@ public class ServerMain {
 	
 
 	@SuppressWarnings("rawtypes")
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws IOException {
+		
 		ServerMain main = new ServerMain();
 		main.attachShutdownHook();
 
+		
+		
 		Dictionary dataSourcesConfig = Utilities.loadProperties(PROP_DATASOURCES_CONFIG);
 		// Replaces the ${..} with values from the goss.properties file.
 		replacePropertiesFromHome(dataSourcesConfig, "goss.properties");
@@ -145,30 +151,34 @@ public class ServerMain {
 		
 		@SuppressWarnings("unused")
 		GridOpticsServer server = new GridOpticsServer(registrationService, true);
-				
-		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(registrationService, dataServices);
-		fusionDBServerActivator.update(dataSourcesConfig);
-		fusionDBServerActivator.start();
+		//PowergridModel t = new PowergridModel();
 		
+		//PowergridServerActivator pgActivator = new PowergridServerActivator(registrationService, dataServices);
+		RequestHandlerFinder finder = new RequestHandlerFinder(registrationService);
 		
-		MDARTServerActivator mdartServerActivator = new MDARTServerActivator(registrationService, dataServices);
-		mdartServerActivator.update(dataSourcesConfig);
-		mdartServerActivator.start();
-		
-		KairosDBServerActivator kairosDBServerActivator = new KairosDBServerActivator(registrationService, dataServices);
-		kairosDBServerActivator.update(dataSourcesConfig);
-		kairosDBServerActivator.start();
-		
-		GridMWServerActivator gridmwServerActivator = new GridMWServerActivator(registrationService, dataServices);
-		gridmwServerActivator.update(dataSourcesConfig);
-		gridmwServerActivator.start();
-		
-		
-		PowergridServerActivator pgActivator = new PowergridServerActivator(registrationService, dataServices);
-		pgActivator.start();
-		
-		GridpackServerActivator gridpackActivator = new GridpackServerActivator(registrationService, dataServices);
-		gridpackActivator.start();
+//		FusionDBServerActivator fusionDBServerActivator = new FusionDBServerActivator(registrationService, dataServices);
+//		fusionDBServerActivator.update(dataSourcesConfig);
+//		fusionDBServerActivator.start();
+//		
+//		
+//		MDARTServerActivator mdartServerActivator = new MDARTServerActivator(registrationService, dataServices);
+//		mdartServerActivator.update(dataSourcesConfig);
+//		mdartServerActivator.start();
+//		
+//		KairosDBServerActivator kairosDBServerActivator = new KairosDBServerActivator(registrationService, dataServices);
+//		kairosDBServerActivator.update(dataSourcesConfig);
+//		kairosDBServerActivator.start();
+//		
+//		GridMWServerActivator gridmwServerActivator = new GridMWServerActivator(registrationService, dataServices);
+//		gridmwServerActivator.update(dataSourcesConfig);
+//		gridmwServerActivator.start();
+//		
+//		
+//		PowergridServerActivator pgActivator = new PowergridServerActivator(registrationService, dataServices);
+//		pgActivator.start();
+//		
+//		GridpackServerActivator gridpackActivator = new GridpackServerActivator(registrationService, dataServices);
+//		gridpackActivator.start();
 		
 		//GridpackServerActivator gridpackActivator = new GridpackServerActivator()
 		
