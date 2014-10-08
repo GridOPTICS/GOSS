@@ -1,6 +1,6 @@
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,9 +13,9 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
 import pnnl.goss.fusiondb.requests.RequestVoltageStabilityViolation;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestVoltageStabilityViolationHandler extends GossRequestHandler {
+public class RequestVoltageStabilityViolationHandler extends AbstractGossRequestHandler {
 
 	@Override
 	public Response handle(Request request) {

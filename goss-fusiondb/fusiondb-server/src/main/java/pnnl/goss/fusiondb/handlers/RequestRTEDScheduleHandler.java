@@ -44,7 +44,7 @@
 */
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -58,9 +58,9 @@ import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.RTEDSchedule;
 import pnnl.goss.fusiondb.datamodel.RTEDScheduleData;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestRTEDScheduleHandler extends GossRequestHandler{
+public class RequestRTEDScheduleHandler extends AbstractGossRequestHandler{
 	
 	public boolean viz = false;
 	

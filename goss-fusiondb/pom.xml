@@ -3,17 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-fusiondb</artifactId>
-	<version>${goss-fusion.version}</version>
+	<version>0.1.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>GOSS Fusiondb</name>
-		
-	<parent>
-		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-master-build</artifactId>
-		<version>${goss-master.version}</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+	<name>GOSS Fusiondb</name>	
 	
 	<modules>
 		<module>fusiondb-common</module>
@@ -22,19 +16,63 @@
 	</modules>
 	
     <properties>
+    	<goss-core.version>0.1.6-SNAPSHOT</goss-core.version>
+    	
+    	<ipojo.version>1.12.0</ipojo.version>
+    	
+    	<junit.version>4.11</junit.version>
+    	
+    	<mockito.version>1.9.5</mockito.version>
+    	
+    	<slf4j.version>1.7.5</slf4j.version>
+    	<!--  
 		<maven-bundle-plugin.version>2.6.0</maven-bundle-plugin.version>
 		<osgi.version>4.2.0</osgi.version>
-		<goss-powergrid-common.version>0.1.0</goss-powergrid-common.version>
+		<goss-powergrid.version>0.1.6</goss-powergrid.version>
 		<woodstox.version>4.2.0</woodstox.version>
 		<jaxb.api.version>2.2</jaxb.api.version>
 		<maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
 		<external-build-path>mvn-build</external-build-path>
 		<jaxb.version>2.2-promoted-b65</jaxb.version>
+		<goss-core.version>0.1.6-SNAPSHOT</goss-core.version>-->
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+		        <groupId>org.apache.felix</groupId>
+		        <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+		        <version>${ipojo.version}</version>
+		    </dependency>
+		    <!-- Logging use to log in files
+				private static final Logger log = LoggerFactory.getLogger(ClassName.class);
+			 -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+            
+            <!-- Unit testing related dependencies. -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+		    
 			<!-- GossCore and GossSecurity will be used in the other projects. -->
+			<!-- 
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core</artifactId>
@@ -58,7 +96,7 @@
 			<dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-fusiondb-common</artifactId>
-				<version>0.1.5-SNAPSHOT</version>
+				<version>0.1.6-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
@@ -130,7 +168,21 @@
 				<groupId>org.apache.servicemix.bundles</groupId>
 				<artifactId>org.apache.servicemix.bundles.commons-dbcp</artifactId>
 				<version>${servicemix-commons-dbcp.version}</version>
-			</dependency>
+			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

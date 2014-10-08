@@ -44,7 +44,7 @@
 */
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -57,9 +57,9 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.HAInterchangeSchedule;
 import pnnl.goss.fusiondb.requests.RequestHAInterchangeSchedule;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestHAInterchangeScheduleHandler extends GossRequestHandler{
+public class RequestHAInterchangeScheduleHandler extends AbstractGossRequestHandler{
 	
 	public DataResponse handle(Request request) {
 

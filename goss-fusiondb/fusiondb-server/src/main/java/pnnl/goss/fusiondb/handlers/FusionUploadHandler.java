@@ -44,7 +44,7 @@
 */
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -56,10 +56,9 @@ import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
 import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-
-public class FusionUploadHandler extends GossRequestHandler {
+public class FusionUploadHandler extends AbstractGossRequestHandler {
 	
 	Connection connection;
 	Statement statement;

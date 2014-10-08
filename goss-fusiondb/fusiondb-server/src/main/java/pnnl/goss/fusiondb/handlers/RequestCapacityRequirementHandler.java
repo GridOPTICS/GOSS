@@ -44,7 +44,7 @@
 */
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -59,9 +59,9 @@ import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestCapacityRequirementHandler extends GossRequestHandler{
+public class RequestCapacityRequirementHandler extends AbstractGossRequestHandler{
 	
 	public boolean viz=false;
 	

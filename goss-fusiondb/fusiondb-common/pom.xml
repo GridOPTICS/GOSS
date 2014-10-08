@@ -12,20 +12,20 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-fusiondb</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>0.1.6-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
+	        <groupId>org.apache.felix</groupId>
+	        <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+	    </dependency>
+		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+			<version>${goss-core.version}</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

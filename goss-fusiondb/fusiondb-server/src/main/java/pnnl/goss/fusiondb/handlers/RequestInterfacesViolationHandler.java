@@ -1,6 +1,6 @@
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,9 +13,9 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
 import pnnl.goss.fusiondb.requests.RequestInterfacesViolation;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestInterfacesViolationHandler extends GossRequestHandler {
+public class RequestInterfacesViolationHandler extends AbstractGossRequestHandler {
 
 	@Override
 	public Response handle(Request request) {

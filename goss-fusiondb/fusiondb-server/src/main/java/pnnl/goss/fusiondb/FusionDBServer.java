@@ -37,8 +37,8 @@ import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @Instantiate
-@Component(managedservice = PROP_DATASOURCES_CONFIG)
-public class FusionDBServerActivator {
+@Component
+public class FusionDBServer {
 	public static final String PROP_FUSIONDB_DATASERVICE = "goss/fusiondb";
 	public static final String PROP_FUSIONDB_USER = "fusion.db.user";
 	public static final String PROP_FUSIONDB_PASSWORD = "fusion.db.password";
@@ -50,11 +50,11 @@ public class FusionDBServerActivator {
 	 * deployment.
 	 * </p>
 	 */
-	private static Logger log = LoggerFactory
-			.getLogger(FusionDBServerActivator.class);
+	private static Logger log = LoggerFactory.getLogger(FusionDBServer.class);
 
 	private GossRequestHandlerRegistrationService registrationService;
 	private GossDataServices dataServices;
+	
 	@Requires
 	private BasicDataSourceCreator datasourceCreator;
 
@@ -62,7 +62,7 @@ public class FusionDBServerActivator {
 	private String password;
 	private String uri;
 
-	public FusionDBServerActivator(
+	public FusionDBServer(
 			@Requires GossRequestHandlerRegistrationService registrationService,
 			@Requires GossDataServices dataServices) {
 		this.registrationService = registrationService;
@@ -76,7 +76,8 @@ public class FusionDBServerActivator {
 				log.debug("Attempting to register dataservice: "
 						+ PROP_FUSIONDB_DATASERVICE);
 				if (datasourceCreator == null){
-					datasourceCreator = new BasicDataSourceCreator();
+					log.error("Invalid datasourceCreatorService!");
+					//datasourceCreator = new BasicDataSourceCreator();
 				}
 				if (datasourceCreator != null){
 					try {

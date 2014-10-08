@@ -44,17 +44,25 @@
 */
 package pnnl.goss.fusiondb;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class FusionDBCommonActivator implements BundleActivator {
-
-    public void start(BundleContext context) {
-        System.out.println("Starting the bundle");
+@Component
+public class FusionDBCommon {
+	
+	private static final Logger log = LoggerFactory.getLogger(FusionDBCommon.class);
+			
+	@Validate
+    public void start() {
+		log.debug("Starting");
     }
-
-    public void stop(BundleContext context) {
-        System.out.println("Stopping the bundle");
+	
+	@Invalidate
+    public void stop() {
+		log.debug("Stopping");
     }
 
 }

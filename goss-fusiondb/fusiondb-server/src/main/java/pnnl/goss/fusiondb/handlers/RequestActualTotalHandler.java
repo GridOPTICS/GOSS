@@ -44,7 +44,7 @@
 */
 package pnnl.goss.fusiondb.handlers;
 
-import static pnnl.goss.fusiondb.FusionDBServerActivator.PROP_FUSIONDB_DATASERVICE;
+import static pnnl.goss.fusiondb.FusionDBServer.PROP_FUSIONDB_DATASERVICE;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -58,9 +58,9 @@ import pnnl.goss.core.Request;
 import pnnl.goss.fusiondb.datamodel.ActualTotal;
 import pnnl.goss.fusiondb.datamodel.ActualTotalData;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
-import pnnl.goss.server.core.GossRequestHandler;
+import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-public class RequestActualTotalHandler extends GossRequestHandler {
+public class RequestActualTotalHandler extends AbstractGossRequestHandler {
 
 	public boolean viz = false;
 	
