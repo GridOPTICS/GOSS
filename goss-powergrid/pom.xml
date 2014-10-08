@@ -31,6 +31,8 @@
 		<mockito.version>1.9.5</mockito.version>
 		<mysql-connector.version>5.1.28</mysql-connector.version>
 		
+		<slf4j.version>1.7.5</slf4j.version>
+		
 	</properties>
         
 	<dependencyManagement>
@@ -41,6 +43,16 @@
 				<artifactId>goss-core</artifactId>
 				<version>${goss-core.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>pnnl.goss</groupId>
+				<artifactId>goss-powergrid-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+				<version>${ipojo.version}</version>
+			</dependency> 
 			<!-- <dependency>
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-server</artifactId>
@@ -49,11 +61,7 @@
 				<groupId>pnnl.goss</groupId>
 				<artifactId>goss-core-security</artifactId>
 			</dependency> -->
-			<dependency>
-				<groupId>pnnl.goss</groupId>
-				<artifactId>goss-powergrid-common</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+			
 			<!-- <dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
@@ -98,7 +106,7 @@
 				<groupId>org.apache.directory.server</groupId>
 				<artifactId>apacheds-all</artifactId>
 				<version>${apacheds.version}</version>
-			</dependency>
+			</dependency>-->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -108,7 +116,7 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j.version}</version>
-			</dependency>-->
+			</dependency>
 			
 			<!-- 
 			<dependency>
