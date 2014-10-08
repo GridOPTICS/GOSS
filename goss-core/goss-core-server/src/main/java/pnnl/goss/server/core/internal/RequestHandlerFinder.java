@@ -13,12 +13,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 public class RequestHandlerFinder {
 	
+	private static Logger log = LoggerFactory.getLogger(RequestHandlerFinder.class);
 	private BundleContext context;
 	
 	public RequestHandlerFinder(BundleContext bc){
@@ -30,18 +33,18 @@ public class RequestHandlerFinder {
 		
 		Reflections ref = new Reflections();
 		
+		// Get the annotation classes that provide a requesthandler class.
 		Set<Class<?>> refs = ref.getTypesAnnotatedWith(RequestHandler.class); //.getConstructorsAnnotatedWith(RequestHandler.class);
 		
+		// For each of the annotations we need to add all of the elements that are specified
+		// in the requests parameter.
 		for(Class r : refs){
+			log.debug("Found handler: "+r.getName());
 			for(Annotation a : r.getAnnotations()){
-				if (a.annotationType().equals(RequestHandler.class)){
-					for(Class p: ((RequestHandler)a).requests()){
-						registrationService.addHandlerMapping(p, r);
-						System.out.println(p.getName());
-					}
+				for(Class p: ((RequestHandler)a).requests()){
+					registrationService.addHandlerMapping(p, r);
 				}
 			}
-			System.out.println(r.getName());
 		}
 		
 //		urlSet.excludeJavaHome();
