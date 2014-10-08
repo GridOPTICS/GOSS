@@ -1,4 +1,4 @@
-package pnnl.goss.annotations;
+package pnnl.goss.server.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
