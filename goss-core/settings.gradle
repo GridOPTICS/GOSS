@@ -5,5 +5,5 @@
      if you wanted to map the directory structure model/todo/items, you’d add the 
      subproject via the path model:todo:items. 
 */
-include 'goss-core', 'goss-core-client', 'goss-core-web', 'goss-security', 'goss-security-util'
+include 'goss-core', 'goss-core-client', 'goss-core-web', 'goss-security', 'goss-security-utils'
 
