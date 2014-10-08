@@ -199,11 +199,12 @@
 				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 				<version>${ipojo.version}</version>
-			</dependency> -->
+			</dependency> 
 		</dependencies>
 	</dependencyManagement>
 	<build>
