@@ -44,42 +44,28 @@
 */
 package pnnl.goss.core;
 
-import java.util.Hashtable;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 
-public class GossCoreActivator implements BundleActivator {
+@Instantiate
+@Component(managedservice=GossCore.GOSS_CONFIG_PID)
+public class GossCore {
 	
-	private static final String CONFIG_PID = "pnnl.goss.core";
+	private static Logger log = LoggerFactory.getLogger(GossCore.class);
+	public static final String GOSS_CONFIG_PID = "pnnl.goss.core";
 	
-	// Set to the registerd service for monitoring the configuration of the service.
-	//private ServiceRegistration serviceReg;
-
-    public void start(BundleContext context) {
-        System.out.println(String.format("Starting the %s bundle", context.getBundle().getSymbolicName()));
-        Hashtable<String, Object> properties = new Hashtable<String, Object>();
-        properties.put(Constants.SERVICE_PID, CONFIG_PID);
-        //serviceReg = context.registerService(ManagedService.class.getName(), new ConfigUpdater(), properties);
-    }
-
-    public void stop(BundleContext context) {
-    	//serviceReg.unregister();
-    	System.out.println(String.format("Stoping the %s bundle", context.getBundle().getSymbolicName()));
-    }
-
-    /*
-     * Internal class to deal with a change in this classes configuration scheme.
-     */
-    /*private class ConfigUpdater implements ManagedService {
-
-    	@SuppressWarnings("rawtypes")
-    	public void updated(Dictionary config) throws ConfigurationException {
-    		System.out.println("Updating configuration");
-    		if (config == null){
-    			return;
-    		}
-    	}
-    }*/
+	@Validate
+	public void start(){
+		log.debug("Starting");
+	}
+	
+	@Invalidate
+	public void stop(){
+		log.debug("Stopping");
+	}
 }

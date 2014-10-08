@@ -44,17 +44,26 @@
 */
 package pnnl.goss.gridpack.common;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class GridpackCommonActivator implements BundleActivator {
 
-    public void start(BundleContext context) {
-        System.out.println("Starting the bundle");
+@Component
+public class GridpackCommon {
+
+	private static Logger log = LoggerFactory.getLogger(GridpackCommon.class);
+	
+	@Validate
+    public void start() {
+        log.debug("Starting");
     }
 
-    public void stop(BundleContext context) {
-        System.out.println("Stopping the bundle");
+	@Invalidate
+    public void stop() {
+		log.debug("Stoping");
     }
 
 }
