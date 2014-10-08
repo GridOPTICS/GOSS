@@ -3,43 +3,71 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>pnnl.goss</groupId>
 	<artifactId>goss-gridpack</artifactId>
 	<packaging>pom</packaging>
 	<name>GOSS Gridpack</name>
-	<version>${goss-gridpack.version}</version>
-
-	<parent>
-		<groupId>pnnl.goss</groupId>
-		<artifactId>goss-master-build</artifactId>
-		<version>${goss-master.version}</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+	<version>0.1.6-SNAPSHOT</version>
 
 	<modules>
 		<module>gridpack-common</module>
 		<module>gridpack-server</module>
         <module>gridpack-features</module>
 	</modules>
+	
+	<properties>
+		<cxf.version>2.7.10</cxf.version>
+		
+		<goss-core.version>0.1.6-SNAPSHOT</goss-core.version>
+		<goss-powergrid.version>0.1.6-SNAPSHOT</goss-powergrid.version>
+		
+		<ipojo.version>1.12.0</ipojo.version>
+		
+		<junit.version>4.11</junit.version>
+		
+		<mockito.version>1.9.5</mockito.version>
+		<mysql-connector.version>5.1.28</mysql-connector.version>
+		
+		<slf4j.version>1.7.5</slf4j.version>		
+	</properties>
     
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>pnnl.goss</groupId>
-				<artifactId>goss-gridpack-common</artifactId>
-				<version>${project.version}</version>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+				<version>${ipojo.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>pnnl.goss</groupId>
-				<artifactId>goss-powergrid-common</artifactId>
-				<version>${goss-core.version}</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>pnnl.goss</groupId>
-				<artifactId>goss-powergrid-server</artifactId>
-				<version>${goss-powergrid.version}</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+				<version>${ipojo.version}</version>
+			</dependency> 
+			
+			<!-- Unit testing related dependencies. -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+			<!-- <dependency>
 				<groupId>org.codehaus.woodstox</groupId>
 				<artifactId>woodstox-core-asl</artifactId>
 				<version>${woodstox.version}</version>
@@ -88,29 +116,17 @@
 				<groupId>org.apache.directory.server</groupId>
 				<artifactId>apacheds-all</artifactId>
 				<version>${apacheds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>${mysql-connector.version}</version>
-			</dependency>
+			</dependency> -->
+			
+			
+			<!--
 			<dependency>
 				<groupId>org.osgi</groupId>
 				<artifactId>org.osgi.core</artifactId>
 				<version>${osgi.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			<!-- <dependency>
+			 <dependency>
 				<groupId>org.apache.servicemix.specs</groupId>
 				<artifactId>org.apache.servicemix.specs.jaxb-api-2.2</artifactId>
 				<version>${servicemix-specs.version}</version>
@@ -120,12 +136,22 @@
 				<artifactId>org.apache.servicemix.specs.jsr311-api-1.1.1</artifactId>
 				<version>${servicemix-specs.version}</version>
 			</dependency> -->
-			<dependency>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-				<version>${cxf.version}</version>
-			</dependency>
+			
 
 		</dependencies>
 	</dependencyManagement>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

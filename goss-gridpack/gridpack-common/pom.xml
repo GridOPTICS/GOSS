@@ -15,36 +15,49 @@
 	<parent>
 		<groupId>pnnl.goss</groupId>
 		<artifactId>goss-gridpack</artifactId>
-		<version>${goss-gridpack.version}</version>
-		<relativePath>../pom.xml</relativePath>
+		<version>0.1.6-SNAPSHOT</version>
 	</parent>
 	
 	<dependencies>
+	
 		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
+			<version>${goss-powergrid.version}</version>
+		</dependency>		
+		
+		
+		<!-- <dependency>
 			<groupId>org.codehaus.woodstox</groupId>
 			<artifactId>woodstox-core-asl</artifactId>
+		</dependency> -->
+		
+		<dependency>
+	      <groupId>org.apache.cxf</groupId>
+	      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+	      <version>${cxf.version}</version>
+      	</dependency>
+      	
+      	
+      	<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-	      <groupId>org.apache.cxf</groupId>
-	      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-	      <version>${cxf.version}</version>
-      	</dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
