@@ -1,23 +1,26 @@
 
-
 allprojects {
 	group = 'pnnl.goss.core'
 	version = '0.1.6-SNAPSHOT'
 	
+	
+		
 	repositories {
 		mavenLocal()
 		mavenCentral()
-		jcenter()
 	}
 }
 
 subprojects {
+	
 	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'osgi'
 	
 	dependencies {
 	
 		// Service registration/dependency injection.
-		compile 'org.apache.felix:maven-ipojo-plugin:1.12.0'
+		compile 'org.apache.felix:org.apache.felix.ipojo.annotations:1.12.0'
 		
 		// Logging 
 		compile 'org.slf4j:slf4j-api:1.7.5'

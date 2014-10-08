@@ -3,8 +3,10 @@ buildscript {
         jcenter()
     }
     dependencies {
+    	// Used to ipojoize the bundles
         classpath "com.athaydes.gradle.osgi:osgi-run-core:1.0"
     }
 }
 
+// Used to ipojoize the bundles
 apply plugin: 'osgi-run'
