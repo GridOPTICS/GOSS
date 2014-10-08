@@ -127,39 +127,39 @@ public class FusionDBServer {
 
 	@Validate
 	public void start() {
-		log.info("Starting bundle: " + this.getClass().getName());
+		log.debug("Starting bundle: " + this.getClass().getName());
 		
 		if (registrationService != null) {
-			registrationService.addHandlerMapping(RequestActualTotal.class,
-					RequestActualTotalHandler.class);
-			registrationService.addHandlerMapping(
-					RequestCapacityRequirement.class,
-					RequestCapacityRequirementHandler.class);
-			registrationService.addHandlerMapping(RequestForecastTotal.class,
-					RequestForecastTotalHandler.class);
-			registrationService.addHandlerMapping(
-					RequestHAInterchangeSchedule.class,
-					RequestHAInterchangeScheduleHandler.class);
-			registrationService.addHandlerMapping(RequestRTEDSchedule.class,
-					RequestRTEDScheduleHandler.class);
-			registrationService.addHandlerMapping(RequestGeneratorData.class, 
-					RequestGeneratorDataHandler.class);
-			registrationService.addHandlerMapping(RequestInterfacesViolation.class,
-					RequestInterfacesViolationHandler.class);
-			registrationService.addHandlerMapping(RequestVoltageStabilityViolation.class, 
-					RequestVoltageStabilityViolationHandler.class);
-			
-			registrationService.addUploadHandlerMapping("CapacityRequirement", 
-					FusionUploadHandler.class);
-			registrationService.addUploadHandlerMapping("fusion_GeneratorData", 
-					FusionUploadHandler.class);
-			registrationService.addUploadHandlerMapping("InterfacesViolation", 
-					FusionUploadHandler.class);
-			registrationService.addUploadHandlerMapping("VoltageStabilityViolation", 
-					FusionUploadHandler.class);
-			
-			
-			
+////			registrationService.addHandlerMapping(RequestActualTotal.class,
+////					RequestActualTotalHandler.class);
+////			registrationService.addHandlerMapping(
+////					RequestCapacityRequirement.class,
+////					RequestCapacityRequirementHandler.class);
+////			registrationService.addHandlerMapping(RequestForecastTotal.class,
+////					RequestForecastTotalHandler.class);
+////			registrationService.addHandlerMapping(
+////					RequestHAInterchangeSchedule.class,
+////					RequestHAInterchangeScheduleHandler.class);
+////			registrationService.addHandlerMapping(RequestRTEDSchedule.class,
+////					RequestRTEDScheduleHandler.class);
+////			registrationService.addHandlerMapping(RequestGeneratorData.class, 
+////					RequestGeneratorDataHandler.class);
+////			registrationService.addHandlerMapping(RequestInterfacesViolation.class,
+////					RequestInterfacesViolationHandler.class);
+////			registrationService.addHandlerMapping(RequestVoltageStabilityViolation.class, 
+////					RequestVoltageStabilityViolationHandler.class);
+////			
+////			registrationService.addUploadHandlerMapping("CapacityRequirement", 
+////					FusionUploadHandler.class);
+////			registrationService.addUploadHandlerMapping("fusion_GeneratorData", 
+////					FusionUploadHandler.class);
+////			registrationService.addUploadHandlerMapping("InterfacesViolation", 
+////					FusionUploadHandler.class);
+////			registrationService.addUploadHandlerMapping("VoltageStabilityViolation", 
+////					FusionUploadHandler.class);
+////			
+////			
+////			
 			// Fusion Security----------------------------------------------
 			registrationService.addSecurityMapping(RequestActualTotal.class,
 					AccessControlHandlerAllowAll.class);
@@ -175,12 +175,12 @@ public class FusionDBServer {
 					AccessControlHandlerAllowAll.class);
 			registrationService.addSecurityMapping(RequestVoltageStabilityViolation.class,
 					AccessControlHandlerAllowAll.class);
-			
-			// Fusion Launchers----------------------------------------------
-			//DataStreamLauncher launcher = new DataStreamLauncher(registrationService, dataServices);
-			//launcher.startLauncher();
-			
-			
+//			
+//			// Fusion Launchers----------------------------------------------
+//			//DataStreamLauncher launcher = new DataStreamLauncher(registrationService, dataServices);
+//			//launcher.startLauncher();
+//			
+//			
 		} else {
 			log.error(GossRequestHandlerRegistrationService.class.getName()
 					+ " not found!");
@@ -190,18 +190,18 @@ public class FusionDBServer {
 	@Invalidate
 	public void stop() {
 		try {
-			log.info("Stopping the bundle" + this.getClass().getName());
+			log.debug("Stopping the bundle" + this.getClass().getName());
 			if (registrationService != null) {
-				registrationService
-						.removeHandlerMapping(RequestActualTotalHandler.class);
-				registrationService
-						.removeHandlerMapping(RequestCapacityRequirementHandler.class);
-				registrationService
-						.removeHandlerMapping(RequestForecastTotalHandler.class);
-				registrationService
-						.removeHandlerMapping(RequestHAInterchangeScheduleHandler.class);
-				registrationService
-						.removeHandlerMapping(RequestRTEDScheduleHandler.class);
+//				registrationService
+//						.removeHandlerMapping(RequestActualTotalHandler.class);
+//				registrationService
+//						.removeHandlerMapping(RequestCapacityRequirementHandler.class);
+//				registrationService
+//						.removeHandlerMapping(RequestForecastTotalHandler.class);
+//				registrationService
+//						.removeHandlerMapping(RequestHAInterchangeScheduleHandler.class);
+//				registrationService
+//						.removeHandlerMapping(RequestRTEDScheduleHandler.class);
 
 				registrationService
 						.removeSecurityMapping(RequestActualTotal.class);
