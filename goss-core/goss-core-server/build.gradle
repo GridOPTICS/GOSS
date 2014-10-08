@@ -1,0 +1,15 @@
+
+dependencies {
+	compile project(':goss-core')
+}
+
+buildscript {
+	repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.athaydes.gradle.osgi:osgi-run-core:1.0"
+    }
+}
+
+apply plugin: 'osgi-run'

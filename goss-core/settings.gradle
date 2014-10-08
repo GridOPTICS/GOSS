@@ -1,0 +1,9 @@
+/*
+    Include sub projects. 
+    
+     A colon character (:) separates each level of the subproject hierarchy. For example, 
+     if you wanted to map the directory structure model/todo/items, you’d add the 
+     subproject via the path model:todo:items. 
+*/
+include 'goss-core', 'goss-core-client', 'goss-core-web', 'goss-security', 'goss-security-util'
+

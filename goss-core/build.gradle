@@ -1,0 +1,32 @@
+
+
+allprojects {
+	group = 'pnnl.goss.core'
+	version = '0.1.6-SNAPSHOT'
+	
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		jcenter()
+	}
+}
+
+subprojects {
+	apply plugin: 'java'
+	
+	dependencies {
+	
+		// Service registration/dependency injection.
+		compile 'org.apache.felix:maven-ipojo-plugin:1.12.0'
+		
+		// Logging 
+		compile 'org.slf4j:slf4j-api:1.7.5'
+		compile 'org.slf4j:slf4j-log4j12:1.7.5'
+		
+		// Testing components
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.mockito:mockito-all:1.9.5'
+    }
+}
+
+
