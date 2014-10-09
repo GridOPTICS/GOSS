@@ -55,6 +55,9 @@ import org.apache.felix.ipojo.annotations.Property;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
 //import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,18 +67,69 @@ import static pnnl.goss.core.GossCoreContants.*;
 
 @Component(managedservice=PROP_CORE_CONFIG)
 @Instantiate
-public class GossServerActivator {
+public class GossServer {
 
-	private static final Logger log = LoggerFactory.getLogger(GossServerActivator.class);
+	private static final Logger log = LoggerFactory.getLogger(GossServer.class);
 	private GridOpticsServer gossServer;
 	
 	@Requires
 	private GossRequestHandlerRegistrationService service;
 	
+	@Requires
+	private BundleContext context;
+	
+	/**
+	 * A listener for .class elements so that we can attempt to load annotations for
+	 * the handlers.
+	 */
+	private BundleListener classListener;
+	
+	public GossServer(){
+		log.debug("Constructing");
+	}
+	
+	@Validate
+	public void start(){
+		log.debug("Starting Bundle");
+		if (context != null){
+			classListener = new BundleListener() {				
+				@SuppressWarnings("unchecked")
+				@Override
+				public void bundleChanged(BundleEvent event) {
+					
+					if (event.getType() == BundleEvent.INSTALLED){
+						service.registerHandlers(event.getBundle().findEntries("/", "*.class", true));
+					}
+					else {
+						service.unregisterHandlers(event.getBundle().findEntries("/", "*.class", true));
+					}
+					log.debug("change event: " + event.toString());
+				}
+			};
+			
+			log.debug("Adding bundle listener.");
+			context.addBundleListener(classListener);
+		}
+		else{
+			log.debug("Not in osgi environment.");
+		}
+	}
+	
 	@Invalidate
 	public void stop() throws Exception {
-		System.out.println("Stopping the core server bundle");
+		log.debug("Stopping Bundle");
 		try {
+			if (classListener != null){
+				log.debug("Removing bundle listener.");
+				
+				if (context != null) {
+					context.removeBundleListener(classListener);
+				}
+				else{
+					log.error("Invalid bundle context!");
+				}
+			}
+			
 			if (gossServer != null) {
 				gossServer.close();
 				gossServer = null;
@@ -93,7 +147,7 @@ public class GossServerActivator {
 	@Updated
 	@SuppressWarnings("rawtypes")
 	public void updated(Dictionary config){ // throws ConfigurationException {
-		System.out.println("Updating Goss Server configuration");
+		log.debug("Updating Goss Server configuration");
 			
 		if (gossServer != null){
 			try {

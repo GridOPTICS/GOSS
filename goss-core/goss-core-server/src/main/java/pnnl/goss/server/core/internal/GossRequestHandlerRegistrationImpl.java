@@ -44,8 +44,14 @@
 */
 package pnnl.goss.server.core.internal;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -53,6 +59,8 @@ import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +71,8 @@ import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.security.core.GossSecurityHandler;
+import pnnl.goss.server.annotations.RequestHandler;
+import pnnl.goss.server.annotations.RequestItem;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
@@ -78,7 +88,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	private HashMap<String, Class> handlerToClasss = new HashMap<String, Class>();
 	private GossSecurityHandler securityHandler;
 	private Dictionary coreServerConfig = null;
-	@Requires 
+	 
 	private GossDataServices dataServices;
 	
 	public GossRequestHandlerRegistrationImpl(@Requires GossDataServices dataServices){
@@ -86,22 +96,15 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		if (dataServices == null){
 			throw new NullPointerException("DataServices cannot be null!");
 		}
+
 		this.dataServices = dataServices;
 	}
 	
-//	@Property
-//	public void setSecurityHandler(GossSecurityHandler securityHandler){
-//		this.securityHandler = securityHandler;
-//	}
 	@Validate
 	public void startHandler(){
 		log.debug("Starting handler");
 	}
 
-//	public GossRequestHandlerRegistrationImpl(GossSecurityHandler securityHandler){
-//		System.out.println("CONSTRUCTING "+getClass());
-//		//this.securityHandler = securityHandler;
-//	}
 	@Invalidate
 	public void shutdown(){
 		log.debug("shutdown");
@@ -409,6 +412,46 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		return handler;
 		
 	
+	}
+
+
+	@Override
+	public void registerHandlers(Enumeration<URL> urls) {
+	
+		Reflections ref = new Reflections(new ConfigurationBuilder()
+			.setUrls(Collections.list(urls)));
+	
+		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+		
+		// For each of the annotations we need to add all of the elements that are specified
+		// in the requests parameter.
+		for(Class<?> handler : handers){
+			log.debug("Found handler: "+handler.getName());
+			for(Annotation annotation : handler.getAnnotations()){
+				for(RequestItem item: ((RequestHandler)annotation).value()){
+					addHandlerMapping(item.value(), annotation.getClass());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void unregisterHandlers(Enumeration<URL> urls) {
+		Reflections ref = new Reflections(new ConfigurationBuilder()
+		.setUrls(Collections.list(urls)));
+
+		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+		
+		// For each of the annotations we need to remove all of the requests.
+		for(Class<?> handler : handers){
+			log.debug("Found handler: "+handler.getName());
+			for(Annotation annotation : handler.getAnnotations()){
+				for(RequestItem item: ((RequestHandler)annotation).value()){
+					removeHandlerMapping(item.value());
+				}
+			}
+		}
+		
 	}
 
 }

@@ -51,7 +51,6 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
@@ -65,15 +64,25 @@ import pnnl.goss.powergrid.requests.RequestPowergrid;
 import pnnl.goss.powergrid.requests.RequestPowergridList;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStep;
 import pnnl.goss.powergrid.requests.RequestPowergridTimeStepValues;
-import pnnl.goss.powergrid.server.PowergridServerActivator;
+import pnnl.goss.powergrid.server.PowergridServer;
 import pnnl.goss.powergrid.server.impl.PowergridListerImpl;
 import pnnl.goss.server.annotations.RequestHandler;
+import pnnl.goss.server.annotations.RequestItem;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
 
-@RequestHandler(requests={RequestPowergrid.class,
-							RequestPowergridList.class,
-							RequestPowergridTimeStep.class,
-							RequestPowergridTimeStepValues.class})
+/**
+ * The <code>PowergridREquestHandler</code> handles the following request types:
+ *  - RequestPowergrid
+ *  - RequestPowergridList
+ *  - RequestPowergridTimeStep
+ *  - RequestPowergridTimeStepValues
+ * 
+ * @author Craig Allwardt
+ */
+@RequestHandler({@RequestItem(RequestPowergrid.class),
+		@RequestItem(RequestPowergridList.class),
+		@RequestItem(RequestPowergridTimeStep.class),
+		@RequestItem(RequestPowergridTimeStepValues.class)})
 public class RequestPowergridHandler extends AbstractGossRequestHandler {
 
 	private static Logger log = LoggerFactory.getLogger(RequestPowergridHandler.class);
@@ -158,10 +167,10 @@ public class RequestPowergridHandler extends AbstractGossRequestHandler {
 //			return response;
 //		}
 		
-		log.debug("using datasource: " + PowergridServerActivator.PROP_POWERGRID_DATASERVICE);
+		log.debug("using datasource: " + PowergridServer.PROP_POWERGRID_DATASERVICE);
 		// The dao uses a datasource rather than a connection so that it can have multiple
 		// connections working together.
-		PowergridDao dao = new PowergridDaoMySql((DataSource) this.dataservices.getDataService(PowergridServerActivator.PROP_POWERGRID_DATASERVICE));
+		PowergridDao dao = new PowergridDaoMySql((DataSource) this.dataservices.getDataService(PowergridServer.PROP_POWERGRID_DATASERVICE));
 
 		if (request instanceof RequestPowergridTimeStep) {
 			RequestPowergridTimeStep pgRequest = (RequestPowergridTimeStep) request;
@@ -182,10 +191,6 @@ public class RequestPowergridHandler extends AbstractGossRequestHandler {
 		}
 
 		return response;
-	}
-
-	public void upload(Data data) {
-
 	}
 
 	@Override

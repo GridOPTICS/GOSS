@@ -44,7 +44,9 @@
 */
 package pnnl.goss.server.core;
 
+import java.net.URL;
 import java.util.Dictionary;
+import java.util.Enumeration;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
@@ -60,6 +62,10 @@ import pnnl.goss.core.Response;
 @SuppressWarnings("rawtypes")
 public interface GossRequestHandlerRegistrationService {
 
+	void registerHandlers(Enumeration<URL> urls);
+	
+	void unregisterHandlers(Enumeration<URL> urls);
+	
 	Response handle(Request request);
 	
 	Response handle(Request request, String dataType);
