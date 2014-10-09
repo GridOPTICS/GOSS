@@ -55,7 +55,6 @@ import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +71,7 @@ import pnnl.goss.powergrid.server.PowergridService;
 import pnnl.goss.powergrid.server.WebDataException;
 import pnnl.goss.powergrid.server.handlers.RequestPowergridHandler;
 import pnnl.goss.server.core.GossDataServices;
+import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @Component
 @Provides
@@ -83,6 +83,21 @@ public class PowergridServiceImpl implements PowergridService {
 	@Validate
 	public void validate(){
 		log.debug("Validating powergrid");
+		
+		update();
+		
+	}
+	
+	public void update(){
+		GossRequestHandlerRegistrationService dataServices = null;
+		try{
+			InitialContext ic = new InitialContext();
+			dataServices = (GossRequestHandlerRegistrationService) ic.lookup("osgi:service/"+GossRequestHandlerRegistrationService.class.getName());
+			//dataServices.update();
+		}
+		catch(NamingException e){
+			log.error("Exception getting: " + GossRequestHandlerRegistrationService.class.getName()+ "\n"+e.getMessage());
+		}
 	}
 	
 	@Invalidate
