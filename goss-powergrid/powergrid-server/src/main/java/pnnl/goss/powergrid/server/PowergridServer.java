@@ -62,8 +62,8 @@ import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @Instantiate
-@Component
-public class PowergridServerActivator{
+@Component(immediate=true)
+public class PowergridServer{
 
 	public static final String PROP_POWERGRID_DATASERVICE = "goss/powergrid";
 	// These are defined in the datasources config and loaded into the dataServices object
@@ -77,7 +77,7 @@ public class PowergridServerActivator{
 	 * Add logging to the class so that we can debug things effectively after deployment.
 	 * </p>
 	 */
-	private static Logger log = LoggerFactory.getLogger(PowergridServerActivator.class);
+	private static Logger log = LoggerFactory.getLogger(PowergridServer.class);
 
 	private GossRequestHandlerRegistrationService registrationService;
 	private GossDataServices dataServices;
@@ -85,7 +85,7 @@ public class PowergridServerActivator{
 	@Requires
 	private BasicDataSourceCreator datasourceCreator;
 		
-	public PowergridServerActivator(
+	public PowergridServer(
 			@Requires GossRequestHandlerRegistrationService registrationService,
 			@Requires GossDataServices dataServices) {
 		this.registrationService = registrationService;
