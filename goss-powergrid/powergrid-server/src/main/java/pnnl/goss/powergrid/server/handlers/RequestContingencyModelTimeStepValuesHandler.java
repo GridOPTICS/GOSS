@@ -44,26 +44,24 @@
 */
 package pnnl.goss.powergrid.server.handlers;
 
-import pnnl.goss.powergrid.ContingencyTimeStepModelValues;
-import pnnl.goss.powergrid.datamodel.Contingency;
-import pnnl.goss.powergrid.datamodel.ContingencyBranchViolation;
-import pnnl.goss.powergrid.datamodel.ContingencyBusViolation;
-
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
+import pnnl.goss.powergrid.ContingencyTimeStepModelValues;
+import pnnl.goss.powergrid.datamodel.ContingencyBranchViolation;
+import pnnl.goss.powergrid.datamodel.ContingencyBusViolation;
 import pnnl.goss.powergrid.requests.RequestContingencyModelTimeStepValues;
-import pnnl.goss.powergrid.server.PowergridServerActivator;
-import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
+import pnnl.goss.powergrid.server.PowergridServer;
+import pnnl.goss.server.annotations.RequestHandler;
+import pnnl.goss.server.annotations.RequestItem;
 import pnnl.goss.server.core.AbstractGossRequestHandler;
-import pnnl.goss.server.core.GossServerActivator;
 
+@RequestHandler(@RequestItem(RequestContingencyModelTimeStepValues.class))
 public class RequestContingencyModelTimeStepValuesHandler extends AbstractGossRequestHandler {
 
 	String datasourceKey = null;
@@ -118,7 +116,7 @@ public class RequestContingencyModelTimeStepValuesHandler extends AbstractGossRe
 				
 				//Add Branch Voilations
 				String dbQuery = "select * from contingencybranchviolations where contingencyid ="+ctgRequest.getContingencyId()+" and powergridid ="+ctgRequest.getPowerGridId();
-				Statement stmt = this.dataservices.getPooledConnection(PowergridServerActivator.PROP_POWERGRID_DATASERVICE).createStatement();
+				Statement stmt = this.dataservices.getPooledConnection(PowergridServer.PROP_POWERGRID_DATASERVICE).createStatement();
 				//Statement stmt = PowergridDataSources.instance().getConnection(datasourceKey).createStatement();
 				ResultSet rs = stmt.executeQuery(dbQuery.toLowerCase());
 				List<ContingencyBranchViolation> branchViolations = new ArrayList<ContingencyBranchViolation>();
