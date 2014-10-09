@@ -10,7 +10,7 @@
     </feature>
     
     <feature name="goss-activemq-broker-nosecurity" version="${project.version}">
-        <feature version="5.9.0">activemq</feature>
+        <feature version="${activemq.version}">activemq</feature>
         <configfile finalname="/etc/org.apache.activemq.server-default.cfg">
         	mvn:pnnl.goss/goss-core-features/${project.version}/cfg/goss-broker-config
         </configfile>        
@@ -32,6 +32,7 @@
   		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/${hawt.version}</bundle>
     	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/${hawt.version}</bundle>
   		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/${hawtbuf.version}</bundle>
+  		<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.reflections/0.9.8_1</bundle>
   		<feature>openjpa</feature>
   		<feature>jndi</feature>
     </feature>
