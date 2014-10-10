@@ -6,10 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import pnnl.goss.rdf.EscaType;
+
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
- * The EscaTypes class is a container mapping a mrid string to an {@link EscaType}
+ * The EscaTypes class is a container mapping a mrid string to an {@link EscaTypeImpl}
  * object.  The map provides convinient functions to return filtered sets of 
  * data.
  * 

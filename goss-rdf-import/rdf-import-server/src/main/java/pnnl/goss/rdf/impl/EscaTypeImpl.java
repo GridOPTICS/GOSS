@@ -12,6 +12,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.EscaType;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -26,11 +27,11 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Craig Allwardt
  *
  */
-public class EscaType {
+public class EscaTypeImpl implements EscaType {
 	private Resource resource;
 	private String dataType;
 	private String mrid;
-	private static Logger log = LoggerFactory.getLogger(EscaType.class);
+	private static Logger log = LoggerFactory.getLogger(EscaTypeImpl.class);
 	
 	/*
 	 * Property name-> Literal value (i.e. String, Integer, Float etc) mapping.
@@ -49,6 +50,10 @@ public class EscaType {
 	private Set<EscaType> refersToMe = new HashSet<>();
 	
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#addDirectLink(java.lang.String, pnnl.goss.rdf.impl.EscaType)
+	 */
+	@Override
 	public void addDirectLink(String propertyName, EscaType link){
 		if (link != null){
 			log.debug("Adding link property: "+propertyName+" to esca obj: "+link.getName());
@@ -63,18 +68,34 @@ public class EscaType {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#isResourceType(com.hp.hpl.jena.rdf.model.Resource)
+	 */
+	@Override
 	public boolean isResourceType(Resource resourceType){
 		return dataType.equals(resourceType.getLocalName());
 	}
 	
-	private void addRefersToMe(EscaType refersToMe){
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#addRefersToMe(com.hp.hpl.jena.rdf.model.Resource)
+	 */
+	@Override
+	public void addRefersToMe(EscaType refersToMe){
 		this.refersToMe.add(refersToMe);
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLinks()
+	 */
+	@Override
 	public Map<String, EscaType> getLinks(){
 		return directLinks;
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getRefersToMe()
+	 */
+	@Override
 	public Collection<EscaType> getRefersToMe() {
 		return Collections.unmodifiableCollection(refersToMe);		
 	}	
@@ -99,10 +120,18 @@ public class EscaType {
 //	}
 	
 		
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLiteralValue(com.hp.hpl.jena.rdf.model.Property)
+	 */
+	@Override
 	public Literal getLiteralValue(Property property){
 		return getLiteralValue(property.getLocalName());
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLiteralValue(java.lang.String)
+	 */
+	@Override
 	public Literal getLiteralValue(String property){
 		if (property.contains(this.dataType)){
 			property = property.substring(this.dataType.length()+1);
@@ -110,6 +139,10 @@ public class EscaType {
 		return literals.get(property);
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getDirectLinkedResources(com.hp.hpl.jena.rdf.model.Resource)
+	 */
+	@Override
 	public Collection<EscaType> getDirectLinkedResources(Resource resource){
 		Set<EscaType> types = new HashSet<EscaType>();
 		for(EscaType t: directLinks.values()){
@@ -120,6 +153,10 @@ public class EscaType {
 		return Collections.unmodifiableCollection(types);
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getDirectLinkedResourceSingle(com.hp.hpl.jena.rdf.model.Resource)
+	 */
+	@Override
 	public EscaType getDirectLinkedResourceSingle(Resource resource){
 		
 		for(EscaType t: directLinks.values()){
@@ -130,14 +167,10 @@ public class EscaType {
 		return null;
 	}
 	
-	/**
-	 * Add literal value to the escatype.  If the key contains the same
-	 * datatype as a prefix then that prefix is stripped off and is assumed
-	 * to be "contained" as part of the object.
-	 * 
-	 * @param key
-	 * @param value
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#addLiteral(java.lang.String, com.hp.hpl.jena.rdf.model.Literal)
 	 */
+	@Override
 	public void addLiteral(String key, Literal value){
 		if (key.startsWith(dataType+".")){
 			key = key.substring(dataType.length()+1);			
@@ -146,37 +179,42 @@ public class EscaType {
 		literals.put(key,  value);
 	}
 	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLiterals()
+	 */
+	@Override
 	public Map<String, Literal> getLiterals(){
 		return literals;
 	}
 	
-	/**
-	 * @return the resource
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getResource()
 	 */
+	@Override
 	public Resource getResource() {
 		return resource;
 	}
 
-	/**
-	 * @return the dataType
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getDataType()
 	 */
+	@Override
 	public String getDataType() {
 		return dataType;
 	}
 
-	/**
-	 * @return the mrid
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getMrid()
 	 */
+	@Override
 	public String getMrid() {
 		return mrid;
 	}
 	
-	/**
-	 * Returns the identifiedobject.name parameter from the rdf code.  If it does not exist
-	 * then returns the mrid of the element.
-	 * 
-	 * @return String
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getName()
 	 */
+	@Override
 	public String getName(){
 		// Not all of the elements have a name so if they don't then use the mrid
 		// as the name until we have something better.
@@ -188,11 +226,11 @@ public class EscaType {
 		return mrid;
 	}
 	
-	public EscaType(EscaType copy){
+	public EscaTypeImpl(EscaType copy){
 		this(copy.getResource(), copy.getDataType(), copy.getMrid());
 	}
 
-	public EscaType(Resource resource, String dataType, String mrid){
+	public EscaTypeImpl(Resource resource, String dataType, String mrid){
 		this.resource = resource;
 		this.dataType = dataType;
 		this.mrid = mrid;

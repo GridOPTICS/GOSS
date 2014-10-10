@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.rdf.impl.EscaType;
+import pnnl.goss.rdf.impl.EscaTypeImpl;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
 /**
@@ -49,8 +49,8 @@ public class VoltageLevelGrouper {
 		return substation;
 	}
 	
-	public void addVoltageLevel(EscaType voltageLevel){
-		voltageLevels.put(voltageLevel.getMrid(), voltageLevel);
+	public void addVoltageLevel(EscaType vl){
+		voltageLevels.put(vl.getMrid(), vl);
 	}
 	
 //	private void buildVoltageLevelGroups(){

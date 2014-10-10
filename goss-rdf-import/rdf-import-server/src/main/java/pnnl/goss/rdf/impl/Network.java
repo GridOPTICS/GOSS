@@ -7,6 +7,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.EscaType;
 import pnnl.goss.rdf.InvalidArgumentException;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
@@ -26,7 +27,7 @@ public class Network {
 	 */
 	private EscaTypes escaTypes;
 	private TopologicalNodes topoNodes = new TopologicalNodes();
-	private Set<EscaType> markedConnectivityNode = new HashSet<>();
+	private Set<EscaTypeImpl> markedConnectivityNode = new HashSet<>();
 	
 	public Network(EscaTypes escaTypes){
 		log.debug("Creating nework with: " + escaTypes.keySet().size() + " elements.");

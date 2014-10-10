@@ -11,6 +11,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.EscaType;
 import pnnl.goss.rdf.InvalidArgumentException;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
@@ -38,7 +39,7 @@ public class EscaTreeWindow {
 	 * A mapping from the mrid to an EscaType.
 	 */
 	private EscaTypes escaTypeMap = new EscaTypes();
-	private Map<String, EscaType> escaTypeSubstationMap = new HashMap<String, EscaType>();
+	private Map<String, EscaTypeImpl> escaTypeSubstationMap = new HashMap<String, EscaTypeImpl>();
 	
 	/**
 	 * Returns access to an mrid -> EscaType generic mapping
@@ -52,7 +53,7 @@ public class EscaTreeWindow {
 	 * Returns access to an mrid -> EscaType substation specific mappings
 	 * @return
 	 */
-	public Map<String, EscaType> getEscaTypeSubstationMap(){
+	public Map<String, EscaTypeImpl> getEscaTypeSubstationMap(){
 		return escaTypeSubstationMap;
 	}
 	
@@ -95,7 +96,7 @@ public class EscaTreeWindow {
 			String dataType = getTypeOfSubject(res);
 			String mrid = res.getLocalName();
 			// System.out.println(mrid+" ("+dataType+")");
-			escaTypeMap.put(mrid, new EscaType(res, dataType, mrid));
+			escaTypeMap.put(mrid, new EscaTypeImpl(res, dataType, mrid));
 		}
 		
 		// Load all of the links between the subjects.
@@ -155,7 +156,7 @@ public class EscaTreeWindow {
 	
 	
 	public List<EscaType> getType(String dataType){
-		List<EscaType> items = new ArrayList<EscaType>();
+		List<EscaType> items = new ArrayList<>();
 		
 		for(String k:escaTypeMap.keySet()){
 			EscaType type = escaTypeMap.get(k);

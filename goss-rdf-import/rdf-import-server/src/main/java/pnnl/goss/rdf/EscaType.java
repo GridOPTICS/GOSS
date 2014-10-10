@@ -11,19 +11,19 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public interface EscaType {
 
-	public abstract void addDirectLink(String propertyName, EscaTypeImpl link);
+	public abstract void addDirectLink(String propertyName, EscaType link);
 
 	public abstract boolean isResourceType(Resource resourceType);
 
-	public abstract Map<String, EscaTypeImpl> getLinks();
+	public abstract Map<String, EscaType> getLinks();
 
-	public abstract Collection<EscaTypeImpl> getRefersToMe();
+	public abstract Collection<EscaType> getRefersToMe();
 
 	public abstract Literal getLiteralValue(Property property);
 
 	public abstract Literal getLiteralValue(String property);
 
-	public abstract Collection<EscaTypeImpl> getDirectLinkedResources(
+	public abstract Collection<EscaType> getDirectLinkedResources(
 			Resource resource);
 
 	public abstract EscaType getDirectLinkedResourceSingle(Resource resource);
@@ -62,5 +62,8 @@ public interface EscaType {
 	 * @return String
 	 */
 	public abstract String getName();
+
+	public abstract void addRefersToMe(EscaType escaType);
+
 
 }
