@@ -42,7 +42,20 @@
 		<dependency>
            	<groupId>junit</groupId>
            	<artifactId>junit</artifactId>
+           	<scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+			<groupId>org.jbehave</groupId>
+			<artifactId>jbehave-core</artifactId>
+			<version>4.0-beta-11</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -67,7 +80,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>pnnl.goss.rdf.EscaTreeWindow</mainClass>
+							<mainClass>pnnl.goss.rdf.EscaMain</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
