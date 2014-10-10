@@ -1,4 +1,4 @@
-package pnnl.goss.rdf;
+package pnnl.goss.rdf.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,6 +7,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.InvalidArgumentException;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
 import com.hp.hpl.jena.rdf.model.Resource;

@@ -1,4 +1,4 @@
-package pnnl.goss.rdf;
+package pnnl.goss.rdf.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;

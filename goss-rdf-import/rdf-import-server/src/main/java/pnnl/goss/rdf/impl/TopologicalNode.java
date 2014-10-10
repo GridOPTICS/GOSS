@@ -1,8 +1,9 @@
-package pnnl.goss.rdf;
+package pnnl.goss.rdf.impl;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import pnnl.goss.rdf.InvalidArgumentException;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
 /**
