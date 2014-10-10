@@ -27,15 +27,10 @@ public class EscaTypeTests {
 		
 		verify(linked, atLeastOnce()).addRefersToMe(original);
 		
-		boolean found = false;
-		for(EscaType t: original.getDirectLinkedResources(linked.getResource())){
-			if (t.equals(linked)){
-				found = true;
-				break;
-			}
-		}
-		assertTrue("Wasn't found", found);
-		
+		assertEquals(1, original.getDirectLinkedResources(linked.getResource()).size());
+		assertTrue(original.getDirectLinkedResources(linked.getResource()).contains(linked));
+		assertEquals(1, original.getLinks().size());
+		assertEquals(original.getLinks().get("property"), linked);		
 	}
 
 }
