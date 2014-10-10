@@ -119,7 +119,20 @@ public class EscaTypeImpl implements EscaType {
 	@Override
 	public Collection<EscaType> getRefersToMe() {
 		return Collections.unmodifiableCollection(refersToMe);		
-	}	
+	}
+	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.EscaType#getRefersToMe(Resource resourceType)
+	 */
+	public Collection<EscaType> getRefersToMe(Resource resourceType){
+		List<EscaType> items = new ArrayList<>();
+		for(EscaType t: refersToMe){
+			if(t.isResourceType(resourceType)){
+				items.add(t);
+			}
+		}
+		return items;
+	}
 	
 //	public List<List<EscaType>> getPathToResourceType(Resource resourceType){
 //		List<List<EscaType>> paths = new ArrayList<>();

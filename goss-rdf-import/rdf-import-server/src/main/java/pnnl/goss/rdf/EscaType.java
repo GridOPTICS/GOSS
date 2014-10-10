@@ -19,6 +19,7 @@ public interface EscaType {
 	public abstract Collection<EscaType> getDirectLinks();
 
 	public abstract Collection<EscaType> getRefersToMe();
+	public abstract Collection<EscaType> getRefersToMe(Resource resourceType);
 
 	public abstract Literal getLiteralValue(Property property);
 
