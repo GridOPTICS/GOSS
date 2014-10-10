@@ -18,6 +18,14 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+/**
+ * An EscaType is a generic class for containing information about the different
+ * rdf classes.  Each EscaType contains a unique mrid.  All {@link Resource}  are
+ * defined in {@link Esca60Vocab}.
+ * 
+ * @author Craig Allwardt
+ *
+ */
 public class EscaType {
 	private Resource resource;
 	private String dataType;

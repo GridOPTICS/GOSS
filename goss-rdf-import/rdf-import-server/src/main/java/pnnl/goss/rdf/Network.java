@@ -100,10 +100,10 @@ public class Network {
 							currentTopoNode.addConnectivityNode(connectivityNode);
 							addedConnectivityNodes.add(connectivityNode);
 						}
-						Collection<EscaType> bTerminals = breaker.getRefersToMe().getDirectLinkedResources(Esca60Vocab.TERMINAL_OBJECT);
-						for(EscaType bt: bTerminals){
-							System.out.println(bt);
-						}
+//						Collection<EscaType> bTerminals = breaker.getRefersToMe().getDirectLinkedResources(Esca60Vocab.TERMINAL_OBJECT);
+//						for(EscaType bt: bTerminals){
+//							System.out.println(bt);
+//						}
 					}
 					
 					

@@ -15,7 +15,7 @@ import pnnl.goss.rdf.server.Esca60Vocab;
  * Instead they are manually created or deleted in a model builder tool. 
  * TopologialNodes maintained this way are also called 'busses'.
  * 
- * @author D3M614
+ * @author Craig Allwardt
  *
  */
 public class TopologicalNode {
