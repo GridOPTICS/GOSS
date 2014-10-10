@@ -12,6 +12,7 @@ import pnnl.goss.rdf.server.Esca60Vocab;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
+ * A Network is a linking of nodes and edges of a powergrid.
  * 
  * @author d3m614
  *

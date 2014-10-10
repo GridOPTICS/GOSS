@@ -9,7 +9,10 @@ import java.util.List;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
- * The <code>EscaTypes</code> maps a mrid string to a EscaType data type.
+ * The EscaTypes class is a container mapping a mrid string to an {@link EscaType}
+ * object.  The map provides convinient functions to return filtered sets of 
+ * data.
+ * 
  * @author d3m614
  *
  */
