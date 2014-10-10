@@ -1,5 +1,7 @@
 package pnnl.goss.rdf.impl;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +32,17 @@ public class TopologicalNode {
 	private EscaType substation;
 	private EscaType voltageLevel;
 	private Set<EscaType> connectivityNodes = new HashSet<>();
+	private Set<EscaType> terminals = new HashSet<>();
+	private String identifier;
 	
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+
 	public TopologicalNode(){
 		
 	}
@@ -41,10 +53,17 @@ public class TopologicalNode {
 	}
 	
 	public void addConnectivityNode(EscaType connectivityNode) throws InvalidArgumentException{
-		if(!connectivityNode.getDataType().equals(Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName())){
+		if(!connectivityNode.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
 			throw new InvalidArgumentException("Must be a connectivity node escatype");
 		}
 		connectivityNodes.add(connectivityNode);
+	}
+	
+	public void addTerminal(EscaType terminal) throws InvalidArgumentException{
+		if(!terminal.isResourceType(Esca60Vocab.TERMINAL_OBJECT)){
+			throw new InvalidArgumentException("Must be a terminal escatype");
+		}
+		terminals.add(terminal);
 	}
 	
 	
@@ -64,13 +83,21 @@ public class TopologicalNode {
 		this.voltageLevel = voltageLevel;
 	}
 
-	@Override
-	public String toString() {
-		return "TN: " + substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME).toString()+ 
-				" vl: " + voltageLevel.getDirectLinkedResourceSingle(Esca60Vocab.BASEVOLTAGE_OBJECT)
-										.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE)
-										.getDouble();
+	public Collection<EscaType> getTerminals() {
+		return Collections.unmodifiableCollection(this.terminals);
 	}
+
+	public Collection<EscaType> getConnectivityNodes() {
+		return Collections.unmodifiableCollection(this.connectivityNodes);
+	}
+
+//	@Override
+//	public String toString() {
+//		return "TN: " + substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME).toString()+ 
+//				" vl: " + voltageLevel.getDirectLinkedResourceSingle(Esca60Vocab.BASEVOLTAGE_OBJECT)
+//										.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE)
+//										.getDouble();
+//	}
 	
 	
 }
