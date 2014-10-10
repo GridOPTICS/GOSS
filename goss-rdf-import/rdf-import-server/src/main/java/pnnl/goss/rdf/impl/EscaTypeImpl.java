@@ -51,7 +51,7 @@ public class EscaTypeImpl implements EscaType {
 	
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#addDirectLink(java.lang.String, pnnl.goss.rdf.impl.EscaType)
+	 * @see pnnl.goss.rdf.EscaType#addDirectLink(java.lang.String, pnnl.goss.rdf.EscaType)
 	 */
 	@Override
 	public void addDirectLink(String propertyName, EscaType link){
@@ -69,7 +69,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#isResourceType(com.hp.hpl.jena.rdf.model.Resource)
+	 * @see pnnl.goss.rdf.EscaType#isResourceType(com.hp.hpl.jena.rdf.model.Resource)
 	 */
 	@Override
 	public boolean isResourceType(Resource resourceType){
@@ -77,7 +77,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#addRefersToMe(com.hp.hpl.jena.rdf.model.Resource)
+	 * @see pnnl.goss.rdf.EscaType#addRefersToMe(com.hp.hpl.jena.rdf.model.Resource)
 	 */
 	@Override
 	public void addRefersToMe(EscaType refersToMe){
@@ -85,7 +85,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLinks()
+	 * @see pnnl.goss.rdf.EscaType#getLinks()
 	 */
 	@Override
 	public Map<String, EscaType> getLinks(){
@@ -93,7 +93,16 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getRefersToMe()
+	 * @see pnnl.goss.rdf.EscaType#getDirectLinks()
+	 */
+	@Override
+	public Collection<EscaType> getDirectLinks(){
+		return Collections.unmodifiableCollection(directLinks.values());
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.EscaType#getRefersToMe()
 	 */
 	@Override
 	public Collection<EscaType> getRefersToMe() {
@@ -121,7 +130,7 @@ public class EscaTypeImpl implements EscaType {
 	
 		
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLiteralValue(com.hp.hpl.jena.rdf.model.Property)
+	 * @see pnnl.goss.rdf.EscaType#getLiteralValue(com.hp.hpl.jena.rdf.model.Property)
 	 */
 	@Override
 	public Literal getLiteralValue(Property property){
@@ -129,7 +138,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLiteralValue(java.lang.String)
+	 * @see pnnl.goss.rdf.EscaType#getLiteralValue(java.lang.String)
 	 */
 	@Override
 	public Literal getLiteralValue(String property){
@@ -140,7 +149,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getDirectLinkedResources(com.hp.hpl.jena.rdf.model.Resource)
+	 * @see pnnl.goss.rdf.EscaType#getDirectLinkedResources(com.hp.hpl.jena.rdf.model.Resource)
 	 */
 	@Override
 	public Collection<EscaType> getDirectLinkedResources(Resource resource){
@@ -154,7 +163,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getDirectLinkedResourceSingle(com.hp.hpl.jena.rdf.model.Resource)
+	 * @see pnnl.goss.rdf.EscaType#getDirectLinkedResourceSingle(com.hp.hpl.jena.rdf.model.Resource)
 	 */
 	@Override
 	public EscaType getDirectLinkedResourceSingle(Resource resource){
@@ -168,7 +177,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#addLiteral(java.lang.String, com.hp.hpl.jena.rdf.model.Literal)
+	 * @see pnnl.goss.rdf.EscaType#addLiteral(java.lang.String, com.hp.hpl.jena.rdf.model.Literal)
 	 */
 	@Override
 	public void addLiteral(String key, Literal value){
@@ -180,7 +189,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getLiterals()
+	 * @see pnnl.goss.rdf.EscaType#getLiterals()
 	 */
 	@Override
 	public Map<String, Literal> getLiterals(){
@@ -188,7 +197,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getResource()
+	 * @see pnnl.goss.rdf.EscaType#getResource()
 	 */
 	@Override
 	public Resource getResource() {
@@ -196,7 +205,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getDataType()
+	 * @see pnnl.goss.rdf.EscaType#getDataType()
 	 */
 	@Override
 	public String getDataType() {
@@ -204,7 +213,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getMrid()
+	 * @see pnnl.goss.rdf.EscaType#getMrid()
 	 */
 	@Override
 	public String getMrid() {
@@ -212,7 +221,7 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.impl.EscaTypeInterface#getName()
+	 * @see pnnl.goss.rdf.EscaType#getName()
 	 */
 	@Override
 	public String getName(){

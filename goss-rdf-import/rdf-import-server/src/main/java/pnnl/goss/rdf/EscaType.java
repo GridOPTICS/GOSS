@@ -16,6 +16,7 @@ public interface EscaType {
 	public abstract boolean isResourceType(Resource resourceType);
 
 	public abstract Map<String, EscaType> getLinks();
+	public abstract Collection<EscaType> getDirectLinks();
 
 	public abstract Collection<EscaType> getRefersToMe();
 
