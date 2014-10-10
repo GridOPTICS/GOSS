@@ -44,6 +44,27 @@ public class EscaTypesTests {
 		assertTrue(types.where(tRes).contains(t1));
 		assertTrue(types.where(cnRes).contains(cn1));
 		assertTrue(types.where(cnRes).contains(cn2));		
-		
 	}
+	
+	@Test
+	public void typesAreReturnedCorrectly(){
+		
+		EscaTypes types = new EscaTypes();
+		
+		for(int i=0; i<5; i++){
+			EscaType t = mock(EscaType.class);
+			when(t.getDataType()).thenReturn("Terminal");
+			types.put("T"+i, t);
+		}
+		
+		assertTrue(types.types().contains("Terminal"));
+		for(int i=0; i<5; i++){
+			EscaType t = mock(EscaType.class);
+			when(t.getDataType()).thenReturn("Breaker");
+			types.put("B"+i, t);
+		}
+		assertTrue(types.types().contains("Breaker"));
+		assertEquals(2, types.types().size());
+	}
+	
 }

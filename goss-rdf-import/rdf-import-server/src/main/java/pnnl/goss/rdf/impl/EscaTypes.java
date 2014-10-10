@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import pnnl.goss.rdf.EscaType;
 
@@ -51,4 +53,16 @@ public class EscaTypes extends HashMap<String, EscaType> {
 		return Collections.unmodifiableList(collection);
 	}
 	
+	/**
+	 * Retrieves the set of datatypes that are in the map.
+	 * 
+	 * @return
+	 */
+	public Set<String> types(){
+		Set<String> set = new HashSet<>();
+		for(EscaType t: values()){
+			set.add(t.getDataType());
+		}
+		return set;
+	}
 }

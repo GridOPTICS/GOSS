@@ -80,17 +80,21 @@ public class EscaMain {
 		
 		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
 		
-		Network network = new Network(mainProg.getEscaTypes());
+		//Network network = new Network(mainProg.getEscaTypes());
+		
+		EscaTypes types = mainProg.getEscaTypes();
 		
 		
-//		
-//		int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
-//		int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
-//		int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
-//				
-//		System.out.println("Breaker count: "+ terminalCount);
-//		System.out.println("Terminal count: "+ terminalCount);
-//		System.out.println("Connectivity Node count: "+ connectivityCount);
+		
+		
+		//int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
+		//int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
+		//int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
+				
+		System.out.println("Breaker count: "+ types.where(Esca60Vocab.BREAKER_OBJECT).size());
+		System.out.println("Terminal count: "+types.where(Esca60Vocab.TERMINAL_OBJECT).size());
+		System.out.println("Connectivity Node count: "+types.where(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size());
+		
 		
 //		Collection<EscaType> substations = mainProg.getObjectType(Esca60Vocab.SUBSTATION_OBJECT);
 //		
