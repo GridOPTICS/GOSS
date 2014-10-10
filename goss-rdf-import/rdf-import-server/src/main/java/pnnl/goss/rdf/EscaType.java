@@ -38,9 +38,17 @@ public interface EscaType {
 	 */
 	public abstract void addLiteral(String key, Literal value);
 
+	/**
+	 * Return a map of literal values to the caller.  The map key is the "property"
+	 * on the object i.e. Esca60Vocab.TERMINAL_PROPERTY.getLocalName()
+	 * 
+	 * @return
+	 */
 	public abstract Map<String, Literal> getLiterals();
 
 	/**
+	 * Returns access to the resource object from the loaded cim file.
+	 * 
 	 * @return the resource
 	 */
 	public abstract Resource getResource();
