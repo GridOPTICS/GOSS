@@ -1,32 +1,19 @@
-package pnnl.goss.rdf;
+package pnnl.goss.rdf.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
-import javax.sql.rowset.Predicate;
-
-import org.apache.jena.atlas.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Literal;
+import pnnl.goss.rdf.InvalidArgumentException;
+import pnnl.goss.rdf.server.Esca60Vocab;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -36,10 +23,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.vocabulary.RDF;
-
-import pnnl.goss.rdf.server.Esca60Vocab;
 
 public class EscaTreeWindow {
 
@@ -234,77 +218,6 @@ public class EscaTreeWindow {
 		}
 
 		return null;
-	}
-
-	private EscaTreeElement buildTreeElement(EscaTreeElement parent, Resource subject, int level) {
-		EscaTreeElement current = new EscaTreeElement(subject);
-		current.setParent(parent);
-
-		List<Resource> resources = new ArrayList<Resource>();
-		StmtIterator itr = subject.listProperties();
-		while (itr.hasNext()) {
-			Statement stmt = itr.nextStatement();
-			RDFNode n = stmt.getObject();
-			if (n.isResource()) {
-				if (!stmt.getPredicate().equals("type")) {
-					resources.add(n.asResource());
-				}
-			}
-		}
-
-		for (Resource r : resources) {
-			// System.out.println("Building: "+r.toString());
-			buildTreeElement(current, r, level + 1);
-		}
-
-		return current;
-	}
-
-	private void printTree(EscaTreeElement parent, Resource resource, int level) {
-		StmtIterator itr = resource.listProperties();
-		String tabs = repeat("\t", level);
-		String dataType = getTypeOfSubject(resource);
-		if (resource.isLiteral()) {
-			System.out.println("Literally a " + resource.getLocalName());
-		} else {
-			System.out.println(tabs + "printingTree: " + resource.getLocalName());
-		}
-		if (dataType != null) {
-			System.out.println(tabs + "Datatype: " + dataType);
-		} else {
-			System.out.println(tabs + "No Type Sepcifier");
-		}
-		EscaTreeElement current = new EscaTreeElement(resource);
-		current.setParent(parent);
-		List<RDFNode> nodes = new ArrayList<RDFNode>();
-		List<Property> predicates = new ArrayList<Property>();
-
-		boolean first = true;
-		while (itr.hasNext()) {
-			Statement stmt = itr.nextStatement();
-			RDFNode node = stmt.getObject();
-			Property pred = stmt.getPredicate();
-			// System.out.println(tabs+"Pred: "+pred.getLocalName());
-			if (node.isResource()) {
-				// System.out.println(tabs+"Next Subject: "+
-				// node.asResource().getLocalName());
-				nodes.add(node);
-				predicates.add(pred);
-				// printTree(node.asResource(), level+1);
-			} else if (node.isLiteral()) {
-				System.out.println(tabs + "Pred: " + pred.getLocalName() + " Property Value: " + node.asLiteral());
-			} else if (node.isAnon()) {
-				System.out.println(tabs + "Anon: " + pred.getLocalName());
-			}
-		}
-
-		for (int i = 0; i < nodes.size(); i++) {
-			RDFNode n = nodes.get(i);
-			Property p = predicates.get(i);
-			if (!p.getLocalName().equals("type")) {
-				printTree(current, n.asResource(), level + 1);
-			}
-		}
 	}
 
 	private List<Resource> findElementswithProperty(Property property) {
