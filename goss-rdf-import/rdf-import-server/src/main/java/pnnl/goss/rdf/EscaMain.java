@@ -45,7 +45,7 @@ public class EscaMain {
 	
 	private EscaMain(String inputFile, boolean isCim, String outputFile) throws Exception{
 		
-		EscaTreeWindow window = new EscaTreeWindow(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
+		EscaTreeWindow window = new EscaTreeWindow(ESCA_TEST, true, "esca_tree.txt");
 		// Load data from the rdf into memory.
 		window.loadData();
 		// Build an mrid->escatype mapping for referencing all of the subjects by mrid
@@ -78,7 +78,7 @@ public class EscaMain {
 	
 	public static void main(String[] args) throws Exception {
 		
-		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
+		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "esca_tree.txt");
 		
 		//Network network = new Network(mainProg.getEscaTypes());
 		
@@ -99,7 +99,7 @@ public class EscaMain {
 						System.out.println("\t\tis direct to: "+e.getDataType()+ "("+e.getMrid()+")");
 					}
 				}
-				System.out.println("\tThings that refer to "+t.getDataType()+ "("+t.getMrid()+")");
+				System.out.println("\t\tThings that refer to "+t.getDataType()+ "("+t.getMrid()+")");
 				for(EscaType b: t.getRefersToMe()){
 					System.out.println("\t\t\t"+b.getDataType()+" ("+b.getMrid()+ ")");
 				}
@@ -329,7 +329,7 @@ public class EscaMain {
 	
 	private static void setBufferedOut() throws FileNotFoundException{
 		bufferedOut = true;
-		File file = new File("c:\\scratch\\rdf_output.txt");
+		File file = new File("stdout.txt");
 		if (file.exists()){
 			file.delete();
 		}
