@@ -1,6 +1,12 @@
 package pnnl.goss.rdf;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import pnnl.goss.rdf.impl.EscaTypeImpl;
 import pnnl.goss.rdf.impl.EscaTypes;
 
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -13,6 +19,31 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  */
 public class EscaTypeFixtures {
+	
+	private static List<EscaType> createEscaTypes(Resource res, String[] mrids){
+		List<EscaType> types = new ArrayList<>();
+		
+		for(int i=0; i<mrids.length; i++){
+			EscaType t=new EscaTypeImpl(res, res.getLocalName(), mrids[i]);
+			types.add(t);
+		}
+		
+		return types;
+	}
+	
+	private static void addToEscaTypes(EscaTypes types, List<EscaType> escaTypes){
+		for(EscaType t: escaTypes){
+			types.put(t.getMrid(), t);
+		}
+	}
+	
+	private static void addDirectLinks(EscaTypes types, String property, String fromMrid, String[] toMrids){
+		EscaType type = types.get(fromMrid);
+		
+		for(int i=0; i<toMrids.length; i++){
+			type.addDirectLink(property, types.get(toMrids[i]));
+		}
+	}
 
 	/**
 	 * Describe the nodes that are getting sent back.
@@ -20,6 +51,9 @@ public class EscaTypeFixtures {
 	 */
 	public static EscaTypes getEsca6Node(){
 		
+		String[] terminalMrids = {"_597196580683024629_t",
+				"_5986050453675674768", "_8231210467179973538", "_4963536783062858854"};
+		String[] connectivityMrids = {"_3705119779910468614"};
 		
 		EscaTypes types = new EscaTypes();
 		// Terminal Resource
@@ -32,38 +66,11 @@ public class EscaTypeFixtures {
 		Resource cnRes = mock(Resource.class);
 		when(tRes.getLocalName()).thenReturn("ConnectivityNode");
 		
-		// Create 10 terminals T1..T10
-		for(int i=0; i<10; i++){
-			EscaType t = mock(EscaType.class);
-			// When caller asks about the resource return the mocked resource for
-			// this specific type.
-			when(t.getResource()).thenReturn(tRes);
-			when(t.getDataType()).thenReturn(t.getResource().getLocalName());
-			
-			types.put("T"+i+1, mock(EscaType.class));
-		}
+		addToEscaTypes(types, createEscaTypes(tRes, terminalMrids));
+		addToEscaTypes(types, createEscaTypes(cnRes, connectivityMrids));
 		
-		for(int i=0; i<5; i++){
-			EscaType t = mock(EscaType.class);
-			
-			// When caller asks about the resource return the mocked resource for
-			// this specific type.
-			when(t.getResource()).thenReturn(bRes);
-			when(t.getDataType()).thenReturn(t.getResource().getLocalName());
-			
-			types.put("B"+i+1,mock(EscaType.class));
-		}
+		addDirectLinks(types, "terminal", "_3705119779910468614", terminalMrids);
 		
-		for(int i=0; i<5; i++){
-			EscaType t = mock(EscaType.class);
-			
-			// When caller asks about the resource return the mocked resource for
-			// this specific type.
-			when(t.getResource()).thenReturn(cnRes);
-			when(t.getDataType()).thenReturn(t.getResource().getLocalName());
-			
-			types.put("CN"+i+1,mock(EscaType.class));
-		}
 		
 				
 		return types;

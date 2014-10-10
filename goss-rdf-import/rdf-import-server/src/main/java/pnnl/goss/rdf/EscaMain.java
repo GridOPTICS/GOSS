@@ -84,7 +84,29 @@ public class EscaMain {
 		
 		EscaTypes types = mainProg.getEscaTypes();
 		
+		setBufferedOut();
 		
+		for(EscaType outer: types.where(Esca60Vocab.TERMINAL_OBJECT)){
+			System.out.println(outer.getDataType().toUpperCase()+ ": "+ outer.getMrid());
+			for(EscaType t: outer.getDirectLinks()){
+				System.out.println("\tis direct to: "+t.getDataType()+ "("+t.getMrid()+")");
+				System.out.println("\t"+t.getDataType().toUpperCase()+ ": "+ t.getMrid());
+				for(EscaType e: t.getDirectLinks()){
+					if (e == null){
+						System.out.println("\t\tdirect link null for "+t.getDataType()+ " ("+t.getMrid()+ ")");
+					}
+					else{
+						System.out.println("\t\tis direct to: "+e.getDataType()+ "("+e.getMrid()+")");
+					}
+				}
+				System.out.println("\tThings that refer to "+t.getDataType()+ "("+t.getMrid()+")");
+				for(EscaType b: t.getRefersToMe()){
+					System.out.println("\t\t\t"+b.getDataType()+" ("+b.getMrid()+ ")");
+				}
+			}
+		}
+		
+		//System.out.println(types.get("_8540991671819803330"));
 		
 		
 		//int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
@@ -116,7 +138,9 @@ public class EscaMain {
 				log.debug(r.getDataType()+ " "+ r.getName());
 			}
 		}*/
-		
+		if (bufferedOut){
+			outStream.flush();
+		}
 		if(true){
 			return;
 		}
@@ -183,7 +207,7 @@ public class EscaMain {
 		
 		//mainProg.printObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
 		
-		//setBufferedOut();
+		//setBufferedOut();setBufferedOut();
 		if (bufferedOut){
 			outStream.flush();
 		}
