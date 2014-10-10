@@ -50,9 +50,9 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.powergrid.server.datasources.PowergridDataSources;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
-public class RequestAvailableDatasourcesHandler extends AbstractGossRequestHandler {
+public class RequestAvailableDatasourcesHandler extends AbstractRequestHandler {
 
 	@Override
 	public Response handle(Request request) {

@@ -56,9 +56,9 @@ import pnnl.goss.fusiondb.datamodel.CapacityRequirement;
 import pnnl.goss.fusiondb.datamodel.GeneratorData;
 import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
 import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
-public class FusionUploadHandler extends AbstractGossRequestHandler {
+public class FusionUploadHandler extends AbstractRequestHandler {
 	
 	Connection connection;
 	Statement statement;

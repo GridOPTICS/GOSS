@@ -60,10 +60,10 @@ import pnnl.goss.fusiondb.datamodel.CapacityRequirementValues;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement.Parameter;
 import pnnl.goss.server.annotations.RequestHandler;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 @RequestHandler(requests=RequestCapacityRequirement.class)
-public class RequestCapacityRequirementHandler extends AbstractGossRequestHandler{
+public class RequestCapacityRequirementHandler extends AbstractRequestHandler{
 	
 	public boolean viz=false;
 	

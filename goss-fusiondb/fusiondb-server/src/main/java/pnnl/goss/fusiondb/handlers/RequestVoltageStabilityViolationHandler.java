@@ -14,10 +14,10 @@ import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.VoltageStabilityViolation;
 import pnnl.goss.fusiondb.requests.RequestVoltageStabilityViolation;
 import pnnl.goss.server.annotations.RequestHandler;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 @RequestHandler(requests=RequestVoltageStabilityViolation.class)
-public class RequestVoltageStabilityViolationHandler extends AbstractGossRequestHandler {
+public class RequestVoltageStabilityViolationHandler extends AbstractRequestHandler {
 
 	@Override
 	public Response handle(Request request) {

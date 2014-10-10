@@ -59,10 +59,10 @@ import pnnl.goss.powergrid.requests.RequestContingencyModelTimeStepValues;
 import pnnl.goss.powergrid.server.PowergridServer;
 import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.annotations.RequestItem;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 @RequestHandler(@RequestItem(RequestContingencyModelTimeStepValues.class))
-public class RequestContingencyModelTimeStepValuesHandler extends AbstractGossRequestHandler {
+public class RequestContingencyModelTimeStepValuesHandler extends AbstractRequestHandler {
 
 	String datasourceKey = null;
 	

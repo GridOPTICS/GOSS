@@ -68,7 +68,7 @@ import pnnl.goss.powergrid.server.PowergridServer;
 import pnnl.goss.powergrid.server.impl.PowergridListerImpl;
 import pnnl.goss.server.annotations.RequestHandler;
 import pnnl.goss.server.annotations.RequestItem;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 /**
  * The <code>PowergridREquestHandler</code> handles the following request types:
@@ -83,7 +83,7 @@ import pnnl.goss.server.core.AbstractGossRequestHandler;
 		@RequestItem(RequestPowergridList.class),
 		@RequestItem(RequestPowergridTimeStep.class),
 		@RequestItem(RequestPowergridTimeStepValues.class)})
-public class RequestPowergridHandler extends AbstractGossRequestHandler {
+public class RequestPowergridHandler extends AbstractRequestHandler {
 
 	private static Logger log = LoggerFactory.getLogger(RequestPowergridHandler.class);
 		

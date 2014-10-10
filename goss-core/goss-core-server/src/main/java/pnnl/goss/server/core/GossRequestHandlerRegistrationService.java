@@ -70,7 +70,7 @@ public interface GossRequestHandlerRegistrationService {
 	
 	Response handle(Request request, String dataType);
 	
-	AbstractGossRequestHandler getHandler(Request request);
+	AbstractRequestHandler getHandler(Request request);
 	
 	void addHandlerMapping(Class request, Class handler);
 	

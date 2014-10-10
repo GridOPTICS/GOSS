@@ -14,10 +14,10 @@ import pnnl.goss.core.Response;
 import pnnl.goss.fusiondb.datamodel.InterfacesViolation;
 import pnnl.goss.fusiondb.requests.RequestInterfacesViolation;
 import pnnl.goss.server.annotations.RequestHandler;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 @RequestHandler(requests=RequestInterfacesViolation.class)
-public class RequestInterfacesViolationHandler extends AbstractGossRequestHandler {
+public class RequestInterfacesViolationHandler extends AbstractRequestHandler {
 
 	@Override
 	public Response handle(Request request) {

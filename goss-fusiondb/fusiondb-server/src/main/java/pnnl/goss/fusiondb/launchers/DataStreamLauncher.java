@@ -32,7 +32,7 @@ import pnnl.goss.fusiondb.requests.RequestActualTotal.Type;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.fusiondb.requests.RequestRTEDSchedule;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 import pnnl.goss.server.core.GossDataServices;
 import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 import pnnl.goss.util.Utilities;
@@ -286,7 +286,7 @@ public class DataStreamLauncher implements Runnable {
 		
 		// capacity requirement
 		Request request = new RequestCapacityRequirement(timeStamp,endTimestamp);
-		AbstractGossRequestHandler handler = new RequestCapacityRequirementHandler();
+		AbstractRequestHandler handler = new RequestCapacityRequirementHandler();
 		handler.setGossDataservices(this.dataServices);
 		((RequestCapacityRequirementHandler)handler).viz = true;
 		DataResponse response = (DataResponse)handler.handle(request);

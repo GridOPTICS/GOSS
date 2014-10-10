@@ -59,10 +59,10 @@ import pnnl.goss.fusiondb.datamodel.ForecastTotal;
 import pnnl.goss.fusiondb.datamodel.ForecastTotalData;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
 import pnnl.goss.server.annotations.RequestHandler;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 @RequestHandler(requests=RequestForecastTotal.class)
-public class RequestForecastTotalHandler extends AbstractGossRequestHandler{
+public class RequestForecastTotalHandler extends AbstractRequestHandler{
 
 	public boolean viz= false;
 	

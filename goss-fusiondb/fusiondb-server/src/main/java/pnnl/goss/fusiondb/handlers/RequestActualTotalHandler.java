@@ -59,10 +59,10 @@ import pnnl.goss.fusiondb.datamodel.ActualTotal;
 import pnnl.goss.fusiondb.datamodel.ActualTotalData;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.server.annotations.RequestHandler;
-import pnnl.goss.server.core.AbstractGossRequestHandler;
+import pnnl.goss.server.core.AbstractRequestHandler;
 
 @RequestHandler(requests=RequestActualTotal.class)
-public class RequestActualTotalHandler extends AbstractGossRequestHandler {
+public class RequestActualTotalHandler extends AbstractRequestHandler {
 
 	public boolean viz = false;
 	
