@@ -29,17 +29,16 @@ public class EscaTypes extends HashMap<String, EscaType> {
 	 * @return
 	 */
 	public Collection<EscaType> getByResourceType(Resource subject){
-		List<EscaType> collection = new ArrayList<>();
-		
-		for(EscaType t: values()){
-			if (t.getDataType().equals(subject.getLocalName())){
-				collection.add(t);
-			}
-		}
-		
-		return Collections.unmodifiableList(collection);
+		return where(subject);
 	}
 	
+	/**
+	 * Retrieve all instances of a specific resource type from the map.
+	 * 
+	 * @see getByResourceType
+	 * @param subject
+	 * @return
+	 */
 	public Collection<EscaType> where(Resource resourceType){
 		List<EscaType> collection = new ArrayList<>();
 		
