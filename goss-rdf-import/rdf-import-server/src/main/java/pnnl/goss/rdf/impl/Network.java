@@ -1,7 +1,9 @@
 package pnnl.goss.rdf.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -26,6 +28,8 @@ public class Network {
 	 * Full network of esca types.
 	 */
 	private EscaTypes escaTypes;
+	private List<EscaType> unprocessedConnectivityNodes;
+
 	private TopologicalNodes topoNodes = new TopologicalNodes();
 	private Set<EscaTypeImpl> markedConnectivityNode = new HashSet<>();
 	
@@ -60,10 +64,72 @@ public class Network {
 	 */
 	private void buildTopology() throws InvalidArgumentException{
 		
-		Collection<EscaType> connectivityNodes = escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
-		TopologicalNode currentTopoNode = null;
-		Set<EscaType> addedConnectivityNodes = new HashSet<>();
+		unprocessedConnectivityNodes = new ArrayList<>(escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT));
 		
+		while (!unprocessedConnectivityNodes.isEmpty()){
+			
+			// Define a new node/bus
+			TopologicalNode topologicalNode = new TopologicalNode();
+			topoNodes.add(topologicalNode);
+			topologicalNode.setIdentifier("T"+topoNodes.size());
+			
+			// Get the first connectivity node that hasn't been processed.
+			EscaType connectivityNode = unprocessedConnectivityNodes.get(0);
+			unprocessedConnectivityNodes.remove(0);
+			debugStep("Processing next connectivity Node",  connectivityNode);
+								
+			// Add the connectivity node to the topological node.
+			topologicalNode.addConnectivityNode(connectivityNode);
+			
+			// Build list of connected terminals to search over.
+			List<EscaType> unprocessedTerminals = new ArrayList<>(connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT));
+			
+			while(!unprocessedTerminals.isEmpty()){
+				// Get the first terminal out of the list.
+				EscaType terminal = unprocessedTerminals.get(0);
+				unprocessedTerminals.remove(0);
+				debugStep("Processing terminal",  connectivityNode);
+				
+				// Equipment associated with the terminal.
+				EscaType equipment = terminal.getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
+				
+				if (equipment == null){
+					equipment = terminal.getLink(Esca60Vocab.TERMINAL_CONNECTIVITYNODE);
+					if (equipment == null){
+						System.out.println("No equipment associated with terminal: "+ terminal.getMrid());
+						continue;
+					}
+				}
+				
+				// Check to see if we have a breaker.
+				if (equipment.isResourceType(Esca60Vocab.BREAKER_OBJECT)){
+					debugStep("Breaker found", equipment);
+					// If the breaker is closed
+					if (!equipment.getLiteralValue(Esca60Vocab.SWITCH_NORMALOPEN).getBoolean()){
+						debugStep("Breaker was closed", equipment);
+						Collection<EscaType> col = equipment.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT);
+						for(EscaType e:col){
+							if (!e.equals(terminal)){
+								debugStep("Adding other side of breaker", e);
+								topologicalNode.addTerminal(e);
+							}
+						}
+					}
+				}
+				else if (equipment.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
+					debugStep("Adding another connectivityNode", equipment);
+					topologicalNode.addConnectivityNode(equipment);
+					unprocessedConnectivityNodes.remove(equipment);
+					for(EscaType e: unprocessedTerminals){
+						debugStep("Adding terminal to tn", e);
+						topologicalNode.addTerminal(e);
+					}
+					unprocessedTerminals.clear();
+					System.out.println("Found new connectivity node: "+ equipment.getMrid());
+				}
+				
+			}			
+		}
 		
 		for(EscaType connNode: connectivityNodes){
 			System.out.println(connNode);
@@ -90,41 +156,8 @@ public class Network {
 		//debugSetOfReferralConnections(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
 	}
 	
-	private void addConnectivityNode(EscaType connectivityNode, 
-										Set<EscaType> addedConnectivityNodes, 
-										TopologicalNode currentTopoNode) 
-												throws InvalidArgumentException{
-		
-		if (!addedConnectivityNodes.contains(connectivityNode)){
-			// The only item that refers to a connectivity node is a Terminal.
-			Collection<EscaType> terminals = connectivityNode.getRefersToMe(); 
-			
-			if (terminals.size() > 0){
-				for(EscaType t: terminals){
-					EscaType breaker = t.getDirectLinkedResourceSingle(Esca60Vocab.BREAKER_OBJECT);
-					if (breaker != null){
-						if (breaker.getLiteralValue(Esca60Vocab.SWITCH_NORMALOPEN).getBoolean() == false){
-							if (currentTopoNode == null){
-								//log.debug("Creating new topological node");
-								currentTopoNode = new TopologicalNode();
-								topoNodes.add(currentTopoNode);
-							}
-							currentTopoNode.addConnectivityNode(connectivityNode);
-							addedConnectivityNodes.add(connectivityNode);
-						}
-//						Collection<EscaType> bTerminals = breaker.getRefersToMe().getDirectLinkedResources(Esca60Vocab.TERMINAL_OBJECT);
-//						for(EscaType bt: bTerminals){
-//							System.out.println(bt);
-//						}
-					}
-					
-					
-				}
-			}
-		}
-		else{
-			log.debug("Node already accounted for");
-		}
+	private static void debugStep(String message, EscaType escaType){
+		System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ")");
 	}
 	
 
