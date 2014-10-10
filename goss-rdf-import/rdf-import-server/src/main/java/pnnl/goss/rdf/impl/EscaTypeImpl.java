@@ -91,7 +91,19 @@ public class EscaTypeImpl implements EscaType {
 	public Map<String, EscaType> getLinks(){
 		return directLinks;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.EscaType#getLink(String property)
+	 */
+	@Override
+	public EscaType getLink(Property property){
+//		String key = property.getLocalName();
+//		if (key.startsWith(dataType+".")){
+//			key = key.substring(dataType.length()+1);			
+//		}
+		
+		return directLinks.get(property.getLocalName());
+	}
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#getDirectLinks()
 	 */
@@ -162,20 +174,7 @@ public class EscaTypeImpl implements EscaType {
 		return Collections.unmodifiableCollection(types);
 	}
 	
-	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.EscaType#getDirectLinkedResourceSingle(com.hp.hpl.jena.rdf.model.Resource)
-	 */
-	@Override
-	public EscaType getDirectLinkedResourceSingle(Resource resource){
 		
-		for(EscaType t: directLinks.values()){
-			if (t.getDataType().equals(resource.getLocalName())){
-				return t;
-			}
-		}
-		return null;
-	}
-	
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#addLiteral(java.lang.String, com.hp.hpl.jena.rdf.model.Literal)
 	 */

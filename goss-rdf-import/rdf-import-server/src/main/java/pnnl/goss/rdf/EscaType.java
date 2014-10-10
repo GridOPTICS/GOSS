@@ -26,9 +26,7 @@ public interface EscaType {
 
 	public abstract Collection<EscaType> getDirectLinkedResources(
 			Resource resource);
-
-	public abstract EscaType getDirectLinkedResourceSingle(Resource resource);
-
+	
 	/**
 	 * Add literal value to the escatype.  If the key contains the same
 	 * datatype as a prefix then that prefix is stripped off and is assumed
@@ -65,6 +63,8 @@ public interface EscaType {
 	public abstract String getName();
 
 	public abstract void addRefersToMe(EscaType escaType);
+
+	EscaType getLink(Property property);
 
 
 }
