@@ -44,12 +44,16 @@ public class Network {
 	 * - ConnectivityNodes are directly connected to a VoltageLevel and Substations and 
 	 *   referred to by Terminals.  Terminals are the only thing that refers to a 
 	 *   ConnectivityNode.
+	 *   
 	 * - If a ConnectivityNode is directly connected to a Substation then it is not
 	 *   directly connected to a VoltageLevel.
+	 *   
 	 * - If a ConnectivityNode is referred to be a Terminal then it will
-	 *   be referred to ba at least two Terminals.  
+	 *   be referred to ba at least two Terminals.
+	 *     
 	 * - It seems that if a ConnectivityNode is directly connected to a Substation then
 	 *   it will not be referred to by any Terminals.
+	 *   
 	 * - It seems that if a ConnectivityNode is directly connected to a VoltageLevel then
 	 *   it will be connected to at least two Terminals.
 	 * @throws InvalidArgumentException 
@@ -62,6 +66,12 @@ public class Network {
 		
 		
 		for(EscaType connNode: connectivityNodes){
+			System.out.println(connNode);
+			for (EscaType t: connNode.getRefersToMe()){
+				System.out.println("REFERS TO ME ("+t.getMrid()+") ***************");
+				System.out.println(t.getRefersToMe());
+				System.out.println("END REFERS TO ME ("+t.getMrid()+") ***************");
+			}
 			addConnectivityNode(connNode, addedConnectivityNodes, currentTopoNode);
 		}
 //		for(EscaType node: connectivityNodes){
