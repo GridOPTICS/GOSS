@@ -18,8 +18,10 @@ import pnnl.goss.rdf.impl.EscaTreeWindow;
 import pnnl.goss.rdf.impl.EscaTypes;
 import pnnl.goss.rdf.impl.Network;
 import pnnl.goss.rdf.impl.TopologicalNode;
+import pnnl.goss.rdf.impl.TopologicalNodes;
 import pnnl.goss.rdf.server.Esca60Vocab;
 //import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
+
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -79,32 +81,43 @@ public class EscaMain {
 	public static void main(String[] args) throws Exception {
 		
 		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "esca_tree.txt");
-		
-		//Network network = new Network(mainProg.getEscaTypes());
-		
+				
 		EscaTypes types = mainProg.getEscaTypes();
 		
-		setBufferedOut();
 		
-		for(EscaType outer: types.where(Esca60Vocab.TERMINAL_OBJECT)){
-			System.out.println(outer.getDataType().toUpperCase()+ ": "+ outer.getMrid());
-			for(EscaType t: outer.getDirectLinks()){
-				System.out.println("\tis direct to: "+t.getDataType()+ "("+t.getMrid()+")");
-				System.out.println("\t"+t.getDataType().toUpperCase()+ ": "+ t.getMrid());
-				for(EscaType e: t.getDirectLinks()){
-					if (e == null){
-						System.out.println("\t\tdirect link null for "+t.getDataType()+ " ("+t.getMrid()+ ")");
-					}
-					else{
-						System.out.println("\t\tis direct to: "+e.getDataType()+ "("+e.getMrid()+")");
-					}
-				}
-				System.out.println("\t\tThings that refer to "+t.getDataType()+ "("+t.getMrid()+")");
-				for(EscaType b: t.getRefersToMe()){
-					System.out.println("\t\t\t"+b.getDataType()+" ("+b.getMrid()+ ")");
-				}
-			}
-		}
+		Network network = new Network(types);
+		
+		TopologicalNodes nodes = network.getTopologicalNodes();
+		
+		System.out.println("Number Topological Nodes: "+nodes.size());
+		
+//		for(TopologicalNode n: nodes){
+//			if(n.getConnectivityNodes().size()> 1){
+//				System.out.println("Multiple connectivity node in: ");
+//			}
+//		}
+		
+//		setBufferedOut();
+//		
+//		for(EscaType outer: types.where(Esca60Vocab.TERMINAL_OBJECT)){
+//			System.out.println(outer.getDataType().toUpperCase()+ ": "+ outer.getMrid());
+//			for(EscaType t: outer.getDirectLinks()){
+//				System.out.println("\tis direct to: "+t.getDataType()+ "("+t.getMrid()+")");
+//				System.out.println("\t"+t.getDataType().toUpperCase()+ ": "+ t.getMrid());
+//				for(EscaType e: t.getDirectLinks()){
+//					if (e == null){
+//						System.out.println("\t\tdirect link null for "+t.getDataType()+ " ("+t.getMrid()+ ")");
+//					}
+//					else{
+//						System.out.println("\t\tis direct to: "+e.getDataType()+ "("+e.getMrid()+")");
+//					}
+//				}
+//				System.out.println("\t\tThings that refer to "+t.getDataType()+ "("+t.getMrid()+")");
+//				for(EscaType b: t.getRefersToMe()){
+//					System.out.println("\t\t\t"+b.getDataType()+" ("+b.getMrid()+ ")");
+//				}
+//			}
+//		}
 		
 		//System.out.println(types.get("_8540991671819803330"));
 		
@@ -116,6 +129,9 @@ public class EscaMain {
 		System.out.println("Breaker count: "+ types.where(Esca60Vocab.BREAKER_OBJECT).size());
 		System.out.println("Terminal count: "+types.where(Esca60Vocab.TERMINAL_OBJECT).size());
 		System.out.println("Connectivity Node count: "+types.where(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size());
+		System.out.println("Substation count: "+types.where(Esca60Vocab.SUBSTATION_OBJECT).size());
+		System.out.println("Voltage Level count: "+types.where(Esca60Vocab.VOLTAGELEVEL_OBJECT).size());
+		System.out.println("BaseVoltage: "+types.where(Esca60Vocab.BASEVOLTAGE_OBJECT).size());
 		
 		
 //		Collection<EscaType> substations = mainProg.getObjectType(Esca60Vocab.SUBSTATION_OBJECT);
@@ -138,49 +154,49 @@ public class EscaMain {
 				log.debug(r.getDataType()+ " "+ r.getName());
 			}
 		}*/
-		if (bufferedOut){
-			outStream.flush();
-		}
-		if(true){
-			return;
-		}
-		Collection<EscaType> voltageLevels = mainProg.getEscaTypes().getByResourceType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
-		Map<String, VoltageLevelGrouper> substations = new HashMap<>();
-		
-		List<TopologicalNode> nodes = new ArrayList<>();
-		
-		for(EscaType vl: voltageLevels){
-			VoltageLevelGrouper vlGrouper = null;
-			for (EscaType sub: vl.getDirectLinkedResources(Esca60Vocab.SUBSTATION_OBJECT)){
-				if (!substations.containsKey(sub.getMrid())){
-					log.debug("Adding substation: " + sub.getMrid());
-					vlGrouper = new VoltageLevelGrouper(sub);
-					substations.put(sub.getMrid(), vlGrouper);
-				}
-				else{
-					vlGrouper = substations.get(sub.getMrid());
-				}
-				
-				vlGrouper.addVoltageLevel(vl);
-				
-			}
-		}
-		
-		for(String mrid: substations.keySet()){
-			VoltageLevelGrouper vlGrouper = substations.get(mrid);
-			log.debug("substation: " + vlGrouper.getSubstation().getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME.getLocalName()));
-			for(EscaType e: vlGrouper.getVoltageLevelObjects()){
-				nodes.add(new TopologicalNode(vlGrouper.getSubstation(), e));
-			}
-//			for(Double dbl: vlGrouper.getVoltageLevels()){
-//				log.debug("vl: " + dbl);
+//		if (bufferedOut){
+//			outStream.flush();
+//		}
+//		if(true){
+//			return;
+//		}
+//		Collection<EscaType> voltageLevels = mainProg.getEscaTypes().getByResourceType(Esca60Vocab.VOLTAGELEVEL_OBJECT);
+//		Map<String, VoltageLevelGrouper> substations = new HashMap<>();
+//		
+//		List<TopologicalNode> nodes = new ArrayList<>();
+//		
+//		for(EscaType vl: voltageLevels){
+//			VoltageLevelGrouper vlGrouper = null;
+//			for (EscaType sub: vl.getDirectLinkedResources(Esca60Vocab.SUBSTATION_OBJECT)){
+//				if (!substations.containsKey(sub.getMrid())){
+//					log.debug("Adding substation: " + sub.getMrid());
+//					vlGrouper = new VoltageLevelGrouper(sub);
+//					substations.put(sub.getMrid(), vlGrouper);
+//				}
+//				else{
+//					vlGrouper = substations.get(sub.getMrid());
+//				}
+//				
+//				vlGrouper.addVoltageLevel(vl);
+//				
 //			}
-		}
-		
-		
-		for(TopologicalNode tn: nodes){
-			log.debug(tn.toString());
-		}
+//		}
+//		
+//		for(String mrid: substations.keySet()){
+//			VoltageLevelGrouper vlGrouper = substations.get(mrid);
+//			log.debug("substation: " + vlGrouper.getSubstation().getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME.getLocalName()));
+//			for(EscaType e: vlGrouper.getVoltageLevelObjects()){
+//				nodes.add(new TopologicalNode(vlGrouper.getSubstation(), e));
+//			}
+////			for(Double dbl: vlGrouper.getVoltageLevels()){
+////				log.debug("vl: " + dbl);
+////			}
+//		}
+//		
+//		
+//		for(TopologicalNode tn: nodes){
+//			log.debug(tn.toString());
+//		}
 		
 //		String breakerMrid = "_5273505719686324070";
 //		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
