@@ -193,9 +193,6 @@ public class EscaTypeImpl implements EscaType {
 	 */
 	@Override
 	public void addLiteral(String key, Literal value){
-		if (key.startsWith(dataType+".")){
-			key = key.substring(dataType.length()+1);			
-		}
 		log.debug("Adding literal key: "+key+" value "+ value+" to datatype: "+dataType);
 		literals.put(key,  value);
 	}
