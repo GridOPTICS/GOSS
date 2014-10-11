@@ -28,11 +28,8 @@ public class Network {
 	 * Full network of esca types.
 	 */
 	private EscaTypes escaTypes;
-	private List<EscaType> unprocessedConnectivityNodes;
-
 	private TopologicalNodes topoNodes = new TopologicalNodes();
-	private Set<EscaTypeImpl> markedConnectivityNode = new HashSet<>();
-	
+
 	public Network(EscaTypes escaTypes){
 		log.debug("Creating nework with: " + escaTypes.keySet().size() + " elements.");
 		this.escaTypes = escaTypes;
@@ -64,14 +61,16 @@ public class Network {
 	 */
 	private void buildTopology() throws InvalidArgumentException{
 		
-		unprocessedConnectivityNodes = new ArrayList<>(escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT));
-		
+		List<EscaType> unprocessedConnectivityNodes = new ArrayList<>(escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT));
+		Set<EscaType> processedConnectivityNodes = new HashSet<EscaType>();
+				
 		while (!unprocessedConnectivityNodes.isEmpty()){
 			
 			// Define a new node/bus
 			TopologicalNode topologicalNode = new TopologicalNode();
 			topoNodes.add(topologicalNode);
 			topologicalNode.setIdentifier("T"+topoNodes.size());
+			debugStep("--- Added new topological node");
 			
 			// Get the first connectivity node that hasn't been processed.
 			EscaType connectivityNode = unprocessedConnectivityNodes.get(0);
@@ -80,15 +79,19 @@ public class Network {
 								
 			// Add the connectivity node to the topological node.
 			topologicalNode.addConnectivityNode(connectivityNode);
+			processedConnectivityNodes.add(connectivityNode);
 			
 			// Build list of connected terminals to search over.
 			List<EscaType> unprocessedTerminals = new ArrayList<>(connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT));
+			debugStep("Number of terminals to process: " + unprocessedTerminals.size());
+			Set<EscaType> processedTerminals = new HashSet<EscaType>();
 			
 			while(!unprocessedTerminals.isEmpty()){
 				// Get the first terminal out of the list.
 				EscaType terminal = unprocessedTerminals.get(0);
 				unprocessedTerminals.remove(0);
-				debugStep("Processing terminal",  connectivityNode);
+				processedTerminals.add(terminal);
+				debugStep("Processing terminal",  terminal);
 				
 				// Equipment associated with the terminal.
 				EscaType equipment = terminal.getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
@@ -109,37 +112,57 @@ public class Network {
 						debugStep("Breaker was closed", equipment);
 						Collection<EscaType> col = equipment.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT);
 						for(EscaType e:col){
-							if (!e.equals(terminal)){
+							if (!processedTerminals.contains(e)){
 								debugStep("Adding other side of breaker", e);
-								topologicalNode.addTerminal(e);
+								unprocessedTerminals.add(e);
 							}
 						}
 					}
+					else{
+						debugStep("Breaker was open", equipment);
+					}
 				}
 				else if (equipment.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
-					debugStep("Adding another connectivityNode", equipment);
-					topologicalNode.addConnectivityNode(equipment);
-					unprocessedConnectivityNodes.remove(equipment);
-					for(EscaType e: unprocessedTerminals){
-						debugStep("Adding terminal to tn", e);
-						topologicalNode.addTerminal(e);
+					debugStep("Adding connectivityNode", connectivityNode);
+					topologicalNode.addConnectivityNode(connectivityNode);
+					processedConnectivityNodes.add(connectivityNode);
+					
+					for(EscaType e: connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
+						debugStep("Adding terminal to unprocessed", e);
+						unprocessedTerminals.add(e);
 					}
-					unprocessedTerminals.clear();
-					System.out.println("Found new connectivity node: "+ equipment.getMrid());
-				}
-				
+				}				
 			}			
 		}
 		
-		for(EscaType connNode: connectivityNodes){
-			System.out.println(connNode);
-			for (EscaType t: connNode.getRefersToMe()){
-				System.out.println("REFERS TO ME ("+t.getMrid()+") ***************");
-				System.out.println(t.getRefersToMe());
-				System.out.println("END REFERS TO ME ("+t.getMrid()+") ***************");
-			}
-			addConnectivityNode(connNode, addedConnectivityNodes, currentTopoNode);
-		}
+//		int i=1;
+//		for(TopologicalNode t: topoNodes){
+//			System.out.println("TN "+i);
+//			System.out.println("Terminals");
+//			for(EscaType terminal: t.getTerminals()){
+//				System.out.println("\t"+terminal.getMrid());
+//			}
+//			System.out.println("CN");
+//			for(EscaType cn: t.getConnectivityNodes()){
+//				System.out.println("\t"+cn.getMrid());
+//			}
+//			i++;
+//		}
+		
+//		Collection<EscaType> connectivityNodes = escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
+//		TopologicalNode currentTopoNode = null;
+//		Set<EscaType> addedConnectivityNodes = new HashSet<>();
+//		
+//		
+//		for(EscaType connNode: connectivityNodes){
+//			System.out.println(connNode);
+//			for (EscaType t: connNode.getRefersToMe()){
+//				System.out.println("REFERS TO ME ("+t.getMrid()+") ***************");
+//				System.out.println(t.getRefersToMe());
+//				System.out.println("END REFERS TO ME ("+t.getMrid()+") ***************");
+//			}
+//			//addConnectivityNode(connNode, addedConnectivityNodes, currentTopoNode);
+//		}
 //		for(EscaType node: connectivityNodes){
 //			if ()
 //		}
@@ -156,11 +179,18 @@ public class Network {
 		//debugSetOfReferralConnections(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
 	}
 	
-	private static void debugStep(String message, EscaType escaType){
-		System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ")");
+	private static void debugStep(String message){
+		System.out.println(message);
 	}
 	
-
+	private static void debugStep(String message, EscaType escaType){
+		if (escaType.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME) != null){
+			System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ") ["+escaType.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME)+ "]");
+		}
+		else{
+			System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ")");
+		}
+	}
 	
 	private void debugSetOfLiterals(Resource resourceType){
 		Set<String> properties = new HashSet<>();
@@ -216,5 +246,9 @@ public class Network {
 				log.debug(c.getDataType()+ " " + c.getName());
 			}
 		}
+	}
+
+	public TopologicalNodes getTopologicalNodes() {
+		return topoNodes;
 	}
 }
