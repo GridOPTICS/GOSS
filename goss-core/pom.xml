@@ -18,6 +18,7 @@
 		<module>goss-core-client</module>
 		<module>goss-core-web</module>
 		<module>goss-core-features</module>
+		<module>goss-management</module>
 	</modules>
 	
 	<properties>
