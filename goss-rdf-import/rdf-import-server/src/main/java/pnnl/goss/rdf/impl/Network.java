@@ -63,10 +63,7 @@ public class Network {
 		
 		// Load all connectivity nodes in the begining.
 		List<EscaType> unprocessedConnectivityNodes = new ArrayList<>(escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT));
-		log.debug("Starting with: "+unprocessedConnectivityNodes.size()+" Connectivity nodes to process.");
-		for(EscaType v: unprocessedConnectivityNodes){
-			log.debug(v.toString());
-		}
+		
 		Set<EscaType> processedConnectivityNodes = new HashSet<EscaType>();
 				
 		while (!unprocessedConnectivityNodes.isEmpty()){
@@ -80,7 +77,7 @@ public class Network {
 			// Get the first connectivity node that hasn't been processed.
 			EscaType connectivityNode = unprocessedConnectivityNodes.get(0);
 			unprocessedConnectivityNodes.remove(0);
-			debugStep("Processing next connectivity Node",  connectivityNode);
+			debugStep("Processing connectivity Node",  connectivityNode);
 								
 			// Add the connectivity node to the topological node.
 			topologicalNode.addConnectivityNode(connectivityNode);
@@ -88,7 +85,7 @@ public class Network {
 			
 			// Build list of connected terminals to search over.
 			List<EscaType> unprocessedTerminals = new ArrayList<>(connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT));
-			debugStep("Number of terminals to process: " + unprocessedTerminals.size());
+			debugStep("There are "+unprocessedTerminals.size() + " terminals for connectivity node "+connectivityNode.toString());
 			Set<EscaType> processedTerminals = new HashSet<EscaType>();
 			
 			while(!unprocessedTerminals.isEmpty()){
@@ -128,16 +125,28 @@ public class Network {
 					}
 				}
 				else if (equipment.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
-					debugStep("Adding connectivityNode", connectivityNode);
-					topologicalNode.addConnectivityNode(connectivityNode);
-					processedConnectivityNodes.add(connectivityNode);
-					
-					for(EscaType e: connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
-						debugStep("Adding terminal to unprocessed", e);
-						unprocessedTerminals.add(e);
+					if(processedConnectivityNodes.contains(equipment)){
+						debugStep("Something might be wrong here because resource has already been processed.", equipment);
 					}
-				}				
+					else{
+						debugStep("Adding connectivity node "+ equipment.toString()+ " to toplogical node " + topologicalNode.toString());
+						topologicalNode.addConnectivityNode(equipment);
+						unprocessedConnectivityNodes.remove(equipment);
+						processedConnectivityNodes.add(equipment);
+						
+						for(EscaType e: equipment.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
+							debugStep("Adding terminal to unprocessed", e);
+							unprocessedTerminals.add(e);
+						}
+					}
+					
+				}	
+				else{
+					debugStep("Unmatched equipment type", equipment);
+				}
 			}			
+			
+			processedConnectivityNodes.add(connectivityNode);
 		}
 		
 //		int i=1;
@@ -187,6 +196,16 @@ public class Network {
 	private static void debugStep(String message){
 		log.debug(message);
 		//System.out.println(message);
+	}
+	
+	private static void debugStep(String message, List<EscaType> typeList){
+		log.debug(message);
+		debugStep(typeList);
+	}
+	private static void debugStep(List<EscaType> typeList){
+		for(EscaType t:typeList){
+			log.debug(t.toString());
+		}
 	}
 	
 	private static void debugStep(String message, EscaType escaType){
