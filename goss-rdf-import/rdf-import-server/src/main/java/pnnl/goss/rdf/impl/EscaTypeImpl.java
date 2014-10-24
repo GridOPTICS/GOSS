@@ -253,6 +253,30 @@ public class EscaTypeImpl implements EscaType {
 		this.dataType = dataType;
 		this.mrid = mrid;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		EscaType other = null;
+		try{
+			other = (EscaType)obj;
+		}
+		catch(Exception e){
+			log.error("Invalid comparison of object");
+			return false;
+		}
+		
+		if(other.getMrid().equals(this.mrid)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return mrid.hashCode();
+	}
 
 	
 	@Override
