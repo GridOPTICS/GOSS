@@ -14,9 +14,9 @@ import com.vaadin.server.VaadinServlet;
 
 import de.mhus.osgi.vaadinbridge.VaadinConfigurableResourceProviderFinder;
 
-@Component(provide = Servlet.class, properties = { "alias=/login" }, name="TestUI",servicefactory=true)
-@VaadinServletConfiguration(resourceCacheTime=1000,closeIdleSessions=true, ui=TestUI.class, productionMode=false)
-public class TestServlet extends VaadinServlet {
+@Component(provide = Servlet.class, properties = { "alias=/login" }, name="LoginUI",servicefactory=true)
+@VaadinServletConfiguration(resourceCacheTime=1000,closeIdleSessions=true, ui=LoginUI.class, productionMode=false)
+public class LoginServlet extends VaadinServlet {
 	private static final long serialVersionUID = 1L;
 	private BundleContext context;
 	@Activate
@@ -24,6 +24,7 @@ public class TestServlet extends VaadinServlet {
 		this.context = ctx.getBundleContext();
 		VaadinConfigurableResourceProviderFinder.add(context, "/themes/vaadinsample");
 	}
+	
 	
 	@Deactivate
 	public void deactivate(){

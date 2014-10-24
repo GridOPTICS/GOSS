@@ -72,6 +72,27 @@
                     </instructions>
                 </configuration>
             </plugin>
+            <!-- Updates Vaadin 6.2+ widgetset definitions based on project dependencies -->
+        <plugin>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <version>1.0.1</version>
+            <executions>
+                <execution>
+                    <configuration>
+                        <!-- if you don't specify any modules, the plugin will find them -->
+                        <!--
+                        <modules>
+                            <module>${package}.gwt.MyWidgetSet</module>
+                        </modules>
+                        -->
+                    </configuration>
+                    <goals>
+                        <goal>update-widgetset</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
         </plugins>
     </build>
 
@@ -151,7 +172,22 @@
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-gridmw-common</artifactId>
 		</dependency>
+		
+		<dependency>
+		   <groupId>org.vaadin.addons</groupId>
+		   <artifactId>dcharts-widget</artifactId>
+		   <version>1.7.0</version>
+		</dependency>
     </dependencies>
+    
+    
+    <repositories>
+    	<repository>
+   			<id>vaadin-addons</id>
+   			<url>http://maven.vaadin.com/vaadin-addons</url>
+<!--    			http://vaadin.com/nexus/content/repositories/vaadin-addons -->
+		</repository>
+    </repositories>
     
 <!-- 	<distributionManagement> -->
 <!-- 	  <snapshotRepository> -->

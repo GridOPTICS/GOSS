@@ -1,10 +1,12 @@
-package pnnl.goss.osgi.vaadin.views;
+package pnnl.goss.osgi.vaadin.views.impl;
 
 import pnnl.goss.osgi.vaadin.handlers.LoginHandler;
-import pnnl.goss.osgi.vaadin.presenters.LoginPresenter;
+import pnnl.goss.osgi.vaadin.util.DemoConstants;
+import pnnl.goss.osgi.vaadin.views.LoginView;
 
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -12,10 +14,14 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class LoginViewImpl extends VerticalLayout implements LoginView {
+	private static final long serialVersionUID = 1L;
+
 	private LoginHandler handler;
 
     private TextField txtUsername;
     private PasswordField txtPassword;
+    
+    private Label statusLabel;
 
     private Button btnLogin;
 
@@ -39,6 +45,9 @@ public class LoginViewImpl extends VerticalLayout implements LoginView {
                 handler.login();
             }
         });
+        
+        statusLabel = new Label();
+        addComponent(statusLabel);
     }
 
     @Override
@@ -63,18 +72,17 @@ public class LoginViewImpl extends VerticalLayout implements LoginView {
     @Override
     public void afterSuccessfulLogin() {
     	Notification.show("Wunderbar");
-        UI.getCurrent().getNavigator().navigateTo(LoginPresenter.PROTECTED_VIEW);
+        UI.getCurrent().getNavigator().navigateTo(DemoConstants.OPTIONS_VIEW);
     }
 
 	@Override
 	public void afterFailedLogin() {
-		// TODO Auto-generated method stub
-		
+		statusLabel.setCaption("Login Failed, please try again");
 	}
 
 	@Override
 	public void afterServiceException() {
-		// TODO Auto-generated method stub
+		statusLabel.setCaption("Login Failed due to exception");
 		
 	}
 }
