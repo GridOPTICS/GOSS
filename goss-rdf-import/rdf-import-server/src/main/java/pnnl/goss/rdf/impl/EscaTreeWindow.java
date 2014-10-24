@@ -96,7 +96,7 @@ public class EscaTreeWindow {
 			String dataType = getTypeOfSubject(res);
 			String mrid = res.getLocalName();
 			// System.out.println(mrid+" ("+dataType+")");
-			escaTypeMap.put(mrid, new DefaultEscaType(res, dataType, mrid));
+			escaTypeMap.put(mrid, DefaultEscaType.construct(res, dataType, mrid));
 		}
 		
 		// Load all of the links between the subjects.

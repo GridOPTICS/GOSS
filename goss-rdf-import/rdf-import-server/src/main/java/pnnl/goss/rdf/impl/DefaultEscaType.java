@@ -32,11 +32,11 @@ public class DefaultEscaType extends AbstractEscaType {
 	private static Logger log = LoggerFactory.getLogger(DefaultEscaType.class);
 	
 		
-	public DefaultEscaType(EscaType copy){
-		this(copy.getResource(), copy.getDataType(), copy.getMrid());
-	}
+//	public DefaultEscaType(EscaType copy){
+//		this(copy.getResource(), copy.getDataType(), copy.getMrid());
+//	}
 
-	public DefaultEscaType(Resource resource, String dataType, String mrid){
+	private DefaultEscaType(Resource resource, String dataType, String mrid){
 		this.resource = resource;
 		this.dataType = dataType;
 		this.mrid = mrid;
@@ -44,7 +44,21 @@ public class DefaultEscaType extends AbstractEscaType {
 	
 	
 	
-	
+	public static AbstractEscaType construct(Resource resource, String dataType, String mrid){
+		AbstractEscaType escaType = null;
+		
+		if(dataType.equals(Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName())){
+			escaType = new ConnectivityNode();
+			escaType.dataType = dataType;
+			escaType.mrid = mrid;
+			escaType.resource = resource;
+		}
+		else{
+			escaType = new DefaultEscaType(resource, dataType, mrid);
+		}
+		
+		return escaType;
+	}
 
 	
 	
