@@ -36,27 +36,47 @@ public class DefaultEscaType extends AbstractEscaType {
 //		this(copy.getResource(), copy.getDataType(), copy.getMrid());
 //	}
 
-	private DefaultEscaType(Resource resource, String dataType, String mrid){
-		this.resource = resource;
-		this.dataType = dataType;
-		this.mrid = mrid;
-	}
+//	private DefaultEscaType(Resource resource, String dataType, String mrid){
+//		this.resource = resource;
+//		this.dataType = dataType;
+//		this.mrid = mrid;
+//	}
 	
+	private DefaultEscaType(){
+	}
 	
 	
 	public static AbstractEscaType construct(Resource resource, String dataType, String mrid){
 		AbstractEscaType escaType = null;
+
+		// Must match up with the order in the switch statement below.
+		String[] dataTypeList = {Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName(),
+				Esca60Vocab.TERMINAL_OBJECT.getLocalName()
+		};
 		
-		if(dataType.equals(Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName())){
+		int i= 0;
+		for(i=0; i<dataTypeList.length; i++){
+			if (dataTypeList[i].equals(dataType)){
+				break;
+			}
+		}
+		
+		
+		switch(i){
+		case 0:
 			escaType = new ConnectivityNode();
-			escaType.dataType = dataType;
-			escaType.mrid = mrid;
-			escaType.resource = resource;
-		}
-		else{
-			escaType = new DefaultEscaType(resource, dataType, mrid);
+			break;
+		case 1:
+			escaType = new Terminal();
+			break;
+		 default:
+			 escaType = new DefaultEscaType(); 
 		}
 		
+		escaType.dataType = dataType;
+		escaType.mrid = mrid;
+		escaType.resource = resource;
+
 		return escaType;
 	}
 
