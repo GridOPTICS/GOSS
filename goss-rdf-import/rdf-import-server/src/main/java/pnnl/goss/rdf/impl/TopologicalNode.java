@@ -90,14 +90,16 @@ public class TopologicalNode {
 	public Collection<EscaType> getConnectivityNodes() {
 		return Collections.unmodifiableCollection(this.connectivityNodes);
 	}
+	
 
-//	@Override
-//	public String toString() {
+	@Override
+	public String toString() {
+		return "TN: " + this.identifier + " #connectivity nodes: "+ this.connectivityNodes.size() + " #terminals: "+ this.terminals.size();
 //		return "TN: " + substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_NAME).toString()+ 
 //				" vl: " + voltageLevel.getDirectLinkedResourceSingle(Esca60Vocab.BASEVOLTAGE_OBJECT)
 //										.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE)
 //										.getDouble();
-//	}
+	}
 	
 	
 }
