@@ -1,5 +1,12 @@
 package pnnl.goss.rdf.impl;
 
-public class Terminal extends AbstractEscaType {
+import pnnl.goss.rdf.EscaType;
+import pnnl.goss.rdf.server.Esca60Vocab;
 
+public class Terminal extends AbstractEscaType {
+		
+	public EscaType getEquipment(){
+		return getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
+	}
+	
 }

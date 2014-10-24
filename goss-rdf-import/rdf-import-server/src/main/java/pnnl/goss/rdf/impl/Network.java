@@ -101,19 +101,19 @@ public class Network {
 			processedConnectivityNodes.add(connectivityNode);
 			
 			// Build list of connected terminals to search over.
-			List<EscaType> unprocessedTerminals = new ArrayList<>(connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT));
+			Terminals unprocessedTerminals = connectivityNode.getTerminals(); //new ArrayList<>(connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT));
 			debugStep("There are "+unprocessedTerminals.size() + " terminals for connectivity node "+connectivityNode.toString());
 			Set<EscaType> processedTerminals = new HashSet<EscaType>();
 			
 			while(!unprocessedTerminals.isEmpty()){
 				// Get the first terminal out of the list.
-				EscaType terminal = unprocessedTerminals.get(0);
+				Terminal terminal = (Terminal)unprocessedTerminals.iterator().next();
 				unprocessedTerminals.remove(0);
 				processedTerminals.add(terminal);
 				debugStep("Processing terminal",  terminal);
 				
 				// Equipment associated with the terminal.
-				EscaType equipment = terminal.getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
+				EscaType equipment = terminal.getEquipment(); //.getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
 				
 				if (equipment == null){
 					equipment = terminal.getLink(Esca60Vocab.TERMINAL_CONNECTIVITYNODE);
@@ -133,7 +133,7 @@ public class Network {
 						for(EscaType e:col){
 							if (!processedTerminals.contains(e)){
 								debugStep("Adding other side of breaker", e);
-								unprocessedTerminals.add(e);
+								unprocessedTerminals.add((Terminal)e);
 							}
 						}
 					}
@@ -153,7 +153,7 @@ public class Network {
 						
 						for(EscaType e: equipment.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
 							debugStep("Adding terminal to unprocessed", e);
-							unprocessedTerminals.add(e);
+							unprocessedTerminals.add((Terminal)e);
 						}
 					}
 					
@@ -165,6 +165,7 @@ public class Network {
 			
 			processedConnectivityNodes.add(connectivityNode);
 		}
+		
 		
 //		int i=1;
 //		for(TopologicalNode t: topoNodes){

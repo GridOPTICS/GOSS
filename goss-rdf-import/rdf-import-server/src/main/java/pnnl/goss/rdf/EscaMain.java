@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,12 @@ import pnnl.goss.rdf.impl.ConnectivityNode;
 import pnnl.goss.rdf.impl.ConnectivityNodes;
 import pnnl.goss.rdf.impl.EscaTreeWindow;
 import pnnl.goss.rdf.impl.EscaTypes;
+import pnnl.goss.rdf.impl.Terminal;
 import pnnl.goss.rdf.server.Esca60Vocab;
 //import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
+
+
+
 
 
 import com.hp.hpl.jena.rdf.model.Property;
@@ -82,7 +87,14 @@ public class EscaMain {
 		
 	}
 	
-	
+	private static ConnectivityNodes getConnectivityNodes(EscaTypes types){
+		ConnectivityNodes nodes = new ConnectivityNodes();
+		for(EscaType t: types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
+			nodes.add((ConnectivityNode)t);
+			
+		}
+		return nodes;
+	}
 	//private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 	
 	public static void main(String[] args) throws Exception {
@@ -90,6 +102,18 @@ public class EscaMain {
 		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "esca_tree.txt");
 				
 		EscaTypes types = mainProg.getEscaTypes();
+	
+		ConnectivityNodes nodes = getConnectivityNodes(types);
+		
+		for(ConnectivityNode n: nodes){
+			log.debug("CN: " +n.getMrid());
+			for(Terminal t: n.getTerminals()){
+				log.debug("\tT: "+t.getMrid());
+				for(Entry<String, EscaType> e:t.getLinks().entrySet()){
+					log.debug("\t\tE: "+ e.getKey()+"=>"+e.getValue().getMrid());
+				}
+			}
+		}
 		
 		
 		//debugCollection(types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)); //.TERMINAL_OBJECT));
