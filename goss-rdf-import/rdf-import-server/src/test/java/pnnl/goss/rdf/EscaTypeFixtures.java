@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import pnnl.goss.rdf.impl.EscaTypeImpl;
+import pnnl.goss.rdf.impl.DefaultEscaType;
 import pnnl.goss.rdf.impl.EscaTypes;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
@@ -25,7 +25,7 @@ public class EscaTypeFixtures {
 		List<EscaType> types = new ArrayList<>();
 		
 		for(int i=0; i<mrids.length; i++){
-			EscaType t=new EscaTypeImpl(res, res.getLocalName(), mrids[i]);
+			EscaType t=new DefaultEscaType(res, res.getLocalName(), mrids[i]);
 			types.add(t);
 		}
 		

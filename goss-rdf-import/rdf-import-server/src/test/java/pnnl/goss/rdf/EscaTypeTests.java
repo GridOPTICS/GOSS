@@ -5,7 +5,7 @@ import java.util.Collections;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import pnnl.goss.rdf.impl.EscaTypeImpl;
+import pnnl.goss.rdf.impl.DefaultEscaType;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
@@ -22,7 +22,7 @@ public class EscaTypeTests {
 		when(linked.getResource()).thenReturn(res);
 		when(res.getLocalName()).thenReturn("Terminal");
 								
-		EscaType original = new EscaTypeImpl(res, "Terminal", "M1");
+		EscaType original = new DefaultEscaType(res, "Terminal", "M1");
 		original.addDirectLink("property", linked);
 		
 		verify(linked, atLeastOnce()).addRefersToMe(original);

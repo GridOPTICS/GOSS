@@ -75,6 +75,18 @@ public class EscaMain {
 		return escaTypes;
 	}
 	
+	public static void debugCollection(Collection<EscaType> escaTypes){
+		boolean first = true;
+		for(EscaType t: escaTypes){
+			if(first){
+				log.debug("Printing collection of: "+ t.getDataType());
+				first = false;
+			}
+			log.debug(t.toString());
+		}
+		
+	}
+	
 	
 	//private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 	
@@ -84,12 +96,21 @@ public class EscaMain {
 				
 		EscaTypes types = mainProg.getEscaTypes();
 		
+		debugCollection(types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)); //.TERMINAL_OBJECT));
 		
-		Network network = new Network(types);
+//		Collection<EscaType> connectivityNodes = types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
+//		
+//		for(EscaType t: connectivityNodes){
+//			log.debug("For "+t.toString());			
+//		}
+		
+		
+		/*Network network = new Network(types);
 		
 		TopologicalNodes nodes = network.getTopologicalNodes();
 		
 		System.out.println("Number Topological Nodes: "+nodes.size());
+		*/
 		
 //		for(TopologicalNode n: nodes){
 //			if(n.getConnectivityNodes().size()> 1){

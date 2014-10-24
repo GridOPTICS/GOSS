@@ -29,6 +29,7 @@ public class Network {
 	 */
 	private EscaTypes escaTypes;
 	private TopologicalNodes topoNodes = new TopologicalNodes();
+	
 
 	public Network(EscaTypes escaTypes){
 		log.debug("Creating nework with: " + escaTypes.keySet().size() + " elements.");

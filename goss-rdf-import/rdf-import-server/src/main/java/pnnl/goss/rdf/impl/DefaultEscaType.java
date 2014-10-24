@@ -27,16 +27,16 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Craig Allwardt
  *
  */
-public class EscaTypeImpl extends AbstractEscaType {
+public class DefaultEscaType extends AbstractEscaType {
 	
-	private static Logger log = LoggerFactory.getLogger(EscaTypeImpl.class);
+	private static Logger log = LoggerFactory.getLogger(DefaultEscaType.class);
 	
 		
-	public EscaTypeImpl(EscaType copy){
+	public DefaultEscaType(EscaType copy){
 		this(copy.getResource(), copy.getDataType(), copy.getMrid());
 	}
 
-	public EscaTypeImpl(Resource resource, String dataType, String mrid){
+	public DefaultEscaType(Resource resource, String dataType, String mrid){
 		this.resource = resource;
 		this.dataType = dataType;
 		this.mrid = mrid;

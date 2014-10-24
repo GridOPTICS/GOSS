@@ -13,7 +13,7 @@ import pnnl.goss.rdf.EscaType;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
- * The EscaTypes class is a container mapping a mrid string to an {@link EscaTypeImpl}
+ * The EscaTypes class is a container mapping a mrid string to an {@link DefaultEscaType}
  * object.  The map provides convinient functions to return filtered sets of 
  * data.
  * 
