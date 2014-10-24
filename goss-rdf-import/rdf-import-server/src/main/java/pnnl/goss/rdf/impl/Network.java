@@ -61,7 +61,12 @@ public class Network {
 	 */
 	private void buildTopology() throws InvalidArgumentException{
 		
+		// Load all connectivity nodes in the begining.
 		List<EscaType> unprocessedConnectivityNodes = new ArrayList<>(escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT));
+		log.debug("Starting with: "+unprocessedConnectivityNodes.size()+" Connectivity nodes to process.");
+		for(EscaType v: unprocessedConnectivityNodes){
+			log.debug(v.toString());
+		}
 		Set<EscaType> processedConnectivityNodes = new HashSet<EscaType>();
 				
 		while (!unprocessedConnectivityNodes.isEmpty()){
@@ -168,7 +173,7 @@ public class Network {
 //		}
 		//debugReferralTree(Esca60Vocab.VOLTAGELEVEL_OBJECT);
 		//debugReferralTree(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
-		debugReferralTree(Esca60Vocab.BREAKER_OBJECT);
+//		debugReferralTree(Esca60Vocab.BREAKER_OBJECT);
 		//debugSetOfLiterals(Esca60Vocab.BREAKER_OBJECT);
 		//debugSetOfLiterals(Esca60Vocab.CONFORMLOAD_OBJECT);
 		//debugSetOfLiterals(Esca60Vocab.SYNCHRONOUSMACHINE_OBJECT);
@@ -180,15 +185,18 @@ public class Network {
 	}
 	
 	private static void debugStep(String message){
-		System.out.println(message);
+		log.debug(message);
+		//System.out.println(message);
 	}
 	
 	private static void debugStep(String message, EscaType escaType){
 		if (escaType.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME) != null){
-			System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ") ["+escaType.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME)+ "]");
+			log.debug(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ") ["+escaType.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME)+ "]");
+			//System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ") ["+escaType.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME)+ "]");
 		}
 		else{
-			System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ")");
+			log.debug(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ")");
+			//System.out.println(message+" "+escaType.getDataType()+ " ("+escaType.getMrid()+ ")");
 		}
 	}
 	
