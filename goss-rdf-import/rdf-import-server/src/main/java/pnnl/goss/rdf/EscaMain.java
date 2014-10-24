@@ -5,20 +5,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.impl.ConnectivityNode;
+import pnnl.goss.rdf.impl.ConnectivityNodes;
 import pnnl.goss.rdf.impl.EscaTreeWindow;
 import pnnl.goss.rdf.impl.EscaTypes;
-import pnnl.goss.rdf.impl.Network;
-import pnnl.goss.rdf.impl.TopologicalNode;
-import pnnl.goss.rdf.impl.TopologicalNodes;
 import pnnl.goss.rdf.server.Esca60Vocab;
 //import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
 
@@ -96,7 +91,8 @@ public class EscaMain {
 				
 		EscaTypes types = mainProg.getEscaTypes();
 		
-		debugCollection(types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)); //.TERMINAL_OBJECT));
+		
+		//debugCollection(types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)); //.TERMINAL_OBJECT));
 		
 //		Collection<EscaType> connectivityNodes = types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
 //		
