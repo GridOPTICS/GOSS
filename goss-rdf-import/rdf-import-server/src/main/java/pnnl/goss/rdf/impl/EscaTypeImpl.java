@@ -288,6 +288,7 @@ public class EscaTypeImpl implements EscaType {
 		for (String s: literals.keySet()){
 			if (first){
 				sb.append(s+" => "+this.literals.get(s));
+				first= false;
 			}
 			else{
 				sb.append(", "+s+" => "+this.literals.get(s));
@@ -301,6 +302,20 @@ public class EscaTypeImpl implements EscaType {
 		for(EscaType t: directLinks.values()){
 			if (first){
 				sb.append(t.getDataType() + " => "+t.getMrid());
+				first= false;
+			}
+			else{
+				sb.append(", "+t.getDataType() + " => "+t.getMrid()); 
+			}
+		}
+		
+		first = true;
+		sb.append("\tRefers to me: ");		
+		
+		for(EscaType t: refersToMe){
+			if (first){
+				sb.append(t.getDataType() + " => "+t.getMrid());
+				first= false;
 			}
 			else{
 				sb.append(", "+t.getDataType() + " => "+t.getMrid()); 
