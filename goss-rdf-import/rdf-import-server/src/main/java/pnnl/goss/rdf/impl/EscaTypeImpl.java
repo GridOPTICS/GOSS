@@ -282,16 +282,29 @@ public class EscaTypeImpl implements EscaType {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("------------------------------------------------\n");
-		sb.append(this.dataType + " ("+this.mrid+")\n");
+		sb.append("<EscaType: "+dataType+ ">"+mrid+"\n");
+		sb.append("\tLiterals: ");
+		boolean first = true;
 		for (String s: literals.keySet()){
-			sb.append("\tproperty: "+s+" => "+this.literals.get(s)+"\n");
+			if (first){
+				sb.append(s+" => "+this.literals.get(s));
+			}
+			else{
+				sb.append(", "+s+" => "+this.literals.get(s));
+			}
 		}
-		sb.append("------------------------------------------------\n\n");
+		sb.append("\n");
+		
+		first = true;
+		sb.append("\tDirect Links: ");		
 		
 		for(EscaType t: directLinks.values()){
-			sb.append(this.dataType + " ("+this.mrid+") direct connect to\n");
-			sb.append(t);
+			if (first){
+				sb.append(t.getDataType() + " => "+t.getMrid());
+			}
+			else{
+				sb.append(", "+t.getDataType() + " => "+t.getMrid()); 
+			}
 		}
 		
 		return sb.toString();
