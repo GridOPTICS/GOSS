@@ -1,6 +1,5 @@
 package pnnl.goss.rdf.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +12,7 @@ import pnnl.goss.rdf.EscaType;
 import pnnl.goss.rdf.InvalidArgumentException;
 import pnnl.goss.rdf.server.Esca60Vocab;
 
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
@@ -45,15 +45,20 @@ public class Network {
 	 */
 	private ConnectivityNodes processedConnectivityNodes = new ConnectivityNodes();
 	
+	
+	private ProcessableItems processableItems = new ProcessableItems();
+	
 
 	public Network(EscaTypes escaTypes){
 		log.debug("Creating nework with: " + escaTypes.keySet().size() + " elements.");
 		this.escaTypes = escaTypes;
 		try {
 			
+			// Preload connectivity nodes and processable items with nodes and terminals.
 			for(EscaType t: escaTypes.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
-				connectivityNodes.add((ConnectivityNode)t);
-				unProcessedConnectivityNodes.add((ConnectivityNode)t);
+				ConnectivityNode cn = (ConnectivityNode)t;
+				connectivityNodes.add(cn);
+				processableItems.add(cn);			
 			}
 			
 			this.buildTopology();
@@ -83,87 +88,115 @@ public class Network {
 	 */
 	private void buildTopology() throws InvalidArgumentException{
 		
-				
-		while (!unProcessedConnectivityNodes.isEmpty()){
+		Resource terminalRes = Esca60Vocab.TERMINAL_OBJECT;
+		Resource connectivityNodeRes = Esca60Vocab.CONNECTIVITYNODE_OBJECT;
+		Resource breakerRes = Esca60Vocab.BREAKER_OBJECT;
+		
+		Property switchOpenProp = Esca60Vocab.SWITCH_NORMALOPEN;
+		
+		
+		while (processableItems.hasNextUnproccessed(connectivityNodeRes)){
+			
+			// Grab an unprocessed connectivity node.
+			ConnectivityNode processingNode = (ConnectivityNode)processableItems.nextUnProcessed(connectivityNodeRes);
+			debugStep("Processing ",  processingNode);
 			
 			// Define a new node/bus
 			TopologicalNode topologicalNode = new TopologicalNode();
 			topoNodes.add(topologicalNode);
 			topologicalNode.setIdentifier("T"+topoNodes.size());
-			debugStep("--- Added new topological node");
-			
-			// Get the first connectivity node that hasn't been processed.
-			ConnectivityNode connectivityNode = unProcessedConnectivityNodes.iterator().next();
-			debugStep("Processing connectivity Node",  connectivityNode);
-								
+			debugStep("Creating new topology node " + topologicalNode.getIdentifier());
+
 			// Add the connectivity node to the topological node.
-			topologicalNode.addConnectivityNode(connectivityNode);
-			processedConnectivityNodes.add(connectivityNode);
+			topologicalNode.addConnectivityNode(processingNode);
 			
-			// Build list of connected terminals to search over.
-			Terminals unprocessedTerminals = connectivityNode.getTerminals(); //new ArrayList<>(connectivityNode.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT));
-			debugStep("There are "+unprocessedTerminals.size() + " terminals for connectivity node "+connectivityNode.toString());
-			Set<EscaType> processedTerminals = new HashSet<EscaType>();
+			// Add all of the terminals connected to the currently processing node.
+			processableItems.addItems(processingNode.getTerminals().toEscaTypeCollection());
 			
-			while(!unprocessedTerminals.isEmpty()){
-				// Get the first terminal out of the list.
-				Terminal terminal = (Terminal)unprocessedTerminals.iterator().next();
-				unprocessedTerminals.remove(0);
-				processedTerminals.add(terminal);
-				debugStep("Processing terminal",  terminal);
+			while(processableItems.hasNextUnproccessed(terminalRes)) {
+				// Get a terminal to process
+				Terminal processingTerminal = (Terminal)processableItems.nextUnProcessed(terminalRes);
+				debugStep("Processing ",  processingTerminal);
 				
 				// Equipment associated with the terminal.
-				EscaType equipment = terminal.getEquipment(); //.getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
+				Collection<EscaType> equipment = processingTerminal.getEquipment(); //.getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
 				
-				if (equipment == null){
-					equipment = terminal.getLink(Esca60Vocab.TERMINAL_CONNECTIVITYNODE);
-					if (equipment == null){
-						System.out.println("No equipment associated with terminal: "+ terminal.getMrid());
-						continue;
-					}
-				}
-				
-				// Check to see if we have a breaker.
-				if (equipment.isResourceType(Esca60Vocab.BREAKER_OBJECT)){
-					debugStep("Breaker found", equipment);
-					// If the breaker is closed
-					if (!equipment.getLiteralValue(Esca60Vocab.SWITCH_NORMALOPEN).getBoolean()){
-						debugStep("Breaker was closed", equipment);
-						Collection<EscaType> col = equipment.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT);
-						for(EscaType e:col){
-							if (!processedTerminals.contains(e)){
-								debugStep("Adding other side of breaker", e);
-								unprocessedTerminals.add((Terminal)e);
+				for(EscaType eq: equipment){
+					if (eq.isResourceType(breakerRes)){
+						debugStep("Found Breaker: <"+eq.getMrid()+">");
+						
+						// Switch closed then add the terminals on the other side.
+						if (!eq.getLiteralValue(switchOpenProp).getBoolean()){
+							for (EscaType t: eq.getRefersToMe(terminalRes)){
+								if (t != eq){
+									processableItems.add(t);
+								}
 							}
 						}
 					}
-					else{
-						debugStep("Breaker was open", equipment);
+					else if(eq.isResourceType(connectivityNodeRes)){
+						ConnectivityNode node = (ConnectivityNode)eq;
+						processableItems.setProcessed(node);
+						processableItems.addItems(node.getTerminals().toEscaTypeCollection());
+						topologicalNode.addConnectivityNode(node);
 					}
+					debugStep("Equipment: ", eq);
 				}
-				else if (equipment.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
-					if(processedConnectivityNodes.contains(equipment)){
-						debugStep("Something might be wrong here because resource has already been processed.", equipment);
-					}
-					else{
-						debugStep("Adding connectivity node "+ equipment.toString()+ " to toplogical node " + topologicalNode.toString());
-						topologicalNode.addConnectivityNode(equipment);
-						unProcessedConnectivityNodes.remove(equipment);
-						processedConnectivityNodes.add((ConnectivityNode)equipment);
-						
-						for(EscaType e: equipment.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
-							debugStep("Adding terminal to unprocessed", e);
-							unprocessedTerminals.add((Terminal)e);
-						}
-					}
+				
+				processableItems.setProcessed(processingTerminal);
 					
-				}	
-				else{
-					debugStep("Unmatched equipment type", equipment);
-				}
-			}			
+//					if (eq == null){
+//						eq = terminal.getLink(Esca60Vocab.TERMINAL_CONNECTIVITYNODE);
+//						if (equipment == null){
+//							System.out.println("No equipment associated with terminal: "+ terminal.getMrid());
+//							continue;
+//						}
+//					}
+//					
+//					// Check to see if we have a breaker.
+//					if (eq.isResourceType(Esca60Vocab.BREAKER_OBJECT)){
+//						debugStep("Breaker found", eq);
+//						// If the breaker is closed
+//						if (!eq.getLiteralValue(Esca60Vocab.SWITCH_NORMALOPEN).getBoolean()){
+//							debugStep("Breaker was closed", eq);
+//							Collection<EscaType> col = eq.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT);
+//							for(EscaType e:col){
+//								if (!processedTerminals.contains(e)){
+//									debugStep("Adding other side of breaker", e);
+//									unprocessedTerminals.add((Terminal)e);
+//								}
+//							}
+//						}
+//						else{
+//							debugStep("Breaker was open", eq);
+//						}
+//					}
+//					else if (eq.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
+//						if(processedConnectivityNodes.contains(equipment)){
+//							debugStep("Something might be wrong here because resource has already been processed.", eq);
+//						}
+//						else{
+//							debugStep("Adding connectivity node "+ equipment.toString()+ " to toplogical node " + topologicalNode.toString());
+//							topologicalNode.addConnectivityNode(eq);
+//							unProcessedConnectivityNodes.remove(eq);
+//							processedConnectivityNodes.add((ConnectivityNode)equipment);
+//							
+//							for(EscaType e: eq.getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
+//								debugStep("Adding terminal to unprocessed", e);
+//								unprocessedTerminals.add((Terminal)e);
+//							}
+//						}
+//						
+//					}	
+//					else{
+//						debugStep("Unmatched equipment type", eq);
+//					}
+//				}
+				
+				
+			}
 			
-			processedConnectivityNodes.add(connectivityNode);
+			processableItems.setProcessed(processingNode);
 		}
 		
 		
