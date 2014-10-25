@@ -25,6 +25,11 @@ public class ConnectivityNode extends AbstractEscaType {
 		return baseVoltageDbl;
 	}
 	
+	public EscaType getVoltageLevelRes(){
+		setupProperties();
+		return voltageLevel;
+	}
+	
 	private void setupProperties(){
 		if(baseVoltage == null){
 			for(EscaType t: getDirectLinks()){

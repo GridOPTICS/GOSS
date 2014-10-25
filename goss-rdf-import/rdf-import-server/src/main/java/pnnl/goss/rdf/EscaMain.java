@@ -118,6 +118,20 @@ public class EscaMain {
 			
 			for (ConnectivityNode cn: n.getConnectivityNodes()){
 				log.debug("\tCN Voltage: "+ cn.getBaseVoltage()+ " <"+cn.getMrid()+"> "+cn.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
+				
+				EscaType vl = cn.getVoltageLevelRes();
+				if (vl == null){
+					log.debug("\t\tVoltage level is null!");
+					continue;
+				}
+				log.debug("\t\tVL <"+vl.getMrid()+"> Direct Links");
+				for(EscaType esca: vl.getDirectLinks()){
+					log.debug("\t\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+				}
+				log.debug("\t\tVL <"+vl.getMrid()+"> Refers to me");
+				for(EscaType esca: vl.getRefersToMe()){
+					log.debug("\t\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+				}
 			}			
 		}
 		
