@@ -162,9 +162,6 @@ public class AbstractEscaType implements EscaType {
 	 */
 	@Override
 	public Literal getLiteralValue(String property){
-		if (property.contains(this.dataType)){
-			property = property.substring(this.dataType.length()+1);
-		}
 		return literals.get(property);
 	}
 	
