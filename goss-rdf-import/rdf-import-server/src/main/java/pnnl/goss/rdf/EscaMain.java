@@ -1,22 +1,53 @@
 package pnnl.goss.rdf;
 
-import java.util.List;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.powergrid.topology.IdentifiedObject;
+import pnnl.goss.powergrid.topology.NodeBreakerDataType;
+import pnnl.goss.powergrid.topology.Substation;
+import pnnl.goss.powergrid.topology.nodebreaker.ACLineSegment;
+import pnnl.goss.powergrid.topology.nodebreaker.Accumulator;
+import pnnl.goss.powergrid.topology.nodebreaker.Analog;
+import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimit;
+import pnnl.goss.powergrid.topology.nodebreaker.AnalogLimitSet;
+import pnnl.goss.powergrid.topology.nodebreaker.BaseVoltage;
+import pnnl.goss.powergrid.topology.nodebreaker.Breaker;
+import pnnl.goss.powergrid.topology.nodebreaker.BusBarSection;
+import pnnl.goss.powergrid.topology.nodebreaker.ConformLoad;
+import pnnl.goss.powergrid.topology.nodebreaker.ConformLoadGroup;
+import pnnl.goss.powergrid.topology.nodebreaker.ConformLoadSchedule;
+import pnnl.goss.powergrid.topology.nodebreaker.ConnectivityNode;
+import pnnl.goss.powergrid.topology.nodebreaker.CurveData;
+import pnnl.goss.powergrid.topology.nodebreaker.Discrete;
+import pnnl.goss.powergrid.topology.nodebreaker.EquipmentContainer;
+import pnnl.goss.powergrid.topology.nodebreaker.GeographicalRegion;
+import pnnl.goss.powergrid.topology.nodebreaker.Line;
+import pnnl.goss.powergrid.topology.nodebreaker.LoadBreakSwitch;
+import pnnl.goss.powergrid.topology.nodebreaker.MeasurementType;
+import pnnl.goss.powergrid.topology.nodebreaker.PowerTransformer;
+import pnnl.goss.powergrid.topology.nodebreaker.RegularTimePoint;
+import pnnl.goss.powergrid.topology.nodebreaker.RegulationSchedule;
+import pnnl.goss.powergrid.topology.nodebreaker.SeriesCompensator;
+import pnnl.goss.powergrid.topology.nodebreaker.ShuntCompensator;
+import pnnl.goss.powergrid.topology.nodebreaker.SubGeographicalRegion;
+import pnnl.goss.powergrid.topology.nodebreaker.SynchronousMachine;
+import pnnl.goss.powergrid.topology.nodebreaker.TapChanger;
+import pnnl.goss.powergrid.topology.nodebreaker.Terminal;
+import pnnl.goss.powergrid.topology.nodebreaker.VoltageLevel;
 import pnnl.goss.rdf.server.Esca60Vocab;
-//import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
-
+import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -35,195 +66,18 @@ public class EscaMain {
 	private static Logger log = LoggerFactory.getLogger(EscaMain.class);
 	
 	/**
+	 * A mapping of all of the identified resources that have been managed by
+	 * the system.
+	 */
+	private static Map<String, NodeBreakerDataType> identifiedMap = new HashMap<>();
+	
+	/**
 	 * A loaded mapping from mrid to escatype which is loaded from the cim model
 	 * file.
 	 */
-	private Map<String, EscaType> typeMap = null;
+	private static Map<String, EscaType> typeMap = null;
 	
-	private EscaMain(String inputFile, boolean isCim, String outputFile) throws Exception{
-		
-		EscaTreeWindow window = new EscaTreeWindow(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
-		// Load data from the rdf into memory.
-		window.loadData();
-		// Build an mrid->escatype mapping for referencing all of the subjects by mrid
-		// in the system.
-		window.loadTypeMap();
-		
-		typeMap = window.getEscaTypeMap();		
-	}
-	
-	private Collection<EscaType> getObjectType(Resource subject){
-		List<EscaType> collection = new ArrayList<>();
-		
-		for(EscaType t: typeMap.values()){
-			if (t.getDataType().equals(subject.getLocalName())){
-				collection.add(t);
-			}
-		}
-		
-		return Collections.unmodifiableList(collection);
-	}
-	
-	private void printObjectType(Resource subject){
-		for(EscaType t: typeMap.values()){
-			if (t.getDataType().equals(subject.getLocalName())){
-				System.out.println(t);
-			}
-		}
-	}
-	
-	private EscaType getTypeByMrid(String mrid){
-		return typeMap.get(mrid);
-	}
-	
-	
-	//private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
-	
-	public static void main(String[] args) throws Exception {
-		
-		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
-		
-		int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
-		int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
-		int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
-				
-		System.out.println("Breaker count: "+ terminalCount);
-		System.out.println("Terminal count: "+ terminalCount);
-		System.out.println("Connectivity Node count: "+ connectivityCount);
-		
-		String breakerMrid = "_5273505719686324070";
-		EscaType breaker = mainProg.getTypeByMrid(breakerMrid);
-		
-		System.out.println("Breaker is connected to: ");
-		System.out.println(breaker);
-//		for(EscaType t:breaker.getLinks().values()){
-//			System.out.println(t);
-//			for(String property: t.getLiterals().keySet()){
-//				System.out.println("p: "+property+" v: "+ t.getLiterals().get(property));
-//			}
-//		}
-		
-		//mainProg.printObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
-		
-		//setBufferedOut();
-		if (bufferedOut){
-			outStream.flush();
-		}
-//		System.out.println(populateDataType(GeographicalRegion.class, "GeographicalRegion"));
-//		System.out.println(populateDataType(SubGeographicalRegion.class, "SubGeographicalRegion"));
-//		
-//		
-//		System.out.println(populateDataType(Accumulator.class, "Accumulator"));
-//		System.out.println(populateDataType(ACLineSegment.class, "ACLineSegment"));
-//		System.out.println(populateDataType(Analog.class, "Analog"));
-//		System.out.println(populateDataType(AnalogLimit.class, "AnalogLimit"));
-//		System.out.println(populateDataType(AnalogLimitSet.class, "AnalogLimitSet"));
-//		
-//		System.out.println(populateDataType(BaseVoltage.class, "BaseVoltage"));
-//		System.out.println(populateDataType(Breaker.class, "Breaker"));
-//		System.out.println(populateDataType(BusBarSection.class, "BusbarSection"));
-//		
-//		System.out.println(populateDataType(ConformLoad.class, "ConformLoad"));
-//		System.out.println(populateDataType(ConformLoadGroup.class, "ConformLoadGroup"));
-//		System.out.println(populateDataType(ConformLoadSchedule.class, "ConformLoadSchedule"));
-//		System.out.println(populateDataType(ConnectivityNode.class, "ConnectivityNode"));
-//		System.out.println(populateDataType(CurveData.class, "CurveData"));
-//		
-//		System.out.println(populateDataType(Discrete.class, "Discrete"));
-//		
-//		System.out.println(populateDataType(Line.class, "Line"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(LoadBreakSwitch.class, "LoadBreakSwitch"));
-//		
-//		System.out.println(populateDataType(MeasurementType.class, "MeasurementType"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(PowerTransformer.class, "PowerTransformer"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(RegularTimePoint.class, "RegularTimePoint"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(RegulationSchedule.class, "RegulationSchedule"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(SeriesCompensator.class, "SeriesCompensator"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(ShuntCompensator.class, "ShuntCompensator"));
-//		
-//		System.out.println(populateDataType(Substation.class, "Substation"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(SynchronousMachine.class, "SynchronousMachine"));
-//		
-//		// TODO
-//		System.out.println(populateDataType(TapChanger.class, "TapChanger"));
-//		
-//		System.out.println(populateDataType(Terminal.class, "Terminal"));
-//		System.out.println(populateDataType(VoltageLevel.class, "VoltageLevel"));
-//		
-//		// Add parent child relationships.
-//		addRelation(SubGeographicalRegion.class, GeographicalRegion.class, "SubGeographicalRegion", "SubGeographicalRegion.Region");
-//		addRelation(Line.class, SubGeographicalRegion.class, "Line", "Line.Region");
-//		addRelation(VoltageLevel.class, BaseVoltage.class, "VoltageLevel", "VoltageLevel.BaseVoltage");
-//		
-//		addSingularRelation(ACLineSegment.class, EquipmentContainer.class, "ACLineSegment", "Equipment.MemberOf_EquipmentContainer", 
-//				"setMemberOfEquipmentContainer");
-//		
-//		addSingularRelation(Discrete.class, MeasurementType.class, "Discrete", "Measurement.MeasurementType",	
-//				"setMeasurementType");
-//		
-//		
-//		// One big write.
-//		storeData();
-		System.out.println("Import Complete!");
-				 
-		
-		
-//		
-//		for(String k: typeMap.keySet()){
-//			EscaType type = typeMap.get(k);
-//			availableTypes.add(type.getDataType());
-//		}
-//		
-//		for(String k: availableTypes){
-//			System.out.println(k);
-//		}
-		
-		//if(true)return;
-		
-//		for(String key:typeMap.keySet()){
-//			System.out.println(typeMap.get(key).getDataType());
-//		}
-		// This is puzzling the way I have configured this.
-		//window.loadSubjectTree("_7138742088364182230");
-		
-		//window.invertFromLevel(Esca60Vocab.SUBSTATION_OBJECT);
-		// A Substation
-		//BuildPowergrid grid = new BuildPowergrid();
-		//grid.buildPowergrid(window.getEscaTypeMap(), window.getEscaTypeSubstationMap());
-		
-		// A Substation
-		//window.printInvertedTree("_7138742088364182230");
-
-		
-		// A breaker
-		//window.printInvertedTree("_6086371616589253666");
-		// A VoltageLevel
-		//window.printInvertedTree("_7385660062756494042");
-		
-		
-		//window.printTree("_7138742088364182230");
-		// A Terminal
-		//window.printTree("_2463136265274055557");
-		
-		//window.printSubstations();
-		
-		//window.printTerminalTree("_1859399559611018070");
-		//EscaTreeWindow window = new EscaTreeWindow("C:\\scratch\\esca_tree.txt", false, "C:\\scratch\\esca_tree_out.txt");
-	}
+	private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 	
 	private static void setBufferedOut() throws FileNotFoundException{
 		bufferedOut = true;
@@ -235,40 +89,40 @@ public class EscaMain {
 		System.setOut(new PrintStream(outStream));
 	}
 	
-//	private static void populateIdentityObjects(EscaType escaType, IdentifiedObject ident){
-//		Resource resource = escaType.getResource();
-//		ident.setMrid(escaType.getMrid());
-//		//ident.setDataType(escaType.getDataType());
-//		
-//		Statement stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME);
-//		if (stmt == null){
-//			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME + " was null!");
-//		}
-//		else{
-//			ident.setAlias(stmt.getString());
-//		}
-//		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_NAME);
-//		if (stmt == null){
-//			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_NAME + " was null!");
-//		}
-//		else{
-//			ident.setName(stmt.getString());
-//		}
-//		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME);
-//		if (stmt == null){
-//			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME + " was null!");
-//		}
-//		else{
-//			ident.setPath(stmt.getString());
-//		}
-//		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION);
-//		if (stmt == null){
-//			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION + " was null!");
-//		}
-//		else{
-//			ident.setDescription(stmt.getString());
-//		}		
-//	}
+	private static void populateIdentityObjects(EscaType escaType, IdentifiedObject ident){
+		Resource resource = escaType.getResource();
+		ident.setMrid(escaType.getMrid());
+		//ident.setDataType(escaType.getDataType());
+		
+		Statement stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME);
+		if (stmt == null){
+			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_ALIASNAME + " was null!");
+		}
+		else{
+			ident.setAlias(stmt.getString());
+		}
+		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_NAME);
+		if (stmt == null){
+			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_NAME + " was null!");
+		}
+		else{
+			ident.setName(stmt.getString());
+		}
+		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME);
+		if (stmt == null){
+			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME + " was null!");
+		}
+		else{
+			ident.setPath(stmt.getString());
+		}
+		stmt = resource.getProperty(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION);
+		if (stmt == null){
+			//log.warn(Esca60Vocab.IDENTIFIEDOBJECT_DESCRIPTION + " was null!");
+		}
+		else{
+			ident.setDescription(stmt.getString());
+		}		
+	}
 	
 	private static String getPropertyString(Resource resource, Property property){
 		if (resource.getProperty(property) != null){
@@ -634,258 +488,383 @@ public class EscaMain {
 //		return identified;
 //	}
 	
-//	public static SynchronousMachine createSynchronousMachine(EscaType escaType){
-//		SynchronousMachine s = new SynchronousMachine();
-//		populateIdentityObjects(escaType, s);
-//		return s;
-//	}
-//	
-//	public static Substation createSubstation(EscaType escaType){
-//		Substation s = new Substation();
-//		populateIdentityObjects(escaType, s);
-//		return s;
-//	}
-//	
-//	public static Terminal createTerminal(EscaType escaType){
-//		Terminal t = new Terminal();
-//		populateIdentityObjects(escaType, t);
-//		return t;
-//	}
-//	
-//	public static VoltageLevel createVoltageLevel(EscaType escaType){
-//		VoltageLevel e = new VoltageLevel();
-//		populateIdentityObjects(escaType, e);		
-//		return e;
-//	}
-//	
-//	public static GeographicalRegion createGeographicRegion(EscaType escaType){
-//		GeographicalRegion g = new GeographicalRegion();
-//		populateIdentityObjects(escaType, g);
-//		return g;
-//	}
-//	
-//	public static void populateGeographicRegions(){
-//		for (String d : typeMap.keySet()){
-//			EscaType escaType = typeMap.get(d);
-//			String dataType = escaType.getDataType();
-//			NodeBreakerDataType entity = null;
-//			
-//			if ("GeographicalRegion".equals(dataType)){
-//				entity = createGeographicRegion(escaType);
-//			}
-//			
-//			if(entity != null){
-//				identifiedMap.put(((IdentifiedObject)entity).getMrid(), entity);
-//				nodeBreakerDao.persist(entity);
-//			}
-//		}
-//	}
-//		
-//	public static String populateDataType(Class klass, String escaDataType){
-//		int countAdded = 0;
-//		for (String d : typeMap.keySet()){
-//			EscaType escaType = typeMap.get(d);
-//			String dataType = escaType.getDataType();
-//			NodeBreakerDataType entity = null;
-//			
-//			if (escaDataType.equals(dataType)){
-//				try {
-//					entity = (NodeBreakerDataType)klass.newInstance();
-//					populateIdentityObjects(escaType, (IdentifiedObject)entity);
-//				} catch (InstantiationException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IllegalAccessException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}// createGeographicRegion(escaType);
-//			}
-//			
-//			if(entity != null){
-//				identifiedMap.put(((IdentifiedObject)entity).getMrid(), entity);
-//				countAdded+=1;
-//			}
-//		}
-//		
-//		return "Added: "+countAdded+ " " + escaDataType;
-//	}
-//	
-//	public static void printIdentifiedMap(){
-//		for (String d : identifiedMap.keySet()){
-//			NodeBreakerDataType obj = identifiedMap.get(d);
-//			System.out.println("Type: "+obj.getDataType()+"\n\t"+obj.toString());
-//		}
-//	}
-//	
-//		
-//	public static void addToParent(String parentMrid, String methodName, Object objectToAdd){
-//		
-//		Object parent = identifiedMap.get(parentMrid);
-//		try {
-//			Method method = parent.getClass().getMethod(methodName, objectToAdd.getClass());
-//			method.invoke(method,  objectToAdd);
-//		} catch (NoSuchMethodException | SecurityException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalArgumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InvocationTargetException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	/**
-//	 * Call a method on the passed mrid referenced objects.  The sinkMrid object will
-//	 * be looked up from the  map.  The sink object will have its methodName called.
-//	 * The methodName will be passed the sourceMrid's object.  
-//	 * 
-//	 * In addition if the source's main interface is not the interface that is
-//	 * used as the parameter then the code will search the other interfaces before
-//	 * raising an error.
-//	 * 
-//	 * @param sinkMrid
-//	 * @param sourceMrid
-//	 * @param methodName
-//	 * @throws InvalidArgumentException 
-//	 */
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	public static void callMethod(String sinkMrid, String sourceMrid, String methodName) throws InvalidArgumentException{
-//		Object sinkObj = identifiedMap.get(sinkMrid);
-//		Object sourceObj = identifiedMap.get(sourceMrid);
-//		
-//		if (sinkObj == null){
-//			throw new InvalidArgumentException("sinkMrid not valid. ("+sinkMrid+")");		
-//		}
-//		
-//		if (sourceObj == null){
-//			throw new InvalidArgumentException("sourceMrid not valid. ("+sourceMrid+")");		
-//		}
-//		Class sinkClass = sinkObj.getClass();
-//		Class sourceClass = sourceObj.getClass();
-//		Method method=null;
-//		try {
-//			method = sinkClass.getMethod(methodName, sourceClass);
-//			method.invoke(sinkObj, sourceObj);
-//		}
-//		catch (NoSuchMethodException e){
-//			boolean success = false;
-//			for(Class c : sourceClass.getInterfaces()){
-//				try{
-//					sourceClass = c;
-//					method = sinkClass.getMethod(methodName, sourceClass);
-//					method.invoke(sinkObj, sourceObj);
-//					success = true;
-//				}
-//				catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-//					
-//				}
-//				if (success){
-//					break;
-//				}
-//			}			
-//			if (!success){
-//				System.out.println("No method takes any of the source interfaces as an argument.");
-//				e.printStackTrace();
-//			}
-//		}
-//		catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	/**
-//	 * Call a on sink and pass it an instance of the sourceClass.
-//	 * 
-//	 * @param sinkClass
-//	 * @param sourceClass
-//	 * @param escaType
-//	 * @param escaPropertyName
-//	 * @param methodName
-//	 */
-//	@SuppressWarnings("rawtypes")
-//	public static void addSingularRelation(Class sinkClass, Class sourceClass, 
-//			String escaType, String escaPropertyName, String methodName){
-//		
-//		for(EscaType t: typeMap.values()){
-//			// escaType is the datatype associated with the child (nodebreaker model) class
-//			// and the escaPropertyName should be a reference to the parent (nodebreaker model)
-//			// object.
-//			if (t.getDataType().equals(escaType)){
-//				
-//				String sinkMrid = t.getMrid();
-//				String sourceMrid = getPropertyString(t.getResource(), escaPropertyName);
-//				
-//				try {
-//					callMethod(sinkMrid, sourceMrid, methodName);
-//				} catch (InvalidArgumentException e) {
-//					System.err.println(e.getMessage());
-//				}			
-//			}
-//		}	
-//	}
-//	
-//	
-		
-//	/**
-//	 * Add relations from and to parent and child using the passed child escaType and 
-//	 * escaPropertyName as the linking mechanism.
-//	 * 
-//	 * The child class is expected to have a set<parenttype> method.
-//	 * The parent class is expected to have an add<childtype> method.
-//	 * 
-//	 * The child and parent class types are determined by class.getSimpleType().
-//	 * 
-//	 * @param child
-//	 * @param parent
-//	 * @param escaType
-//	 * @param escaPropertyName
-//	 */
-//	@SuppressWarnings("rawtypes")
-//	public static void addRelation(Class child, Class parent, String escaType, String escaPropertyName){
-//				
-//		for(EscaType t: typeMap.values()){
-//			// escaType is the datatype associated with the child (nodebreaker model) class
-//			// and the escaPropertyName should be a reference to the parent (nodebreaker model)
-//			// object.
-//			if (t.getDataType().equals(escaType)){
-//				
-//				String mridChild = t.getMrid();
-//				String mridParent = getPropertyString(t.getResource(), escaPropertyName);
-//				
-//				
-//				// Assumption is that child will have a set<parentclassname> method and the
-//				// child will have an add<parentclassname> method.
-//				try {
-//					callMethod(mridChild, mridParent, "set"+parent.getSimpleName());
-//				} catch (InvalidArgumentException e) {
-//					System.err.println(e.getMessage());
-//				}
-//				try {
-//					callMethod(mridParent, mridChild, "add"+child.getSimpleName());
-//				} catch (InvalidArgumentException e) {
-//					System.err.println(e.getMessage());
-//				}
-//				
-//			}
-//		}
-//	}
-//	
-//	public static void storeData(){
-//		for(NodeBreakerDataType obj: identifiedMap.values()){
-//			try{
-//				nodeBreakerDao.persist(obj);
-//			}
-//			catch (Exception e){
-//				System.err.println("couldn't save: "+obj.getClass().getSimpleName()+" "+obj.toString());
-//			}
-//		}
-//	}
-
+	public static SynchronousMachine createSynchronousMachine(EscaType escaType){
+		SynchronousMachine s = new SynchronousMachine();
+		populateIdentityObjects(escaType, s);
+		return s;
+	}
 	
+	public static Substation createSubstation(EscaType escaType){
+		Substation s = new Substation();
+		populateIdentityObjects(escaType, s);
+		return s;
+	}
+	
+	public static Terminal createTerminal(EscaType escaType){
+		Terminal t = new Terminal();
+		populateIdentityObjects(escaType, t);
+		return t;
+	}
+	
+	public static VoltageLevel createVoltageLevel(EscaType escaType){
+		VoltageLevel e = new VoltageLevel();
+		populateIdentityObjects(escaType, e);		
+		return e;
+	}
+	
+	public static GeographicalRegion createGeographicRegion(EscaType escaType){
+		GeographicalRegion g = new GeographicalRegion();
+		populateIdentityObjects(escaType, g);
+		return g;
+	}
+	
+	public static void populateGeographicRegions(){
+		for (String d : typeMap.keySet()){
+			EscaType escaType = typeMap.get(d);
+			String dataType = escaType.getDataType();
+			NodeBreakerDataType entity = null;
+			
+			if ("GeographicalRegion".equals(dataType)){
+				entity = createGeographicRegion(escaType);
+			}
+			
+			if(entity != null){
+				identifiedMap.put(((IdentifiedObject)entity).getMrid(), entity);
+				nodeBreakerDao.persist(entity);
+			}
+		}
+	}
+		
+	public static String populateDataType(Class klass, String escaDataType){
+		int countAdded = 0;
+		for (String d : typeMap.keySet()){
+			EscaType escaType = typeMap.get(d);
+			String dataType = escaType.getDataType();
+			NodeBreakerDataType entity = null;
+			
+			if (escaDataType.equals(dataType)){
+				try {
+					entity = (NodeBreakerDataType)klass.newInstance();
+					populateIdentityObjects(escaType, (IdentifiedObject)entity);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}// createGeographicRegion(escaType);
+			}
+			
+			if(entity != null){
+				identifiedMap.put(((IdentifiedObject)entity).getMrid(), entity);
+				countAdded+=1;
+			}
+		}
+		
+		return "Added: "+countAdded+ " " + escaDataType;
+	}
+	
+	public static void printIdentifiedMap(){
+		for (String d : identifiedMap.keySet()){
+			NodeBreakerDataType obj = identifiedMap.get(d);
+			System.out.println("Type: "+obj.getDataType()+"\n\t"+obj.toString());
+		}
+	}
+	
+		
+	public static void addToParent(String parentMrid, String methodName, Object objectToAdd){
+		
+		Object parent = identifiedMap.get(parentMrid);
+		try {
+			Method method = parent.getClass().getMethod(methodName, objectToAdd.getClass());
+			method.invoke(method,  objectToAdd);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Call a method on the passed mrid referenced objects.  The sinkMrid object will
+	 * be looked up from the  map.  The sink object will have its methodName called.
+	 * The methodName will be passed the sourceMrid's object.  
+	 * 
+	 * In addition if the source's main interface is not the interface that is
+	 * used as the parameter then the code will search the other interfaces before
+	 * raising an error.
+	 * 
+	 * @param sinkMrid
+	 * @param sourceMrid
+	 * @param methodName
+	 * @throws InvalidArgumentException 
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void callMethod(String sinkMrid, String sourceMrid, String methodName) throws InvalidArgumentException{
+		Object sinkObj = identifiedMap.get(sinkMrid);
+		Object sourceObj = identifiedMap.get(sourceMrid);
+		
+		if (sinkObj == null){
+			throw new InvalidArgumentException("sinkMrid not valid. ("+sinkMrid+")");		
+		}
+		
+		if (sourceObj == null){
+			throw new InvalidArgumentException("sourceMrid not valid. ("+sourceMrid+")");		
+		}
+		Class sinkClass = sinkObj.getClass();
+		Class sourceClass = sourceObj.getClass();
+		Method method=null;
+		try {
+			method = sinkClass.getMethod(methodName, sourceClass);
+			method.invoke(sinkObj, sourceObj);
+		}
+		catch (NoSuchMethodException e){
+			boolean success = false;
+			for(Class c : sourceClass.getInterfaces()){
+				try{
+					sourceClass = c;
+					method = sinkClass.getMethod(methodName, sourceClass);
+					method.invoke(sinkObj, sourceObj);
+					success = true;
+				}
+				catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+					
+				}
+				if (success){
+					break;
+				}
+			}			
+			if (!success){
+				System.out.println("No method takes any of the source interfaces as an argument.");
+				e.printStackTrace();
+			}
+		}
+		catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Call a on sink and pass it an instance of the sourceClass.
+	 * 
+	 * @param sinkClass
+	 * @param sourceClass
+	 * @param escaType
+	 * @param escaPropertyName
+	 * @param methodName
+	 */
+	@SuppressWarnings("rawtypes")
+	public static void addSingularRelation(Class sinkClass, Class sourceClass, 
+			String escaType, String escaPropertyName, String methodName){
+		
+		for(EscaType t: typeMap.values()){
+			// escaType is the datatype associated with the child (nodebreaker model) class
+			// and the escaPropertyName should be a reference to the parent (nodebreaker model)
+			// object.
+			if (t.getDataType().equals(escaType)){
+				
+				String sinkMrid = t.getMrid();
+				String sourceMrid = getPropertyString(t.getResource(), escaPropertyName);
+				
+				try {
+					callMethod(sinkMrid, sourceMrid, methodName);
+				} catch (InvalidArgumentException e) {
+					System.err.println(e.getMessage());
+				}			
+			}
+		}	
+	}
+	
+	
+		
+	/**
+	 * Add relations from and to parent and child using the passed child escaType and 
+	 * escaPropertyName as the linking mechanism.
+	 * 
+	 * The child class is expected to have a set<parenttype> method.
+	 * The parent class is expected to have an add<childtype> method.
+	 * 
+	 * The child and parent class types are determined by class.getSimpleType().
+	 * 
+	 * @param child
+	 * @param parent
+	 * @param escaType
+	 * @param escaPropertyName
+	 */
+	@SuppressWarnings("rawtypes")
+	public static void addRelation(Class child, Class parent, String escaType, String escaPropertyName){
+				
+		for(EscaType t: typeMap.values()){
+			// escaType is the datatype associated with the child (nodebreaker model) class
+			// and the escaPropertyName should be a reference to the parent (nodebreaker model)
+			// object.
+			if (t.getDataType().equals(escaType)){
+				
+				String mridChild = t.getMrid();
+				String mridParent = getPropertyString(t.getResource(), escaPropertyName);
+				
+				
+				// Assumption is that child will have a set<parentclassname> method and the
+				// child will have an add<parentclassname> method.
+				try {
+					callMethod(mridChild, mridParent, "set"+parent.getSimpleName());
+				} catch (InvalidArgumentException e) {
+					System.err.println(e.getMessage());
+				}
+				try {
+					callMethod(mridParent, mridChild, "add"+child.getSimpleName());
+				} catch (InvalidArgumentException e) {
+					System.err.println(e.getMessage());
+				}
+				
+			}
+		}
+	}
+	
+	public static void storeData(){
+		for(NodeBreakerDataType obj: identifiedMap.values()){
+			try{
+				nodeBreakerDao.persist(obj);
+			}
+			catch (Exception e){
+				System.err.println("couldn't save: "+obj.getClass().getSimpleName()+" "+obj.toString());
+			}
+		}
+	}
+
+	public static void main(String[] args) throws InvalidArgumentException, IOException {
+		
+		//setBufferedOut();
+		EscaTreeWindow window = new EscaTreeWindow(ESCA_TEST, true, "C:\\scratch\\esca_tree.txt");
+		window.loadData();
+		window.loadTypeMap();
+		
+		typeMap = window.getEscaTypeMap();
+		
+		System.out.println(populateDataType(GeographicalRegion.class, "GeographicalRegion"));
+		System.out.println(populateDataType(SubGeographicalRegion.class, "SubGeographicalRegion"));
+		
+		
+		System.out.println(populateDataType(Accumulator.class, "Accumulator"));
+		System.out.println(populateDataType(ACLineSegment.class, "ACLineSegment"));
+		System.out.println(populateDataType(Analog.class, "Analog"));
+		System.out.println(populateDataType(AnalogLimit.class, "AnalogLimit"));
+		System.out.println(populateDataType(AnalogLimitSet.class, "AnalogLimitSet"));
+		
+		System.out.println(populateDataType(BaseVoltage.class, "BaseVoltage"));
+		System.out.println(populateDataType(Breaker.class, "Breaker"));
+		System.out.println(populateDataType(BusBarSection.class, "BusbarSection"));
+		
+		System.out.println(populateDataType(ConformLoad.class, "ConformLoad"));
+		System.out.println(populateDataType(ConformLoadGroup.class, "ConformLoadGroup"));
+		System.out.println(populateDataType(ConformLoadSchedule.class, "ConformLoadSchedule"));
+		System.out.println(populateDataType(ConnectivityNode.class, "ConnectivityNode"));
+		System.out.println(populateDataType(CurveData.class, "CurveData"));
+		
+		System.out.println(populateDataType(Discrete.class, "Discrete"));
+		
+		System.out.println(populateDataType(Line.class, "Line"));
+		
+		// TODO
+		System.out.println(populateDataType(LoadBreakSwitch.class, "LoadBreakSwitch"));
+		
+		System.out.println(populateDataType(MeasurementType.class, "MeasurementType"));
+		
+		// TODO
+		System.out.println(populateDataType(PowerTransformer.class, "PowerTransformer"));
+		
+		// TODO
+		System.out.println(populateDataType(RegularTimePoint.class, "RegularTimePoint"));
+		
+		// TODO
+		System.out.println(populateDataType(RegulationSchedule.class, "RegulationSchedule"));
+		
+		// TODO
+		System.out.println(populateDataType(SeriesCompensator.class, "SeriesCompensator"));
+		
+		// TODO
+		System.out.println(populateDataType(ShuntCompensator.class, "ShuntCompensator"));
+		
+		System.out.println(populateDataType(Substation.class, "Substation"));
+		
+		// TODO
+		System.out.println(populateDataType(SynchronousMachine.class, "SynchronousMachine"));
+		
+		// TODO
+		System.out.println(populateDataType(TapChanger.class, "TapChanger"));
+		
+		System.out.println(populateDataType(Terminal.class, "Terminal"));
+		System.out.println(populateDataType(VoltageLevel.class, "VoltageLevel"));
+		
+		// Add parent child relationships.
+		addRelation(SubGeographicalRegion.class, GeographicalRegion.class, "SubGeographicalRegion", "SubGeographicalRegion.Region");
+		addRelation(Line.class, SubGeographicalRegion.class, "Line", "Line.Region");
+		addRelation(VoltageLevel.class, BaseVoltage.class, "VoltageLevel", "VoltageLevel.BaseVoltage");
+		
+		addSingularRelation(ACLineSegment.class, EquipmentContainer.class, "ACLineSegment", "Equipment.MemberOf_EquipmentContainer", 
+				"setMemberOfEquipmentContainer");
+		
+		addSingularRelation(Discrete.class, MeasurementType.class, "Discrete", "Measurement.MeasurementType",	
+				"setMeasurementType");
+		
+		
+		// One big write.
+		storeData();
+		System.out.println("Import Complete!");
+				 
+		
+		
+//		
+//		for(String k: typeMap.keySet()){
+//			EscaType type = typeMap.get(k);
+//			availableTypes.add(type.getDataType());
+//		}
+//		
+//		for(String k: availableTypes){
+//			System.out.println(k);
+//		}
+		
+		//if(true)return;
+		
+//		for(String key:typeMap.keySet()){
+//			System.out.println(typeMap.get(key).getDataType());
+//		}
+		// This is puzzling the way I have configured this.
+		//window.loadSubjectTree("_7138742088364182230");
+		
+		//window.invertFromLevel(Esca60Vocab.SUBSTATION_OBJECT);
+		// A Substation
+		//BuildPowergrid grid = new BuildPowergrid();
+		//grid.buildPowergrid(window.getEscaTypeMap(), window.getEscaTypeSubstationMap());
+		
+		// A Substation
+		//window.printInvertedTree("_7138742088364182230");
+
+		
+		// A breaker
+		//window.printInvertedTree("_6086371616589253666");
+		// A VoltageLevel
+		//window.printInvertedTree("_7385660062756494042");
+		
+		
+		//window.printTree("_7138742088364182230");
+		// A Terminal
+		//window.printTree("_2463136265274055557");
+		if (bufferedOut){
+			outStream.flush();
+		}
+		//window.printSubstations();
+		
+		//window.printTerminalTree("_1859399559611018070");
+		//EscaTreeWindow window = new EscaTreeWindow("C:\\scratch\\esca_tree.txt", false, "C:\\scratch\\esca_tree_out.txt");
+	}
 
 }

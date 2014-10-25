@@ -12,11 +12,11 @@
 	</parent>
 
 	<dependencies>
-		<!-- <dependency>
+		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-server</artifactId>
 			<version>${goss-powergrid.version}</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>apache-jena-libs</artifactId>
@@ -30,11 +30,11 @@
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-maven-tools</artifactId>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>pnnl.goss</groupId>
 			<artifactId>goss-powergrid-common</artifactId>
 			<version>0.1.4-SNAPSHOT</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>

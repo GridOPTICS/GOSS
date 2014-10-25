@@ -1,7 +1,15 @@
 package pnnl.goss.model.generator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+
+import pnnl.goss.model.generator.ModelGeneration.DataTypeSheets;
 
 public class MetaDataType {
 	
@@ -17,8 +25,35 @@ public class MetaDataType {
 	private String documentation;
 	private Set<String> enumeratedValues = new HashSet<>();
 	
+	// Attributes sheet
+	private static final Integer ATTRIB_CLASS_COLUMN = 2;
+	private static final Integer ATTRIB_ATTRIBUTE_COLUMN = 4;
+	private static final Integer ATTRIB_DATA_TYPE_COLUMN = 5;
+	private static final Integer ATTRIB_INITIAL_VALUE_COLUMN = 6;
+	private static final Integer ATTRIB_DOCUMENTATION_COLUMN = 8;
+	// DataType sheet
+	private static final Integer DATATYPE_PACKAGE_COLUMN = 0;
+	private static final Integer DATATYPE_DATA_TYPE_CoLUMN = 1;
+	private static final Integer DATATYPE_NS_CoLUMN = 2;
+	private static final Integer DATATYPE_DOCUMENTATION_CoLUMN = 3;
+	// DataType Value & Unit sheet
+	private static final Integer DATATYPEVALUE_PACKAGE_CoLUMN = 0;
+	private static final Integer DATATYPEVALUE_DATA_TYPE_CoLUMN = 2;
+	private static final Integer DATATYPEVALUE_DATA_TYPE_NAME_CoLUMN = 1;
+	private static final Integer DATATYPEVALUE_NS_CoLUMN = 4;
+	// DataType - Enum sheet
+	private static final Integer DATATYPEENUM_PACKAGE_COLUMN = 0;
+	private static final Integer DATATYPEENUM_ENUM_TYPE_COLUMN = 1;
+	private static final Integer DATATYPEENUM_ENUM_VALUE_COLUMN = 2;
+	private static final Integer DATATYPEENUM_DOCUMENTATION_CoLUMN = 3;
+	private static final Integer DATATYPEENUM_NS_CoLUMN = 4;
+	
 	public MetaDataType(){
 		
+	}
+	
+	public static String getEnumerationPackage(){
+		return ModelGeneration.ROOT_PACKAGE.concat(".enumerations");
 	}
 	
 	public MetaDataType(String dataTypeName){
@@ -30,7 +65,7 @@ public class MetaDataType {
 	}
 	
 	public MetaDataType(MetaClass metaClass){
-		this.dataTypeName = metaClass.getDataType();
+		this.dataTypeName = metaClass.getPackageAndClass();
 		this.namespace = metaClass.getPackageName()
 				.substring(metaClass.getPackageName()
 						.lastIndexOf("."));
@@ -40,8 +75,12 @@ public class MetaDataType {
 		enumeratedValues.add(value);
 	}
 	
-	public Set<String> getEnumeratedValues(){
-		return this.enumeratedValues;
+	public boolean containsEnumeratedValue(String value){
+		return enumeratedValues.contains(value);
+	}
+	
+	public List<String> getEnumeratedValues(){
+		return new ArrayList(this.enumeratedValues);
 	}
 	
 	public boolean isEnumeration() {
@@ -214,6 +253,105 @@ public class MetaDataType {
 		
 		return buf.toString();
 		
+	}
+	
+	public static MetaDataType create(String dataTypeName){
+		MetaDataType dataType = new MetaDataType();
+		dataType.setDataTypeName(dataTypeName);
+		return dataType;
+		
+	}
+	
+	public static MetaDataType create(HSSFRow row, DataTypeSheets sheetType){
+		
+		if (row == null) {
+			return null;
+		}
+		
+		MetaDataType cls = new MetaDataType();
+		
+		HSSFCell packageCell= null;
+		switch (sheetType){
+		case DataTypeAndUnits:
+			System.out.println("DatatypeandUnits");
+			packageCell = row.getCell(DATATYPEVALUE_PACKAGE_CoLUMN); 
+			if (packageCell != null && packageCell.getStringCellValue()!= null){
+				
+				HSSFCell namespaceCell = row.getCell(DATATYPEVALUE_NS_CoLUMN);
+				HSSFCell dataTypeNameCell = row.getCell(DATATYPEVALUE_DATA_TYPE_NAME_CoLUMN);
+				HSSFCell dataTypeCell = row.getCell(DATATYPEVALUE_DATA_TYPE_CoLUMN);
+				String dataTypeName = dataTypeNameCell.getStringCellValue();
+				
+				String namespace = namespaceCell.getStringCellValue();
+				
+				cls.setDataTypeName(dataTypeName);
+				cls.setNamespace(namespace);
+				
+				if (dataTypeCell != null){
+					String dataTypeValue = dataTypeCell.getStringCellValue();
+					cls.setValueType(dataTypeValue);
+				}				
+			}
+			break;
+		case DataType:
+			System.out.println("It's Datatype Enumeration");
+			packageCell = row.getCell(DATATYPE_PACKAGE_COLUMN); 
+			if (packageCell != null && packageCell.getStringCellValue()!= null){
+				boolean isEnum = packageCell.getStringCellValue().contains("Enum");
+				
+				HSSFCell namespaceCell = row.getCell(DATATYPE_NS_CoLUMN);
+				HSSFCell dataTypeCell = row.getCell(DATATYPE_DATA_TYPE_CoLUMN); 
+				String dataTypeName = dataTypeCell.getStringCellValue();
+				String namespace = namespaceCell.getStringCellValue();
+				
+				cls.setDataTypeName(dataTypeName);
+				cls.setNamespace(namespace);
+				cls.setEnumeration(isEnum);
+				
+
+				// metaDataType.put(meta.getDataTypeName(), meta);
+			}
+			break;
+		case DataTypeEnums:
+			System.out.println("DatatypeEnum");
+			packageCell = row.getCell(DATATYPEENUM_PACKAGE_COLUMN); 
+			if (packageCell != null && packageCell.getStringCellValue()!= null){
+									
+				HSSFCell namespaceCell = row.getCell(DATATYPEENUM_NS_CoLUMN);
+				HSSFCell enumTypeCell = row.getCell(DATATYPEENUM_ENUM_TYPE_COLUMN);
+				HSSFCell enumValueCell = row.getCell(DATATYPEENUM_ENUM_VALUE_COLUMN);
+				
+				String enumTypeName = enumTypeCell.getStringCellValue();
+				String enumValue = enumValueCell.getStringCellValue();
+				String namespace = namespaceCell.getStringCellValue();
+				
+				cls.setDataTypeName(enumTypeName);
+				cls.setNamespace(namespace);
+				cls.setEnumeration(true);
+				cls.setJavaPackage(getEnumerationPackage());
+				cls.addEnumeratedValue(enumValue);
+//				MetaDataType meta = null; 
+//				// Handle the addition of enumeration values
+//				if(metaDataType.containsKey(enumTypeName)){
+//					meta = metaDataType.get(enumTypeName);
+//					meta.addEnumeratedValue(enumValue);
+//					meta.setJavaPackage(getEnumerationPackage());
+//					meta.setEnumeration(true);
+//				}
+//				else{
+//					meta = new MetaDataType();
+//					
+//					// metaDataType.put(meta.getDataTypeName(), meta);
+//				}
+			}
+			break;
+		}	
+	
+		if (cls != null){
+			System.out.println("Created datatype: "+cls.getDataTypeName());
+		}
+		
+		return cls;
 	}
 	
 }

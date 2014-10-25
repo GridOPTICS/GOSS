@@ -21,10 +21,6 @@ import java.util.Stack;
 
 import javax.sql.rowset.Predicate;
 
-import org.apache.jena.atlas.logging.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -43,8 +39,6 @@ import pnnl.goss.rdf.server.Esca60Vocab;
 
 public class EscaTreeWindow implements KnownTree {
 
-	private static Logger log = LoggerFactory.getLogger(EscaTreeWindow.class);
-	
 	private Model rdfModel;
 	private List<EscaTree> substations;
 	private Map<String, EscaTree> mridTreeMap = new HashMap<String, EscaTree>();
@@ -166,12 +160,9 @@ public class EscaTreeWindow implements KnownTree {
 
 	/**
 	 * Loads all of the subjects into an internal structure that we can use to
-	 * find different types of data based upon the mrid.  After this function
-	 * is run there should be links from and to all of the different types.
+	 * find different types of data based upon the mrid.
 	 */
 	public void loadTypeMap() {
-		
-		// Load all of the subjects into the subject map
 		ResIterator resItr = rdfModel.listSubjects();
 
 		while (resItr.hasNext()) {
@@ -181,62 +172,14 @@ public class EscaTreeWindow implements KnownTree {
 			// System.out.println(mrid+" ("+dataType+")");
 			escaTypeMap.put(mrid, new EscaType(res, dataType, mrid));
 		}
-		
-		// Load all of the links between the subjects.
-		for (EscaType e: escaTypeMap.values()) {
-			loadLiterals(e);
-			loadLinks(e);
-		}
-	}
-	
-	/**
-	 * Load all of the literals into the passed escatype parameter.
-	 * 
-	 * @param esca
-	 */
-	private void loadLiterals(EscaType esca){
-		StmtIterator itr = esca.getResource().listProperties();
-		
-		while (itr.hasNext()){
-			Statement stmt = itr.nextStatement();
-			RDFNode node = stmt.getObject();
-			Property prop = stmt.getPredicate();
-			
-			if (node.isLiteral()){
-				esca.addLiteral(prop.getLocalName(), stmt.getLiteral());
-				
-				//esca.addLiteral(node.get, value);
-			}
-		}
-	}
-	
-	/**
-	 * Loads all of the links to different elements in the graph
-	 * 
-	 * @param esca
-	 */
-	private void loadLinks(EscaType esca){
-		StmtIterator itr = esca.getResource().listProperties();
 
-		while (itr.hasNext()) {
-			Statement stmt = itr.nextStatement();
-			RDFNode node = stmt.getObject();
-			Property prop = stmt.getPredicate();
-			if (node.isResource()) {
-				Resource res = node.asResource();
-				
-				// Skip the type because it has already been loaded.
-				if (prop.getLocalName().equals("type")){
-					log.debug("Skipping type property: "+prop.getLocalName()+" on resource "+res.getLocalName());
-				}
-				else{
-					esca.addLink(prop.getLocalName(), escaTypeMap.get(res.getLocalName()));
-				}
+		for (String k : escaTypeMap.keySet()) {
+			EscaType type = escaTypeMap.get(k);
+			if (!type.hasChildren()) {
+				loadChildren(escaTypeMap.get(k));
 			}
 		}
 	}
-	
-	
 	
 	public List<EscaType> getType(String dataType){
 		List<EscaType> items = new ArrayList<EscaType>();
