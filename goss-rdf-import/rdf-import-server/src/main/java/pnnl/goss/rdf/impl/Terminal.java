@@ -1,6 +1,7 @@
 package pnnl.goss.rdf.impl;
 
 import java.io.InvalidObjectException;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,26 +25,8 @@ public class Terminal extends AbstractEscaType {
 		return connectivityNode;
 	}
 	
-	public boolean isEquipmentConnectivityNode(){
-		EscaType equipment = getEquipment();
-		if (equipment != null && equipment.getDataType().equals(Esca60Vocab.CONNECTIVITYNODE_OBJECT.getLocalName())){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public boolean isEquipmentBreaker(){
-		EscaType equipment = getEquipment();
-		if (equipment != null && equipment.getDataType().equals(Esca60Vocab.BREAKER_OBJECT.getLocalName())){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public EscaType getEquipment(){
-		return getLink(Esca60Vocab.TERMINAL_CONDUCTINGEQUIPMENT);
+	public Collection<EscaType> getEquipment(){
+		return getDirectLinks();
 	}
 	
 }
