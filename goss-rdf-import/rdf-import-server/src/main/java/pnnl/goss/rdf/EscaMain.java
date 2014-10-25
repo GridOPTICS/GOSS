@@ -111,115 +111,17 @@ public class EscaMain {
 		
 		Network network = new Network(types);
 		
-		for(TopologicalNode n: network.getTopologicalNodes()){
-			log.debug("Topological Node: "+n.getIdentifier());
-//			for(ConnectivityNode cn: n.getConnectivityNodes()){
-//				
-//			}
-			
-		}
 		log.debug("# Topo Nodes: "+ network.getTopologicalNodes().size());
 		
-		
-	
-//		ConnectivityNodes nodes = getConnectivityNodes(types);
-//		HashSet<String> linkedTypes = new HashSet<>();
-//		for(ConnectivityNode n: nodes){
-//			log.debug("CN: " +n.getMrid());
-//			for(Terminal t: n.getTerminals()){
-//				log.debug("\tT: <"+t.getMrid()+">");
-//				for (EscaType tLinked: t.getRefersToMe()){
-//					linkedTypes.add(tLinked.getDataType());
-//					log.debug("\t\tLinked: "+ tLinked.getDataType()+ " <"+tLinked.getMrid()+">");
-//					log.debug(tLinked.toString());
-//				}
-//				for(EscaType tDirect: t.getDirectLinks()){
-//					log.debug("\t\tDirect: "+tDirect.getDataType()+" <"+tDirect.getMrid()+">");
-//				}
-////				EscaType e = t.getEquipment();
-////				if(e == null){
-////					log.debug("No equipment associated with T: <" + t.getMrid()+">");
-////				}
-////				else{					
-////					if (t.isEquipmentBreaker()){
-////						log.debug("\tT: "+t.getMrid()+" Equipment: "+e.getDataType()+" <"+e.getMrid()+">");
-////						for (EscaType tlink: t.getEquipment().getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
-////							if (tlink != t){
-////								Terminal tlinkT = (Terminal)t;
-////								//log.debug("\t\tPossible other terminal connection: "+tlink.getMrid());
-////								log.debug("\t\tOther connections equipment: " +tlinkT.getEquipment().getDataType()+"<"+tlinkT.getEquipment().getMrid());
-////							}
-////						}
-////					}
-////					else if(t.isEquipmentConnectivityNode()){
-////						log.debug("It's a connectivity node");
-////					}
-////					else{
-////						log.debug("\tT: "+t.getMrid()+" Equipment: "+e.getDataType()+"<"+e.getMrid()+">");
-////					}
-////				}
-////				log.debug("\t\t);
-////				for(Entry<String, EscaType> e:t.getLinks().entrySet()){
-////					log.debug("\t\tE: "+ e.getKey()+"=>"+e.getValue().getMrid());
-////				}
-//			}
-//		}
-//		
-//		for(String d:linkedTypes){
-//			log.debug(d);
-//		}
+		for(TopologicalNode n: network.getTopologicalNodes()){
+			log.debug("TN: "+n.getIdentifier());
+			
+			for (ConnectivityNode cn: n.getConnectivityNodes()){
+				log.debug("\tCN Voltage: "+ cn.getBaseVoltage()+ " <"+cn.getMrid()+"> "+cn.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
+			}			
+		}
 		
 		
-		//debugCollection(types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)); //.TERMINAL_OBJECT));
-		
-//		Collection<EscaType> connectivityNodes = types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
-//		
-//		for(EscaType t: connectivityNodes){
-//			log.debug("For "+t.toString());			
-//		}
-		
-		
-		/*Network network = new Network(types);
-		
-		TopologicalNodes nodes = network.getTopologicalNodes();
-		
-		System.out.println("Number Topological Nodes: "+nodes.size());
-		*/
-		
-//		for(TopologicalNode n: nodes){
-//			if(n.getConnectivityNodes().size()> 1){
-//				System.out.println("Multiple connectivity node in: ");
-//			}
-//		}
-		
-//		setBufferedOut();
-//		
-//		for(EscaType outer: types.where(Esca60Vocab.TERMINAL_OBJECT)){
-//			System.out.println(outer.getDataType().toUpperCase()+ ": "+ outer.getMrid());
-//			for(EscaType t: outer.getDirectLinks()){
-//				System.out.println("\tis direct to: "+t.getDataType()+ "("+t.getMrid()+")");
-//				System.out.println("\t"+t.getDataType().toUpperCase()+ ": "+ t.getMrid());
-//				for(EscaType e: t.getDirectLinks()){
-//					if (e == null){
-//						System.out.println("\t\tdirect link null for "+t.getDataType()+ " ("+t.getMrid()+ ")");
-//					}
-//					else{
-//						System.out.println("\t\tis direct to: "+e.getDataType()+ "("+e.getMrid()+")");
-//					}
-//				}
-//				System.out.println("\t\tThings that refer to "+t.getDataType()+ "("+t.getMrid()+")");
-//				for(EscaType b: t.getRefersToMe()){
-//					System.out.println("\t\t\t"+b.getDataType()+" ("+b.getMrid()+ ")");
-//				}
-//			}
-//		}
-		
-		//System.out.println(types.get("_8540991671819803330"));
-		
-		
-		//int terminalCount = mainProg.getObjectType(Esca60Vocab.TERMINAL_OBJECT).size();
-		//int connectivityCount = mainProg.getObjectType(Esca60Vocab.CONNECTIVITYNODE_OBJECT).size();
-		//int circuitBreakerCount = mainProg.getObjectType(Esca60Vocab.BREAKER_OBJECT).size();
 				
 		System.out.println("Breaker count: "+ types.where(Esca60Vocab.BREAKER_OBJECT).size());
 		System.out.println("Terminal count: "+types.where(Esca60Vocab.TERMINAL_OBJECT).size());
