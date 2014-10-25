@@ -12,49 +12,42 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.rdf.EscaType;
-import pnnl.goss.rdf.server.Esca60Vocab;
-
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-/**
- * An EscaType is a generic class for containing information about the different
- * rdf classes.  Each EscaType contains a unique mrid.  All {@link Resource}  are
- * defined in {@link Esca60Vocab}.
- * 
- * @author Craig Allwardt
- *
- */
-public class EscaTypeImpl implements EscaType {
-	private Resource resource;
-	private String dataType;
-	private String mrid;
-	private static Logger log = LoggerFactory.getLogger(EscaTypeImpl.class);
+import pnnl.goss.rdf.EscaType;
+import pnnl.goss.rdf.server.Esca60Vocab;
+
+public class AbstractEscaType implements EscaType {
+	private static Logger log = LoggerFactory.getLogger(AbstractEscaType.class);
+	
+	protected Resource resource;
+	protected String dataType;
+	protected String mrid;
+	
 	
 	/*
 	 * Property name-> Literal value (i.e. String, Integer, Float etc) mapping.
 	 */
-	private Map<String, Literal> literals = new HashMap<>();
+	protected Map<String, Literal> literals = new HashMap<>();
 
 	/*
 	 * Property name->esca type (links to other Resource types)
 	 */
-	private Map<String, EscaType> directLinks = new HashMap<>();
+	protected Map<String, EscaType> directLinks = new HashMap<>();
 	
 	/*
 	 *  Items that have called the addDirectLink function will be added
 	 *  to this set.
 	 */
-	private Set<EscaType> refersToMe = new HashSet<>();
-	
+	protected Set<EscaType> refersToMe = new HashSet<>();
 	
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#addDirectLink(java.lang.String, pnnl.goss.rdf.EscaType)
 	 */
 	@Override
-	public void addDirectLink(String propertyName, EscaType link){
+	public void addDirectLink(String propertyName, EscaType link) {
 		if (link != null){
 			log.debug("Adding link property: "+propertyName+" to esca obj: "+link.getName());
 		}
@@ -66,8 +59,9 @@ public class EscaTypeImpl implements EscaType {
 		if (link != null){
 			link.addRefersToMe(this);
 		}
+
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#isResourceType(com.hp.hpl.jena.rdf.model.Resource)
 	 */
@@ -75,15 +69,7 @@ public class EscaTypeImpl implements EscaType {
 	public boolean isResourceType(Resource resourceType){
 		return dataType.equals(resourceType.getLocalName());
 	}
-	
-	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.EscaType#addRefersToMe(com.hp.hpl.jena.rdf.model.Resource)
-	 */
-	@Override
-	public void addRefersToMe(EscaType refersToMe){
-		this.refersToMe.add(refersToMe);
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#getLinks()
 	 */
@@ -92,18 +78,6 @@ public class EscaTypeImpl implements EscaType {
 		return directLinks;
 	}
 
-	/* (non-Javadoc)
-	 * @see pnnl.goss.rdf.EscaType#getLink(String property)
-	 */
-	@Override
-	public EscaType getLink(Property property){
-//		String key = property.getLocalName();
-//		if (key.startsWith(dataType+".")){
-//			key = key.substring(dataType.length()+1);			
-//		}
-		
-		return directLinks.get(property.getLocalName());
-	}
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#getDirectLinks()
 	 */
@@ -122,6 +96,28 @@ public class EscaTypeImpl implements EscaType {
 	}
 	
 	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.EscaType#addRefersToMe(com.hp.hpl.jena.rdf.model.Resource)
+	 */
+	@Override
+	public void addRefersToMe(EscaType refersToMe){
+		this.refersToMe.add(refersToMe);
+	}
+	
+	/* (non-Javadoc)
+	 * @see pnnl.goss.rdf.EscaType#getLink(String property)
+	 */
+	@Override
+	public EscaType getLink(Property property){
+//		String key = property.getLocalName();
+//		if (key.startsWith(dataType+".")){
+//			key = key.substring(dataType.length()+1);			
+//		}
+		
+		return directLinks.get(property.getLocalName());
+	}
+	
+
+	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#getRefersToMe(Resource resourceType)
 	 */
 	public Collection<EscaType> getRefersToMe(Resource resourceType){
@@ -133,27 +129,7 @@ public class EscaTypeImpl implements EscaType {
 		}
 		return items;
 	}
-	
-//	public List<List<EscaType>> getPathToResourceType(Resource resourceType){
-//		List<List<EscaType>> paths = new ArrayList<>();
-//		
-//		for (EscaType t: getLinks().values()){
-//			List<EscaType> p = new ArrayList<>();
-//			
-//			EscaType current = t;
-//			p.add(current);
-//			
-//			while(current != null){
-//				
-//			}
-//			
-//		}
-//		
-//		
-//		return paths;
-//	}
-	
-		
+
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#getLiteralValue(com.hp.hpl.jena.rdf.model.Property)
 	 */
@@ -187,7 +163,6 @@ public class EscaTypeImpl implements EscaType {
 		return Collections.unmodifiableCollection(types);
 	}
 	
-		
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#addLiteral(java.lang.String, com.hp.hpl.jena.rdf.model.Literal)
 	 */
@@ -243,31 +218,72 @@ public class EscaTypeImpl implements EscaType {
 		}
 		return mrid;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		EscaType other = null;
+		try{
+			other = (EscaType)obj;
+		}
+		catch(Exception e){
+			log.error("Invalid comparison of object");
+			return false;
+		}
+		
+		if(other.getMrid().equals(this.mrid)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 	
-	public EscaTypeImpl(EscaType copy){
-		this(copy.getResource(), copy.getDataType(), copy.getMrid());
+	@Override
+	public int hashCode() {
+		return mrid.hashCode();
 	}
 
-	public EscaTypeImpl(Resource resource, String dataType, String mrid){
-		this.resource = resource;
-		this.dataType = dataType;
-		this.mrid = mrid;
-	}
-
-	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("------------------------------------------------\n");
-		sb.append(this.dataType + " ("+this.mrid+")\n");
+		sb.append("<EscaType: "+dataType+ ">"+mrid+"\n");
+		sb.append("\tLiterals: ");
+		boolean first = true;
 		for (String s: literals.keySet()){
-			sb.append("\tproperty: "+s+" => "+this.literals.get(s)+"\n");
+			if (first){
+				sb.append(s+" => "+this.literals.get(s));
+				first= false;
+			}
+			else{
+				sb.append(", "+s+" => "+this.literals.get(s));
+			}
 		}
-		sb.append("------------------------------------------------\n\n");
+		sb.append("\n");
+		
+		first = true;
+		sb.append("\tDirect Links: ");		
 		
 		for(EscaType t: directLinks.values()){
-			sb.append(this.dataType + " ("+this.mrid+") direct connect to\n");
-			sb.append(t);
+			if (first){
+				sb.append(t.getDataType() + " => "+t.getMrid());
+				first= false;
+			}
+			else{
+				sb.append(", "+t.getDataType() + " => "+t.getMrid()); 
+			}
+		}
+		
+		first = true;
+		sb.append("\tRefers to me: ");		
+		
+		for(EscaType t: refersToMe){
+			if (first){
+				sb.append(t.getDataType() + " => "+t.getMrid());
+				first= false;
+			}
+			else{
+				sb.append(", "+t.getDataType() + " => "+t.getMrid()); 
+			}
 		}
 		
 		return sb.toString();

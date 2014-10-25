@@ -39,7 +39,7 @@ public class EscaTreeWindow {
 	 * A mapping from the mrid to an EscaType.
 	 */
 	private EscaTypes escaTypeMap = new EscaTypes();
-	private Map<String, EscaTypeImpl> escaTypeSubstationMap = new HashMap<String, EscaTypeImpl>();
+	private Map<String, DefaultEscaType> escaTypeSubstationMap = new HashMap<String, DefaultEscaType>();
 	
 	/**
 	 * Returns access to an mrid -> EscaType generic mapping
@@ -53,7 +53,7 @@ public class EscaTreeWindow {
 	 * Returns access to an mrid -> EscaType substation specific mappings
 	 * @return
 	 */
-	public Map<String, EscaTypeImpl> getEscaTypeSubstationMap(){
+	public Map<String, DefaultEscaType> getEscaTypeSubstationMap(){
 		return escaTypeSubstationMap;
 	}
 	
@@ -96,7 +96,7 @@ public class EscaTreeWindow {
 			String dataType = getTypeOfSubject(res);
 			String mrid = res.getLocalName();
 			// System.out.println(mrid+" ("+dataType+")");
-			escaTypeMap.put(mrid, new EscaTypeImpl(res, dataType, mrid));
+			escaTypeMap.put(mrid, DefaultEscaType.construct(res, dataType, mrid));
 		}
 		
 		// Load all of the links between the subjects.

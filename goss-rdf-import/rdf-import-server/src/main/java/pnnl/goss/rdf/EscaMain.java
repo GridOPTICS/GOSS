@@ -5,22 +5,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.rdf.impl.ConnectivityNode;
+import pnnl.goss.rdf.impl.ConnectivityNodes;
 import pnnl.goss.rdf.impl.EscaTreeWindow;
 import pnnl.goss.rdf.impl.EscaTypes;
-import pnnl.goss.rdf.impl.Network;
-import pnnl.goss.rdf.impl.TopologicalNode;
-import pnnl.goss.rdf.impl.TopologicalNodes;
+import pnnl.goss.rdf.impl.Terminal;
 import pnnl.goss.rdf.server.Esca60Vocab;
 //import pnnl.goss.topology.nodebreaker.dao.NodeBreakerDao;
+
+
+
 
 
 import com.hp.hpl.jena.rdf.model.Property;
@@ -75,7 +75,26 @@ public class EscaMain {
 		return escaTypes;
 	}
 	
+	public static void debugCollection(Collection<EscaType> escaTypes){
+		boolean first = true;
+		for(EscaType t: escaTypes){
+			if(first){
+				log.debug("Printing collection of: "+ t.getDataType());
+				first = false;
+			}
+			log.debug(t.toString());
+		}
+		
+	}
 	
+	private static ConnectivityNodes getConnectivityNodes(EscaTypes types){
+		ConnectivityNodes nodes = new ConnectivityNodes();
+		for(EscaType t: types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
+			nodes.add((ConnectivityNode)t);
+			
+		}
+		return nodes;
+	}
 	//private static NodeBreakerDao nodeBreakerDao = new NodeBreakerDao(PERSISTANCE_UNIT);
 	
 	public static void main(String[] args) throws Exception {
@@ -83,13 +102,55 @@ public class EscaMain {
 		EscaMain mainProg = new EscaMain(ESCA_TEST, true, "esca_tree.txt");
 				
 		EscaTypes types = mainProg.getEscaTypes();
+	
+		ConnectivityNodes nodes = getConnectivityNodes(types);
+		
+		for(ConnectivityNode n: nodes){
+			log.debug("CN: " +n.getMrid());
+			for(Terminal t: n.getTerminals()){
+				EscaType e = t.getEquipment();
+				if(e == null){
+					log.debug("No equipment associated with T: " + t.getMrid());
+				}
+				else{
+					log.debug("\tT: "+t.getMrid()+" Equipment: "+e.getDataType()+"<"+e.getMrid()+">");
+					if (t.isEquipmentBreaker()){
+						for (EscaType tlink: t.getEquipment().getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
+							if (tlink != t){
+								log.debug("\t\tPossible other terminal connection: "+tlink.getMrid());
+							}
+						}
+					}
+					else if(t.isEquipmentConnectivityNode()){
+						log.debug("It's a connectivity node");
+					}
+					else{
+						log.debug("Equipment is: "+e.getDataType()+" <"+e.getMrid()+">");
+					}
+				}
+//				log.debug("\t\t);
+//				for(Entry<String, EscaType> e:t.getLinks().entrySet()){
+//					log.debug("\t\tE: "+ e.getKey()+"=>"+e.getValue().getMrid());
+//				}
+			}
+		}
 		
 		
-		Network network = new Network(types);
+		//debugCollection(types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)); //.TERMINAL_OBJECT));
+		
+//		Collection<EscaType> connectivityNodes = types.getByResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT);
+//		
+//		for(EscaType t: connectivityNodes){
+//			log.debug("For "+t.toString());			
+//		}
+		
+		
+		/*Network network = new Network(types);
 		
 		TopologicalNodes nodes = network.getTopologicalNodes();
 		
 		System.out.println("Number Topological Nodes: "+nodes.size());
+		*/
 		
 //		for(TopologicalNode n: nodes){
 //			if(n.getConnectivityNodes().size()> 1){
