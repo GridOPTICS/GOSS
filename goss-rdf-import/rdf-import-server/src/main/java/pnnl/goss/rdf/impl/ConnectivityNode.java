@@ -12,6 +12,30 @@ public class ConnectivityNode extends AbstractEscaType {
 
 	private Terminals terminals;
 	private static Logger log = LoggerFactory.getLogger(ConnectivityNode.class);
+	private EscaType voltageLevel;
+	private EscaType baseVoltage;
+	private double baseVoltageDbl;
+	
+	public EscaType getBaseVoltageRes(){
+		setupProperties();
+		return voltageLevel;
+	}
+	public double getBaseVoltage(){
+		setupProperties();
+		return baseVoltageDbl;
+	}
+	
+	private void setupProperties(){
+		if(baseVoltage == null){
+			for(EscaType t: getDirectLinks()){
+				if (t.isResourceType(Esca60Vocab.VOLTAGELEVEL_OBJECT)){
+					voltageLevel = t;
+					baseVoltage = voltageLevel.getLink(Esca60Vocab.VOLTAGELEVEL_BASEVOLTAGE);
+					baseVoltageDbl = baseVoltage.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE).getDouble();
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Lazy load terminals that are connected to this node.
