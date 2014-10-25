@@ -75,5 +75,11 @@ public interface EscaType {
 
 	EscaType getLink(Property property);
 
+	boolean hasLiteralProperty(String property);
+	
+	boolean hasLiteralProperty(Property property);
+	
+	boolean hasDirectLink(Property property);
 
+	boolean hasDirectLink(String property);	
 }

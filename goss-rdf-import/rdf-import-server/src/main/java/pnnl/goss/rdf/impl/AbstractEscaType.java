@@ -114,8 +114,27 @@ public class AbstractEscaType implements EscaType {
 //		}
 		
 		return directLinks.get(property.getLocalName());
+	}	
+
+	@Override
+	public boolean hasLiteralProperty(String property) {
+		return literals.containsKey(property);
 	}
-	
+
+	@Override
+	public boolean hasLiteralProperty(Property property) {
+		return hasLiteralProperty(property.getLocalName());
+	}
+
+	@Override
+	public boolean hasDirectLink(Property property) {
+		return hasDirectLink(property.getLocalName());
+	}
+
+	@Override
+	public boolean hasDirectLink(String property) {
+		return directLinks.containsKey(property);
+	}	
 
 	/* (non-Javadoc)
 	 * @see pnnl.goss.rdf.EscaType#getRefersToMe(Resource resourceType)
@@ -264,6 +283,10 @@ public class AbstractEscaType implements EscaType {
 		sb.append("\tDirect Links: ");		
 		
 		for(EscaType t: directLinks.values()){
+			if (t == null){
+				sb.append("directLink is null!!");
+				continue;
+			}
 			if (first){
 				sb.append(t.getDataType() + " => "+t.getMrid());
 				first= false;
@@ -274,18 +297,24 @@ public class AbstractEscaType implements EscaType {
 		}
 		
 		first = true;
-		sb.append("\tRefers to me: ");		
+		sb.append("\n\tRefers to me: ");		
 		
 		for(EscaType t: refersToMe){
+			if (t == null){
+				sb.append("refersToMe value is null!!");
+				continue;
+			}
+			
 			if (first){
 				sb.append(t.getDataType() + " => "+t.getMrid());
 				first= false;
 			}
-			else{
+			else {
 				sb.append(", "+t.getDataType() + " => "+t.getMrid()); 
 			}
 		}
 		
 		return sb.toString();
 	}
+
 }
