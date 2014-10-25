@@ -116,23 +116,44 @@ public class EscaMain {
 		for(TopologicalNode n: network.getTopologicalNodes()){
 			log.debug("TN: "+n.getIdentifier());
 			
-			for (ConnectivityNode cn: n.getConnectivityNodes()){
-				log.debug("\tCN Voltage: "+ cn.getBaseVoltage()+ " <"+cn.getMrid()+"> "+cn.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
-				
-				EscaType vl = cn.getVoltageLevelRes();
-				if (vl == null){
-					log.debug("\t\tVoltage level is null!");
-					continue;
-				}
-				log.debug("\t\tVL <"+vl.getMrid()+"> Direct Links");
+			EscaType vl = n.getVoltageLevelRes();
+			
+			if (vl != null){
+				log.debug("\tVL <"+vl.getMrid()+"> Direct Links");
 				for(EscaType esca: vl.getDirectLinks()){
-					log.debug("\t\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+					log.debug("\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
 				}
-				log.debug("\t\tVL <"+vl.getMrid()+"> Refers to me");
+				log.debug("\tVL <"+vl.getMrid()+"> Refers to me");
 				for(EscaType esca: vl.getRefersToMe()){
-					log.debug("\t\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+					log.debug("\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
 				}
-			}			
+			}
+			else{
+				log.debug("Dead Bus");
+			}
+			
+			
+//			for (ConnectivityNode cn: n.getConnectivityNodes()){
+//				log.debug("\tCN Voltage: "+ cn.getBaseVoltage()+ " <"+cn.getMrid()+"> "+cn.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
+//				
+//				EscaType vl = cn.getVoltageLevelRes();
+//				if (vl == null){
+//					log.debug("\t\tVoltage level is null!");
+//					continue;
+//				}
+//				
+//				EscaType substation = cn.getSubstationRes();
+//				log.debug("\tCN Substation: " + substation.getMrid() + " "+substation.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
+//				
+//				log.debug("\t\tVL <"+vl.getMrid()+"> Direct Links");
+//				for(EscaType esca: vl.getDirectLinks()){
+//					log.debug("\t\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+//				}
+//				log.debug("\t\tVL <"+vl.getMrid()+"> Refers to me");
+//				for(EscaType esca: vl.getRefersToMe()){
+//					log.debug("\t\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+//				}
+//			}			
 		}
 		
 		

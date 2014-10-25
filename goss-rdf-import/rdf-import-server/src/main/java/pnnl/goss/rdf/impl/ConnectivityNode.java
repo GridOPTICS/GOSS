@@ -14,7 +14,12 @@ public class ConnectivityNode extends AbstractEscaType {
 	private static Logger log = LoggerFactory.getLogger(ConnectivityNode.class);
 	private EscaType voltageLevel;
 	private EscaType baseVoltage;
+	private EscaType substation;
 	private double baseVoltageDbl;
+	
+	public EscaType getSubstationRes(){
+		return substation;
+	}
 	
 	public EscaType getBaseVoltageRes(){
 		setupProperties();
@@ -37,6 +42,9 @@ public class ConnectivityNode extends AbstractEscaType {
 					voltageLevel = t;
 					baseVoltage = voltageLevel.getLink(Esca60Vocab.VOLTAGELEVEL_BASEVOLTAGE);
 					baseVoltageDbl = baseVoltage.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE).getDouble();
+					if (voltageLevel != null){
+						substation = voltageLevel.getLink(Esca60Vocab.VOLTAGELEVEL_MEMBEROF_SUBSTATION);
+					}
 				}
 			}
 		}

@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pnnl.goss.rdf.EscaType;
 import pnnl.goss.rdf.InvalidArgumentException;
 import pnnl.goss.rdf.server.Esca60Vocab;
@@ -24,6 +27,8 @@ import pnnl.goss.rdf.server.Esca60Vocab;
  */
 public class TopologicalNode {
 	
+	private static Logger log = LoggerFactory.getLogger(TopologicalNode.class);
+	
 	// A volatage level can have multiple topo nodes bue a topo node can only have one voltage level
 	
 	// For all connectivity nodes 
@@ -34,6 +39,9 @@ public class TopologicalNode {
 	private ConnectivityNodes connectivityNodes = new ConnectivityNodes();
 	private Terminals terminals = new Terminals();
 	private String identifier;
+	private EscaTypeBag loads;
+	private EscaTypeBag shunts;
+	private EscaTypeBag generators;
 	
 	public String getIdentifier() {
 		return identifier;
@@ -47,9 +55,21 @@ public class TopologicalNode {
 		
 	}
 	
-	public TopologicalNode(EscaType substation, EscaType voltageLevel){
-		this.substation = substation;
-		this.voltageLevel = voltageLevel;
+	public EscaType getVoltageLevelRes(){
+		for(ConnectivityNode cn: connectivityNodes){
+			EscaType vl = cn.getVoltageLevelRes();
+			if (vl != null){
+				if (voltageLevel == null){
+					voltageLevel = vl;
+				}
+				else{
+					if (vl != voltageLevel){
+						log.error("Multiple voltage levels for a node!");
+					}
+				}
+			}
+		}
+		return voltageLevel;
 	}
 	
 	public void addConnectivityNode(ConnectivityNode node){
@@ -68,18 +88,11 @@ public class TopologicalNode {
 		return substation;
 	}
 
-	public void setSubstation(EscaType substation) {
-		this.substation = substation;
-	}
 
 	public EscaType getVoltageLevel() {
 		return voltageLevel;
 	}
-
-	public void setVoltageLevel(EscaType voltageLevel) {
-		this.voltageLevel = voltageLevel;
-	}
-
+	
 	public Terminals getTerminals() {
 		return terminals;
 	}
