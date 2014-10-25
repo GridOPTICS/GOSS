@@ -31,8 +31,8 @@ public class TopologicalNode {
 	// one bus per voltage level per substations
 	private EscaType substation;
 	private EscaType voltageLevel;
-	private Set<EscaType> connectivityNodes = new HashSet<>();
-	private Set<EscaType> terminals = new HashSet<>();
+	private ConnectivityNodes connectivityNodes = new ConnectivityNodes();
+	private Terminals terminals = new Terminals();
 	private String identifier;
 	
 	public String getIdentifier() {
@@ -52,17 +52,14 @@ public class TopologicalNode {
 		this.voltageLevel = voltageLevel;
 	}
 	
-	public void addConnectivityNode(EscaType connectivityNode) throws InvalidArgumentException{
-		if(!connectivityNode.isResourceType(Esca60Vocab.CONNECTIVITYNODE_OBJECT)){
-			throw new InvalidArgumentException("Must be a connectivity node escatype");
+	public void addConnectivityNode(ConnectivityNode node){
+		connectivityNodes.add(node);
+		for (Terminal t: node.getTerminals()){
+			addTerminal(t);
 		}
-		connectivityNodes.add(connectivityNode);
 	}
 	
-	public void addTerminal(EscaType terminal) throws InvalidArgumentException{
-		if(!terminal.isResourceType(Esca60Vocab.TERMINAL_OBJECT)){
-			throw new InvalidArgumentException("Must be a terminal escatype");
-		}
+	public void addTerminal(Terminal terminal) {
 		terminals.add(terminal);
 	}
 	
@@ -83,12 +80,12 @@ public class TopologicalNode {
 		this.voltageLevel = voltageLevel;
 	}
 
-	public Collection<EscaType> getTerminals() {
-		return Collections.unmodifiableCollection(this.terminals);
+	public Terminals getTerminals() {
+		return terminals;
 	}
 
-	public Collection<EscaType> getConnectivityNodes() {
-		return Collections.unmodifiableCollection(this.connectivityNodes);
+	public ConnectivityNodes getConnectivityNodes() {
+		return connectivityNodes;
 	}
 	
 
