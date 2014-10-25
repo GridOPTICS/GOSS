@@ -108,10 +108,30 @@ public class EscaMain {
 		for(ConnectivityNode n: nodes){
 			log.debug("CN: " +n.getMrid());
 			for(Terminal t: n.getTerminals()){
-				log.debug("\tT: "+t.getMrid());
-				for(Entry<String, EscaType> e:t.getLinks().entrySet()){
-					log.debug("\t\tE: "+ e.getKey()+"=>"+e.getValue().getMrid());
+				EscaType e = t.getEquipment();
+				if(e == null){
+					log.debug("No equipment associated with T: " + t.getMrid());
 				}
+				else{
+					log.debug("\tT: "+t.getMrid()+" Equipment: "+e.getDataType()+"<"+e.getMrid()+">");
+					if (t.isEquipmentBreaker()){
+						for (EscaType tlink: t.getEquipment().getRefersToMe(Esca60Vocab.TERMINAL_OBJECT)){
+							if (tlink != t){
+								log.debug("\t\tPossible other terminal connection: "+tlink.getMrid());
+							}
+						}
+					}
+					else if(t.isEquipmentConnectivityNode()){
+						log.debug("It's a connectivity node");
+					}
+					else{
+						log.debug("Equipment is: "+e.getDataType()+" <"+e.getMrid()+">");
+					}
+				}
+//				log.debug("\t\t);
+//				for(Entry<String, EscaType> e:t.getLinks().entrySet()){
+//					log.debug("\t\tE: "+ e.getKey()+"=>"+e.getValue().getMrid());
+//				}
 			}
 		}
 		
