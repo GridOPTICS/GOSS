@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>goss-vaadin-web</artifactId>
+    <packaging>war</packaging>
+    <name>goss-vaadin-sample-web</name>
+	<parent>
+    	<artifactId>goss-vaadin</artifactId>
+    	<groupId>pnnl.goss</groupId>
+    	<version>0.1.5-SNAPSHOT</version>
+  	</parent>
+
+<!--     <properties> -->
+<!--         <bndlib.version>1.50.0</bndlib.version> -->
+<!--         <felix.metatype.version>1.0.10</felix.metatype.version> -->
+<!--         <vaadin.version>7.1.12</vaadin.version> -->
+<!--         <goss-core.version>0.1.5-SNAPSHOT</goss-core.version> -->
+<!--         <goss-kairosdb.version>0.1.4-SNAPSHOT</goss-kairosdb.version> -->
+<!--         <goss-gridmw.version>0.1.4-SNAPSHOT</goss-gridmw.version> -->
+<!--     </properties> -->
+
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+    
+    	<dependency>
+    		<groupId>com.vaadin</groupId>
+    		<artifactId>vaadin-server</artifactId>
+    		<version>${vaadin.version}</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>com.vaadin</groupId>
+    		<artifactId>vaadin-shared</artifactId>
+    		<version>${vaadin.version}</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>javax.servlet</groupId>
+    		<artifactId>javax.servlet-api</artifactId>
+    		<version>3.1.0</version>
+    	</dependency>
+		<dependency>
+        	<groupId>de.mhus.osgi</groupId>
+        	<artifactId>vaadinbridge</artifactId>
+        	<version>1.0.0</version>
+        </dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>pnnl.goss</groupId> -->
+<!-- 			<artifactId>goss-vaadin-sample</artifactId> -->
+<!-- 			<version>${project.version}</version> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>pnnl.goss</groupId>
+			<artifactId>goss-vaadin-sample</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+		    <groupId>org.osgi</groupId>
+		    <artifactId>org.osgi.core</artifactId>
+		    <version>4.2.0</version>
+		</dependency>
+		
+    </dependencies>
+    
+
+</project>

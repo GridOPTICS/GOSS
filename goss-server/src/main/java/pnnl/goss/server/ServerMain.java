@@ -139,7 +139,7 @@ public class ServerMain {
 		
 		// Pass the datasourcesconfig to the constructor so that it is available.
 		GossDataServices dataServices = new GossDataServicesImpl(dataSourcesConfig);
-				
+		
 		GossRequestHandlerRegistrationImpl registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
 		registrationService.setCoreServerConfig(coreConfig);
 		
@@ -169,6 +169,11 @@ public class ServerMain {
 		
 		GridpackServerActivator gridpackActivator = new GridpackServerActivator(registrationService, dataServices);
 		gridpackActivator.start();
+		
+//		GossSecurityDemoActivator demoActivator = new GossSecurityDemoActivator(registrationService, dataServices);
+//		demoActivator.updated(dataSourcesConfig);
+//		demoActivator.start();
+		//Not sure that the webapp will run under this instance
 		
 		//GridpackServerActivator gridpackActivator = new GridpackServerActivator()
 		
