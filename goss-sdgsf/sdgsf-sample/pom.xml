@@ -3,12 +3,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>goss-vaadin-sample</artifactId>
+    <artifactId>goss-sdgsf-sample</artifactId>
     <packaging>bundle</packaging>
-    <name>goss-vaadin-sample</name>
+    <name>goss-sdgsf-sample</name>
 
 	<parent>
-    	<artifactId>goss-vaadin</artifactId>
+    	<artifactId>goss-sdgsf</artifactId>
     	<groupId>pnnl.goss</groupId>
     	<version>0.1.5-SNAPSHOT</version>
   	</parent>
@@ -55,18 +55,18 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Export-Package>
                             de.mhus.osgi.vaadin_sample*,
-                            pnnl.goss.osgi.vaadin.generation*,
-                        	pnnl.goss.osgi.vaadin.securitydemo*,
-                        	pnnl.goss.osgi.vaadin*,
-                            VAADIN
+                            pnnl.goss.osgi.sdgsf.generation*,
+                        	pnnl.goss.osgi.sdgsf.securitydemo*,
+                        	pnnl.goss.osgi.sdgsf*,
+                            sdgsf
                         </Export-Package>
                         <Import-Package>
                             *
                         </Import-Package>
                         <Private-Package>
                         	de.mhus.osgi.vaadin_sample.impl*,
-                        	pnnl.goss.osgi.vaadin.generation.impl*,
-                        	pnnl.goss.osgi.vaadin.securitydemo.impl*
+                        	pnnl.goss.osgi.sdgsf.generation.impl*,
+                        	pnnl.goss.osgi.sdgsf.securitydemo.impl*
                         </Private-Package>
                         <Service-Component>*</Service-Component>
                     </instructions>

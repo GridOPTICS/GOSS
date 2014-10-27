@@ -102,6 +102,7 @@
 		<module>goss-tool-mdart</module>
 		<module>goss-demo</module>
 		<module>goss-vaadin</module>
+		<module>goss-sdgsf</module>
 		
 		<!-- Above this line are bundles that can be added to karaf, whilest below 
 			this line are standalone jars that can be run from a terminal. -->

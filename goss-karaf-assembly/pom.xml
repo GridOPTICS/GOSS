@@ -21,6 +21,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <goss-gridpack.version>0.1.5-SNAPSHOT</goss-gridpack.version>
         <goss-demo.version>0.1.5-SNAPSHOT</goss-demo.version>
         <goss-vaadin.version>0.1.5-SNAPSHOT</goss-vaadin.version>
+		<goss-sdgsf.version>0.1.5-SNAPSHOT</goss-sdgsf.version>
         
 
     </properties>
@@ -122,6 +123,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:pnnl.goss/goss-demo-features/${goss-demo.version}/xml/features</descriptor>
                                 <descriptor>mvn:de.mhus.karaf/vaadin-feature/1.0.0/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-vaadin-features/0.1.5-SNAPSHOT/xml/features</descriptor>
+								<descriptor>mvn:pnnl.goss/goss-sdgsf-features/0.1.5-SNAPSHOT/xml/features</descriptor>
                                 
 							</descriptors>
 							
@@ -155,6 +157,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>goss-demo-features</feature>
                                 <feature>vaadin-feature</feature>
                                 <feature>goss-vaadin-features</feature>
+								<feature>goss-sdgsf-features</feature>
 
 							</features>
 							<repository>${basedir}/target/assembly/system</repository>
@@ -338,6 +341,14 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <classifier>features</classifier>
             <scope>runtime</scope>
             <version>${goss-vaadin.version}</version>
+            <type>xml</type>
+        </dependency>
+		<dependency>
+            <groupId>pnnl.goss</groupId>
+            <artifactId>goss-sdgsf-features</artifactId>
+            <classifier>features</classifier>
+            <scope>runtime</scope>
+            <version>${goss-sdgsf.version}</version>
             <type>xml</type>
         </dependency>
 	</dependencies>
