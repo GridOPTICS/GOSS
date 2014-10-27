@@ -1,2 +1,0 @@
-[ -d $HOME/.goss ] || mkdir -p $HOME/.goss
-cp goss.properties $HOME/.goss/goss.properties

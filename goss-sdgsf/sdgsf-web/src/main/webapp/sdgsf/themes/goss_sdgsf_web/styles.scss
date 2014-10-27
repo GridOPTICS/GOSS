@@ -1,9 +1,0 @@
-@import "addons.scss";
-@import "goss_vaadin_web.scss";
-
-/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
-/* The actual styles should be defined in goss_vaadin_web.scss */
-.goss_vaadin_web {
-  @include addons;
-  @include goss_vaadin_web;
-}
