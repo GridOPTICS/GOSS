@@ -119,13 +119,18 @@ public class EscaMain {
 			EscaType vl = n.getVoltageLevelRes();
 			
 			if (vl != null){
-				log.debug("\tVL <"+vl.getMrid()+"> Direct Links");
+				log.debug("\tVL <"+vl.getMrid()+"> Direct Links " );
 				for(EscaType esca: vl.getDirectLinks()){
-					log.debug("\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+					if (esca.isResourceType(Esca60Vocab.BASEVOLTAGE_OBJECT)){
+						log.debug("\t\t"+esca.getDataType()+" " + " <"+esca.getMrid()+"> "+esca.getLiteralValue(Esca60Vocab.BASEVOLTAGE_NOMINALVOLTAGE));
+					}
+					else{
+						log.debug("\t\t"+esca.getDataType()+" " + " <"+esca.getMrid()+"> "+esca.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
+					}
 				}
 				log.debug("\tVL <"+vl.getMrid()+"> Refers to me");
 				for(EscaType esca: vl.getRefersToMe()){
-					log.debug("\t\t"+esca.getDataType()+" <"+esca.getMrid()+">");
+					log.debug("\t\t"+esca.getDataType()+" <"+esca.getMrid()+"> "+esca.getLiteralValue(Esca60Vocab.IDENTIFIEDOBJECT_PATHNAME));
 				}
 			}
 			else{
