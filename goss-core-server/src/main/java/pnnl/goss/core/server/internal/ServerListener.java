@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.server.core.internal;
+package pnnl.goss.core.server.internal;
 
 import static pnnl.goss.core.GossCoreContants.PROP_USE_AUTHORIZATION;
 
@@ -63,14 +63,14 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Event;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.server.GossRequestHandler;
+import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 //import pnnl.goss.security.util.GossSecurityConstants;
-import pnnl.goss.server.core.GossRequestHandler;
 //import pnnl.goss.security.core.GossSecurityConstants;
 //import pnnl.goss.security.core.SecurityRequestHandler;
-import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 //import org.apache.http.impl.cookie.RFC2109DomainHandler;
 

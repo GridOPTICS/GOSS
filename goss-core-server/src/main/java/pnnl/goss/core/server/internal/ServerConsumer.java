@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.server.core.internal;
+package pnnl.goss.core.server.internal;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -52,7 +52,7 @@ import javax.jms.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
+import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 
 public class ServerConsumer {
 

@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.server.core.internal;
+package pnnl.goss.core.server.internal;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -62,10 +62,10 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
+import pnnl.goss.core.server.GossDataServices;
+import pnnl.goss.core.server.GossRequestHandler;
+import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.security.core.GossSecurityHandler;
-import pnnl.goss.server.core.GossDataServices;
-import pnnl.goss.server.core.GossRequestHandler;
-import pnnl.goss.server.core.GossRequestHandlerRegistrationService;
 
 @SuppressWarnings("rawtypes")
 @Instantiate

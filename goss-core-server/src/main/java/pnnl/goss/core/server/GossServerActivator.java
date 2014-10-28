@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.server.core;
+package pnnl.goss.core.server;
 
 import java.util.Dictionary;
 
@@ -59,7 +59,7 @@ import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.server.core.internal.GridOpticsServer;
+import pnnl.goss.core.server.internal.GridOpticsServer;
 import static pnnl.goss.core.GossCoreContants.*;
 
 @Component(managedservice=PROP_CORE_CONFIG)

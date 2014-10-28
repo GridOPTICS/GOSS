@@ -1,4 +1,4 @@
-package pnnl.goss.server.core.internal;
+package pnnl.goss.core.server.internal;
 
 import java.util.Properties;
 
@@ -10,7 +10,7 @@ import org.apache.felix.ipojo.annotations.Provides;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.server.core.BasicDataSourceCreator;
+import pnnl.goss.core.server.BasicDataSourceCreator;
 
 @Provides
 @Component

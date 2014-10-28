@@ -1,4 +1,4 @@
-package pnnl.goss.server.core.internal;
+package pnnl.goss.core.server.internal;
 
 import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
 
@@ -21,7 +21,7 @@ import org.apache.felix.ipojo.annotations.Updated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.server.core.GossDataServices;
+import pnnl.goss.core.server.GossDataServices;
 
 @Provides
 @Instantiate

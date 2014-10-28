@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+
 //import org.apache.directory.api.ldap.aci.UserClass.ThisEntry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pnnl.goss.server.core.GossDataServices;
+import pnnl.goss.core.server.GossDataServices;
+import pnnl.goss.core.server.internal.GossDataServicesImpl;
 
 public class TestDataServices {
 	

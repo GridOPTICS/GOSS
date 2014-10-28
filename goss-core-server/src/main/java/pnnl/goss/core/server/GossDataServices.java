@@ -1,4 +1,4 @@
-package pnnl.goss.server.core;
+package pnnl.goss.core.server;
 
 import java.sql.Connection;
 import java.util.Collection;

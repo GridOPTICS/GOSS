@@ -1,4 +1,4 @@
-package pnnl.goss.server.core;
+package pnnl.goss.core.server;
 
 import org.apache.commons.dbcp.BasicDataSource;
 

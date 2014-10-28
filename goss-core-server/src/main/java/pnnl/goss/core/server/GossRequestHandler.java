@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.server.core;
+package pnnl.goss.core.server;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
