@@ -1,7 +1,5 @@
-// Allow generation of eclipse project.
-apply plugin: 'eclipse'
 
-// All projects under this projects folder will have the group and version below.
+// All projects under this project folder will have the group and version below.
 allprojects {
 	apply plugin: "eclipse"
 	group = 'pnnl.goss'
