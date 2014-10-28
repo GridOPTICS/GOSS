@@ -3,14 +3,17 @@ apply plugin: 'eclipse'
 
 
 // Project for the entire sub group of projects.
+/*
 ext. projectIds = ['group': 'pnnl.goss.core', 'version': project.version]
 
 group = projectIds.group
 version = projectIds.version
+*/
 
 allprojects {
 	group = 'pnnl.goss.core'
 	version = '0.1.6-SNAPSHOT'
+    
 }
 
 subprojects {
@@ -19,6 +22,23 @@ subprojects {
 	repositories {
 		mavenCentral()
 	}
+    
+    
+    dependencies {
+        compile 'org.slf4j:slf4j-api:1.7.5'
+        compile 'org.slf4j:slf4j-log4j12:1.7.5'
+        
+        compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-lang:2.4_6'
+        compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xstream:1.4.6_1'
+        compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-io:1.4_3'
+        
+        
+        compile 'org.apache.felix:org.apache.felix.ipojo.annotations:1.12.0'
+        
+        // For testing we are going to use these ubiquitous
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.mockito:mockito-all:1.10.8'
+    }
 }
 
 // Set up properties for each of the subprojects.
@@ -64,7 +84,6 @@ project(':goss-core-web') {
 		providedCompile 'javax.servlet:servlet-api:3.0'
 	}
 }*/
-
 
 
 // Snag the version from the properties file.
