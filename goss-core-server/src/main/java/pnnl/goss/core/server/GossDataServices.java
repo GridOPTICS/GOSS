@@ -7,6 +7,7 @@ import java.util.Collection;
  * The purpose of the GossDataServices is to allow management of multiple
  * types of data through an easy interface.
  * 
+ * @author Craig Allwardt 
  */
 public interface GossDataServices {
 	
