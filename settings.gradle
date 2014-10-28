@@ -1,5 +1,20 @@
 // These are the properties that are in this feature set.
-include 'goss-core', 'goss-core-client', 'goss-core-server', 'goss-core-web', 'goss-core-security', 'goss-core-security-utils'
+include 'goss-core', 
+        'goss-core-client', 
+        'goss-core-server', 
+        'goss-core-web', 
+        'goss-core-security', 
+        'goss-core-security-utils'
+        
+
+rootProject.name = 'goss'
+
+// loop over the sub-projects declared above.
+rootProject.children.each {
+    // The build file for each of the children is the original name.gradle without
+    // the goss- prefix.
+    it.buildFileName = it.name + '.gradle' - 'goss-'
+}
 
 
 
