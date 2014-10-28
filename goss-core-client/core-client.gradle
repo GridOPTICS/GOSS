@@ -1,3 +1,9 @@
 dependencies {
 	compile project(':goss-core')
+    
+    compile 'org.apache.activemq:activemq-stomp:5.10.0'
+    compile 'org.apache.httpcomponents:httpclient-osgi:4.3.5'
+    compile 'org.fusesource.stompjms:stompjms-client:1.19'
+    compile 'com.google.code.gson:gson:2.3'
+
 }
