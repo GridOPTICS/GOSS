@@ -1,28 +1,27 @@
 // Allow generation of eclipse project.
 apply plugin: 'eclipse'
 
-
-// Project for the entire sub group of projects.
-/*
-ext. projectIds = ['group': 'pnnl.goss.core', 'version': project.version]
-
-group = projectIds.group
-version = projectIds.version
-*/
-
+// All projects under this projects folder will have the group and version below.
 allprojects {
 	group = 'pnnl.goss.core'
 	version = '0.1.6-SNAPSHOT'
-    
 }
+
 
 subprojects {
 	apply plugin: 'java'
+    apply plugin: 'osgi'
 	
 	repositories {
 		mavenCentral()
 	}
     
+    jar {
+        manifest {
+            instruction 'Bundle-Vendor', 'PNNL'
+            instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
+        }
+    }
     
     dependencies {
         // Logging should be available to all projects

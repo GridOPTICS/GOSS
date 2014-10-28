@@ -4,3 +4,13 @@ dependencies {
     
     compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:1.4_3'
 }
+
+jar {
+    manifest {
+        name = "$project.name"
+        
+        instruction 'DynamicImport-Package', '*'
+        instruction 'Export-Package',
+            'pnnl.goss.server.core'
+    }
+}
