@@ -3,19 +3,23 @@ apply plugin: 'eclipse'
 
 // All projects under this projects folder will have the group and version below.
 allprojects {
-	group = 'pnnl.goss.core'
+	apply plugin: "eclipse"
+	group = 'pnnl.goss'
 	version = '0.1.6-SNAPSHOT'
+    
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+	}
 }
 
-
-subprojects {
-	apply plugin: 'java'
-    apply plugin: 'osgi'
+subprojects {    
+	apply plugin: "java"
+    apply plugin: "osgi"
+	apply plugin: "maven"
 	
-	repositories {
-		mavenCentral()
-	}
-    
+	
     jar {
         manifest {
             instruction 'Bundle-Vendor', 'PNNL'
@@ -25,17 +29,94 @@ subprojects {
     
     dependencies {
         // Logging should be available to all projects
-        compile 'org.slf4j:slf4j-api:1.7.5'
-        compile 'org.slf4j:slf4j-log4j12:1.7.5'
+        compile "org.slf4j:slf4j-api:1.7.5"
+        compile "org.slf4j:slf4j-log4j12:1.7.5"
         
         // ipojo annotations for service registry/retrieval.        
         compile 'org.apache.felix:org.apache.felix.ipojo.annotations:1.12.0'
         
         // For testing we are going to use these ubiquitous
-        testCompile 'junit:junit:4.11'
-        testCompile 'org.mockito:mockito-all:1.10.8'
+        testCompile "junit:junit:4.11"
+        testCompile "org.mockito:mockito-core:1.10.8"
     }
 }
+
+/*
+project (':goss-core-server') {
+    dependencies {
+        compile project(':goss-core')
+        compile project(':goss-core-security')
+        
+        compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:1.4_3'
+    }
+}
+*/
+
+
+/*
+runOsgi {
+    bundles = [
+        subprojects,
+        'org.apache.felix:org.apache.felix.ipojo:1.12.0',
+        'org.apache.felix:org.apache.felix.shell:1.4.3',
+        'org.apache.felix:org.apache.felix.shell.tui:1.4.1',
+        'org.apache.felix:org.apache.felix.bundlerepository:1.6.0',
+        'org.apache.felix:org.apache.felix.ipojo.arch:1.6.0'
+    ]
+}*/
+
+
+
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        /*osgiRuntime 'org.apache.felix:org.apache.felix.gogo.runtime:0.12.1'
+        osgiRuntime 'org.apache.felix:org.apache.felix.gogo.shell:0.10.0'
+        osgiRuntime 'org.apache.felix:org.apache.felix.gogo.command:0.14.0'*/
+        
+        classpath "com.athaydes.gradle.osgi:osgi-run-core:1.0"
+    }
+}
+
+apply plugin: 'osgi-run'
+
+runOsgi {
+  bundles += subprojects
+}
+
+/*
+karafFeatures {
+    excludes = [
+        'org.slf4j/.*',
+        'log4j/.*',
+        'org.osgi/.*',
+        'org.apache.felix/.*',
+        'org.apache.karaf.shell/.*'
+    ]
+
+    wraps = [
+        'com.google.guava/guava/.*'
+    ]
+
+    startLevels = [
+        'org.apache.geronimo.specs/.*':'50',
+        'org.apache.commons/.*':'60',
+    ]
+
+    extraBundles = [
+        'mvn:mygroup:mypackage:myversion',
+        'mvn:mygroup2:mypackage2:myversion2'
+    ]
+
+    // if outputFile is not provided, the output is written to the standard
+    // output.
+    outputFile = new File('features.xml')
+}*/
 
 // Set up properties for each of the subprojects.
 /*
