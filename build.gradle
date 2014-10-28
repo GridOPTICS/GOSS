@@ -1,8 +1,9 @@
 // Allow generation of eclipse project.
 apply plugin: 'eclipse'
 
+
 // Project for the entire sub group of projects.
-ext. projectIds = ['group': 'pnnl.goss.core', 'version': '0.1.6-SNAPSHOT']
+ext. projectIds = ['group': 'pnnl.goss.core', 'version': project.version]
 
 group = projectIds.group
 version = projectIds.version
@@ -63,3 +64,63 @@ project(':goss-core-web') {
 		providedCompile 'javax.servlet:servlet-api:3.0'
 	}
 }*/
+
+
+
+// Snag the version from the properties file.
+// file method is provided by Project interface, created an
+// instance of java.io.File relative to project directory.
+ext.versionFile = file('version.properties')
+
+// Task configuration defined without shift operator.
+task loadVersion {
+	project.version = readVersion()
+}
+
+task printVersion (group: 'versioning',
+                    description: 'Prints project version.',
+                    dependsOn: loadVersion) << {
+	logger.quiet "Version: $version"
+    logger.quiet "projectIds: $projectIds"
+}
+
+ProjectVersion readVersion() {
+	logger.quiet 'Reading the version file.'
+	
+	if (!versionFile.exists()) {
+		throw new GradleException("Required version file does not exist: $versionFile.canonicalPath")
+	}
+	
+	Properties versionProps = new Properties()
+	
+	versionFile.withInputStream { 
+		stream -> versionProps.load(stream)
+	}
+	
+	new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
+}
+
+
+class ProjectVersion {
+	Integer major
+	Integer minor
+	Boolean release
+	
+	ProjectVersion(Integer major, Integer minor) {
+		this.major = major
+		this.minor = minor
+		this.release = Boolean.FALSE
+	}
+	
+	ProjectVersion(Integer major, Integer minor, Boolean release) {
+		this.major = major
+		this.minor = minor
+		this.release = release
+	}
+	
+	@Override
+	String toString() {
+		"$major.$minor${release ? '' : '-SNAPSHOT'}"
+	}
+}
+	
