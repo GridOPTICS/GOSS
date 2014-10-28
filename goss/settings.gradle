@@ -1,3 +1,4 @@
+// These are the properties that are in this feature set.
 include 'goss-core', 'goss-core-client', 'goss-core-server', 'goss-core-web', 'goss-core-security', 'goss-core-security-utils'
 
 

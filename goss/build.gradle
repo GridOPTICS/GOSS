@@ -1,3 +1,7 @@
+// Allow generation of eclipse project.
+apply plugin: 'eclipse'
+
+// Project for the entire sub group of projects.
 ext. projectIds = ['group': 'pnnl.goss.core', 'version': '0.1.6-SNAPSHOT']
 
 group = projectIds.group
