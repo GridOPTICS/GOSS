@@ -1,3 +1,6 @@
 dependencies {
 	compile project(':goss-core')
+    compile project(':goss-core-security')
+    
+    compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:1.4_3'
 }
