@@ -66,7 +66,7 @@ import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
-import pnnl.goss.security.util.GossSecurityConstants;
+//import pnnl.goss.security.util.GossSecurityConstants;
 import pnnl.goss.server.core.GossRequestHandler;
 //import pnnl.goss.security.core.GossSecurityConstants;
 //import pnnl.goss.security.core.SecurityRequestHandler;
@@ -123,8 +123,8 @@ public class ServerListener implements MessageListener {
 					//If you wish to disable authentication and authorization you must remove any authentication plugins from
 					//  the activemq.xml file and set the useAuthorization property in config properties to false
 					if(useAuth){
-						String creds = objectMessage.getStringProperty(GossSecurityConstants.ROLE_CREDENTIALS);
-						String tempDestination = objectMessage.getStringProperty(GossSecurityConstants.TEMP_DESTINATION);
+						String creds = "fuzzybuckets"; // objectMessage.getStringProperty(GossSecurityConstants.ROLE_CREDENTIALS);
+						String tempDestination = "fuzzybuckedsdest"; // objectMessage.getStringProperty(GossSecurityConstants.TEMP_DESTINATION);
 						log.info("ServerListener received Credentials "+creds+" and temp destintation "+tempDestination);
 						boolean accessAllowed = handlerService.checkAccess(request, creds, tempDestination);
 						log.info("ServerListener access granted for request:"+accessAllowed);
