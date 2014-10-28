@@ -1,5 +1,6 @@
 .settings
 mvn-build
+build
 target
 .classpath
 .project
