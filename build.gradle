@@ -39,6 +39,10 @@ subprojects {
     }
 }
 
+task wrapper (type: Wrapper) {
+	gradleVersion = '2.1'
+}
+
 
 /*************************************************************************
  * 	From here down is testing code that should be commented out.
