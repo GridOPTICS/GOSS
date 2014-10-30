@@ -4,13 +4,18 @@ dependencies {
     compile project(':goss-core-security')
     
     compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:1.4_3'
+	compile 'org.osgi:org.osgi.core:4.2.0'
+	
 }
 
 jar {
     manifest {       
         instruction 'DynamicImport-Package', '*'
         instruction 'Import-Package', 'pnnl.goss.core'
-        instruction 'Export-Package', 'pnnl.goss.core.server'
+        instruction 'Export-Package', 
+										'pnnl.goss.core.server',
+										'pnnl.goss.core.server.annotations'
+									
     }
 }
 
