@@ -63,6 +63,7 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Event;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.server.AbstractRequestHandler;
 import pnnl.goss.core.server.GossRequestHandler;
 import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.core.RequestAsync;
@@ -173,7 +174,7 @@ public class ServerListener implements MessageListener {
 						
 						RequestAsync requestAsync = (RequestAsync)request;
 						
-						GossRequestHandler handler = handlerService.getHandler(request);
+						AbstractRequestHandler handler = handlerService.getHandler(request);
 						
 						DataResponse response = (DataResponse) handlerService.handle(request);
 						response.setId(request.getId());
