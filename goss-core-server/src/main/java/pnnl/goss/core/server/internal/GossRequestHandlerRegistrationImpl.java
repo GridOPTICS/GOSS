@@ -44,8 +44,14 @@
 */
 package pnnl.goss.core.server.internal;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -53,6 +59,8 @@ import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,15 +70,20 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.core.server.GossDataServices;
-import pnnl.goss.core.server.GossRequestHandler;
-import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.security.core.GossSecurityHandler;
+import pnnl.goss.core.server.annotations.RequestHandler;
+import pnnl.goss.core.server.annotations.RequestItem;
+import pnnl.goss.core.server.GossDataServices;
+import pnnl.goss.core.server.AbstractRequestHandler;
+import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 
 @SuppressWarnings("rawtypes")
 @Instantiate
 @Provides
-@Component(immediate=true)
+//@Component@org.apache.felix.ipojo.whiteboard.Wbp(filter="(foo=true)",
+//	onArrival="onArrival",
+//	onDeparture="onDeparture",
+//	onModification="onModification")
 public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerRegistrationService {
 
 	private static final Logger log = LoggerFactory.getLogger(GossRequestHandlerRegistrationImpl.class);
@@ -78,7 +91,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	private HashMap<String, Class> handlerToClasss = new HashMap<String, Class>();
 	private GossSecurityHandler securityHandler;
 	private Dictionary coreServerConfig = null;
-	@Requires 
+	 
 	private GossDataServices dataServices;
 	
 	public GossRequestHandlerRegistrationImpl(@Requires GossDataServices dataServices){
@@ -86,22 +99,15 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		if (dataServices == null){
 			throw new NullPointerException("DataServices cannot be null!");
 		}
+
 		this.dataServices = dataServices;
 	}
 	
-//	@Property
-//	public void setSecurityHandler(GossSecurityHandler securityHandler){
-//		this.securityHandler = securityHandler;
-//	}
 	@Validate
 	public void startHandler(){
 		log.debug("Starting handler");
 	}
 
-//	public GossRequestHandlerRegistrationImpl(GossSecurityHandler securityHandler){
-//		System.out.println("CONSTRUCTING "+getClass());
-//		//this.securityHandler = securityHandler;
-//	}
 	@Invalidate
 	public void shutdown(){
 		log.debug("shutdown");
@@ -156,7 +162,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			
 			while(superClassTester != null){
 				
-				if(superClassTester.equals(GossRequestHandler.class)){
+				if(superClassTester.equals(AbstractRequestHandler.class)){
 					foundSuperClassHandler = true;
 					break;
 				}
@@ -164,7 +170,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			}
 			
 			if(!foundSuperClassHandler){
-				throw new Exception("Invalid handler, must be subclass of "+GossRequestHandler.class.toString());
+				throw new Exception("Invalid handler, must be subclass of "+AbstractRequestHandler.class.toString());
 			}
 			
 			if(!foundSuperClassRequest){
@@ -232,7 +238,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			
 			while(superClassTester != null){
 				
-				if(superClassTester.equals(GossRequestHandler.class)){
+				if(superClassTester.equals(AbstractRequestHandler.class)){
 					foundSuperClassHandler = true;
 					break;
 				}
@@ -240,7 +246,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			}
 			
 			if(!foundSuperClassHandler){
-				throw new Exception("Invalid handler, must be subclass of "+GossRequestHandler.class.toString());
+				throw new Exception("Invalid handler, must be subclass of "+AbstractRequestHandler.class.toString());
 			}
 			
 			// Keep the string of the class.
@@ -273,7 +279,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 
 	public Response handle(Request request) {
 		Response response = null;
-		GossRequestHandler handler = null;
+		AbstractRequestHandler handler = null;
 		if (request != null) {
 			log.debug("handling request for:\n\t " + request.getClass().getName() + " => " + handlerMap.get(request.getClass().getName()));
 
@@ -281,7 +287,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 				try {
 					Class handlerClass = handlerToClasss.get(request.getClass().getName());
 					//Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
-					handler = (GossRequestHandler) handlerClass.newInstance();
+					handler = (AbstractRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
 						handler.setGossDataservices(dataServices);
 						handler.setHandlerService(this);
@@ -321,13 +327,13 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	@Override
 	public Response handle(Request request, String dataType) {
 		Response response = null;
-		GossRequestHandler handler = null;
+		AbstractRequestHandler handler = null;
 		if (dataType != null) {
 			log.debug("handling request for: " + dataType);
 			if (handlerMap.containsKey(dataType)) {
 				try {
 					Class handlerClass = Class.forName(handlerMap.get(dataType));
-					handler = (GossRequestHandler) handlerClass.newInstance();
+					handler = (AbstractRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
 						handler.setGossDataservices(dataServices);
 						handler.setHandlerService(this);
@@ -392,15 +398,15 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	}
 
 	
-	public GossRequestHandler getHandler(Request request) {
-		GossRequestHandler handler = null;
+	public AbstractRequestHandler getHandler(Request request) {
+		AbstractRequestHandler handler = null;
 		if (request != null) {
 			log.debug("handling request for: " + request.getClass().getName());
 
 			if (handlerMap.containsKey(request.getClass().getName())) {
 				try {
 					Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));
-					handler = (GossRequestHandler) handlerClass.newInstance();
+					handler = (AbstractRequestHandler) handlerClass.newInstance();
 				} catch (Exception e) {
 					log.error("Handle error exception", e);
 				}
@@ -409,6 +415,49 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		return handler;
 		
 	
+	}
+
+
+	@Override
+	public void registerHandlers(Enumeration<URL> urls) {
+	
+		for(URL u:Collections.list(urls)){
+			System.out.println(u.toString());
+		}
+		Reflections ref = new Reflections(new ConfigurationBuilder()
+			.setUrls(Collections.list(urls)));
+	
+		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+		
+		// For each of the annotations we need to add all of the elements that are specified
+		// in the requests parameter.
+		for(Class<?> handler : handers){
+			log.debug("Found handler: "+handler.getName());
+			for(Annotation annotation : handler.getAnnotations()){
+				for(RequestItem item: ((RequestHandler)annotation).value()){
+					addHandlerMapping(item.value(), annotation.getClass());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void unregisterHandlers(Enumeration<URL> urls) {
+		Reflections ref = new Reflections(new ConfigurationBuilder()
+		.setUrls(Collections.list(urls)));
+
+		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+		
+		// For each of the annotations we need to remove all of the requests.
+		for(Class<?> handler : handers){
+			log.debug("Found handler: "+handler.getName());
+			for(Annotation annotation : handler.getAnnotations()){
+				for(RequestItem item: ((RequestHandler)annotation).value()){
+					removeHandlerMapping(item.value());
+				}
+			}
+		}
+		
 	}
 
 }
