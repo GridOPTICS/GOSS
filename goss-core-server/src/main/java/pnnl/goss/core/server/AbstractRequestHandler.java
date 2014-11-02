@@ -44,72 +44,21 @@
 */
 package pnnl.goss.core.server;
 
-import java.util.Dictionary;
+import pnnl.goss.core.Request;
+import pnnl.goss.core.Response;
 
-import javax.jms.JMSException;
-
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Property;
-import org.apache.felix.ipojo.annotations.Requires;
-import org.apache.felix.ipojo.annotations.Updated;
-import org.apache.felix.ipojo.annotations.Validate;
-//import org.osgi.service.cm.ConfigurationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pnnl.goss.core.server.internal.GridOpticsServer;
-import static pnnl.goss.core.GossCoreContants.*;
-
-@Component(managedservice=PROP_CORE_CONFIG)
-@Instantiate
-public class GossServerActivator {
-
-	private static final Logger log = LoggerFactory.getLogger(GossServerActivator.class);
-	private GridOpticsServer gossServer;
+public abstract class AbstractRequestHandler {
 	
-	@Requires
-	private GossRequestHandlerRegistrationService service;
+	protected GossRequestHandlerRegistrationService requestHandlerService;
+	protected GossDataServices dataservices;
 	
-	@Invalidate
-	public void stop() throws Exception {
-		System.out.println("Stopping the core server bundle");
-		try {
-			if (gossServer != null) {
-				gossServer.close();
-				gossServer = null;
-//				GossServerActivator.bundleContext = null;
-			}
-		} catch (Exception ex) {
-			log.error("Shutdown error!", ex);
-			ex.printStackTrace();
-		}
+	public abstract Response handle(Request request);
+	
+	public void setHandlerService(GossRequestHandlerRegistrationService requestHandlerService){
+		this.requestHandlerService = requestHandlerService;
 	}
 	
-	
-//	private class GossServerConfigUpdater implements ManagedService {
-
-	@Updated
-	@SuppressWarnings("rawtypes")
-	public void updated(Dictionary config){ // throws ConfigurationException {
-		System.out.println("Updating Goss Server configuration");
-			
-		if (gossServer != null){
-			try {
-				gossServer.close();
-			} catch (JMSException e) {
-				// TODO Auto-generated catch block
-					e.printStackTrace();
-			}
-		}
-		
-		// first time through update.
-		if (config == null || config.size() < 2) {
-			return;
-		}
-		
-		service.setCoreServerConfig(config);
-		gossServer = new GridOpticsServer(service, false);			
+	public void setGossDataservices(GossDataServices dataservices){
+		this.dataservices = dataservices;
 	}
 }
