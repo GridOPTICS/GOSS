@@ -1,3 +1,13 @@
+// Define versions for dependencies here
+ext {
+	gradleVersion = '2.1'
+    groovyVersion = '2.3.3'
+	ipojoVersion = '1.12.0'
+	junitVersion = '4.11'
+	mockitoVersion = '1.10.8'
+	slf4jVersion = '1.7.5'
+	spockVersion = '0.7-groovy-2.0'
+}
 
 // All projects under this project folder will have the group and version below.
 allprojects {
@@ -16,6 +26,7 @@ subprojects {
 	apply plugin: "java"
     apply plugin: "osgi"
 	apply plugin: "maven"
+	apply plugin: "groovy"
 	
 	
     jar {
@@ -26,16 +37,21 @@ subprojects {
     }
     
     dependencies {
+		// Allow us to use groovy throughout the project.
+		compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+		
         // Logging should be available to all projects
-        compile "org.slf4j:slf4j-api:1.7.5"
-        compile "org.slf4j:slf4j-log4j12:1.7.5"
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
+        compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
         
         // ipojo annotations for service registry/retrieval.        
-        compile 'org.apache.felix:org.apache.felix.ipojo.annotations:1.12.0'
+        compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
         
         // For testing we are going to use these ubiquitous
-        testCompile "junit:junit:4.11"
-        testCompile "org.mockito:mockito-core:1.10.8"
+	    testCompile "junit:junit:$junitVersion"
+	    testCompile "org.mockito:mockito-core:$mockitoVersion"
+	    testCompile "org.spockframework:spock-core:$spockVersion"
+	    
     }
 }
 

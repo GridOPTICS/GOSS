@@ -1,10 +1,18 @@
 
+ext {
+	commonsDbcp = '1.4_3'
+	osgiVersion = '4.2.0'
+	reflectionsVersion = '0.9.9'
+}
+
 dependencies {
+	
 	compile project(':goss-core')
     compile project(':goss-core-security')
     
-    compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:1.4_3'
-	compile 'org.osgi:org.osgi.core:4.2.0'
+	compile "org.reflections:reflections:$reflectionsVersion"
+    compile "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$commonsDbcp"
+	compile "org.osgi:org.osgi.core:$osgiVersion"
 	
 }
 
