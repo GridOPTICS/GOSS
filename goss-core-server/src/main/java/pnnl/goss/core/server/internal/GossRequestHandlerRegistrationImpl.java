@@ -80,6 +80,7 @@ import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 @SuppressWarnings("rawtypes")
 @Instantiate
 @Provides
+@Component
 //@Component@org.apache.felix.ipojo.whiteboard.Wbp(filter="(foo=true)",
 //	onArrival="onArrival",
 //	onDeparture="onDeparture",
