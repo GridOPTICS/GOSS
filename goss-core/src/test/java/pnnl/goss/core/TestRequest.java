@@ -12,7 +12,8 @@ public class TestRequest {
 		Request req = new Request();
 		Request req2 = new Request();
 		
-		Assert.assertNotEquals(req.getId(), req2.getId());
+		Assert.assertFalse(req.getId().equals(req2.getId()));
+		
 	}
 	
 	@Test
