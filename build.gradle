@@ -2,7 +2,7 @@
 ext {
 	gradleVersion = '2.1'
     groovyVersion = '2.3.3'
-	ipojoVersion = '1.12.0'
+	ipojoVersion = '1.11.2'
 	junitVersion = '4.11'
 	mockitoVersion = '1.10.8'
 	slf4jVersion = '1.7.5'
@@ -30,6 +30,8 @@ subprojects {
 	
 	
     jar {
+		// Include source with the jar
+		from sourceSets.main.allSource
         manifest {
             instruction 'Bundle-Vendor', 'PNNL'
             instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
@@ -46,6 +48,7 @@ subprojects {
         
         // ipojo annotations for service registry/retrieval.        
         compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
+		compile "org.apache.felix:org.apache.felix.ipojo:$ipojoVersion"
         
         // For testing we are going to use these ubiquitous
 	    testCompile "junit:junit:$junitVersion"
@@ -53,11 +56,30 @@ subprojects {
 	    testCompile "org.spockframework:spock-core:$spockVersion"
 	    
     }
+	
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+	
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
 }
 
 task wrapper (type: Wrapper) {
 	gradleVersion = '2.1'
 }
+
+
+
+
 
 
 /*************************************************************************
