@@ -23,46 +23,29 @@ jar {
         instruction 'Export-Package', 
 										'pnnl.goss.core.server',
 										'pnnl.goss.core.server.annotations'
-									
-    }
-}
-
-/* The following  ipojoization of the project was enhanced from 
- * http://snippbin.com/XMql2MXd
- */
- 
-buildscript {
-    repositories {
-        mavenCentral()
-    }  
-    dependencies {
-		// use 1.11.2 because there is some class path issue that shows up using 1.12.0.
-        classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:1.11.2"
-    }  
-}
-
-
-[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
-jar.doLast {
-    org.apache.felix.ipojo.manipulator.Pojoization pojo = new org.apache.felix.ipojo.manipulator.Pojoization()
- 
-    File jarfile = file(jar.archivePath)
-    File targetJarFile = file(jar.destinationDir.absolutePath +"/" + jar.baseName + "_out.jar")
- 
-    if (!jarfile.exists()) throw new InvalidUserDataException("The specified bundle file does not exist: " + jarfile.absolutePath)
- 
-    pojo.pojoization(jarfile, targetJarFile, (File) null)
- 
-    pojo.getWarnings().each { s ->  
-        println s
-    }  
- 
-    if (jarfile.delete()) {
-        if ( !targetJarFile.renameTo(jarfile) ) {
-            throw new InvalidUserDataException("Cannot rename the manipulated jar file");
-        }  
-    }else {
-        throw new InvalidUserDataException("Cannot delete the input jar file")
-    }  
+		doLast {
+			[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+			
+			org.apache.felix.ipojo.manipulator.Pojoization pojo = new org.apache.felix.ipojo.manipulator.Pojoization()
+		 
+			File jarfile = file(jar.archivePath)
+			File targetJarFile = file(jar.destinationDir.absolutePath +"/" + jar.baseName + "_out.jar")
+		 
+			if (!jarfile.exists()) throw new InvalidUserDataException("The specified bundle file does not exist: " + jarfile.absolutePath)
+		 
+			pojo.pojoization(jarfile, targetJarFile, (File) null)
+		 
+			pojo.getWarnings().each { s ->
+				println s
+			}
+		 
+			if (jarfile.delete()) {
+				if ( !targetJarFile.renameTo(jarfile) ) {
+					throw new InvalidUserDataException("Cannot rename the manipulated jar file");
+				}
+			}else {
+				throw new InvalidUserDataException("Cannot delete the input jar file")
+			}
+		}
+    }	
 }
