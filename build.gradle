@@ -77,6 +77,15 @@ task wrapper (type: Wrapper) {
 	gradleVersion = '2.1'
 }
 
+apply plugin: "maven-publish"
+
+publishing {
+  publications {
+	featurePub(MavenPublication) {
+		artifact source: 'features.xml', classifier: 'features', extension: 'xml'
+	}
+  }
+}
 
 
 

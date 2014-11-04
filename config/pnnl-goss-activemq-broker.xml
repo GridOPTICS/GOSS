@@ -1,0 +1,148 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+
+    <broker xmlns="http://activemq.apache.org/schema/core"
+            brokerName="${goss.broker.name}"
+            dataDirectory="${goss.broker.data}"
+            start="false">
+
+        <destinationPolicy>
+            <policyMap>
+              <policyEntries>
+                <policyEntry topic=">" >
+                  <pendingMessageLimitStrategy>
+                    <constantPendingMessageLimitStrategy limit="1000"/>
+                  </pendingMessageLimitStrategy>
+                </policyEntry>
+              </policyEntries>
+            </policyMap>
+        </destinationPolicy>
+
+        <managementContext>
+            <managementContext createConnector="false"/>
+        </managementContext>
+
+        <persistenceAdapter>
+            <kahaDB directory="${goss.broker.data}/kahadb"/>
+        </persistenceAdapter>
+		
+		<!--
+        <plugins>
+            <jaasAuthenticationPlugin configuration="karaf" />
+        </plugins>-->
+		
+
+        <systemUsage>
+            <systemUsage>
+                <memoryUsage>
+                    <memoryUsage percentOfJvmHeap="70"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="100 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="50 gb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+
+        <transportConnectors>
+             <!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB -->
+            <transportConnector name="openwire" uri="tcp://0.0.0.0:${activemq.openwire.port}?wireFormat.maxInactivityDuration=0;maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="stomp" uri="stomp://0.0.0.0:${activemq.stomp.port}?wireFormat.maxInactivityDuration=0;maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="ws" uri="ws://0.0.0.0:${activemq.ws.port}?wireFormat.maxInactivityDuration=0;maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600" />
+        </transportConnectors>
+		
+		<!---->
+		<plugins>
+		 	<jaasAuthenticationPlugin configuration="LDAPLogin" />
+			<!--  -->
+			<authorizationPlugin>
+			
+		        <map>
+		          <!--  OLD VERSION
+		          <bean id="lDAPAuthorizationMap" class="org.apache.activemq.security.LDAPAuthorizationMap"
+		                xmlns="http://www.springframework.org/schema/beans">
+		            <property name="initialContextFactory" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+		            <property name="connectionURL" value="ldap://${ldap.host}:${ldap.port}"/>
+		            <property name="authentication" value="simple"/>
+		            <property name="connectionUsername" value="${ldap.connection.user}"/>
+		            <property name="connectionPassword" value="${ldap.connection.pw}"/>
+		            <property name="connectionProtocol" value=""/>
+		            <property name="topicSearchMatchingFormat"
+		                      value="cn={0},ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="topicSearchSubtreeBool" value="true"/>
+		            <property name="queueSearchMatchingFormat"
+		                      value="cn={0},ou=Queue,ou=Destination,${ldap.goss.base}"/>
+		            <property name="queueSearchSubtreeBool" value="true"/>
+		            <property name="advisorySearchBase"
+		                      value="cn=ActiveMQ.Advisory,ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="tempSearchBase"
+		                      value="cn=ActiveMQ.Temp,ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="adminBase" value="(cn=admin)"/>
+		            <property name="adminAttribute" value="member"/>
+		            <property name="readBase" value="(cn=read)"/>
+		            <property name="readAttribute" value="member"/>
+		            <property name="writeBase" value="(cn=write)"/>
+		            <property name="writeAttribute" value="member"/>
+		          </bean>
+		           -->
+		           
+		           <!--  BETTER VERSION THAT USES CACHING -->
+		           <bean id="lDAPAuthorizationMap" class="pnnl.goss.security.util.GossLDAPAuthorizationMap"
+		                xmlns="http://www.springframework.org/schema/beans">
+		            <property name="connectionURL" value="ldap://${ldap.host}:${ldap.port}"/>
+		            <property name="authentication" value="simple"/>
+		            <property name="connectionUsername" value="${ldap.connection.user}"/>
+		            <property name="connectionPassword" value="${ldap.connection.pw}"/>
+		            <property name="connectionProtocol" value=""/>
+					 <property name="topicSearchBase"
+		                      value="ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="queueSearchBase"
+		                      value="ou=Queue,ou=Destination,${ldap.goss.base}"/>
+				   <property name="advisoryBase"
+		                      value="ActiveMQ.Advisory"/>
+		            <property name="tempSearchBase"
+		                      value="cn=ActiveMQ.Temp,ou=Topic,ou=Destination,${ldap.goss.base}"/>
+		            <property name="adminPermissionGroupSearchFilter" value="(cn=admin)"/>
+		            <property name="readPermissionGroupSearchFilter" value="(cn=read)"/>
+		            <property name="writePermissionGroupSearchFilter" value="(cn=write)"/>
+		          </bean>
+		        </map>
+	          </authorizationPlugin> 
+	 
+			<bean xmlns="http://www.springframework.org/schema/beans" id="gossSecurityBroker" class="pnnl.goss.security.broker.GossSecurityBroker"></bean> 
+					
+		</plugins>
+		
+		<!--<messageAuthorizationPolicy>
+		   	<bean class="pnnl.goss.security.core.activemq.GossAuthPolicy"
+		         xmlns="http://www.springframework.org/schema/beans"/>
+		</messageAuthorizationPolicy>
+		-->
+    </broker>
+
+</beans>

@@ -40,7 +40,8 @@ buildscript {
         classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:1.11.2"
     }  
 }
- 
+
+
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 jar.doLast {
