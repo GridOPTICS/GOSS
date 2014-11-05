@@ -94,7 +94,7 @@ apply plugin: "maven-publish"
 publishing {
   publications {
 	featurePub(MavenPublication) {
-		artifact source: 'features.xml', classifier: 'features', extension: 'xml'
+		artifact source: 'config/features.xml', classifier: 'features', extension: 'xml'
 	}
   }
 }
