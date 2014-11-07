@@ -70,9 +70,9 @@
         </systemUsage>
 
         <transportConnectors>
-            <transportConnector name="openwire" uri="tcp://0.0.0.0:${activemq.openwire.port}?wireFormat.maxInactivityDuration=0" />
-            <transportConnector name="stomp" uri="stomp://0.0.0.0:${activemq.stomp.port}?wireFormat.maxInactivityDuration=0"/>
-            <transportConnector name="ws" uri="ws://0.0.0.0:${activemq.ws.port}?wireFormat.maxInactivityDuration=0" />
+            <transportConnector name="openwire" uri="tcp://0.0.0.0:@activemq.openwire.port@?wireFormat.maxInactivityDuration=0" />
+            <transportConnector name="stomp" uri="stomp://0.0.0.0:@activemq.stomp.port@?wireFormat.maxInactivityDuration=0"/>
+            <transportConnector name="ws" uri="ws://0.0.0.0:@activemq.ws.port@?wireFormat.maxInactivityDuration=0" />
             
         </transportConnectors>
 		
