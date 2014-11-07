@@ -98,7 +98,14 @@ apply plugin: "maven-publish"
 publishing {
   publications {
 	featurePub(MavenPublication) {
-		artifact source: 'config/features.xml', classifier: 'features', extension: 'xml'
+		artifact source: 'build/config/features.xml', classifier: 'features', extension: 'xml'
+		
+		artifact source: 'build/config/pnnl.goss.core.cfg', classifier: 'goss-core', extension: 'cfg'
+		artifact source: 'build/config/pnnl.goss.datasources.cfg', classifier: 'goss-datasources', extension: 'cfg'
+		
+		artifact source: 'build/config/pnnl.goss.activemq.server-default.cfg', classifier: 'goss-broker-config', extension: 'cfg'
+		artifact source: 'build/config/pnnl-goss-activemq-broker.xml', classifier: 'goss-broker', extension: 'xml'
+		artifact source: 'build/config/pnnl-goss-activemq-broker-nosecurity.xml', classifier: 'goss-broker-nosecurity', extension: 'xml'
 	}
   }
 }
