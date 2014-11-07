@@ -83,37 +83,6 @@ class IPojoizePlugin implements Plugin<Project> {
 			}else {
 				throw new InvalidUserDataException("Cannot delete the input jar file")
 			}
-		}
-		
-//		project.tasks['jar'] << {
-//			org.apache.felix.ipojo.manipulator.Pojoization pojo = new org.apache.felix.ipojo.manipulator.Pojoization()
-//
-//		}
-		
-//		project.tasks['jar'].doLast {
-//			println "Doing last data"
-//			//[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-//			
-//			org.apache.felix.ipojo.manipulator.Pojoization pojo = new org.apache.felix.ipojo.manipulator.Pojoization()
-//		 
-//			File jarfile = file(jar.archivePath)
-//			File targetJarFile = file(jar.destinationDir.absolutePath +"/" + jar.baseName + "_out.jar")
-//		 
-//			if (!jarfile.exists()) throw new InvalidUserDataException("The specified bundle file does not exist: " + jarfile.absolutePath)
-//		 
-//			pojo.pojoization(jarfile, targetJarFile, (File) null)
-//		 
-//			pojo.getWarnings().each { s ->
-//				println s
-//			}
-//		 
-//			if (jarfile.delete()) {
-//				if ( !targetJarFile.renameTo(jarfile) ) {
-//					throw new InvalidUserDataException("Cannot rename the manipulated jar file");
-//				}
-//			}else {
-//				throw new InvalidUserDataException("Cannot delete the input jar file")
-//			}
-//		} 
+		} 
 	}
 }
