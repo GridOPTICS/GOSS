@@ -3,6 +3,7 @@ ext {
 	commonsDbcp = '1.4_3'
 	osgiVersion = '4.2.0'
 	reflectionsVersion = '0.9.9'
+	annotationDetectorVersion = '3.0.4'
 }
 
 dependencies {
@@ -13,6 +14,7 @@ dependencies {
 	compile "org.reflections:reflections:$reflectionsVersion"
     compile "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$commonsDbcp"
 	compile "org.osgi:org.osgi.core:$osgiVersion"
+	compile "eu.infomas:annotation-detector:$annotationDetectorVersion"
 	
 }
 

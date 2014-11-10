@@ -64,6 +64,8 @@ import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.infomas.annotation.AnnotationDetector;
+import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
@@ -113,6 +115,44 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	public void shutdown(){
 		log.debug("shutdown");
 		this.handlerMap.clear();
+	}
+	
+	public void addHandlersFromClassPath(){
+		TypeReporter reporter = new TypeReporter() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public Class<? extends Annotation>[] annotations() {
+				return new Class[] {RequestHandler.class};
+			}
+			
+			@Override
+			public void reportTypeAnnotation(Class<? extends Annotation> annotation,
+					String className) {
+				try {
+					RequestHandler ann = (RequestHandler)(Class.forName(className)).getAnnotation(RequestHandler.class);
+					for(int i=0; i<ann.value().length; i++){
+						RequestItem itm = ann.value()[i];
+						addHandlerMapping(itm.value().getName(), className);
+						
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// TODO Auto-generated method stub
+				System.out.println(className);
+				
+			}
+		};
+		
+		AnnotationDetector detector = new AnnotationDetector(reporter);
+		try {
+			detector.detect();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	
 	public void addHandlerMapping(String request, String handler) {
