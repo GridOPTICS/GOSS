@@ -20,3 +20,5 @@ Eclipse Integration
   5. Search for Groovy (Install Groovy/Grails Tool Suite)
   6. Import Gradle Project (Brows to root of the git repository and click Build Models)
 
+Available Integreation Projects
+  - [GOSS-Powergrid](https://github.com/GridOPTICS/GOSS-Powergrid)
