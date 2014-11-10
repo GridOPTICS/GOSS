@@ -2,12 +2,12 @@ GridOPTICS Software System (GOSS)
 
 The following instructions are to install the goss core modules to a system.  This will only install 
 the core system.  The core system is capable of executing in an osgi environment out of the box.  If
-you would like to develop in standalone mode please see 
+you would like to develop in standalone mode please see [GOSS-Server](https://github.com/GridOPTICS/GOSS-Server).
 
 Installation
-    1. Clone the goss repository.
-    2. Open command line to the repository root (i.e. GOSS folder)
-    3. gradle build install
+  1. Clone the goss repository.
+  2. Open command line to the repository root (i.e. GOSS folder)
+  3. gradle build install
 
 
 
