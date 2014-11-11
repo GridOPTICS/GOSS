@@ -1,6 +1,8 @@
 package pnnl.goss.core;
 
-public class PerformanceData extends Data {
+import java.io.Serializable;
+
+public class PerformanceData implements Serializable {
 
 	private static final long serialVersionUID = 9030062346549383871L;
 	

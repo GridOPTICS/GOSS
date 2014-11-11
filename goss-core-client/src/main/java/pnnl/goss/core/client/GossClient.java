@@ -44,9 +44,12 @@
 */
 package pnnl.goss.core.client;
 
+import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
+import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
+import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
+
 import java.io.Serializable;
 import java.util.Dictionary;
-import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -71,18 +74,14 @@ import org.fusesource.stomp.jms.message.StompJmsTextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.client.internal.ClientConfiguration;
 import pnnl.goss.util.Utilities;
-import static pnnl.goss.core.GossCoreContants.*;
 
 import com.google.gson.Gson;
-
-import static pnnl.goss.core.GossCoreContants.PROP_CORE_CONFIG;
 
 public class GossClient implements Client{
 
@@ -334,16 +333,6 @@ public class GossClient implements Client{
 		}
 	}
 	
-	@Deprecated
-	/**
-	 * Instead should use publishString
-	 * @param topicName
-	 * @param data
-	 * @throws NullPointerException
-	 */
-	public void publish(String topicName, String data) throws NullPointerException{
-		publishString(topicName, data);
-	}
 	public void publishString(String topicName, String data) throws NullPointerException{
 		try{
 			createSession();
@@ -360,27 +349,6 @@ public class GossClient implements Client{
 		catch(JMSException e){
 			log.error("publishString", e);
 		}
-	}
-	
-	@Override
-	public void publish(String topicName, Data data,
-			RESPONSE_FORMAT responseFormat) throws NullPointerException {
-		try{
-			createSession();
-			if(data==null)
-				throw new NullPointerException("event cannot be null");
-			Destination destination = null;
-			if(this.protocol.equals(PROTOCOL.OPENWIRE))
-				destination = session.createTopic(topicName);
-			else if(this.protocol.equals(PROTOCOL.STOMP))
-				destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
-
-			clientPublisher.publishTo(destination, data);
-		}
-		catch(JMSException e){
-			log.error("publish topic error", e);
-		}
-		
 	}
 	
 	/**
@@ -421,11 +389,5 @@ public class GossClient implements Client{
 		}
 		
 	}
-
-
-	
-	
-
-
 }
 

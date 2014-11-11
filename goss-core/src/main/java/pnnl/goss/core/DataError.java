@@ -44,7 +44,9 @@
 */
 package pnnl.goss.core;
 
-public class DataError extends Data {
+import java.io.Serializable;
+
+public class DataError implements Serializable {
 
 	/**
 	 * Serialized object data

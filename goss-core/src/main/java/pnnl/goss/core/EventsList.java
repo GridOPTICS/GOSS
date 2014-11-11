@@ -44,10 +44,11 @@
 */
 package pnnl.goss.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventsList extends Data {
+public class EventsList implements Serializable {
 
 	private static final long serialVersionUID = -2783212735188372776L;
 

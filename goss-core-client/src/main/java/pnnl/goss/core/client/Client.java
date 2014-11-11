@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
+import javax.xml.crypto.Data;
 
-import pnnl.goss.core.Data;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
@@ -51,9 +51,6 @@ public interface Client {
 	public abstract void subscribeTo(String topicName, GossResponseEvent event)
 			throws NullPointerException;
 
-	public abstract void publish(String topicName, Data data,
-			RESPONSE_FORMAT responseFormat) throws NullPointerException;
-	
 	public abstract void publish(String topicName, Serializable data,
 			RESPONSE_FORMAT responseFormat) throws NullPointerException;
 

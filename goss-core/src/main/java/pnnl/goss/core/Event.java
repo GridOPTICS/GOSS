@@ -44,7 +44,9 @@
 */
 package pnnl.goss.core;
 
-public class Event extends Data {
+import java.io.Serializable;
+
+public class Event implements Serializable {
 
 	private static final long serialVersionUID = -1962993549035537429L;
 
