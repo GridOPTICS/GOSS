@@ -64,7 +64,6 @@ import pnnl.goss.core.Event;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.server.AbstractRequestHandler;
-import pnnl.goss.core.server.GossRequestHandler;
 import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.UploadRequest;
