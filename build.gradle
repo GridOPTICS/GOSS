@@ -11,16 +11,21 @@ ext {
 	spockVersion = '0.7-groovy-2.0'
 }
 
+task build{
+	// Placeholder for the release.gradle so that the top level
+	// folder can be "built" even though its just a container.
+}
+
 // All projects under this project folder will have the group and version below.
 allprojects {
+	apply from: "$rootProject.projectDir/gradle/release.gradle"
 	apply plugin: "eclipse"
-	group = 'pnnl.goss'
-	version = '0.1.6-SNAPSHOT'
+	group = 'pnnl.goss'	
     
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
+		maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
 	}
 }
 
@@ -34,6 +39,8 @@ subprojects {
 	buildscript {
 		repositories {
 			mavenCentral()
+			jcenter()
+			maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
 		}
 		dependencies {
 			// use 1.11.2 because there is some class path issue that shows up using 1.12.0.
@@ -90,8 +97,6 @@ task wrapper (type: Wrapper) {
 	gradleVersion = '2.1'
 }
 
-
-
 apply plugin: "maven-publish"
 
 
@@ -147,6 +152,7 @@ task copyTask(type: Copy) {
 		}
 	}
 }
+
 
 
 /*************************************************************************
