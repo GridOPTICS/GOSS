@@ -7,15 +7,26 @@ ext {
 }
 
 dependencies {
-	
 	compile project(':goss-core')
     compile project(':goss-core-security')
     
+	compile "pnnl.goss:goss-buildtools:0.1.6-SNAPSHOT"
 	compile "org.reflections:reflections:$reflectionsVersion"
     compile "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$commonsDbcp"
 	compile "org.osgi:org.osgi.core:$osgiVersion"
 	compile "eu.infomas:annotation-detector:$annotationDetectorVersion"
+	compile(group: 'pnnl.goss', name: 'goss-buildtools', version: '0.1.6', ext: 'jar')
 	
+	
+}
+
+buildscript {
+	repositories{
+		mavenLocal()
+	}
+	dependencies {
+		classpath 'pnnl.goss:goss-buildtools:0.1.6'
+	}
 }
 
 jar {
@@ -52,39 +63,5 @@ jar {
 //			}
 //		}
     }	
-}
-
-apply plugin: IPojoizePlugin
-
-class IPojoizePlugin implements Plugin<Project> {
-	
-	void apply(Project project) {
-		
-		def jar = project.tasks['jar']
-		
-		jar << {
-			org.apache.felix.ipojo.manipulator.Pojoization pojo = new org.apache.felix.ipojo.manipulator.Pojoization()
-			
-			File jarfile = new File(jar.archivePath.toURI())
-			File target = new File(jar.destinationDir.absolutePath + File.separator + jar.baseName + "_out.jar")
-			
-			File targetJarFile = new File(target.toURI())
-			
-			if (!jarfile.exists()) throw new InvalidUserDataException("The specified bundle file does not exist: " + jarfile.absolutePath)
-
-			pojo.pojoization(jarfile, targetJarFile, (File) null)
-
-			pojo.getWarnings().each { s ->
-				println s
-			}
-
-			if (jarfile.delete()) {
-				if ( !targetJarFile.renameTo(jarfile) ) {
-					throw new InvalidUserDataException("Cannot rename the manipulated jar file");
-				}
-			}else {
-				throw new InvalidUserDataException("Cannot delete the input jar file")
-			}
-		} 
-	}
+	apply plugin: 'pnnl.goss.ipojoize'
 }
