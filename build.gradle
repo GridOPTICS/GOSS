@@ -1,9 +1,7 @@
-
-
 // Define versions for dependencies here
 ext {
 	gradleVersion = '2.1'
-    groovyVersion = '2.3.3'
+	groovyVersion = '2.3.3'
 	ipojoVersion = '1.11.2'
 	junitVersion = '4.11'
 	mockitoVersion = '1.10.8'
@@ -11,24 +9,20 @@ ext {
 	spockVersion = '0.7-groovy-2.0'
 }
 
-task build{
-	// Placeholder for the release.gradle so that the top level
-	// folder can be "built" even though its just a container.
-}
-
 // All projects under this project folder will have the group and version below.
 allprojects {
-	apply from: "$rootProject.projectDir/gradle/release.gradle"
 	apply plugin: "eclipse"
 	group = 'pnnl.goss'	
     
     repositories {
+	maven { url "https://oss.sonatype.org/content/groups/public"}
         mavenLocal()
         mavenCentral()
 		maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
-	}
+    }
 }
 
+apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
 subprojects {    
 	apply plugin: "java"
