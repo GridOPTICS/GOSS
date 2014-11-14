@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.test.support;
+package pnnl.goss.core.client;
 
 import javax.jms.Connection;
 import javax.jms.Destination;

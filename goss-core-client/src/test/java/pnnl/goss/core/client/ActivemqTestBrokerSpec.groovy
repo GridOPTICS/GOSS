@@ -1,8 +1,6 @@
-package pnnl.goss.core.server.test.support
+package pnnl.goss.core.client
 
 import spock.lang.Specification
-import static pnnl.goss.core.server.test.support.ActivemqTestBroker.*
-
 
 
 class ActivemqTestBrokerSpec extends Specification {
