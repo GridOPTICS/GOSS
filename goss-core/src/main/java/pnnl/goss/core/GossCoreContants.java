@@ -12,7 +12,7 @@ public class GossCoreContants {
 	
 	// System users for accessing the message broker
 	public static final String PROP_SYSTEM_USER = "goss.system.user";
-	public static final String PROP_SYSTME_PASSWORD = "goss.system.password";
+	public static final String PROP_SYSTEM_PASSWORD = "goss.system.password";
 	
 	// LDap configuration
 	public static final String PROP_LDAP_URI = "goss.ldap.uri";
