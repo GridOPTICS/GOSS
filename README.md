@@ -5,13 +5,13 @@ the core system.  The core system is capable of executing in an osgi environment
 you would like to develop in standalone mode please see [GOSS-Server](https://github.com/GridOPTICS/GOSS-Server).
 
 Installation Windows 7
-  1. Clone the goss repository.
+  1. Clone the goss repository (git clone https://github.com/GridOPTICS/GOSS.git)
   2. Open command line to the repository root (i.e. git/GOSS folder)
   3. Execute gradlew build install publishToMavenLocal
 
 Installation Linux
   1. Open terminal 
-  2. Clone repository (https://github.com/GridOPTICS/GOSS.git)
+  2. Clone repository (git clone https://github.com/GridOPTICS/GOSS.git)
   3. Change directory to goss (cd GOSS)
   4. Add execute to gradlew (chmod +x gradlew)
   5. Build core project (./gradlew build install publishToMavenLocal)
