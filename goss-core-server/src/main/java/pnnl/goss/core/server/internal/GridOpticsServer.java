@@ -47,6 +47,7 @@ package pnnl.goss.core.server.internal;
 import static pnnl.goss.core.GossCoreContants.PROP_ACTIVEMQ_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Dictionary;
 
@@ -69,7 +70,6 @@ public class GridOpticsServer {
 	private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
 	
 	private static Connection connection;
-
 	
 	@SuppressWarnings("rawtypes")
 	public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker){
@@ -78,7 +78,7 @@ public class GridOpticsServer {
 			String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
 			URI uri = URI.create(brokerURI);
 			String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
-			String pw = (String)config.get(GossCoreContants.PROP_SYSTME_PASSWORD);
+			String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
 			
 			log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
 			
@@ -152,16 +152,29 @@ public class GridOpticsServer {
 	
 	@SuppressWarnings({"rawtypes" })
 	private void startBroker(Dictionary config) throws Exception {
+		BrokerService broker = null;
 		
-		String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
-		log.debug("Starting broker using config: " + brokerConfig);
+		if (config.get(PROP_ACTIVEMQ_CONFIG) != null){
+			String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
+			log.debug("Starting broker using config: " + brokerConfig);
 		
-		System.setProperty("activemq.base", System.getProperty("user.dir"));
-		log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
+			System.setProperty("activemq.base", System.getProperty("user.dir"));
+			log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
+			broker = BrokerFactory.createBroker(brokerConfig, true);
+			broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
+		}
+		else{
+			log.debug("Broker started not using xbean "+ (String)config.get(PROP_OPENWIRE_URI));
+			broker = new BrokerService();
+			broker.addConnector((String)config.get(PROP_OPENWIRE_URI));
+			log.warn("Persistent storage is off");
+			String datadir = System.getProperty("java.io.tmpdir") + File.separatorChar
+					+ "gossdata";
+			broker.setDataDirectory(datadir);
+			broker.start();
+		}
+		broker.waitUntilStarted();
 		
-		BrokerService broker = BrokerFactory.createBroker(brokerConfig, true);
-		broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
-		broker.start();
 	}
 	
 	private void makeActiveMqConnection(URI brokerUri) throws JMSException{
