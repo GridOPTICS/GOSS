@@ -4,20 +4,18 @@ ext {
 	osgiVersion = '4.2.0'
 	reflectionsVersion = '0.9.9'
 	annotationDetectorVersion = '3.0.4'
+	gossBuildToolsVersion = '0.1.6'
 }
 
 dependencies {
 	compile project(':goss-core')
     compile project(':goss-core-security')
     
-	compile "pnnl.goss:goss-buildtools:0.1.6-SNAPSHOT"
+	compile "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
 	compile "org.reflections:reflections:$reflectionsVersion"
     compile "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$commonsDbcp"
 	compile "org.osgi:org.osgi.core:$osgiVersion"
-	compile "eu.infomas:annotation-detector:$annotationDetectorVersion"
-	compile(group: 'pnnl.goss', name: 'goss-buildtools', version: '0.1.6', ext: 'jar')
-	
-	
+	compile "eu.infomas:annotation-detector:$annotationDetectorVersion"	
 }
 
 buildscript {
