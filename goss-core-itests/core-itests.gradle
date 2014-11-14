@@ -1,0 +1,5 @@
+
+dependencies {
+	compile project(':goss-core-client')
+	compile project(':goss-core-server')
+}
