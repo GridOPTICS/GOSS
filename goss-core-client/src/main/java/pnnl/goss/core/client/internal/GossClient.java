@@ -48,8 +48,12 @@ import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Dictionary;
+import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -79,7 +83,6 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.client.Client;
-import pnnl.goss.core.client.ClientListener;
 import pnnl.goss.core.client.ClientPublishser;
 import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.util.Utilities;
@@ -107,6 +110,19 @@ public class GossClient implements Client{
 		this((Credentials)null);
 	}
 	
+	public GossClient(Properties props){
+		config= new ClientConfiguration(props);
+		assert config.getProperty(PROP_STOMP_URI) != null;
+		assert config.getProperty(PROP_OPENWIRE_URI) != null;
+	}
+	
+	public GossClient(String configFile) throws FileNotFoundException, IOException{
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(configFile));
+		config = new ClientConfiguration(properties);
+		setConfiguration(config);		
+	}
+	
 	public GossClient(PROTOCOL protocol) {
 		this((Credentials)null,protocol);
 	}
@@ -128,15 +144,22 @@ public class GossClient implements Client{
 	
 	public void setConfiguration(ClientConfiguration configuration){
 		config = configuration;		
+		
+		assert config.getProperty(PROP_OPENWIRE_URI) != null;
+		assert config.getProperty(PROP_STOMP_URI) != null;
 	}
 	
 	
 	public void setConfiguration(Dictionary configuration){
 		config = new ClientConfiguration(null);
 		config.update(configuration);
+		assert config.getProperty(PROP_OPENWIRE_URI) != null;
+		assert config.getProperty(PROP_STOMP_URI) != null;
 	}
 	
 	private boolean createSession() throws ConfigurationException{
+		assert protocol != null;
+		
 		if(config == null){
 			config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
 			
@@ -191,6 +214,9 @@ public class GossClient implements Client{
 	 * @throws JMSException
 	 */
 	public Object getResponse(Request request) throws IllegalStateException,JMSException  {
+		if (protocol == null){
+			protocol = PROTOCOL.OPENWIRE;
+		}
 		return getResponse(request,null);
 	}
 
