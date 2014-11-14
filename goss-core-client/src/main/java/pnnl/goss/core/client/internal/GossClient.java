@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client;
+package pnnl.goss.core.client.internal;
 
 import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
@@ -78,8 +78,10 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-import pnnl.goss.core.client.internal.ClientConfiguration;
-import pnnl.goss.core.client.internal.DefaultClientConsumer;
+import pnnl.goss.core.client.Client;
+import pnnl.goss.core.client.ClientListener;
+import pnnl.goss.core.client.ClientPublishser;
+import pnnl.goss.core.client.GossResponseEvent;
 import pnnl.goss.util.Utilities;
 
 import com.google.gson.Gson;
@@ -90,7 +92,7 @@ public class GossClient implements Client{
 	public enum PROTOCOL {OPENWIRE, STOMP};
 	
 	private ClientConfiguration config;
-	volatile ClientPublisher clientPublisher;
+	volatile ClientPublishser clientPublisher;
 	private Connection connection;
 	private Session session;
 	private PROTOCOL protocol;
@@ -173,7 +175,7 @@ public class GossClient implements Client{
 			
 			connection.start();
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			clientPublisher = new ClientPublisher(session);
+			clientPublisher = new DefaultClientPublisher(session);
 		}
 		catch(Exception e){
 			log.error("Error creating goss-client session", e);
@@ -250,7 +252,7 @@ public class GossClient implements Client{
 				replyDestination = new StompJmsTempQueue();
 			}
 			if(event!=null){
-				new DefaultClientConsumer(new ClientListener(event),session,replyDestination);}
+				new DefaultClientConsumer(new DefaultClientListener(event),session,replyDestination);}
 			else
 				throw new NullPointerException("event cannot be null");
 			clientPublisher.sendMessage(request,replyDestination,responseFormat);
@@ -278,7 +280,7 @@ public class GossClient implements Client{
 			Destination destination = null;
 			if(this.protocol.equals(PROTOCOL.OPENWIRE)){
 				destination = session.createTopic(topicName);
-				new DefaultClientConsumer(new ClientListener(event),session,destination);
+				new DefaultClientConsumer(new DefaultClientListener(event),session,destination);
 			}
 			else if(this.protocol.equals(PROTOCOL.STOMP)){
 				destination = new StompJmsDestination(topicName);

@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client;
+package pnnl.goss.core.client.internal;
 
 import java.io.Serializable;
 
@@ -58,16 +58,17 @@ import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.client.ClientPublishser;
 
-public class ClientPublisher {
+public class DefaultClientPublisher implements ClientPublishser {
 
 	private transient Session session;
 	private transient MessageProducer producer;
 	private transient MessageProducer publishingProducer;
 	Destination destination;
-	private static Logger log = LoggerFactory.getLogger(ClientPublisher.class);
+	private static Logger log = LoggerFactory.getLogger(DefaultClientPublisher.class);
 
-	public ClientPublisher(Session session){
+	public DefaultClientPublisher(Session session){
 		try{
 			this.session = session;
 			destination = this.session.createQueue("Request");

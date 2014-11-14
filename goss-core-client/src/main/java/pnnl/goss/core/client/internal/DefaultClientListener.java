@@ -6,9 +6,10 @@ import javax.jms.TextMessage;
 
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
+import pnnl.goss.core.client.ClientListener;
 import pnnl.goss.core.client.GossResponseEvent;
 
-public class DefaultClientListener {
+public class DefaultClientListener implements ClientListener {
 	GossResponseEvent responseEvent;
 	
 	public DefaultClientListener(GossResponseEvent event){
