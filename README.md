@@ -19,13 +19,13 @@ Installation Linux
 That's it the goss jars are now available to be used in the local maven repository and 
 via karaf.  In addition the goss-core-feature will also be available in the repository.
 
-Eclipse Integration
+Eclipse Integration (At the time of writing Luna is the version)
   1. Download latest java-ee eclippse (not java developer or other flavor of eclispe)
   2. Open eclipse (use default or specify your own workspace)
   3. Open Eclipse Marketplace (Menu: Help->Eclipse Marketplace ..)
   4. Search for Gradle (Install Gradle IDE Pack and Gradle Integration for Eclipse)
   5. Search for Groovy (Install Groovy/Grails Tool Suite)
-  6. Import Gradle Project (Brows to root of the git repository and click Build Models)
+  6. Import Gradle Project (Browse to root of the git repository and click Build Models)
 
 Available Integreation Projects
   - [GOSS-Powergrid](https://github.com/GridOPTICS/GOSS-Powergrid)
