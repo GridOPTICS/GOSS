@@ -140,8 +140,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				// TODO Auto-generated method stub
-				System.out.println(className);
+				log.debug("Found handler: " + className);
 				
 			}
 		};
