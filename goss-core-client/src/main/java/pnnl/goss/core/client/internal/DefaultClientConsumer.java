@@ -42,10 +42,54 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client;
+package pnnl.goss.core.client.internal;
 
-import javax.jms.MessageListener;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.Session;
 
-public interface ClientListener extends MessageListener {
+import pnnl.goss.core.client.ClientConsumer;
+import pnnl.goss.core.client.ClientListener;
+
+//import org.apache.activemq.ActiveMQConnectionFactory;
+
+public class DefaultClientConsumer implements ClientConsumer {
+
+	MessageConsumer messageConsumer;
+
+	public DefaultClientConsumer(ClientListener clientListener,Session session, Destination destination)  {
+		try {
+			setMessageConsumer(session.createConsumer(destination));
+			getMessageConsumer().setMessageListener(clientListener);
+    	} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public DefaultClientConsumer(Session session, Destination destination)  {
+		try {
+			setMessageConsumer(session.createConsumer(destination));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void close() {
+		try{
+			getMessageConsumer().close();
+		}
+		catch(JMSException e){
+			e.printStackTrace();
+		}
+	}
+
+	public MessageConsumer getMessageConsumer() {
+		return messageConsumer;
+	}
+
+	public void setMessageConsumer(MessageConsumer messageConsumer) {
+		this.messageConsumer = messageConsumer;
+	}
 
 }

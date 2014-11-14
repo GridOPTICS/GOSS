@@ -79,6 +79,7 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.client.internal.ClientConfiguration;
+import pnnl.goss.core.client.internal.DefaultClientConsumer;
 import pnnl.goss.util.Utilities;
 
 import com.google.gson.Gson;
@@ -209,7 +210,7 @@ public class GossClient implements Client{
 				replyDestination = new StompJmsTempQueue();
 			}
 
-			ClientConsumer clientConsumer = new ClientConsumer(session,
+			DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session,
 					replyDestination);
 			clientPublisher.sendMessage(request, replyDestination,
 					responseFormat);
@@ -249,7 +250,7 @@ public class GossClient implements Client{
 				replyDestination = new StompJmsTempQueue();
 			}
 			if(event!=null){
-				new ClientConsumer(new ClientListener(event),session,replyDestination);}
+				new DefaultClientConsumer(new ClientListener(event),session,replyDestination);}
 			else
 				throw new NullPointerException("event cannot be null");
 			clientPublisher.sendMessage(request,replyDestination,responseFormat);
@@ -277,11 +278,11 @@ public class GossClient implements Client{
 			Destination destination = null;
 			if(this.protocol.equals(PROTOCOL.OPENWIRE)){
 				destination = session.createTopic(topicName);
-				new ClientConsumer(new ClientListener(event),session,destination);
+				new DefaultClientConsumer(new ClientListener(event),session,destination);
 			}
 			else if(this.protocol.equals(PROTOCOL.STOMP)){
 				destination = new StompJmsDestination(topicName);
-				ClientConsumer consumer  = new ClientConsumer(session,destination);
+				DefaultClientConsumer consumer  = new DefaultClientConsumer(session,destination);
 				//TODO change this
 				 while(true) {
 			            Message msg = consumer.getMessageConsumer().receive();
