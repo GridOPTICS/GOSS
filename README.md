@@ -1,7 +1,7 @@
 GridOPTICS Software System (GOSS)
 
 The following instructions are to install the goss core modules to a system.  This will only install 
-the core system.  The core system is capable of executing in an osgi environment out of the box.  If
+the core system.  The core system is capable of executing in an osgi environment (we use [Apache Karaf](http://karaf.apache.org/) exclusively) out of the box.  If
 you would like to develop in standalone mode please see [GOSS-Server](https://github.com/GridOPTICS/GOSS-Server).
 
 Installation Windows 7
