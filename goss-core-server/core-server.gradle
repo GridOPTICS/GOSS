@@ -5,6 +5,7 @@ ext {
 	reflectionsVersion = '0.9.9'
 	annotationDetectorVersion = '3.0.4'
 	gossBuildToolsVersion = '0.1.6'
+	activemqVersion = '5.10.0'
 }
 
 dependencies {
@@ -16,6 +17,7 @@ dependencies {
     compile "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$commonsDbcp"
 	compile "org.osgi:org.osgi.core:$osgiVersion"
 	compile "eu.infomas:annotation-detector:$annotationDetectorVersion"	
+	compile "org.apache.activemq:activemq-all:$activemqVersion"
 }
 
 buildscript {
