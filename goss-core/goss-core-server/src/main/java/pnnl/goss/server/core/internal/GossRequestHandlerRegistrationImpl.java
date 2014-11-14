@@ -244,7 +244,9 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			}
 			
 			// Keep the string of the class.
+			log.debug("Adding upload handler mapping for "+dataType+" and "+handler.getName());
 			handlerMap.put(dataType, handler.getName());
+			handlerToClasss.put(dataType, handler);
 
 			
 		} catch (ClassNotFoundException e) {
@@ -326,7 +328,7 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 			log.debug("handling request for: " + dataType);
 			if (handlerMap.containsKey(dataType)) {
 				try {
-					Class handlerClass = Class.forName(handlerMap.get(dataType));
+					Class handlerClass = handlerToClasss.get(dataType);
 					handler = (GossRequestHandler) handlerClass.newInstance();
 					if(handler!=null){
 						handler.setGossDataservices(dataServices);
@@ -396,7 +398,16 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 		GossRequestHandler handler = null;
 		if (request != null) {
 			log.debug("handling request for: " + request.getClass().getName());
-
+			if(request instanceof UploadRequest){
+				try{
+					UploadRequest uploadRequest = (UploadRequest)request;
+					Class handlerClass = Class.forName(handlerMap.get(uploadRequest.getDataType()));
+					handler = (GossRequestHandler) handlerClass.newInstance();
+				}
+				catch (Exception e) {
+					log.error("Handle error exception", e);
+				}
+			}
 			if (handlerMap.containsKey(request.getClass().getName())) {
 				try {
 					Class handlerClass = Class.forName(handlerMap.get(request.getClass().getName()));

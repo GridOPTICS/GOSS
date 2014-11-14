@@ -116,15 +116,15 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <descriptor>mvn:org.apache.activemq/activemq-karaf/5.9.0/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/2.7.10/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-core-features/${goss-core.version}/xml/features</descriptor>                                
-                                <!-- <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor> -->
-                                <descriptor>mvn:pnnl.goss/goss-kairosdb-features/${goss-kairosdb.version}/xml/features</descriptor> 
+                                <descriptor>mvn:pnnl.goss/goss-fusiondb-features/${goss-fusiondb.version}/xml/features</descriptor>
+                                <!-- <descriptor>mvn:pnnl.goss/goss-kairosdb-features/${goss-kairosdb.version}/xml/features</descriptor> 
                                 <descriptor>mvn:pnnl.goss/goss-powergrid-features/${goss-powergrid.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-gridpack-features/${goss-gridpack.version}/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-demo-features/${goss-demo.version}/xml/features</descriptor>
                                 <descriptor>mvn:de.mhus.karaf/vaadin-feature/1.0.0/xml/features</descriptor>
                                 <descriptor>mvn:pnnl.goss/goss-vaadin-features/0.1.5-SNAPSHOT/xml/features</descriptor>
 								<descriptor>mvn:pnnl.goss/goss-sdgsf-features/0.1.5-SNAPSHOT/xml/features</descriptor>
-                                
+                                 -->
 							</descriptors>
 							
 							<features>
@@ -147,17 +147,17 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
                                 <feature>cxf</feature>
                                 <feature>goss-ipojo-wrapper</feature>
                                 <feature>goss-core-features</feature>
-                                <feature>goss-kairosdb-features</feature>
-                                <!-- <feature>goss-fusiondb-features</feature>
-                                <feature>goss-gridmw-features</feature>
+                                <!-- <feature>goss-kairosdb-features</feature> -->
+                                <feature>goss-fusiondb-features</feature>
+                                <!--<feature>goss-gridmw-features</feature>
 								<feature>goss-tool-fncs-features</feature>
 								<feature>goss-tool-mdart-features</feature>-->
-                                <feature>goss-powergrid-features</feature>
+                                <!-- <feature>goss-powergrid-features</feature>
                                 <feature>goss-gridpack-features</feature>
                                 <feature>goss-demo-features</feature>
                                 <feature>vaadin-feature</feature>
                                 <feature>goss-vaadin-features</feature>
-								<feature>goss-sdgsf-features</feature>
+								<feature>goss-sdgsf-features</feature> -->
 
 							</features>
 							<repository>${basedir}/target/assembly/system</repository>
@@ -271,7 +271,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <version>${goss-fusiondb.version}</version>
             <type>xml</type>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>pnnl.goss</groupId>
             <artifactId>goss-kairosdb-features</artifactId>
             <classifier>features</classifier>
@@ -350,7 +350,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <scope>runtime</scope>
             <version>${goss-sdgsf.version}</version>
             <type>xml</type>
-        </dependency>
+        </dependency> -->
 	</dependencies>
 
 	<artifactId>goss-karaf</artifactId>

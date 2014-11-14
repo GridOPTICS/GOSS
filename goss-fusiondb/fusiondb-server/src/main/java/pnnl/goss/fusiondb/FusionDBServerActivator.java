@@ -2,13 +2,10 @@ package pnnl.goss.fusiondb;
 
 import static pnnl.goss.core.GossCoreContants.PROP_DATASOURCES_CONFIG;
 
-import java.util.Dictionary;
-
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
-import org.apache.felix.ipojo.annotations.Updated;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,6 @@ import pnnl.goss.fusiondb.handlers.RequestHAInterchangeScheduleHandler;
 import pnnl.goss.fusiondb.handlers.RequestInterfacesViolationHandler;
 import pnnl.goss.fusiondb.handlers.RequestRTEDScheduleHandler;
 import pnnl.goss.fusiondb.handlers.RequestVoltageStabilityViolationHandler;
-import pnnl.goss.fusiondb.launchers.DataStreamLauncher;
 import pnnl.goss.fusiondb.requests.RequestActualTotal;
 import pnnl.goss.fusiondb.requests.RequestCapacityRequirement;
 import pnnl.goss.fusiondb.requests.RequestForecastTotal;
@@ -75,6 +71,9 @@ public class FusionDBServerActivator {
 			if (!dataServices.contains(PROP_FUSIONDB_DATASERVICE)) {
 				log.debug("Attempting to register dataservice: "
 						+ PROP_FUSIONDB_DATASERVICE);
+				String user = dataServices.getPropertyValue(PROP_FUSIONDB_USER);
+				String uri = dataServices.getPropertyValue(PROP_FUSIONDB_URI);
+				String password = dataServices.getPropertyValue(PROP_FUSIONDB_PASSWORD);
 				if (datasourceCreator == null){
 					datasourceCreator = new BasicDataSourceCreator();
 				}
@@ -94,7 +93,16 @@ public class FusionDBServerActivator {
 			log.error("dataServices is null!");
 		}
 	}
-
+	
+	public void update() throws IllegalStateException{
+		if (dataServices == null){
+			throw new IllegalStateException("dataservices cannot be null!");
+		}
+		
+		registerFusionDataService();
+	}
+	
+/*
 	@SuppressWarnings("rawtypes")
 	@Updated
 	public void update(Dictionary config) {
@@ -123,7 +131,7 @@ public class FusionDBServerActivator {
 			registerFusionDataService();
 		}
 	}
-
+*/
 	@Validate
 	public void start() {
 		log.info("Starting bundle: " + this.getClass().getName());
@@ -179,6 +187,7 @@ public class FusionDBServerActivator {
 			//DataStreamLauncher launcher = new DataStreamLauncher(registrationService, dataServices);
 			//launcher.startLauncher();
 			
+			update();
 			
 		} else {
 			log.error(GossRequestHandlerRegistrationService.class.getName()

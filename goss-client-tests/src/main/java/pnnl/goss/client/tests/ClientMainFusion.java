@@ -87,20 +87,20 @@ public class ClientMainFusion {
 	public static void main(String[] args) {
 		try{
 			
-			/*getActualTotal();
+			//getActualTotal();
 			getForecastTotal();
-			getHAInterchageSchedule();
+			/*getHAInterchageSchedule();
 			getRTEDSchedule();
 			uploadCapacityRequirements();
-			requestCapacityRequirement();
+			requestCapacityRequirement();*/
 			uploadGeneratorData();
-			requestGeneratorData();
-			*/
+			//requestGeneratorData();
 			
-			uploadInterfaceViolation();
+			
+			/*uploadInterfaceViolation();
 			uploadVoltageViolation();
 			requestInterfaceViolation();
-			requestVoltageViolation();
+			requestVoltageViolation();*/
 			
 			
 		/*	GossResponseEvent event = new GossResponseEvent() {
