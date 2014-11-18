@@ -1,7 +1,8 @@
+
 dependencies {
-    compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-lang:2.4_6'
-    compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xstream:1.4.6_1'
-    compile 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-io:1.4_3'
+    compile "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-lang:$servicemixCommonsLangVersion",
+    		"org.apache.servicemix.bundles:org.apache.servicemix.bundles.xstream:$servicemixXstreamVersion",
+			"org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-io:$servicemixCommonsIoVersion"
 }
 
 jar {

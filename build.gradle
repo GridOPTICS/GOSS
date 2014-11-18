@@ -1,13 +1,6 @@
 // Define versions for dependencies here
-ext {
-	gradleVersion = '2.1'
-	groovyVersion = '2.3.3'
-	ipojoVersion = '1.11.2'
-	junitVersion = '4.11'
-	mockitoVersion = '1.10.8'
-	slf4jVersion = '1.7.5'
-	spockVersion = '0.7-groovy-2.0'
-}
+// Version numbers for all of goss-core should be in the gradle.properties file.
+
 
 // All projects under this project folder will have the group and version below.
 allprojects {
@@ -140,6 +133,15 @@ task copyTask(type: Copy) {
 		javaProps.each{ k,v ->			
 			fileText = fileText.replaceAll('@'+k+'@', v)
 		}
+		
+		project.ext.properties.each {k, v ->
+			fileText = fileText.replaceAll('@'+k+'@', v)
+		}
+		
+		fileText = fileText.replace('@project.version@', version)
+		fileText = fileText.replace('@project.name@', name)
+		
+		
 	
 		new File("$outFolder.absolutePath/$cfg.name").withWriter { out ->
 			out.print fileText
