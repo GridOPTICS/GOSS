@@ -458,46 +458,46 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	}
 
 
-	@Override
-	public void registerHandlers(Enumeration<URL> urls) {
-	
-		for(URL u:Collections.list(urls)){
-			System.out.println(u.toString());
-		}
-		Reflections ref = new Reflections(new ConfigurationBuilder()
-			.setUrls(Collections.list(urls)));
-	
-		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
-		
-		// For each of the annotations we need to add all of the elements that are specified
-		// in the requests parameter.
-		for(Class<?> handler : handers){
-			log.debug("Found handler: "+handler.getName());
-			for(Annotation annotation : handler.getAnnotations()){
-				for(RequestItem item: ((RequestHandler)annotation).value()){
-					addHandlerMapping(item.value(), annotation.getClass());
-				}
-			}
-		}
-	}
-
-	@Override
-	public void unregisterHandlers(Enumeration<URL> urls) {
-		Reflections ref = new Reflections(new ConfigurationBuilder()
-		.setUrls(Collections.list(urls)));
-
-		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
-		
-		// For each of the annotations we need to remove all of the requests.
-		for(Class<?> handler : handers){
-			log.debug("Found handler: "+handler.getName());
-			for(Annotation annotation : handler.getAnnotations()){
-				for(RequestItem item: ((RequestHandler)annotation).value()){
-					removeHandlerMapping(item.value());
-				}
-			}
-		}
-		
-	}
+//	@Override
+//	public void registerHandlers(Enumeration<URL> urls) {
+//	
+//		for(URL u:Collections.list(urls)){
+//			System.out.println(u.toString());
+//		}
+//		Reflections ref = new Reflections(new ConfigurationBuilder()
+//			.setUrls(Collections.list(urls)));
+//	
+//		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+//		
+//		// For each of the annotations we need to add all of the elements that are specified
+//		// in the requests parameter.
+//		for(Class<?> handler : handers){
+//			log.debug("Found handler: "+handler.getName());
+//			for(Annotation annotation : handler.getAnnotations()){
+//				for(RequestItem item: ((RequestHandler)annotation).value()){
+//					addHandlerMapping(item.value(), annotation.getClass());
+//				}
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void unregisterHandlers(Enumeration<URL> urls) {
+//		Reflections ref = new Reflections(new ConfigurationBuilder()
+//		.setUrls(Collections.list(urls)));
+//
+//		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+//		
+//		// For each of the annotations we need to remove all of the requests.
+//		for(Class<?> handler : handers){
+//			log.debug("Found handler: "+handler.getName());
+//			for(Annotation annotation : handler.getAnnotations()){
+//				for(RequestItem item: ((RequestHandler)annotation).value()){
+//					removeHandlerMapping(item.value());
+//				}
+//			}
+//		}
+//		
+//	}
 
 }
