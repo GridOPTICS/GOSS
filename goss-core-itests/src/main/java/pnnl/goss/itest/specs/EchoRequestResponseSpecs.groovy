@@ -1,4 +1,4 @@
-package pnnl.goss.itest
+package pnnl.goss.itest.specs
 
 import pnnl.goss.core.DataResponse
 import pnnl.goss.core.client.internal.GossClient
