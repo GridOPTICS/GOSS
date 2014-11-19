@@ -1,4 +1,3 @@
-import com.sun.jmx.snmp.tasks.TaskServer;
 
 // Define versions for dependencies here
 // Version numbers for all of goss-core should be in the gradle.properties file.
@@ -119,7 +118,8 @@ karafFeatures {
 		'log4j/.*',
 		'org.osgi/.*',
 		'org.apache.felix/.*',
-		'org.apache.karaf.shell/.*'
+		'org.apache.karaf.shell/.*',
+		'pnnl.goss/goss-buildtools/.*'
 	]
 	
 	wraps = [
@@ -206,9 +206,44 @@ task copyTask(type: Copy) {
 	}
 }
 
+task insertCoreFeature(dependsOn: generateKarafFeatures){
+	doFirst{
+				
+		// Must match the output of generateKarafFeatures
+		def featuresFilename = 'build/config/features.xml'
+		
+		def xml = new XmlSlurper(false, false).parse(featuresFilename)
+		
+		xml.appendNode{
+			feature(name: 'goss-core-feature', version: "$project.version") {
+				feature('goss-core')
+				feature('goss-core-client')
+				feature('goss-core-security')
+				feature('goss-core-server')
+			}		
+		}
+		
+		def outFile = file(featuresFilename)
+		
+		def xmlString= new groovy.xml.StreamingMarkupBuilder().bind {
+			mkp.yield xml
+		}.toString()
+		
+		def xmlOutput = new StringWriter()
+		groovy.xml.XmlUtil.serialize xmlString, xmlOutput
+		
+		def out = new BufferedWriter(new FileWriter(featuresFilename))
+		out.write(xmlOutput.toString())
+		out.close()
+		
+	}	
+}	
+	
+
 // Configure dependency graph the way I would like it to be
 generateKarafFeatures.dependsOn(install)
-publishToMavenLocal.dependsOn(generateKarafFeatures)
+
+publishToMavenLocal.dependsOn(insertCoreFeature)
 
 task publishGoss(dependsOn: publishToMavenLocal) { }
 
