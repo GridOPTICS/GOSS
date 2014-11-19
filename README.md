@@ -1,4 +1,5 @@
-GridOPTICS Software System (GOSS)
+GridOPTICS Software System (GOSS) 
+Status of GOSS build: ![GOSS build status](https://travis-ci.org/GridOPTICS/GOSS.svg?branch=master)
 
 The following instructions are to install the goss core modules to a system.  This will only install 
 the core system.  The core system is capable of executing in an osgi environment (we use [Apache Karaf](http://karaf.apache.org/) exclusively) out of the box.  If
