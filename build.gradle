@@ -109,38 +109,38 @@ buildscript {
 	
 }
 
-// This is now distributed within goss-buildtools release >= 0.1.7
-apply plugin: 'karaf-featuresgen'
-
-karafFeatures {
-	excludes = [
-		'org.slf4j/.*',
-		'log4j/.*',
-		'org.osgi/.*',
-		'org.apache.felix/.*',
-		'org.apache.karaf.shell/.*',
-		'pnnl.goss/goss-buildtools/.*'
-	]
-	
-	wraps = [
-		'com.google.guava/guava/.*'
-	]
-
-	startLevels = [
-		'org.apache.geronimo.specs/.*':'50',
-		'org.apache.commons/.*':'60',
-	]
-
-	/*
-	extraBundles = [
-		"mvn:pnnl.goss:goss-core:$project.version",
-		"mvn:pnnl.goss:goss-core-client:$project.version"
-	]*/
-
-	// if outputFile is not provided, the output is written to the standard
-	// output.
-	outputFile = new File('build/config/features.xml')
-}
+//// This is now distributed within goss-buildtools release >= 0.1.7
+//apply plugin: 'karaf-featuresgen'
+//
+//karafFeatures {
+//	excludes = [
+//		'org.slf4j/.*',
+//		'log4j/.*',
+//		'org.osgi/.*',
+//		'org.apache.felix/.*',
+//		'org.apache.karaf.shell/.*',
+//		'pnnl.goss/goss-buildtools/.*'
+//	]
+//	
+//	wraps = [
+//		'com.google.guava/guava/.*'
+//	]
+//
+//	startLevels = [
+//		'org.apache.geronimo.specs/.*':'50',
+//		'org.apache.commons/.*':'60',
+//	]
+//
+//	/*
+//	extraBundles = [
+//		"mvn:pnnl.goss:goss-core:$project.version",
+//		"mvn:pnnl.goss:goss-core-client:$project.version"
+//	]*/
+//
+//	// if outputFile is not provided, the output is written to the standard
+//	// output.
+//	outputFile = new File('build/config/features.xml')
+//}
 
 apply plugin: "maven-publish"
 
@@ -206,44 +206,47 @@ task copyTask(type: Copy) {
 	}
 }
 
-task insertCoreFeature(dependsOn: generateKarafFeatures){
-	doFirst{
-				
-		// Must match the output of generateKarafFeatures
-		def featuresFilename = 'build/config/features.xml'
-		
-		def xml = new XmlSlurper(false, false).parse(featuresFilename)
-		
-		xml.appendNode{
-			feature(name: 'goss-core-feature', version: "$project.version") {
-				feature('goss-core')
-				feature('goss-core-client')
-				feature('goss-core-security')
-				feature('goss-core-server')
-			}		
-		}
-		
-		def outFile = file(featuresFilename)
-		
-		def xmlString= new groovy.xml.StreamingMarkupBuilder().bind {
-			mkp.yield xml
-		}.toString()
-		
-		def xmlOutput = new StringWriter()
-		groovy.xml.XmlUtil.serialize xmlString, xmlOutput
-		
-		def out = new BufferedWriter(new FileWriter(featuresFilename))
-		out.write(xmlOutput.toString())
-		out.close()
-		
-	}	
-}	
+//task insertCoreFeature(dependsOn: generateKarafFeatures){
+//	doFirst{
+//				
+//		// Must match the output of generateKarafFeatures
+//		def featuresFilename = 'build/config/features.xml'
+//		
+//		def xml = new XmlSlurper(false, false).parse(featuresFilename)
+//		
+//		// Set the name of the root 
+//		xml.@name = "goss-core-features-$project.version".toString()
+//		
+//		xml.appendNode{
+//			feature(name: 'goss-core-feature', version: "$project.version") {
+//				feature('goss-core')
+//				feature('goss-core-client')
+//				feature('goss-core-security')
+//				feature('goss-core-server')
+//			}		
+//		}
+//		
+//		def outFile = file(featuresFilename)
+//		
+//		def xmlString= new groovy.xml.StreamingMarkupBuilder().bind {
+//			mkp.yield xml
+//		}.toString()
+//		
+//		def xmlOutput = new StringWriter()
+//		groovy.xml.XmlUtil.serialize xmlString, xmlOutput
+//		
+//		def out = new BufferedWriter(new FileWriter(featuresFilename))
+//		out.write(xmlOutput.toString())
+//		out.close()
+//		
+//	}	
+//}	
 	
 
 // Configure dependency graph the way I would like it to be
-generateKarafFeatures.dependsOn(install)
+publishToMavenLocal.dependsOn(install)
 
-publishToMavenLocal.dependsOn(insertCoreFeature)
+//publishToMavenLocal.dependsOn(generateKarafFeatures)
 
 task publishGoss(dependsOn: publishToMavenLocal) { }
 
@@ -328,9 +331,9 @@ project(':goss-core-web') {
 }*/
 
 
-// Snag the version from the properties file.
-// file method is provided by Project interface, created an
-// instance of java.io.File relative to project directory.
+//// Snag the version from the properties file.
+//// file method is provided by Project interface, created an
+//// instance of java.io.File relative to project directory.
 //ext.versionFile = file('version.properties')
 //
 //// Task configuration defined without shift operator.
