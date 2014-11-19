@@ -1,3 +1,5 @@
+import com.sun.jmx.snmp.tasks.TaskServer;
+
 // Define versions for dependencies here
 // Version numbers for all of goss-core should be in the gradle.properties file.
 
@@ -5,23 +7,31 @@
 // All projects under this project folder will have the group and version below.
 allprojects {
 	apply plugin: "eclipse"
+	apply plugin: "maven"
+	apply plugin: "groovy"
+	
 	group = 'pnnl.goss'	
     
     repositories {
-	maven { url "https://oss.sonatype.org/content/groups/public"}
+		// For gradle-release
+		maven {	url "https://oss.sonatype.org/content/groups/public"}
+		// For goss plugins
+		maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
         mavenLocal()
         mavenCentral()
-		maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
     }
 }
 
 apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
 subprojects {    
+//	apply plugin: "java"
+//    apply plugin: "osgi"
+//	apply plugin: "maven"
+//	apply plugin: "groovy"
+//	
 	apply plugin: "java"
-    apply plugin: "osgi"
-	apply plugin: "maven"
-	apply plugin: "groovy"
+	apply plugin: "osgi"
 	
 	buildscript {
 		repositories {
@@ -84,6 +94,54 @@ task wrapper (type: Wrapper) {
 	gradleVersion = '2.1'
 }
 
+buildscript {
+	repositories {
+		mavenCentral()
+		mavenLocal()
+
+		//maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+		maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
+	}
+	
+	dependencies {
+		classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
+	}
+	
+	
+}
+
+// This is now distributed within goss-buildtools release >= 0.1.7
+apply plugin: 'karaf-featuresgen'
+
+karafFeatures {
+	excludes = [
+		'org.slf4j/.*',
+		'log4j/.*',
+		'org.osgi/.*',
+		'org.apache.felix/.*',
+		'org.apache.karaf.shell/.*'
+	]
+	
+	wraps = [
+		'com.google.guava/guava/.*'
+	]
+
+	startLevels = [
+		'org.apache.geronimo.specs/.*':'50',
+		'org.apache.commons/.*':'60',
+	]
+
+	/*
+	extraBundles = [
+		"mvn:pnnl.goss:goss-core:$project.version",
+		"mvn:pnnl.goss:goss-core-client:$project.version"
+	]*/
+
+	// if outputFile is not provided, the output is written to the standard
+	// output.
+	outputFile = new File('build/config/features.xml')
+}
+
 apply plugin: "maven-publish"
 
 
@@ -102,6 +160,7 @@ publishing {
   }
 }
 
+
 task copyTask(type: Copy) {
 	// we are going to attempt to build one big property replacement task so that we
 	// can use all the tokens in the feature file that are above in this file
@@ -116,8 +175,6 @@ task copyTask(type: Copy) {
 		println "file not found."
 		return
 	}
-	
-	println "here"
 	
 	File cfgFolder = new File("$rootProject.projectDir/config")
 	File outFolder = new File("$rootProject.buildDir/config")
@@ -138,8 +195,8 @@ task copyTask(type: Copy) {
 			fileText = fileText.replaceAll('@'+k+'@', v)
 		}
 		
-		fileText = fileText.replace('@project.version@', version)
-		fileText = fileText.replace('@project.name@', name)
+		fileText = fileText.replace('@project.version@', project.version)
+		fileText = fileText.replace('@project.name@', project.name)
 		
 		
 	
@@ -149,6 +206,11 @@ task copyTask(type: Copy) {
 	}
 }
 
+// Configure dependency graph the way I would like it to be
+generateKarafFeatures.dependsOn(install)
+publishToMavenLocal.dependsOn(generateKarafFeatures)
+
+task publishGoss(dependsOn: publishToMavenLocal) { }
 
 
 /*************************************************************************
@@ -234,57 +296,57 @@ project(':goss-core-web') {
 // Snag the version from the properties file.
 // file method is provided by Project interface, created an
 // instance of java.io.File relative to project directory.
-ext.versionFile = file('version.properties')
-
-// Task configuration defined without shift operator.
-task loadVersion {
-	project.version = readVersion()
-}
-
-task printVersion (group: 'versioning',
-                    description: 'Prints project version.',
-                    dependsOn: loadVersion) << {
-	logger.quiet "Version: $version"
-    logger.quiet "projectIds: $projectIds"
-}
-
-ProjectVersion readVersion() {
-	logger.quiet 'Reading the version file.'
-	
-	if (!versionFile.exists()) {
-		throw new GradleException("Required version file does not exist: $versionFile.canonicalPath")
-	}
-	
-	Properties versionProps = new Properties()
-	
-	versionFile.withInputStream { 
-		stream -> versionProps.load(stream)
-	}
-	
-	new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
-}
-
-
-class ProjectVersion {
-	Integer major
-	Integer minor
-	Boolean release
-	
-	ProjectVersion(Integer major, Integer minor) {
-		this.major = major
-		this.minor = minor
-		this.release = Boolean.FALSE
-	}
-	
-	ProjectVersion(Integer major, Integer minor, Boolean release) {
-		this.major = major
-		this.minor = minor
-		this.release = release
-	}
-	
-	@Override
-	String toString() {
-		"$major.$minor${release ? '' : '-SNAPSHOT'}"
-	}
-}
+//ext.versionFile = file('version.properties')
+//
+//// Task configuration defined without shift operator.
+//task loadVersion {
+//	project.version = readVersion()
+//}
+//
+//task printVersion (group: 'versioning',
+//                    description: 'Prints project version.',
+//                    dependsOn: loadVersion) << {
+//	logger.quiet "Version: $version"
+//    logger.quiet "projectIds: $projectIds"
+//}
+//
+//ProjectVersion readVersion() {
+//	logger.quiet 'Reading the version file.'
+//	
+//	if (!versionFile.exists()) {
+//		throw new GradleException("Required version file does not exist: $versionFile.canonicalPath")
+//	}
+//	
+//	Properties versionProps = new Properties()
+//	
+//	versionFile.withInputStream { 
+//		stream -> versionProps.load(stream)
+//	}
+//	
+//	new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
+//}
+//
+//
+//class ProjectVersion {
+//	Integer major
+//	Integer minor
+//	Boolean release
+//	
+//	ProjectVersion(Integer major, Integer minor) {
+//		this.major = major
+//		this.minor = minor
+//		this.release = Boolean.FALSE
+//	}
+//	
+//	ProjectVersion(Integer major, Integer minor, Boolean release) {
+//		this.major = major
+//		this.minor = minor
+//		this.release = release
+//	}
+//	
+//	@Override
+//	String toString() {
+//		"$major.$minor${release ? '' : '-SNAPSHOT'}"
+//	}
+//}
 	
