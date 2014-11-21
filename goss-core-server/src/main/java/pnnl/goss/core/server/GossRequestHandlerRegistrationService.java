@@ -62,14 +62,32 @@ import pnnl.goss.core.Response;
 @SuppressWarnings("rawtypes")
 public interface GossRequestHandlerRegistrationService {
 
-	void registerHandlers(Enumeration<URL> urls);
-	
-	void unregisterHandlers(Enumeration<URL> urls);
-	
+//	void registerHandlers(Enumeration<URL> urls);
+//	
+//	void unregisterHandlers(Enumeration<URL> urls);
+	/**
+	 * handle the passed Request.  
+	 * 
+	 * @param request
+	 * @return
+	 */
 	Response handle(Request request);
 	
+	/**
+	 * hanle the passed request.  This method is used specifically with
+	 * uploadrequest datatype.
+	 * @param request
+	 * @param dataType
+	 * @return
+	 */
 	Response handle(Request request, String dataType);
 	
+	/**
+	 * Retrieve a specific Handdler based upon the request.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	AbstractRequestHandler getHandler(Request request);
 	
 	void addHandlerMapping(Class request, Class handler);
@@ -88,9 +106,9 @@ public interface GossRequestHandlerRegistrationService {
 	
 	void removeSecurityMapping(Class request);
 	
-	
+	@Deprecated
 	Dictionary getCoreServerConfig();
-	
+	@Deprecated
 	void setCoreServerConfig(Dictionary config);
 	
 }

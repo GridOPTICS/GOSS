@@ -1,9 +1,18 @@
 dependencies {
 	compile project(':goss-core')
     
-    compile 'org.apache.activemq:activemq-stomp:5.10.0'
-    compile 'org.apache.httpcomponents:httpclient-osgi:4.3.5'
-    compile 'org.fusesource.stompjms:stompjms-client:1.19'
-    compile 'com.google.code.gson:gson:2.3'
+    compile "org.apache.activemq:activemq-stomp:$activemqVersion",
+			"org.apache.httpcomponents:httpcore-osgi:$httpCoreComponentsVersion",
+			"org.apache.httpcomponents:httpclient-osgi:$httpClientOsgiVersion",    		
+			"org.fusesource.stompjms:stompjms-client:$stompJmsVersion",
+			"com.google.code.gson:gson:$gsonVersion"
+}
 
+jar {
+	manifest {
+		
+		[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+	}
+	
+	apply plugin: 'pnnl.goss.ipojoize'
 }

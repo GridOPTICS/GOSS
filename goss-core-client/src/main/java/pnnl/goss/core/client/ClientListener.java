@@ -44,7 +44,6 @@
 */
 package pnnl.goss.core.client;
 
-import javax.jms.Message;
 import javax.jms.MessageListener;
 
 public interface ClientListener extends MessageListener {

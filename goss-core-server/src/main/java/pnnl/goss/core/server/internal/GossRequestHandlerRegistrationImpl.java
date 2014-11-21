@@ -46,12 +46,8 @@ package pnnl.goss.core.server.internal;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.net.URL;
-import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Set;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -59,25 +55,24 @@ import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.infomas.annotation.AnnotationDetector;
-import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.security.core.GossSecurityHandler;
+import pnnl.goss.core.server.AbstractRequestHandler;
+import pnnl.goss.core.server.GossDataServices;
+import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.core.server.annotations.RequestHandler;
 import pnnl.goss.core.server.annotations.RequestItem;
-import pnnl.goss.core.server.GossDataServices;
-import pnnl.goss.core.server.AbstractRequestHandler;
-import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
+import pnnl.goss.security.core.GossSecurityHandler;
+import eu.infomas.annotation.AnnotationDetector;
+import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 
 @SuppressWarnings("rawtypes")
 @Instantiate
@@ -97,6 +92,9 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	 
 	private GossDataServices dataServices;
 	
+	@Requires
+	private BundleContext bundleContext;
+	
 	public GossRequestHandlerRegistrationImpl(@Requires GossDataServices dataServices){
 		log.debug("Constructing");
 		if (dataServices == null){
@@ -109,6 +107,9 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	@Validate
 	public void startHandler(){
 		log.debug("Starting handler");
+		if (bundleContext != null){
+			log.debug("BUNDLE CONTEXT SET!");
+		}
 	}
 
 	@Invalidate
@@ -458,46 +459,46 @@ public class GossRequestHandlerRegistrationImpl implements GossRequestHandlerReg
 	}
 
 
-	@Override
-	public void registerHandlers(Enumeration<URL> urls) {
-	
-		for(URL u:Collections.list(urls)){
-			System.out.println(u.toString());
-		}
-		Reflections ref = new Reflections(new ConfigurationBuilder()
-			.setUrls(Collections.list(urls)));
-	
-		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
-		
-		// For each of the annotations we need to add all of the elements that are specified
-		// in the requests parameter.
-		for(Class<?> handler : handers){
-			log.debug("Found handler: "+handler.getName());
-			for(Annotation annotation : handler.getAnnotations()){
-				for(RequestItem item: ((RequestHandler)annotation).value()){
-					addHandlerMapping(item.value(), annotation.getClass());
-				}
-			}
-		}
-	}
-
-	@Override
-	public void unregisterHandlers(Enumeration<URL> urls) {
-		Reflections ref = new Reflections(new ConfigurationBuilder()
-		.setUrls(Collections.list(urls)));
-
-		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
-		
-		// For each of the annotations we need to remove all of the requests.
-		for(Class<?> handler : handers){
-			log.debug("Found handler: "+handler.getName());
-			for(Annotation annotation : handler.getAnnotations()){
-				for(RequestItem item: ((RequestHandler)annotation).value()){
-					removeHandlerMapping(item.value());
-				}
-			}
-		}
-		
-	}
+//	@Override
+//	public void registerHandlers(Enumeration<URL> urls) {
+//	
+//		for(URL u:Collections.list(urls)){
+//			System.out.println(u.toString());
+//		}
+//		Reflections ref = new Reflections(new ConfigurationBuilder()
+//			.setUrls(Collections.list(urls)));
+//	
+//		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+//		
+//		// For each of the annotations we need to add all of the elements that are specified
+//		// in the requests parameter.
+//		for(Class<?> handler : handers){
+//			log.debug("Found handler: "+handler.getName());
+//			for(Annotation annotation : handler.getAnnotations()){
+//				for(RequestItem item: ((RequestHandler)annotation).value()){
+//					addHandlerMapping(item.value(), annotation.getClass());
+//				}
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void unregisterHandlers(Enumeration<URL> urls) {
+//		Reflections ref = new Reflections(new ConfigurationBuilder()
+//		.setUrls(Collections.list(urls)));
+//
+//		Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
+//		
+//		// For each of the annotations we need to remove all of the requests.
+//		for(Class<?> handler : handers){
+//			log.debug("Found handler: "+handler.getName());
+//			for(Annotation annotation : handler.getAnnotations()){
+//				for(RequestItem item: ((RequestHandler)annotation).value()){
+//					removeHandlerMapping(item.value());
+//				}
+//			}
+//		}
+//		
+//	}
 
 }
