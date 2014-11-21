@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
-import javax.xml.crypto.Data;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
@@ -36,7 +35,7 @@ public interface Client {
 	 * To get data, request object should extend gov.pnnl.goss.communication.RequestData. 
 	 * To upload data, request object should extend gov.pnnl.goss.communication.RequestUpload.
 	 * @param request gov.pnnl.goss.communication.Request.
-	 * @param instance of GossResponseEvent
+	 * @param event of GossResponseEvent
 	 * @return the replyDestination topic
 	 */
 	public abstract String sendRequest(Request request, GossResponseEvent event,
