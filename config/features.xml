@@ -11,21 +11,19 @@
     
     <feature name="goss-activemq-broker-nosecurity" version="@project.version@">
         <feature version="@activemqVersion@">activemq</feature>
-        <configfile finalname="/etc/org.apache.activemq.server-default.cfg">
-        	mvn:pnnl.goss/goss-core-features/@project.version@/cfg/goss-broker-config
-        </configfile>        
-        <configfile finalname="/etc/pnnl-goss-activemq-broker.xml">
-        	mvn:pnnl.goss/goss-core-features/@project.version@/xml/goss-broker-nosecurity
-        </configfile>
+        <configfile finalname="/etc/org.apache.activemq.server-default.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-broker-config</configfile>        
+        <configfile finalname="/etc/pnnl-goss-activemq-broker.xml">mvn:pnnl.goss/goss-feature/@project.version@/xml/goss-broker-nosecurity</configfile>
     </feature>
         
     <feature name="goss-dependencies" version="@project.version@">
+    	<bundle>mvn:eu.infomas/annotation-detector/3.0.4</bundle>
+    	<!--<bundle>mvn:commons-logging/commons-logging/@commonsLoggingVersion@</bundle>-->
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/@servicemixXstreamVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/@servicemixCommonsIoVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/@servicemixCommonsDbcpVersion@</bundle>
     	<bundle dependency="true">mvn:com.google.code.gson/gson/@gsonVersion@</bundle>
     	<bundle dependency="true">mvn:mysql/mysql-connector-java/@mysqlConnectorVersion@</bundle>
-    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/@httpClientOsgiVersion@</bundle>
+    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/@httpCoreComponentsVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/@httpClientOsgiVersion@</bundle>
     	
     	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/@stompJmsVersion@</bundle>
@@ -35,15 +33,13 @@
   		<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.reflections/@servicemixReflectionsVersion@</bundle>
   		<feature>openjpa</feature>
   		<feature>jndi</feature>
+  		<feature version="@activemqVersion@">activemq</feature>
     </feature>
 
     <feature name="goss-core-feature" version="@project.version@">
-    	<configfile finalname="/etc/pnnl.goss.core.cfg">
-        	mvn:pnnl.goss/goss-core-features/@project.version@/cfg/goss-core
-        </configfile>
-        <configfile finalname="/etc/pnnl.goss.datasources.cfg">
-        	mvn:pnnl.goss/goss-core-features/@project.version@/cfg/goss-datasources
-        </configfile>
+    	<configfile finalname="/etc/pnnl.goss.core.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-core</configfile>
+        <configfile finalname="/etc/pnnl.goss.datasources.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-datasources</configfile>
+    	
     	<feature>goss-dependencies</feature>
     	<feature>goss-ipojo</feature>
     	<feature version="@cxfVersion@">cxf</feature>
