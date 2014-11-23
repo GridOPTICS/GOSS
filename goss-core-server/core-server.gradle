@@ -1,6 +1,4 @@
 
-
-
 dependencies {
 	compile project(':goss-core')
     compile project(':goss-core-security')
@@ -28,12 +26,9 @@ jar {
     manifest {       
         instruction 'DynamicImport-Package', '*'
         instruction 'Import-Package', 'pnnl.goss.core'
-        instruction 'Export-Package', 
-										'pnnl.goss.core.server',
+        instruction 'Export-Package', 	'pnnl.goss.core.server',
 										'pnnl.goss.core.server.annotations'
-		[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
-
     }
-		
+	
 	apply plugin: 'pnnl.goss.ipojoize'
 }
