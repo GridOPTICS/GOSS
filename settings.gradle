@@ -4,12 +4,12 @@ include 'goss-core',
         'goss-core-server', 
         //'goss-core-web', 
         'goss-core-security', 
-        'goss-core-security-utils',
-	'goss-core-itests'
+        'goss-core-security-utils'
+	//'goss-core-itests'
         
 
- // This is goss rather than goss-core because it is the root of the
- // tree and there is a goss-core defined already.
+// This is goss rather than goss-core because it is the root of the
+// tree and there is a goss-core defined already.
 rootProject.name = 'goss-feature'
 
 // loop over the sub-projects declared above.
