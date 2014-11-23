@@ -13,8 +13,7 @@ allprojects {
 apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
 subprojects {
-	group = 'pnnl.goss'
-	
+		
 	apply plugin: "maven"
 	apply plugin: "groovy"	
 	apply plugin: "java"
