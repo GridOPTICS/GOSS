@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="@project.name@-@project.version@" >
+    <repository>mvn:org.apache.cxf.karaf/apache-cxf/@cxfVersion/xml/features</repository>
+    <repository>mvn:org.apache.activemq/activemq-karaf/@activemqVersion@/xml/features</repository>
 
     <feature name="goss-ipojo" version="@ipojoVersion@">
     	<feature>goss-dependencies</feature>
@@ -18,6 +20,7 @@
     <feature name="goss-dependencies" version="@project.version@">
     	<bundle>mvn:eu.infomas/annotation-detector/@annotationDetectorVersion@</bundle>
     	<bundle>mvn:org.codehaus.groovy/groovy-all/@groovyVersion@</bundle>
+    	<bundle>mvn:com.ctc.wstx/woodstox-osgi/3.2.1.1</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/@servicemixXstreamVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/@servicemixCommonsIoVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/@servicemixCommonsDbcpVersion@</bundle>
@@ -31,9 +34,11 @@
     	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/@hawtDispatchVersion@</bundle>
   		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/@hawtBufVersion@</bundle>
   		<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.reflections/@servicemixReflectionsVersion@</bundle>
-  		<feature>openjpa</feature>
-  		<feature>jndi</feature>
-  		<feature version="@activemqVersion@">activemq</feature>
+  		<feature>transaction</feature>
+		<feature>openjpa</feature>
+		<feature>jndi</feature>
+		<feature>activemq</feature>
+		<feature>cxf</feature>
     </feature>
 
     <feature name="goss-core-feature" version="@project.version@">
@@ -42,8 +47,7 @@
     	
     	<feature>goss-dependencies</feature>
     	<feature>goss-ipojo</feature>
-    	<feature version="@cxfVersion@">cxf</feature>
-    	    	
+     	    	
     	<!-- Installs all the necessary activemq info for the broker and web-console -->
     	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/@project.version@</bundle>
     	   	
