@@ -9,14 +9,14 @@ you would like to develop in standalone mode please see [GOSS-Server](https://gi
 Installation Windows 7
   1. Clone the goss repository (git clone https://github.com/GridOPTICS/GOSS.git)
   2. Open command line to the repository root (i.e. git/GOSS folder)
-  3. Execute gradlew publishGoss
+  3. Execute gradlew install publishToMavenLocal
 
 Installation Linux
   1. Open terminal 
   2. Clone repository (git clone https://github.com/GridOPTICS/GOSS.git)
   3. Change directory to goss (cd GOSS)
   4. Add execute to gradlew (chmod +x gradlew)
-  5. Build core project (./gradlew publishGoss)
+  5. Build core project (./gradlew install publishToMavenLocal)
 
 That's it the goss jars are now available to be used in the local maven repository and 
 via karaf.  In addition the goss-core-feature will also be available in the repository.
