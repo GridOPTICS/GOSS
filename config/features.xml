@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"  name="@project.name@-@project.version@" >
-    <repository>mvn:org.apache.cxf.karaf/apache-cxf/@cxfVersion/xml/features</repository>
+    <repository>mvn:org.apache.cxf.karaf/apache-cxf/@cxfVersion@/xml/features</repository>
     <repository>mvn:org.apache.activemq/activemq-karaf/@activemqVersion@/xml/features</repository>
 
     <feature name="goss-ipojo" version="@ipojoVersion@">
