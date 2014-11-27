@@ -1,6 +1,6 @@
 .settings
 mvn-build
-build
+*/build/*
 target
 .classpath
 .project
