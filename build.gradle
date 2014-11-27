@@ -39,10 +39,8 @@ subprojects {
 			maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
 		}
 		dependencies {
-			// use 1.11.2 because there is some class path issue that shows up using 1.12.0.
-			classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:1.11.2"
-			classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
-			
+			classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
+			classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"			
 		}
 	}
 	
