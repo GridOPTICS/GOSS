@@ -20,7 +20,7 @@
     <feature name="goss-dependencies" version="@project.version@">
     	<bundle>mvn:eu.infomas/annotation-detector/@annotationDetectorVersion@</bundle>
     	<bundle>mvn:org.codehaus.groovy/groovy-all/@groovyVersion@</bundle>
-    	<bundle>mvn:com.ctc.wstx/woodstox-osgi/3.2.1.1</bundle>
+    	<!-- <bundle>mvn:com.ctc.wstx/woodstox-osgi/3.2.1.1</bundle> -->
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/@servicemixXstreamVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/@servicemixCommonsIoVersion@</bundle>
     	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/@servicemixCommonsDbcpVersion@</bundle>
