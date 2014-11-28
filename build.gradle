@@ -1,3 +1,5 @@
+// Release plugin
+apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
 // Define versions for dependencies here
 // Version numbers for all of goss-core should be in the gradle.properties file.
@@ -10,7 +12,6 @@ allprojects {
 	group = 'pnnl.goss'	
 }
 
-apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
 subprojects {
 		
