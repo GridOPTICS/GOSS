@@ -42,3 +42,4 @@ goss-karaf files/
 # output from resolver tool
 *resolvedPom.xml
 *pom.xml.orig
+/build/
