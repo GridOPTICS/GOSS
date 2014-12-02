@@ -10,124 +10,170 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Updated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.server.BasicDataSourceCreator;
 import pnnl.goss.core.server.GossDataServices;
 
 @Provides
 @Instantiate
 @Component(immediate=true, managedservice = PROP_DATASOURCES_CONFIG)
 public class GossDataServicesImpl implements GossDataServices {
-	
-	private static final Logger log = LoggerFactory.getLogger(GossDataServicesImpl.class);
-	/**
-	 * Holds services that have been registered with the system.
-	 */
-	private Hashtable<String, Object> dataservices;
-	/**
-	 * Configuration object that is passed to the object
-	 */
-	private Hashtable<String, String> properties = new Hashtable<String, String>();
 
-	public GossDataServicesImpl(){
-		log.debug("Constructing");
-		dataservices = new Hashtable<String, Object>();
-	}
-	
-	public GossDataServicesImpl(String configFile){
-		this();
-		log.debug("Constructing Configuration file: ");
-		
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public GossDataServicesImpl(Dictionary config){
-		this();
-		log.debug("Constructing Configuration file: ");
-		update(config);
-	}
-	
-	@Updated
-	public void update(@SuppressWarnings("rawtypes") Dictionary config){
-		properties.clear();
-		@SuppressWarnings("rawtypes")
-		Enumeration nummer = config.keys();
-		
-		while(nummer.hasMoreElements()){
-			String key = (String)nummer.nextElement();
-			log.debug("Adding property key: " + key);
-			properties.put(key,  (String)config.get(key));
-		}		
-	}
-	
-	@Override
-	public void registerData(String serviceName, Object dataservice) {
-		log.debug("Registering: " + serviceName);
-		dataservices.put(serviceName, dataservice);
-	}
+    private static final Logger log = LoggerFactory.getLogger(GossDataServicesImpl.class);
 
-	@Override
-	public void unRegisterData(String serviceName) {
-		log.debug("Unregistering: "+serviceName);
-		dataservices.remove(serviceName);		
-	}
+    @Requires
+    private BasicDataSourceCreator datasourceCreator;
 
-	@Override
-	public Connection getPooledConnection(String serviceName) {
-		log.debug("Getting ppoled connection: "+serviceName);
-		Object value = dataservices.get(serviceName);
-		Connection conn = null;
-		try {			
-			if(value != null){
-				if(value instanceof DataSource){
-					conn = ((DataSource)value).getConnection();
-					log.debug("connection retrieved");
-				}
-			}
-		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
-		}
-		return conn;
-	}
+    private Hashtable<String, ConstructableDatasource> possibleConstruction =
+            new Hashtable<>();
 
-	@Override
-	public Object getDataService(String serviceName) {
-		log.debug("Retrieving service: "+serviceName);
-		return dataservices.get(serviceName);
-	}
-	
-	@Invalidate
-	public void releaseServices(){
-		log.debug("Clearing services");
-		dataservices.clear();
-	}
+    /**
+     * Holds services that have been registered with the system.
+     */
+    private Hashtable<String, Object> dataservices;
+    /**
+     * Configuration object that is passed to the object
+     */
+    private Hashtable<String, String> properties = new Hashtable<String, String>();
 
-	@Override
-	public boolean contains(String serviceName) {
-		return dataservices.contains(serviceName);
-	}
+    public GossDataServicesImpl(){
+        log.debug("Constructing");
+        dataservices = new Hashtable<String, Object>();
+    }
 
-	@Override
-	public Collection<String> getAvailableDataServices() {
-		return Collections.unmodifiableCollection(dataservices.keySet());
-	}
+    @Deprecated
+    public GossDataServicesImpl(String configFile){
+        this();
+        log.debug("Constructing Configuration file: ");
 
-	@Override
-	public Collection<String> getPropertyKeys() {
-		return Collections.unmodifiableCollection(properties.keySet());
-	}
+    }
 
-	@Override
-	public String getPropertyValue(String key) {
-		return properties.get(key);
-	}
+    @SuppressWarnings("rawtypes")
+    public GossDataServicesImpl(BasicDataSourceCreator datasourceCreator,
+            Dictionary config){
+        this();
+        this.datasourceCreator = datasourceCreator;
+        log.debug("Constructing Configuration file: ");
+        update(config);
+    }
+
+    @Updated
+    public void update(@SuppressWarnings("rawtypes") Dictionary config){
+        properties.clear();
+        @SuppressWarnings("rawtypes")
+        Enumeration nummer = config.keys();
+
+        while(nummer.hasMoreElements()){
+            String key = (String)nummer.nextElement();
+            String value = (String)config.get(key);
+            log.debug("Adding property key: " + key);
+            switch(value.toUpperCase()){
+            case "MYSQL":
+                ConstructableDatasource ds = new ConstructableDatasource();
+                possibleConstruction.put(key, ds);
+            }
+
+            properties.put(key,  (String)config.get(key));
+        }
+
+        for(Entry<String, ConstructableDatasource> entry: possibleConstruction.entrySet()){
+            ConstructableDatasource ds = entry.getValue();
+            ds.username = properties.get(entry.getKey()+".user");
+            ds.password = properties.get(entry.getKey()+".password");
+            ds.uri = properties.get(entry.getKey()+".uri");
+            ds.driver = properties.get(entry.getKey()+".driver");
+
+            try {
+                BasicDataSource actualDs = datasourceCreator.create(ds.uri,
+                        ds.username, ds.password, ds.driver);
+                dataservices.put(entry.getKey(), actualDs);
+            } catch (Exception e) {
+                log.error("Unable to create database connection for: "+
+                            entry.getKey());
+            }
+        }
+
+    }
+
+    private class ConstructableDatasource{
+        public String username;
+        public String password;
+        public String uri;
+        public String driver;
+    }
+
+    @Override
+    public void registerData(String serviceName, Object dataservice) {
+        log.debug("Registering: " + serviceName);
+        dataservices.put(serviceName, dataservice);
+    }
+
+    @Override
+    public void unRegisterData(String serviceName) {
+        log.debug("Unregistering: "+serviceName);
+        dataservices.remove(serviceName);
+    }
+
+    @Override
+    public Connection getPooledConnection(String serviceName) {
+        log.debug("Getting ppoled connection: "+serviceName);
+        Object value = dataservices.get(serviceName);
+        Connection conn = null;
+        try {
+            if(value != null){
+                if(value instanceof DataSource){
+                    conn = ((DataSource)value).getConnection();
+                    log.debug("connection retrieved");
+                }
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+        }
+        return conn;
+    }
+
+    @Override
+    public Object getDataService(String serviceName) {
+        log.debug("Retrieving service: "+serviceName);
+        return dataservices.get(serviceName);
+    }
+
+    @Invalidate
+    public void releaseServices(){
+        log.debug("Clearing services");
+        dataservices.clear();
+    }
+
+    @Override
+    public boolean contains(String serviceName) {
+        return dataservices.contains(serviceName);
+    }
+
+    @Override
+    public Collection<String> getAvailableDataServices() {
+        return Collections.unmodifiableCollection(dataservices.keySet());
+    }
+
+    @Override
+    public Collection<String> getPropertyKeys() {
+        return Collections.unmodifiableCollection(properties.keySet());
+    }
+
+    @Override
+    public String getPropertyValue(String key) {
+        return properties.get(key);
+    }
 }
