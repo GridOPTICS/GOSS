@@ -16,35 +16,36 @@ import pnnl.goss.core.server.BasicDataSourceCreator;
 @Component
 @Instantiate
 public class BasicDataSourceCreatorImpl implements BasicDataSourceCreator {
-	
-	private static final Logger log = LoggerFactory.getLogger(BasicDataSourceCreator.class);
 
-	public BasicDataSource create(String url, String username, String password) throws Exception {
-		return create(url, username, password, "com.mysql.jdbc.Driver");
-	}
-	
-	public BasicDataSource create(String url, String username, String password, String driver) throws Exception {
-		Properties properties = new Properties();
-				
-		// Available properties http://commons.apache.org/proper/commons-dbcp/xref-test/org/apache/commons/dbcp/TestBasicDataSourceFactory.html#50
-		if (driver == null || driver.trim().equals("")){
-			properties.setProperty("driverClassName", "com.mysql.jdbc.Driver"); 
-		}
-		else{
-			properties.setProperty("driverClassName", driver);
-		}
+    private static final Logger log = LoggerFactory.getLogger(BasicDataSourceCreator.class);
 
-		Class.forName(properties.getProperty("driverClassName"));
+    public BasicDataSource create(String uri, String username, String password) throws Exception {
+        return create(uri, username, password, "com.mysql.jdbc.Driver");
+    }
 
-		properties.setProperty("url", url);
-		properties.setProperty("username", username);
-		properties.setProperty("password", password);
+    public BasicDataSource create(String uri, String username, String password, String driver) throws Exception {
+        Properties properties = new Properties();
 
-		properties.setProperty("maxOpenPreparedStatements", "10");
-		
-		log.debug("Creating BasicDataSource\n\tURI:"+url+"\n\tUser:\n\t"+username);
-		
-		return (BasicDataSource)BasicDataSourceFactory.createDataSource(properties);
+        // Available properties http://commons.apache.org/proper/commons-dbcp/xref-test/org/apache/commons/dbcp/TestBasicDataSourceFactory.html#50
+        if (driver == null || driver.trim().equals("")){
+            properties.setProperty("driverClassName", "com.mysql.jdbc.Driver");
+        }
+        else{
+            properties.setProperty("driverClassName", driver);
+        }
 
-	}
+        Class.forName(properties.getProperty("driverClassName"));
+
+        properties.setProperty("url", uri);
+        properties.setProperty("username", username);
+        properties.setProperty("password", password);
+
+        properties.setProperty("maxOpenPreparedStatements", "10");
+
+        log.debug("Creating BasicDataSource:\n\tURI: "+uri+"\n\tUser: "+username+
+                "\n\tDriver: "+ driver);
+
+        return (BasicDataSource)BasicDataSourceFactory.createDataSource(properties);
+
+    }
 }
