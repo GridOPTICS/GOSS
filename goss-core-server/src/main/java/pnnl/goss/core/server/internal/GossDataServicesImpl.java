@@ -37,9 +37,6 @@ public class GossDataServicesImpl implements GossDataServices {
     @Requires
     private BasicDataSourceCreator datasourceCreator;
 
-    private Hashtable<String, ConstructableDatasource> possibleConstruction =
-            new Hashtable<>();
-
     /**
      * Holds services that have been registered with the system.
      */
@@ -75,6 +72,8 @@ public class GossDataServicesImpl implements GossDataServices {
         properties.clear();
         @SuppressWarnings("rawtypes")
         Enumeration nummer = config.keys();
+        Hashtable<String, ConstructableDatasource> possibleConstruction =
+                new Hashtable<>();
 
         while(nummer.hasMoreElements()){
             String key = (String)nummer.nextElement();
