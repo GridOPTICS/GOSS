@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -66,51 +66,88 @@ import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 
 
 public class GridOpticsServer {
-	
-	private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
-	
-	private static Connection connection;
-	
-	@SuppressWarnings("rawtypes")
-	public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker){
-		try {
-			Dictionary config = service.getCoreServerConfig();
-			String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
-			URI uri = URI.create(brokerURI);
-			String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
-			String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
-			
-			log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
-			
-			
-			
-			//Needed for standalone server instance
-			if(startBroker){
-				startBroker(config);
-			}
-			
-			makeActiveMqConnection(uri, user, pw);
-			 		
+
+    private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
+
+    private static Connection connection;
+
+    @SuppressWarnings("rawtypes")
+    public GridOpticsServer(GossRequestHandlerRegistrationService handlerServic,
+            Dictionary coreConfiguration, boolean startBroker){
+        try {
+            Dictionary config = coreConfiguration;
+            String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
+            URI uri = URI.create(brokerURI);
+            String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
+            String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
+
+            log.debug("Creating gridoptics server\n\tbrokerURI:"+
+                    brokerURI+"\n\tsystem user: "+user);
+
+
+
+            //Needed for standalone server instance
+            if(startBroker){
+                startBroker(config);
+            }
+
+            makeActiveMqConnection(uri, user, pw);
+
 //			if (service == null){
 //				new ServerConsumer();
 //			}
 //			else{
-				new ServerConsumer(service);
+                new ServerConsumer(handlerServic);
 //			}
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	//TO MY KNOWLEDGE THESE CONSTRUCTORS AREN'T NEEDED ANYMORE
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Deprecated
+    public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker){
+        try {
+            Dictionary config = service.getCoreServerConfig();
+            String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
+            URI uri = URI.create(brokerURI);
+            String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
+            String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
+
+            log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
+
+
+
+            //Needed for standalone server instance
+            if(startBroker){
+                startBroker(config);
+            }
+
+            makeActiveMqConnection(uri, user, pw);
+
+//			if (service == null){
+//				new ServerConsumer();
+//			}
+//			else{
+                new ServerConsumer(service);
+//			}
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    //TO MY KNOWLEDGE THESE CONSTRUCTORS AREN'T NEEDED ANYMORE
 //	public GridOpticsServer(URI brokerUri, GossRequestHandlerRegistrationService service){
 //	try {
 //		makeActiveMqConnection(brokerUri);
-//		 		
+//
 //		if (service == null){
 //			new ServerConsumer();
 //		}
@@ -121,11 +158,11 @@ public class GridOpticsServer {
 //		e.printStackTrace();
 //	}
 //}
-	
+
 //	public GridOpticsServer(URI brokerUri){
 //		this(brokerUri, null);
 //	}
-//	
+//
 //	public GridOpticsServer(GossRequestHandlerRegistrationService service) {
 //		try{
 //			if(connection==null){
@@ -137,85 +174,85 @@ public class GridOpticsServer {
 //				BrokerService broker = BrokerFactory.createBroker(Utilities.getProperty("brokerConfig"));
 //				Utilities.setbrokerURI(broker.getTransportConnectors().get(0).getConnectUri());
 //				broker.start();
-//				
+//
 //				makeActiveMqConnection(Utilities.getbrokerURI());
-//				
+//
 //				//Setup Consumer
 //				new ServerConsumer(service);
 //			}
-//		
+//
 //		}
 //		catch(Exception e ){
 //			e.printStackTrace();
 //		}
 //	}
-	
-	@SuppressWarnings({"rawtypes" })
-	private void startBroker(Dictionary config) throws Exception {
-		BrokerService broker = null;
-		
-		if (config.get(PROP_ACTIVEMQ_CONFIG) != null){
-			String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
-			log.debug("Starting broker using config: " + brokerConfig);
-		
-			System.setProperty("activemq.base", System.getProperty("user.dir"));
-			log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-			broker = BrokerFactory.createBroker(brokerConfig, true);
-			broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
-		}
-		else{
-			log.debug("Broker started not using xbean "+ (String)config.get(PROP_OPENWIRE_URI));
-			broker = new BrokerService();
-			broker.addConnector((String)config.get(PROP_OPENWIRE_URI));
-			log.warn("Persistent storage is off");
-			String datadir = System.getProperty("java.io.tmpdir") + File.separatorChar
-					+ "gossdata";
-			broker.setDataDirectory(datadir);
-			broker.start();
-		}
-		broker.waitUntilStarted();
-		
-	}
-	
-	private void makeActiveMqConnection(URI brokerUri) throws JMSException{
-		makeActiveMqConnection(brokerUri, null, null);
-	}
-	private void makeActiveMqConnection(URI brokerUri, String systemUser, String systemPW) throws JMSException{
-		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
-		factory.setUseAsyncSend(true);
-		//Use system login account
-		if(systemUser!=null){
-			factory.setUserName(systemUser);
-		}
-		if(systemPW!=null){
-			factory.setPassword(systemPW);
-		}
-		
-		log.debug("Creating connection to: "+brokerUri +" using account: "+ systemUser);
-		connection = (ActiveMQConnection)factory.createConnection();
-		connection.start();
-	}
-	
-	public static Connection getConnection() throws NullPointerException{
-		if(connection==null)
-			throw new NullPointerException("Cannot connect to server. Create GridOPTICSServer instance first.");
-		
-		return connection;
-	}
-	
-	public void close() throws JMSException {
-		if (connection != null) {
-			connection.close();
-		}
-		log.debug("Closing connection");
-		connection = null;
-	}
-	
-	@Override
-	protected void finalize() throws Throwable {
-		//Make really sure that the connection gets closed
-		//close();
-		super.finalize();
-	}
-	
+
+    @SuppressWarnings({"rawtypes" })
+    private void startBroker(Dictionary config) throws Exception {
+        BrokerService broker = null;
+
+        if (config.get(PROP_ACTIVEMQ_CONFIG) != null){
+            String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
+            log.debug("Starting broker using config: " + brokerConfig);
+
+            System.setProperty("activemq.base", System.getProperty("user.dir"));
+            log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
+            broker = BrokerFactory.createBroker(brokerConfig, true);
+            broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
+        }
+        else{
+            log.debug("Broker started not using xbean "+ (String)config.get(PROP_OPENWIRE_URI));
+            broker = new BrokerService();
+            broker.addConnector((String)config.get(PROP_OPENWIRE_URI));
+            log.warn("Persistent storage is off");
+            String datadir = System.getProperty("java.io.tmpdir") + File.separatorChar
+                    + "gossdata";
+            broker.setDataDirectory(datadir);
+            broker.start();
+        }
+        broker.waitUntilStarted();
+
+    }
+
+    private void makeActiveMqConnection(URI brokerUri) throws JMSException{
+        makeActiveMqConnection(brokerUri, null, null);
+    }
+    private void makeActiveMqConnection(URI brokerUri, String systemUser, String systemPW) throws JMSException{
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
+        factory.setUseAsyncSend(true);
+        //Use system login account
+        if(systemUser!=null){
+            factory.setUserName(systemUser);
+        }
+        if(systemPW!=null){
+            factory.setPassword(systemPW);
+        }
+
+        log.debug("Creating connection to: "+brokerUri +" using account: "+ systemUser);
+        connection = (ActiveMQConnection)factory.createConnection();
+        connection.start();
+    }
+
+    public static Connection getConnection() throws NullPointerException{
+        if(connection==null)
+            throw new NullPointerException("Cannot connect to server. Create GridOPTICSServer instance first.");
+
+        return connection;
+    }
+
+    public void close() throws JMSException {
+        if (connection != null) {
+            connection.close();
+        }
+        log.debug("Closing connection");
+        connection = null;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        //Make really sure that the connection gets closed
+        //close();
+        super.finalize();
+    }
+
 }
