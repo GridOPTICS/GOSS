@@ -9,8 +9,23 @@ buildscript {
     dependencies { classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6" }
 }
 
+
 // All projects under this project folder will have the group and version below.
 allprojects {
+	def userFile = new File(System.getProperty("user.home")+
+		'/.goss/bintray_user')
+	def keyFile = new File(System.getProperty("user.home")+
+		'/.goss/bintray_key')
+
+
+	if (userFile.exists()){
+		ext.bintrayUserName = userFile.text.trim()
+	}
+
+	if (keyFile.exists()){
+		ext.bintrayUserKey = userFile.text.trim()
+	}
+
     repositories {
         jcenter()
     }
@@ -28,18 +43,8 @@ allprojects {
     bintray {
 		println project.name
         apiUrl = "https://api.bintray.com"
-		def userFile = new File(System.getProperty("user.home")+
-									'/.goss/bintray_user')
-		def keyFile = new File(System.getProperty("user.home")+
-									'/.goss/bintray_key')
-
-		if (userFile.exists()){
-			user = userFile.text.trim()
-		}
-
-		if (keyFile.exists()){
-			key = keyFile.text.trim()
-		}
+		user = "$bintrayUserName"
+		key = "$bintrayUserKey"
 
 		configurations = ['published', 'archives']
         //publications = ['published']
@@ -48,6 +53,7 @@ allprojects {
             into 'standalone_files/level1'
             rename '(.+)\\.(.+)', '$1-suffix.$2'
         }
+
         publish = project.publish
         pkg {
             repo = (project.version ==~ /.*-SNAPSHOT.*/)? "GOSS-SNAPSHOT": "GOSS"
@@ -61,7 +67,7 @@ future data analytics and integration platform.'''
             licenses = ['BSD']
             labels = ['goss', 'middleware', 'powergrid']
             attributes= ['plat': ['linux', 'win7']]
-            publicDownloadNumbers = true
+            publicDownloadNumbers = false
             version {
                 name = project.version //Optional logical version name
                 //desc = 'optional, version-specific description'
@@ -70,9 +76,7 @@ future data analytics and integration platform.'''
             }
         }
     }
-
 }
-
 
 subprojects {
 
