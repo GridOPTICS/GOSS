@@ -12,41 +12,36 @@ buildscript {
 
 // All projects under this project folder will have the group and version below.
 allprojects {
-	def userFile = new File(System.getProperty("user.home")+
-		'/.goss/bintray_user')
-	def keyFile = new File(System.getProperty("user.home")+
-		'/.goss/bintray_key')
+    def userFile = new File(System.getProperty("user.home")+
+            '/.goss/bintray_user')
+    def keyFile = new File(System.getProperty("user.home")+
+            '/.goss/bintray_key')
 
 
-	if (userFile.exists()){
-		ext.bintrayUserName = userFile.text.trim()
-	}
-
-	if (keyFile.exists()){
-		ext.bintrayUserKey = userFile.text.trim()
-	}
-
-    repositories {
-        jcenter()
+    if (userFile.exists()){
+        ext.bintrayUserName = userFile.text.trim()
     }
+
+    if (keyFile.exists()){
+        ext.bintrayUserKey = keyFile.text.trim()
+    }
+
+    repositories { jcenter() }
     apply plugin: 'idea'
     apply plugin: 'com.jfrog.bintray'
 
     group = 'pnnl.goss'
 
 
-    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
-        apply plugin: 'java'
-    }
+    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) { apply plugin: 'java' }
 
     ext.publish = false
     bintray {
-		println project.name
+        println project.name
         apiUrl = "https://api.bintray.com"
-		user = "$bintrayUserName"
-		key = "$bintrayUserKey"
-
-		configurations = ['published', 'archives']
+        user = "$bintrayUserName"
+        key = "$bintrayUserKey"
+        configurations = ['published', 'archives']
         //publications = ['published']
         filesSpec {
             from 'files'
@@ -65,7 +60,11 @@ future data analytics and integration platform.'''
             issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
             vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
             licenses = ['BSD']
-            labels = ['goss', 'middleware', 'powergrid']
+            labels = [
+                'goss',
+                'middleware',
+                'powergrid'
+            ]
             attributes= ['plat': ['linux', 'win7']]
             publicDownloadNumbers = false
             version {
@@ -141,7 +140,11 @@ subprojects {
                 instruction 'Bundle-Vendor', 'PNNL'
                 instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
 
-                [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+                [
+                    compileJava,
+                    compileTestJava,
+                    javadoc
+                ]*.options*.encoding = 'UTF-8'
             }
         }
 
@@ -162,9 +165,7 @@ subprojects {
     }
 }
 
-task wrapper (type: Wrapper) {
-    gradleVersion = '2.2'
-}
+task wrapper (type: Wrapper) { gradleVersion = '2.2' }
 
 
 apply plugin: "maven-publish"
@@ -242,77 +243,68 @@ task copyConfigFiles(type: Copy) {
  */
 
 /*
-karafFeatures {
-    excludes = [
-        'org.slf4j/.*',
-        'log4j/.*',
-        'org.osgi/.*',
-        'org.apache.felix/.*',
-        'org.apache.karaf.shell/.*'
-    ]
-
-    wraps = [
-        'com.google.guava/guava/.*'
-    ]
-
-    startLevels = [
-        'org.apache.geronimo.specs/.*':'50',
-        'org.apache.commons/.*':'60',
-    ]
-
-    extraBundles = [
-        'mvn:mygroup:mypackage:myversion',
-        'mvn:mygroup2:mypackage2:myversion2'
-    ]
-
-    // if outputFile is not provided, the output is written to the standard
-    // output.
-    outputFile = new File('features.xml')
-}*/
+ karafFeatures {
+ excludes = [
+ 'org.slf4j/.*',
+ 'log4j/.*',
+ 'org.osgi/.*',
+ 'org.apache.felix/.*',
+ 'org.apache.karaf.shell/.*'
+ ]
+ wraps = [
+ 'com.google.guava/guava/.*'
+ ]
+ startLevels = [
+ 'org.apache.geronimo.specs/.*':'50',
+ 'org.apache.commons/.*':'60',
+ ]
+ extraBundles = [
+ 'mvn:mygroup:mypackage:myversion',
+ 'mvn:mygroup2:mypackage2:myversion2'
+ ]
+ // if outputFile is not provided, the output is written to the standard
+ // output.
+ outputFile = new File('features.xml')
+ }*/
 
 // Set up properties for each of the subprojects.
 /*
-project(':goss-core') {
-    group = projectIds.group
-    version = projectIds.version
-    apply plugin: 'java'
-}
-
-project(':goss-core-server') {
-    group = projectIds.group
-    version = projectIds.version
-    apply plugin: 'java'
-    dependencies {
-        compile project{':goss-core'}
-    }
-}
-
-project(':goss-core-security') {
-    group = projectIds.group
-    version = projectIds.version
-    apply plugin: 'java'
-}
-
-project(':goss-core-security-utils') {
-    group = projectIds.group
-    version = projectIds.version
-    apply plugin: 'java'
-}
-
-project(':goss-core-web') {
-    group = projectIds.group
-    version = projectIds.version
-    apply plugin: 'java'
-    apply plugin: 'war'
-    apply plugin: 'jetty'
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        providedCompile 'javax.servlet:servlet-api:3.0'
-    }
-}*/
+ project(':goss-core') {
+ group = projectIds.group
+ version = projectIds.version
+ apply plugin: 'java'
+ }
+ project(':goss-core-server') {
+ group = projectIds.group
+ version = projectIds.version
+ apply plugin: 'java'
+ dependencies {
+ compile project{':goss-core'}
+ }
+ }
+ project(':goss-core-security') {
+ group = projectIds.group
+ version = projectIds.version
+ apply plugin: 'java'
+ }
+ project(':goss-core-security-utils') {
+ group = projectIds.group
+ version = projectIds.version
+ apply plugin: 'java'
+ }
+ project(':goss-core-web') {
+ group = projectIds.group
+ version = projectIds.version
+ apply plugin: 'java'
+ apply plugin: 'war'
+ apply plugin: 'jetty'
+ repositories {
+ mavenCentral()
+ }
+ dependencies {
+ providedCompile 'javax.servlet:servlet-api:3.0'
+ }
+ }*/
 
 
 //// Snag the version from the properties file.
