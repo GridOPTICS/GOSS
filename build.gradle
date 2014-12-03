@@ -1,15 +1,63 @@
 // Release plugin
 apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
 
-// Define versions for dependencies here
-// Version numbers for all of goss-core should be in the gradle.properties file.
-
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies { classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6" }
+}
 
 // All projects under this project folder will have the group and version below.
 allprojects {
-    apply plugin: "eclipse"
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'idea'
+    apply plugin: 'com.jfrog.bintray'
 
     group = 'pnnl.goss'
+
+
+    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
+        apply plugin: 'java'
+    }
+
+    ext.publish = false
+    bintray {
+        apiUrl = "https://api.bintray.com"
+        user = System.getenv()['BINTRAY_USER']
+        key = System.getenv()['BINTRAY_KEY']
+        configurations = ['published', 'archives']
+        //publications = ['published']
+        filesSpec {
+            from 'files'
+            into 'standalone_files/level1'
+            rename '(.+)\\.(.+)', '$1-suffix.$2'
+        }
+        publish = project.publish
+        pkg {
+            repo = 'maven'
+            //userOrg = 'myorg'
+            name = 'mypkg3'
+            desc = 'what a fantastic package indeed!'
+            websiteUrl = 'https://github.com/bintray/gradle-bintray-plugin'
+            issueTrackerUrl = 'https://github.com/bintray/gradle-bintray-plugin/issues'
+            vcsUrl = 'https://github.com/bintray/gradle-bintray-plugin.git'
+            licenses = ['Apache-2.0']
+            labels = ['gear', 'gore', 'gorilla']
+            attributes= ['plat': ['linux', 'osx']]
+            publicDownloadNumbers = true
+            version {
+                name = '1.3.x-Final' //Optional logical version name
+                desc = 'optional, version-specific description'
+                vcsTag = '1.3.0'
+                attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
+            }
+        }
+    }
+
 }
 
 
@@ -40,9 +88,11 @@ subprojects {
             maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
         }
         dependencies {
-            classpath 'com.github.townsfolk:gradle-release:1.2'
+            classpath "com.github.townsfolk:gradle-release:1.2"
             classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
             classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
+            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6"
+
         }
     }
 
@@ -66,32 +116,32 @@ subprojects {
 
     }
 
-    jar {
-        // Include source with the jar
-        from sourceSets.main.allSource
-        manifest {
-            instruction 'Bundle-Vendor', 'PNNL'
-            instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
+    if (project.plugins.hasPlugin('java')) {
+        jar {
+            // Include source with the jar
+            from sourceSets.main.allSource
+            manifest {
+                instruction 'Bundle-Vendor', 'PNNL'
+                instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
 
-            [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+                [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+            }
         }
 
-        //apply plugin: 'pnnl.goss.ipojoize'
-    }
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
+        artifacts {
+            archives sourcesJar
+            archives javadocJar
+        }
     }
 }
 
@@ -154,7 +204,7 @@ task copyConfigFiles(type: Copy) {
         }
 
         project.ext.properties.each {k, v ->
-            fileText = fileText.replaceAll('@'+k+'@', v)
+            fileText = fileText.replaceAll('@'+k.toString()+'@', v.toString())
         }
 
         fileText = fileText.replace('@project.version@', project.version)
