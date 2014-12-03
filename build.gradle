@@ -18,6 +18,9 @@ allprojects {
             '/.goss/bintray_key')
 
 
+    ext.bintrayUserName= ""
+    ext.bintrayUserKey=""
+
     if (userFile.exists()){
         ext.bintrayUserName = userFile.text.trim()
     }
