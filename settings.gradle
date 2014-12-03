@@ -1,12 +1,12 @@
 // These are the properties that are in this feature set.
-include 'goss-core', 
-        'goss-core-client', 
-        'goss-core-server', 
-        //'goss-core-web', 
-        'goss-core-security', 
+include 'goss-core',
+        'goss-core-client',
+        'goss-core-server',
+        //'goss-core-web',
+        'goss-core-security',
         'goss-core-security-utils'
-	//'goss-core-itests'
-        
+  //'goss-core-itests'
+
 
 // This is goss rather than goss-core because it is the root of the
 // tree and there is a goss-core defined already.
@@ -18,6 +18,3 @@ rootProject.children.each {
     // the goss- prefix.
     it.buildFileName = it.name + '.gradle' - 'goss-'
 }
-
-
-
