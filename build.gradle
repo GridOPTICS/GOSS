@@ -6,85 +6,113 @@ buildscript {
         mavenLocal()
         jcenter()
     }
-    dependencies { classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6" }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6",
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.5')
+    }
 }
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+def globalVersion = new Version(currentVersion)
 
 // All projects under this project folder will have the group and version below.
 allprojects {
-    def userFile = new File(System.getProperty("user.home")+
-            '/.goss/bintray_user')
-    def keyFile = new File(System.getProperty("user.home")+
-            '/.goss/bintray_key')
-
-
-    ext.bintrayUserName= ""
-    ext.bintrayUserKey=""
-
-    if (userFile.exists()){
-        ext.bintrayUserName = userFile.text.trim()
-    }
-
-    if (keyFile.exists()){
-        ext.bintrayUserKey = keyFile.text.trim()
-    }
-
-    repositories { jcenter() }
+    apply plugin: 'artifactory-publish'
+    apply plugin: 'artifactory'
     apply plugin: 'idea'
-    apply plugin: 'com.jfrog.bintray'
+
+    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
+        apply plugin: 'java'
+    }
 
     group = 'pnnl.goss'
+    version = globalVersion
+    status = version.status
 
-
-    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) { apply plugin: 'java' }
-
-    ext.publish = false
-    bintray {
-        println project.name
-        apiUrl = "https://api.bintray.com"
-        user = "$bintrayUserName"
-        key = "$bintrayUserKey"
-        configurations = ['published', 'archives']
-        //publications = ['published']
-        filesSpec {
-            from 'files'
-            into 'standalone_files/level1'
-            rename '(.+)\\.(.+)', '$1-suffix.$2'
-        }
-
-        publish = project.publish
-        pkg {
-            repo = (project.version ==~ /.*-SNAPSHOT.*/)? "GOSS-SNAPSHOT": "GOSS"
-            userOrg = 'gridoptics'
-            name = 'GOSS-Core'
-            desc = '''GOSS is a middleware architecture designed as a prototype
-future data analytics and integration platform.'''
-            websiteUrl = 'https://github.com/GridOPTICS/GOSS'
-            issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
-            vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
-            licenses = ['BSD']
-            labels = [
-                'goss',
-                'middleware',
-                'powergrid'
-            ]
-            attributes= ['plat': ['linux', 'win7']]
-            publicDownloadNumbers = false
-            version {
-                name = project.version //Optional logical version name
-                //desc = 'optional, version-specific description'
-                //vcsTag = '1.3.0'
-                //attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
-            }
+    configurations.classpath {
+        resolutionStrategy {
+            failOnVersionConflict()
+            cacheDynamicVersionsFor 0, 'seconds'
+            cacheChangingModulesFor 0, 'seconds'
         }
     }
+
+
+//    def userFile = new File(System.getProperty("user.home")+
+//            '/.goss/bintray_user')
+//    def keyFile = new File(System.getProperty("user.home")+
+//            '/.goss/bintray_key')
+//
+//
+//    ext.bintrayUserName= ""
+//    ext.bintrayUserKey=""
+//
+//    if (userFile.exists()){
+//        ext.bintrayUserName = userFile.text.trim()
+//    }
+//
+//    if (keyFile.exists()){
+//        ext.bintrayUserKey = keyFile.text.trim()
+//    }
+//
+//    repositories { jcenter() }
+//    apply plugin: 'idea'
+//    apply plugin: 'com.jfrog.bintray'
+//
+//    group = 'pnnl.goss'
+//
+//
+//    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) { apply plugin: 'java' }
+//
+//    ext.publish = false
+//    bintray {
+//        println project.name
+//        apiUrl = "https://api.bintray.com"
+//        user = "$bintrayUserName"
+//        key = "$bintrayUserKey"
+//        configurations = ['published', 'archives']
+//        //publications = ['published']
+//        filesSpec {
+//            from 'files'
+//            into 'standalone_files/level1'
+//            rename '(.+)\\.(.+)', '$1-suffix.$2'
+//        }
+//
+//        publish = project.publish
+//        pkg {
+//            repo = (project.version ==~ /.*-SNAPSHOT.*/)? "GOSS-SNAPSHOT": "GOSS"
+//            userOrg = 'gridoptics'
+//            name = 'GOSS-Core'
+//            desc = '''GOSS is a middleware architecture designed as a prototype
+//future data analytics and integration platform.'''
+//            websiteUrl = 'https://github.com/GridOPTICS/GOSS'
+//            issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
+//            vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
+//            licenses = ['BSD']
+//            labels = [
+//                'goss',
+//                'middleware',
+//                'powergrid'
+//            ]
+//            attributes= ['plat': ['linux', 'win7']]
+//            publicDownloadNumbers = false
+//            version {
+//                name = project.version //Optional logical version name
+//                //desc = 'optional, version-specific description'
+//                //vcsTag = '1.3.0'
+//                //attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
+//            }
+//        }
+//    }
 }
 
-subprojects {
+artifactoryPublish.skip = true
 
+subprojects {
     apply plugin: "maven"
     apply plugin: "groovy"
-    apply plugin: "java"
     apply plugin: "osgi"
 
 
@@ -136,6 +164,7 @@ subprojects {
     }
 
     if (project.plugins.hasPlugin('java')) {
+        println project.name
         jar {
             // Include source with the jar
             from sourceSets.main.allSource
@@ -151,7 +180,7 @@ subprojects {
             }
         }
 
-        task sourcesJar(type: Jar, dependsOn: classes) {
+        task sourceJar(type: Jar, dependsOn: classes) {
             classifier = 'sources'
             from sourceSets.main.allSource
         }
@@ -161,33 +190,98 @@ subprojects {
             from javadoc.destinationDir
         }
 
+        artifactoryPublish {
+            dependsOn sourceJar, javadocJar
+        }
+
         artifacts {
-            archives sourcesJar
+            archives sourceJar
             archives javadocJar
         }
     }
 }
 
-task wrapper (type: Wrapper) { gradleVersion = '2.2' }
+configurations {
+    published
+}
 
+artifactory {
+    //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = "${artifactory_contextUrl}"
+    // contextUrl = 'http://repo.jfrog.org/artifactory'
+    // contextUrl = 'http://localhost:8080/artifactory'
+    println "USER: PASS: ${artifactory_user} ${artifactory_password}"
 
-apply plugin: "maven-publish"
+    publish {
+        repository {
+            repoKey = 'libs-snapshot'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
 
-// Configure publishing of features and config files for shoving them into the maven
-// repository.
-publishing {
-    publications {
-        featurePub(MavenPublication) {
-            artifact source: 'build/config/features.xml', classifier: 'features', extension: 'xml'
-            artifact source: 'build/config/pnnl.goss.core.cfg', classifier: 'goss-core', extension: 'cfg'
-            artifact source: 'build/config/pnnl.goss.datasources.cfg', classifier: 'goss-datasources', extension: 'cfg'
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
 
-            artifact source: 'build/config/pnnl.goss.activemq.server-default.cfg', classifier: 'goss-broker-config', extension: 'cfg'
-            artifact source: 'build/config/pnnl-goss-activemq-broker.xml', classifier: 'goss-broker', extension: 'xml'
-            artifact source: 'build/config/pnnl-goss-activemq-broker-nosecurity.xml', classifier: 'goss-broker-nosecurity', extension: 'xml'
         }
     }
 }
+
+class Version {
+    String originalVersion
+    String thisVersion
+    String status
+    Date buildTime
+
+    Version(String versionValue) {
+        buildTime = new Date()
+        originalVersion = versionValue
+        if (originalVersion.endsWith('-SNAPSHOT')) {
+            status = 'integration'
+            thisVersion = originalVersion.substring(0, originalVersion.length() - 'SNAPSHOT'.length()) + getTimestamp()
+        } else {
+            status = 'release'
+            thisVersion = versionValue
+        }
+    }
+
+    String getTimestamp() {
+        // Convert local file timestamp to UTC
+        def format = new SimpleDateFormat('yyyyMMddHHmmss')
+        format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('UTC')));
+        return format.format(buildTime)
+    }
+
+    String toString() {
+        thisVersion
+    }
+}
+
+//task wrapper (type: Wrapper) { gradleVersion = '2.2.1' }
+//
+//
+//apply plugin: "maven-publish"
+//
+//// Configure publishing of features and config files for shoving them into the maven
+//// repository.
+//publishing {
+//    publications {
+//        featurePub(MavenPublication) {
+//            artifact source: 'build/config/features.xml', classifier: 'features', extension: 'xml'
+//            artifact source: 'build/config/pnnl.goss.core.cfg', classifier: 'goss-core', extension: 'cfg'
+//            artifact source: 'build/config/pnnl.goss.datasources.cfg', classifier: 'goss-datasources', extension: 'cfg'
+//
+//            artifact source: 'build/config/pnnl.goss.activemq.server-default.cfg', classifier: 'goss-broker-config', extension: 'cfg'
+//            artifact source: 'build/config/pnnl-goss-activemq-broker.xml', classifier: 'goss-broker', extension: 'xml'
+//            artifact source: 'build/config/pnnl-goss-activemq-broker-nosecurity.xml', classifier: 'goss-broker-nosecurity', extension: 'xml'
+//        }
+//    }
+//}
 
 
 // Copy all config files to the output directory after replacing the properties that
@@ -228,7 +322,7 @@ task copyConfigFiles(type: Copy) {
             fileText = fileText.replaceAll('@'+k.toString()+'@', v.toString())
         }
 
-        fileText = fileText.replace('@project.version@', project.version)
+        fileText = fileText.replace('@project.version@', project.currentVersion)
         fileText = fileText.replace('@project.name@', project.name)
 
 
