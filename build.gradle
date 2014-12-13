@@ -154,18 +154,22 @@ configurations { published }
 artifactory {
 	//contextUrl = 'http://repo.jfrog.org/artifactory'
 	contextUrl = "http://oss.jfrog.org/artifactory" // "${artifactory_contextUrl}"
+	def repo_user = ''
+	def repo_pass = ''
+	def repo_key = 'oss-snapshot-local'
+
+	if (project.hasProperty('artifactory_user')) {
+		repo_user = artifactory_user
+	}
+	if (project.hasProperty('artifactory_password')){
+		 repo_pass = artifactory_password
+	}
+
 	publish {
 		repository {
-			repoKey = 'oss-snapshot-local' //The Artifactory repository key to publish to
-			username = "${artifactory_user}" //The publisher user name
-			password = "${artifactory_password}" //The publisher password
-
-			//      ivy {
-			//        //Optional section for configuring Ivy publication (when publishIvy = true). Assumes Maven repo layout if If not specified
-			//        ivyLayout = '[organization]/[module]/ivy-[revision].xml'
-			//        artifactLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
-			//        mavenCompatible = false //Convert any dots in an [organization] layout value to path separators, similar to Maven's groupId-to-path conversion. True if not specified
-			//      }
+			repoKey = repo_key //The Artifactory repository key to publish to
+			username = repo_user //The publisher user name
+			password = repo_pass //The publisher password
 		}
 		defaults {
 			publishConfigs('archives', 'published')
@@ -179,8 +183,8 @@ artifactory {
 	resolve {
 		repository {
 			repoKey = 'libs-release' //The Artifactory (preferably virtual) repository key to resolve from
-			username = "${artifactory_user}" //Optional resolver user name (leave out to use anonymous resolution)
-			password = "${artifactory_password}" //The resolver password
+			username = repo_user //Optional resolver user name (leave out to use anonymous resolution)
+			password = repo_pass //The resolver password
 			maven = true
 		}
 	}
