@@ -1,463 +1,220 @@
-// Release plugin
-apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
-
 buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6",
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.5')
-    }
+	repositories {
+		maven {
+			url "http://repo.jfrog.org/artifactory/gradle"
+		}
+		mavenLocal()
+		jcenter()
+		dependencies {
+			classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+		}
+	}
+
 }
+
+plugins {
+	id "com.jfrog.artifactory" version "3.0.1"
+	//id "com.jfrog.artifactory-upload" version "3.0.1"
+	id 'osgi'
+	id 'maven'
+}
+
+//Release plugin
+//apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
+//
+//buildscript {
+//	repositories {
+//		maven{url "http://dl.bintray.com/gridoptics/GOSS"}
+//		maven {
+//			url "http://repo.jfrog.org/artifactory/gradle"
+//		}
+//
+//
+//		mavenLocal()
+//		jcenter()
+//
+//		dependencies {
+//			classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+//		}
+//	}
+//}
+//buildscript {
+//    repositories {
+//        mavenLocal()
+//        jcenter()
+//    }
+//    dependencies {
+//        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6",
+//        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.5')
+//    }
+//}
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 def globalVersion = new Version(currentVersion)
 
-// All projects under this project folder will have the group and version below.
 allprojects {
-    apply plugin: 'artifactory-publish'
-    apply plugin: 'artifactory'
-    apply plugin: 'idea'
+	apply plugin: 'com.jfrog.artifactory-upload'
+	configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
+		apply plugin: 'osgi'
+		apply plugin: 'groovy'
+	}
+	group = 'pnnl.goss'
+	version = globalVersion
+	status = version.status
 
-    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
-        apply plugin: 'java'
-    }
-
-    group = 'pnnl.goss'
-    version = globalVersion
-    status = version.status
-
-    configurations.classpath {
-        resolutionStrategy {
-            failOnVersionConflict()
-            cacheDynamicVersionsFor 0, 'seconds'
-            cacheChangingModulesFor 0, 'seconds'
-        }
-    }
-
-
-//    def userFile = new File(System.getProperty("user.home")+
-//            '/.goss/bintray_user')
-//    def keyFile = new File(System.getProperty("user.home")+
-//            '/.goss/bintray_key')
-//
-//
-//    ext.bintrayUserName= ""
-//    ext.bintrayUserKey=""
-//
-//    if (userFile.exists()){
-//        ext.bintrayUserName = userFile.text.trim()
-//    }
-//
-//    if (keyFile.exists()){
-//        ext.bintrayUserKey = keyFile.text.trim()
-//    }
-//
-//    repositories { jcenter() }
-//    apply plugin: 'idea'
-//    apply plugin: 'com.jfrog.bintray'
-//
-//    group = 'pnnl.goss'
-//
-//
-//    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) { apply plugin: 'java' }
-//
-//    ext.publish = false
-//    bintray {
-//        println project.name
-//        apiUrl = "https://api.bintray.com"
-//        user = "$bintrayUserName"
-//        key = "$bintrayUserKey"
-//        configurations = ['published', 'archives']
-//        //publications = ['published']
-//        filesSpec {
-//            from 'files'
-//            into 'standalone_files/level1'
-//            rename '(.+)\\.(.+)', '$1-suffix.$2'
-//        }
-//
-//        publish = project.publish
-//        pkg {
-//            repo = (project.version ==~ /.*-SNAPSHOT.*/)? "GOSS-SNAPSHOT": "GOSS"
-//            userOrg = 'gridoptics'
-//            name = 'GOSS-Core'
-//            desc = '''GOSS is a middleware architecture designed as a prototype
-//future data analytics and integration platform.'''
-//            websiteUrl = 'https://github.com/GridOPTICS/GOSS'
-//            issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
-//            vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
-//            licenses = ['BSD']
-//            labels = [
-//                'goss',
-//                'middleware',
-//                'powergrid'
-//            ]
-//            attributes= ['plat': ['linux', 'win7']]
-//            publicDownloadNumbers = false
-//            version {
-//                name = project.version //Optional logical version name
-//                //desc = 'optional, version-specific description'
-//                //vcsTag = '1.3.0'
-//                //attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
-//            }
-//        }
-//    }
 }
 
 artifactoryPublish.skip = true
 
 subprojects {
-    apply plugin: "maven"
-    apply plugin: "groovy"
-    apply plugin: "osgi"
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	sourceCompatibility = '1.7'
 
+	if (project.plugins.hasPlugin('java')) {
+		println project.name
+		jar {
+			// Include source with the jar
+			from sourceSets.main.allSource
+			manifest {
+				instruction 'Bundle-Vendor', 'PNNL'
+				instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
+				[
+					compileJava,
+					compileTestJava,
+					javadoc
+				]*.options*.encoding = 'UTF-8'
+			}
+		}
 
-    repositories {
-        // For gradle-release
-        maven {	url "https://oss.sonatype.org/content/groups/public"}
-        // For goss plugins
-        maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
-        mavenLocal()
-        mavenCentral()
-    }
+		configurations { published }
 
-    buildscript {
+		task sourceJar(type: Jar, dependsOn: classes) {
+			classifier = 'sources'
+			from sourceSets.main.allSource
+		}
 
-        [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+		task javadocJar(type: Jar, dependsOn: javadoc) {
+			classifier = 'javadoc'
+			from javadoc.destinationDir
+		}
 
-        repositories {
-            mavenCentral()
-            maven { url 'http://jcenter.bintray.com' }
-            maven { url 'http://dl.bintray.com/gridoptics/GOSS/'}
-        }
-        dependencies {
-            classpath "com.github.townsfolk:gradle-release:1.2"
-            classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
-            classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
-            classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6"
+		artifactoryPublish { dependsOn sourceJar, javadocJar }
 
-        }
-    }
+		artifacts {
+			published sourceJar
+			published javadocJar
+		}
 
-    dependencies {
-        // Allow us to use groovy throughout the project.
-        compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+		buildscript{
+			repositories {
+				maven{url "http://dl.bintray.com/gridoptics/GOSS"}
+				mavenLocal()
+				jcenter()
+			}
+			dependencies{
+				classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion",
+						"pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
+			}
+		}
 
-        // Logging should be available to all projects
-        compile "org.slf4j:slf4j-api:$slf4jVersion"
-        compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+		dependencies {
+			// Allow us to use groovy throughout the project.
+			compile "org.codehaus.groovy:groovy-all:$groovyVersion"
 
-        // ipojo annotations for service registry/retrieval.
-        compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
-        compile "org.apache.felix:org.apache.felix.ipojo:$ipojoVersion"
-        compile "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
+			// Logging should be available to all projects
+			compile "org.slf4j:slf4j-api:$slf4jVersion"
+			compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+			// ipojo annotations for service registry/retrieval.
+			compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
+			compile "org.apache.felix:org.apache.felix.ipojo:$ipojoVersion"
+			compile "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
+			// For testing we are going to use these ubiquitous
+			testCompile "junit:junit:$junitVersion"
+			testCompile "org.mockito:mockito-core:$mockitoVersion"
+			testCompile "org.spockframework:spock-core:$spockVersion"
 
-        // For testing we are going to use these ubiquitous
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.mockito:mockito-core:$mockitoVersion"
-        testCompile "org.spockframework:spock-core:$spockVersion"
+		}
 
-    }
+		artifactoryPublish { dependsOn sourceJar, javadocJar }
 
-    if (project.plugins.hasPlugin('java')) {
-        println project.name
-        jar {
-            // Include source with the jar
-            from sourceSets.main.allSource
-            manifest {
-                instruction 'Bundle-Vendor', 'PNNL'
-                instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
-
-                [
-                    compileJava,
-                    compileTestJava,
-                    javadoc
-                ]*.options*.encoding = 'UTF-8'
-            }
-        }
-
-        task sourceJar(type: Jar, dependsOn: classes) {
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
-
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-
-        artifactoryPublish {
-            dependsOn sourceJar, javadocJar
-        }
-
-        artifacts {
-            archives sourceJar
-            archives javadocJar
-        }
-    }
+		artifacts {
+			published sourceJar
+			published javadocJar
+		}
+	}
 }
 
-configurations {
-    published
-}
+
+configurations { published }
+
 
 artifactory {
-    //The base Artifactory URL if not overridden by the publisher/resolver
-    contextUrl = "${artifactory_contextUrl}"
-    // contextUrl = 'http://repo.jfrog.org/artifactory'
-    // contextUrl = 'http://localhost:8080/artifactory'
-    println "USER: PASS: ${artifactory_user} ${artifactory_password}"
+	//contextUrl = 'http://repo.jfrog.org/artifactory'
+	contextUrl = "http://oss.jfrog.org/artifactory" // "${artifactory_contextUrl}"
+	publish {
+		repository {
+			repoKey = 'oss-snapshot-local' //The Artifactory repository key to publish to
+			username = "${artifactory_user}" //The publisher user name
+			password = "${artifactory_password}" //The publisher password
 
-    publish {
-        repository {
-            repoKey = 'libs-snapshot'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
+			//      ivy {
+			//        //Optional section for configuring Ivy publication (when publishIvy = true). Assumes Maven repo layout if If not specified
+			//        ivyLayout = '[organization]/[module]/ivy-[revision].xml'
+			//        artifactLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
+			//        mavenCompatible = false //Convert any dots in an [organization] layout value to path separators, similar to Maven's groupId-to-path conversion. True if not specified
+			//      }
+		}
+		defaults {
+			publishConfigs('archives', 'published')
+			properties = ['build.status': "$it.project.status".toString()]
+			publishBuildInfo = true
+			publishArtifacts = true
+			publishPom = true //Publish generated POM files to Artifactory (true by default)
+			publishIvy = false //Publish generated Ivy descriptor files to Artifactory (true by default)
+		}
+	}
+	resolve {
+		repository {
+			repoKey = 'libs-release' //The Artifactory (preferably virtual) repository key to resolve from
+			username = "${artifactory_user}" //Optional resolver user name (leave out to use anonymous resolution)
+			password = "${artifactory_password}" //The resolver password
+			maven = true
+		}
+	}
 
-        }
-    }
-    resolve {
-        repository {
-            repoKey = 'libs-release'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
-
-        }
-    }
 }
+
+task wrapper(type: Wrapper) { gradleVersion = '2.2.1' }
 
 class Version {
-    String originalVersion
-    String thisVersion
-    String status
-    Date buildTime
+	String originalVersion
+	String thisVersion
+	String status
+	Date buildTime
 
-    Version(String versionValue) {
-        buildTime = new Date()
-        originalVersion = versionValue
-        if (originalVersion.endsWith('-SNAPSHOT')) {
-            status = 'integration'
-            thisVersion = originalVersion.substring(0, originalVersion.length() - 'SNAPSHOT'.length()) + getTimestamp()
-        } else {
-            status = 'release'
-            thisVersion = versionValue
-        }
-    }
+	Version(String versionValue) {
+		buildTime = new Date()
+		originalVersion = versionValue
+		if (originalVersion.endsWith('-SNAPSHOT')) {
+			status = 'integration'
+			thisVersion = originalVersion.substring(0, originalVersion.length() - 'SNAPSHOT'.length()) + getTimestamp()
+		} else {
+			status = 'release'
+			thisVersion = versionValue
+		}
+	}
 
-    String getTimestamp() {
-        // Convert local file timestamp to UTC
-        def format = new SimpleDateFormat('yyyyMMddHHmmss')
-        format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('UTC')));
-        return format.format(buildTime)
-    }
+	String getTimestamp() {
+		// Convert local file timestamp to UTC
+		def format = new SimpleDateFormat('yyyyMMddHHmmss')
+		format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('UTC')));
+		return format.format(buildTime)
+	}
 
-    String toString() {
-        thisVersion
-    }
+	String toString() {
+		thisVersion
+	}
 }
-
-//task wrapper (type: Wrapper) { gradleVersion = '2.2.1' }
-//
-//
-//apply plugin: "maven-publish"
-//
-//// Configure publishing of features and config files for shoving them into the maven
-//// repository.
-//publishing {
-//    publications {
-//        featurePub(MavenPublication) {
-//            artifact source: 'build/config/features.xml', classifier: 'features', extension: 'xml'
-//            artifact source: 'build/config/pnnl.goss.core.cfg', classifier: 'goss-core', extension: 'cfg'
-//            artifact source: 'build/config/pnnl.goss.datasources.cfg', classifier: 'goss-datasources', extension: 'cfg'
-//
-//            artifact source: 'build/config/pnnl.goss.activemq.server-default.cfg', classifier: 'goss-broker-config', extension: 'cfg'
-//            artifact source: 'build/config/pnnl-goss-activemq-broker.xml', classifier: 'goss-broker', extension: 'xml'
-//            artifact source: 'build/config/pnnl-goss-activemq-broker-nosecurity.xml', classifier: 'goss-broker-nosecurity', extension: 'xml'
-//        }
-//    }
-//}
-
-
-// Copy all config files to the output directory after replacing the properties that
-// are available in the gradle.properties file.  The project.version and project.name
-// properties are also available for replacement.  The property placeholder in the
-// config iles should be wrapped in @, for example @activemqVersion@.
-task copyConfigFiles(type: Copy) {
-    // we are going to attempt to build one big property replacement task so that we
-    // can use all the tokens in the feature file that are above in this file
-    // as well as the tokens in the goss.properties file.
-    File file = new File(System.getProperty("user.home")+"/.goss/goss.properties")
-    java.util.Properties javaProps = new java.util.Properties()
-
-    if (file.exists()){
-        javaProps.load(file.newDataInputStream())
-    }
-    else{
-        println "file not found."
-        return
-    }
-
-    File cfgFolder = new File("$rootProject.projectDir/config")
-    File outFolder = new File("$rootProject.buildDir/config")
-
-    if (!outFolder.exists()){
-        outFolder.mkdirs()
-    }
-
-    cfgFolder.eachFile { cfg ->
-
-        String fileText = cfg.text
-
-        javaProps.each{ k,v ->
-            fileText = fileText.replaceAll('@'+k+'@', v)
-        }
-
-        project.ext.properties.each {k, v ->
-            fileText = fileText.replaceAll('@'+k.toString()+'@', v.toString())
-        }
-
-        fileText = fileText.replace('@project.version@', project.currentVersion)
-        fileText = fileText.replace('@project.name@', project.name)
-
-
-
-        new File("$outFolder.absolutePath/$cfg.name").withWriter { out -> out.print fileText }
-    }
-}
-
-
-
-/*************************************************************************
- * 	From here down is testing code that should be commented out.
- *
- *
- */
-
-/*
- karafFeatures {
- excludes = [
- 'org.slf4j/.*',
- 'log4j/.*',
- 'org.osgi/.*',
- 'org.apache.felix/.*',
- 'org.apache.karaf.shell/.*'
- ]
- wraps = [
- 'com.google.guava/guava/.*'
- ]
- startLevels = [
- 'org.apache.geronimo.specs/.*':'50',
- 'org.apache.commons/.*':'60',
- ]
- extraBundles = [
- 'mvn:mygroup:mypackage:myversion',
- 'mvn:mygroup2:mypackage2:myversion2'
- ]
- // if outputFile is not provided, the output is written to the standard
- // output.
- outputFile = new File('features.xml')
- }*/
-
-// Set up properties for each of the subprojects.
-/*
- project(':goss-core') {
- group = projectIds.group
- version = projectIds.version
- apply plugin: 'java'
- }
- project(':goss-core-server') {
- group = projectIds.group
- version = projectIds.version
- apply plugin: 'java'
- dependencies {
- compile project{':goss-core'}
- }
- }
- project(':goss-core-security') {
- group = projectIds.group
- version = projectIds.version
- apply plugin: 'java'
- }
- project(':goss-core-security-utils') {
- group = projectIds.group
- version = projectIds.version
- apply plugin: 'java'
- }
- project(':goss-core-web') {
- group = projectIds.group
- version = projectIds.version
- apply plugin: 'java'
- apply plugin: 'war'
- apply plugin: 'jetty'
- repositories {
- mavenCentral()
- }
- dependencies {
- providedCompile 'javax.servlet:servlet-api:3.0'
- }
- }*/
-
-
-//// Snag the version from the properties file.
-//// file method is provided by Project interface, created an
-//// instance of java.io.File relative to project directory.
-//ext.versionFile = file('version.properties')
-//
-//// Task configuration defined without shift operator.
-//task loadVersion {
-//	project.version = readVersion()
-//}
-//
-//task printVersion (group: 'versioning',
-//                    description: 'Prints project version.',
-//                    dependsOn: loadVersion) << {
-//	logger.quiet "Version: $version"
-//    logger.quiet "projectIds: $projectIds"
-//}
-//
-//ProjectVersion readVersion() {
-//	logger.quiet 'Reading the version file.'
-//
-//	if (!versionFile.exists()) {
-//		throw new GradleException("Required version file does not exist: $versionFile.canonicalPath")
-//	}
-//
-//	Properties versionProps = new Properties()
-//
-//	versionFile.withInputStream {
-//		stream -> versionProps.load(stream)
-//	}
-//
-//	new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
-//}
-//
-//
-//class ProjectVersion {
-//	Integer major
-//	Integer minor
-//	Boolean release
-//
-//	ProjectVersion(Integer major, Integer minor) {
-//		this.major = major
-//		this.minor = minor
-//		this.release = Boolean.FALSE
-//	}
-//
-//	ProjectVersion(Integer major, Integer minor, Boolean release) {
-//		this.major = major
-//		this.minor = minor
-//		this.release = release
-//	}
-//
-//	@Override
-//	String toString() {
-//		"$major.$minor${release ? '' : '-SNAPSHOT'}"
-//	}
-//}
-
