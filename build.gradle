@@ -7,63 +7,80 @@ buildscript {
 		jcenter()
 		dependencies {
 			classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+			// Plugin for publishing to bintray for releases.
+			classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
 		}
 	}
-
 }
 
-plugins {
-	id "com.jfrog.artifactory" version "3.0.1"
-	//id "com.jfrog.artifactory-upload" version "3.0.1"
-	id 'osgi'
-	id 'maven'
-}
-
-//Release plugin
-//apply from: 'http://tellurianring.com/projects/gradle-plugins/gradle-release/apply.groovy'
-//
-//buildscript {
-//	repositories {
-//		maven{url "http://dl.bintray.com/gridoptics/GOSS"}
-//		maven {
-//			url "http://repo.jfrog.org/artifactory/gradle"
-//		}
-//
-//
-//		mavenLocal()
-//		jcenter()
-//
-//		dependencies {
-//			classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
-//		}
-//	}
-//}
-//buildscript {
-//    repositories {
-//        mavenLocal()
-//        jcenter()
-//    }
-//    dependencies {
-//        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6",
-//        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.5')
-//    }
-//}
-
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-
+// declared in buildSrc so that its available to us during the execution
+// of the gradle build script.
+import pnnl.goss.version.Version
 def globalVersion = new Version(currentVersion)
 
+// Things that this project (root) and all subprojects have in common.
 allprojects {
-	apply plugin: 'com.jfrog.artifactory-upload'
+	repositories {
+		mavenLocal()
+		jcenter()
+	}
+
+	apply plugin: 'com.jfrog.bintray'				// used for bintray releases
+	apply plugin: 'com.jfrog.artifactory-upload' 	// used for PNNL
+
+	// Configure all subprojects with a src directory as an osgi (implies
+	// java) and groovy project.
 	configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
 		apply plugin: 'osgi'
 		apply plugin: 'groovy'
 	}
+
 	group = 'pnnl.goss'
 	version = globalVersion
+	// status == 'integration' or 'release'
 	status = version.status
 
+	// ext.varname are public to the project level.  With bintray this will
+	// automatically publish the artifacts.  bintray gives us 24-hours to
+	// publish them.  If not then they are deleted.
+	ext.publish = false
+
+	// Add the bintray closure for defining the project upload specifications
+	bintray {
+		apiUrl = "https://api.bintray.com"
+		user = "${bintray_user}"	// Defined in $HOME/.gradle/gradle.properties
+		key = "${bintray_key}"		// Defined in $HOME/.gradle/gradle.properties
+		configurations = ['published', 'archives']
+		//publications = ['published']
+//		filesSpec {
+//			from 'files'
+//			into 'standalone_files/level1'
+//			rename '(.+)\\.(.+)', '$1-suffix.$2'
+//		}
+		publish = project.publish
+		pkg {
+			repo = 'goss'
+			userOrg = 'gridoptics'
+			name = 'goss-core'
+			desc = '''GOSS is a middleware architecture designed as a prototype
+future data analytics and integration platform.'''
+			websiteUrl = 'https://github.com/GridOPTICS/GOSS/wiki'
+			issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
+			vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
+			licenses = ['BSD']
+			labels = ['goss', 'gridoptics', 'powergrid', 'fpgi', 'pnnl']
+			attributes= ['plat': ['linux', 'windows']]
+			publicDownloadNumbers = false
+//			version {
+//				name = version
+//			}
+//				name = project.version //'1.3.x-Final' //Optional logical version name
+//				desc = 'optional, version-specific description'
+//				vcsTag = '1.3.0'
+//				attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
+//			}
+		}
+	}
 }
 
 artifactoryPublish.skip = true
@@ -148,7 +165,7 @@ subprojects {
 }
 
 
-configurations { published }
+//configurations { published }
 
 
 artifactory {
@@ -187,38 +204,5 @@ artifactory {
 			password = repo_pass //The resolver password
 			maven = true
 		}
-	}
-
-}
-
-task wrapper(type: Wrapper) { gradleVersion = '2.2.1' }
-
-class Version {
-	String originalVersion
-	String thisVersion
-	String status
-	Date buildTime
-
-	Version(String versionValue) {
-		buildTime = new Date()
-		originalVersion = versionValue
-		if (originalVersion.endsWith('-SNAPSHOT')) {
-			status = 'integration'
-			thisVersion = originalVersion.substring(0, originalVersion.length() - 'SNAPSHOT'.length()) + getTimestamp()
-		} else {
-			status = 'release'
-			thisVersion = versionValue
-		}
-	}
-
-	String getTimestamp() {
-		// Convert local file timestamp to UTC
-		def format = new SimpleDateFormat('yyyyMMddHHmmss')
-		format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('UTC')));
-		return format.format(buildTime)
-	}
-
-	String toString() {
-		thisVersion
 	}
 }
