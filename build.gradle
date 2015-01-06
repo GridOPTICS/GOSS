@@ -51,7 +51,7 @@ allprojects {
         // the user has specified bintray_user and bintray_key in their
         // gradle.properties file.  This file is located in the $HOME/.gradle
         // directory and is available for all gradle scripts.
-        if (Project.hasProperty("bintray_user") && Project.hasProperty("bintray_key")){
+        if (project.hasProperty("bintray_user") && project.hasProperty("bintray_key")){
             apiUrl = "https://api.bintray.com"
             user = "${bintray_user}"	// Defined in $HOME/.gradle/gradle.properties
             key = "${bintray_key}"		// Defined in $HOME/.gradle/gradle.properties
