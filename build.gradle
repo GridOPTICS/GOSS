@@ -1,16 +1,16 @@
 buildscript {
-	repositories {
-		maven {
-			url "http://repo.jfrog.org/artifactory/gradle"
-		}
-		mavenLocal()
-		jcenter()
-		dependencies {
-			classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
-			// Plugin for publishing to bintray for releases.
-			classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
-		}
-	}
+    repositories {
+        maven {
+            url "http://repo.jfrog.org/artifactory/gradle"
+        }
+        mavenLocal()
+        jcenter()
+        dependencies {
+            classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+            // Plugin for publishing to bintray for releases.
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+        }
+    }
 }
 
 // declared in buildSrc so that its available to us during the execution
@@ -20,148 +20,150 @@ def globalVersion = new Version(currentVersion)
 
 // Things that this project (root) and all subprojects have in common.
 allprojects {
-	repositories {
-		mavenLocal()
-		jcenter()
-	}
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
 
-	apply plugin: 'com.jfrog.bintray'				// used for bintray releases
-	apply plugin: 'com.jfrog.artifactory-upload' 	// used for PNNL
+    apply plugin: 'com.jfrog.bintray'				// used for bintray releases
+    apply plugin: 'com.jfrog.artifactory-upload' 	// used for PNNL
 
-	// Configure all subprojects with a src directory as an osgi (implies
-	// java) and groovy project.
-	configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
-		apply plugin: 'osgi'
-		apply plugin: 'groovy'
-	}
+    // Configure all subprojects with a src directory as an osgi (implies
+    // java) and groovy project.
+    configure(subprojects.findAll { new File(it.projectDir, 'src').directory }) {
+        apply plugin: 'osgi'
+        apply plugin: 'groovy'
+    }
 
-	group = 'pnnl.goss'
-	version = globalVersion
-	// status == 'integration' or 'release'
-	status = version.status
+    group = 'pnnl.goss'
+    version = globalVersion
+    // status == 'integration' or 'release'
+    status = version.status
 
-	// ext.varname are public to the project level.  With bintray this will
-	// automatically publish the artifacts.  bintray gives us 24-hours to
-	// publish them.  If not then they are deleted.
-	ext.publish = false
+    // ext.varname are public to the project level.  With bintray this will
+    // automatically publish the artifacts.  bintray gives us 24-hours to
+    // publish them.  If not then they are deleted.
+    ext.publish = false
 
-	// Add the bintray closure for defining the project upload specifications
-	bintray {
-		apiUrl = "https://api.bintray.com"
-		user = "${bintray_user}"	// Defined in $HOME/.gradle/gradle.properties
-		key = "${bintray_key}"		// Defined in $HOME/.gradle/gradle.properties
-		configurations = ['published', 'archives']
-		//publications = ['published']
-//		filesSpec {
-//			from 'files'
-//			into 'standalone_files/level1'
-//			rename '(.+)\\.(.+)', '$1-suffix.$2'
-//		}
-		publish = project.publish
-		pkg {
-			repo = 'goss'
-			userOrg = 'gridoptics'
-			name = 'goss-core'
-			desc = '''GOSS is a middleware architecture designed as a prototype
-future data analytics and integration platform.'''
-			websiteUrl = 'https://github.com/GridOPTICS/GOSS/wiki'
-			issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
-			vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
-			licenses = ['BSD']
-			labels = ['goss', 'gridoptics', 'powergrid', 'fpgi', 'pnnl']
-			attributes= ['plat': ['linux', 'windows']]
-			publicDownloadNumbers = false
-//			version {
-//				name = version
-//			}
-//				name = project.version //'1.3.x-Final' //Optional logical version name
-//				desc = 'optional, version-specific description'
-//				vcsTag = '1.3.0'
-//				attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
-//			}
-		}
-	}
+    // Add the bintray closure for defining the project upload specifications
+    bintray {
+        if (Project.hasProperty("bintray_user") && Project.hasProperty("bintray_key")){
+            apiUrl = "https://api.bintray.com"
+            user = "${bintray_user}"	// Defined in $HOME/.gradle/gradle.properties
+            key = "${bintray_key}"		// Defined in $HOME/.gradle/gradle.properties
+            configurations = ['published', 'archives']
+            //publications = ['published']
+    //		filesSpec {
+    //			from 'files'
+    //			into 'standalone_files/level1'
+    //			rename '(.+)\\.(.+)', '$1-suffix.$2'
+    //		}
+            publish = project.publish
+            pkg {
+                repo = 'goss'
+                userOrg = 'gridoptics'
+                name = 'goss-core'
+                desc = '''GOSS is a middleware architecture designed as a prototype
+    future data analytics and integration platform.'''
+                websiteUrl = 'https://github.com/GridOPTICS/GOSS/wiki'
+                issueTrackerUrl = 'https://github.com/GridOPTICS/GOSS/issues'
+                vcsUrl = 'https://github.com/GridOPTICS/GOSS.git'
+                licenses = ['BSD']
+                labels = ['goss', 'gridoptics', 'powergrid', 'fpgi', 'pnnl']
+                attributes= ['plat': ['linux', 'windows']]
+                publicDownloadNumbers = false
+    //			version {
+    //				name = version
+    //			}
+    //				name = project.version //'1.3.x-Final' //Optional logical version name
+    //				desc = 'optional, version-specific description'
+    //				vcsTag = '1.3.0'
+    //				attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
+    //			}
+            }
+        }
+    }
 }
 
 artifactoryPublish.skip = true
 
 subprojects {
-	apply plugin: 'maven'
-	apply plugin: 'maven-publish'
-	sourceCompatibility = '1.7'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    sourceCompatibility = '1.7'
 
-	if (project.plugins.hasPlugin('java')) {
-		println project.name
-		jar {
-			// Include source with the jar
-			from sourceSets.main.allSource
-			manifest {
-				instruction 'Bundle-Vendor', 'PNNL'
-				instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
-				[
-					compileJava,
-					compileTestJava,
-					javadoc
-				]*.options*.encoding = 'UTF-8'
-			}
-		}
+    if (project.plugins.hasPlugin('java')) {
+        println project.name
+        jar {
+            // Include source with the jar
+            from sourceSets.main.allSource
+            manifest {
+                instruction 'Bundle-Vendor', 'PNNL'
+                instruction 'Bundle-DocURL', 'https://github.com/GridOPTICS/GOSS'
+                [
+                    compileJava,
+                    compileTestJava,
+                    javadoc
+                ]*.options*.encoding = 'UTF-8'
+            }
+        }
 
-		configurations { published }
+        configurations { published }
 
-		task sourceJar(type: Jar, dependsOn: classes) {
-			classifier = 'sources'
-			from sourceSets.main.allSource
-		}
+        task sourceJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
 
-		task javadocJar(type: Jar, dependsOn: javadoc) {
-			classifier = 'javadoc'
-			from javadoc.destinationDir
-		}
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
 
-		artifactoryPublish { dependsOn sourceJar, javadocJar }
+        artifactoryPublish { dependsOn sourceJar, javadocJar }
 
-		artifacts {
-			published sourceJar
-			published javadocJar
-		}
+        artifacts {
+            published sourceJar
+            published javadocJar
+        }
 
-		buildscript{
-			repositories {
-				maven{url "http://dl.bintray.com/gridoptics/GOSS"}
-				mavenLocal()
-				jcenter()
-			}
-			dependencies{
-				classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion",
-						"pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
-			}
-		}
+        buildscript{
+            repositories {
+                maven{url "http://dl.bintray.com/gridoptics/GOSS"}
+                mavenLocal()
+                jcenter()
+            }
+            dependencies{
+                classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion",
+                        "pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
+            }
+        }
 
-		dependencies {
-			// Allow us to use groovy throughout the project.
-			compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+        dependencies {
+            // Allow us to use groovy throughout the project.
+            compile "org.codehaus.groovy:groovy-all:$groovyVersion"
 
-			// Logging should be available to all projects
-			compile "org.slf4j:slf4j-api:$slf4jVersion"
-			compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
-			// ipojo annotations for service registry/retrieval.
-			compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
-			compile "org.apache.felix:org.apache.felix.ipojo:$ipojoVersion"
-			compile "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
-			// For testing we are going to use these ubiquitous
-			testCompile "junit:junit:$junitVersion"
-			testCompile "org.mockito:mockito-core:$mockitoVersion"
-			testCompile "org.spockframework:spock-core:$spockVersion"
+            // Logging should be available to all projects
+            compile "org.slf4j:slf4j-api:$slf4jVersion"
+            compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+            // ipojo annotations for service registry/retrieval.
+            compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
+            compile "org.apache.felix:org.apache.felix.ipojo:$ipojoVersion"
+            compile "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
+            // For testing we are going to use these ubiquitous
+            testCompile "junit:junit:$junitVersion"
+            testCompile "org.mockito:mockito-core:$mockitoVersion"
+            testCompile "org.spockframework:spock-core:$spockVersion"
 
-		}
+        }
 
-		artifactoryPublish { dependsOn sourceJar, javadocJar }
+        artifactoryPublish { dependsOn sourceJar, javadocJar }
 
-		artifacts {
-			published sourceJar
-			published javadocJar
-		}
-	}
+        artifacts {
+            published sourceJar
+            published javadocJar
+        }
+    }
 }
 
 
@@ -169,40 +171,40 @@ subprojects {
 
 
 artifactory {
-	//contextUrl = 'http://repo.jfrog.org/artifactory'
-	contextUrl = "http://oss.jfrog.org/artifactory" // "${artifactory_contextUrl}"
-	def repo_user = ''
-	def repo_pass = ''
-	def repo_key = 'oss-snapshot-local'
+    //contextUrl = 'http://repo.jfrog.org/artifactory'
+    contextUrl = "http://oss.jfrog.org/artifactory" // "${artifactory_contextUrl}"
+    def repo_user = ''
+    def repo_pass = ''
+    def repo_key = 'oss-snapshot-local'
 
-	if (project.hasProperty('artifactory_user')) {
-		repo_user = artifactory_user
-	}
-	if (project.hasProperty('artifactory_password')){
-		 repo_pass = artifactory_password
-	}
+    if (project.hasProperty('artifactory_user')) {
+        repo_user = artifactory_user
+    }
+    if (project.hasProperty('artifactory_password')){
+         repo_pass = artifactory_password
+    }
 
-	publish {
-		repository {
-			repoKey = repo_key //The Artifactory repository key to publish to
-			username = repo_user //The publisher user name
-			password = repo_pass //The publisher password
-		}
-		defaults {
-			publishConfigs('archives', 'published')
-			properties = ['build.status': "$it.project.status".toString()]
-			publishBuildInfo = true
-			publishArtifacts = true
-			publishPom = true //Publish generated POM files to Artifactory (true by default)
-			publishIvy = false //Publish generated Ivy descriptor files to Artifactory (true by default)
-		}
-	}
-	resolve {
-		repository {
-			repoKey = 'libs-release' //The Artifactory (preferably virtual) repository key to resolve from
-			username = repo_user //Optional resolver user name (leave out to use anonymous resolution)
-			password = repo_pass //The resolver password
-			maven = true
-		}
-	}
+    publish {
+        repository {
+            repoKey = repo_key //The Artifactory repository key to publish to
+            username = repo_user //The publisher user name
+            password = repo_pass //The publisher password
+        }
+        defaults {
+            publishConfigs('archives', 'published')
+            properties = ['build.status': "$it.project.status".toString()]
+            publishBuildInfo = true
+            publishArtifacts = true
+            publishPom = true //Publish generated POM files to Artifactory (true by default)
+            publishIvy = false //Publish generated Ivy descriptor files to Artifactory (true by default)
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release' //The Artifactory (preferably virtual) repository key to resolve from
+            username = repo_user //Optional resolver user name (leave out to use anonymous resolution)
+            password = repo_pass //The resolver password
+            maven = true
+        }
+    }
 }
