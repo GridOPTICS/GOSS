@@ -47,6 +47,10 @@ allprojects {
 
     // Add the bintray closure for defining the project upload specifications
     bintray {
+        // Test whether we are able to upload to bintray or not based upon whether
+        // the user has specified bintray_user and bintray_key in their
+        // gradle.properties file.  This file is located in the $HOME/.gradle
+        // directory and is available for all gradle scripts.
         if (Project.hasProperty("bintray_user") && Project.hasProperty("bintray_key")){
             apiUrl = "https://api.bintray.com"
             user = "${bintray_user}"	// Defined in $HOME/.gradle/gradle.properties
