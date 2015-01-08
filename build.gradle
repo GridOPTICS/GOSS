@@ -136,7 +136,7 @@ subprojects {
     }
 }
 
-task buildGoss {
+task build {
 
     dependsOn subprojects.build
 
@@ -145,8 +145,8 @@ task buildGoss {
     }
 }
 
-task installGoss {
-    dependsOn buildGoss
+task install {
+    dependsOn build
     dependsOn subprojects.install
     dependsOn publishToMavenLocal
 }
