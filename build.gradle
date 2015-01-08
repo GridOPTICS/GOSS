@@ -68,9 +68,10 @@ allprojects {
 subprojects {
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    sourceCompatibility = '1.7'
 
     if (project.plugins.hasPlugin('java')) {
+        sourceCompatibility = '1.7'
+
         jar {
             // Include source with the jar
             from sourceSets.main.allSource
