@@ -1,12 +1,8 @@
 buildscript {
     repositories {
-        maven {
-            url "http://repo.jfrog.org/artifactory/gradle"
-        }
         mavenLocal()
         jcenter()
         dependencies {
-            classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
             // Plugin for publishing to bintray for releases.
             classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
         }
@@ -21,7 +17,6 @@ allprojects {
     }
 
     apply plugin: 'com.jfrog.bintray'				// used for bintray releases
-    apply plugin: 'com.jfrog.artifactory-upload' 	// used for PNNL
 
     // Configure all subprojects with a src directory as an osgi (implies
     // java) and groovy project.
@@ -51,12 +46,6 @@ allprojects {
             user = "${bintray_user}"	// Defined in $HOME/.gradle/gradle.properties
             key = "${bintray_key}"		// Defined in $HOME/.gradle/gradle.properties
             configurations = ['published', 'archives']
-            //publications = ['published']
-    //		filesSpec {
-    //			from 'files'
-    //			into 'standalone_files/level1'
-    //			rename '(.+)\\.(.+)', '$1-suffix.$2'
-    //		}
             publish = project.publish
             pkg {
                 repo = 'goss'
@@ -71,20 +60,10 @@ allprojects {
                 labels = ['goss', 'gridoptics', 'powergrid', 'fpgi', 'pnnl']
                 attributes= ['plat': ['linux', 'windows']]
                 publicDownloadNumbers = false
-    //			version {
-    //				name = version
-    //			}
-    //				name = project.version //'1.3.x-Final' //Optional logical version name
-    //				desc = 'optional, version-specific description'
-    //				vcsTag = '1.3.0'
-    //				attributes= ['a': ['ay1', 'ay2', 'ay3'], 'b': ['bee'], c: 'cee']
-    //			}
             }
         }
     }
 }
-
-artifactoryPublish.skip = true
 
 subprojects {
     apply plugin: 'maven'
@@ -92,7 +71,6 @@ subprojects {
     sourceCompatibility = '1.7'
 
     if (project.plugins.hasPlugin('java')) {
-        println project.name
         jar {
             // Include source with the jar
             from sourceSets.main.allSource
@@ -118,8 +96,6 @@ subprojects {
             classifier = 'javadoc'
             from javadoc.destinationDir
         }
-
-        artifactoryPublish { dependsOn sourceJar, javadocJar }
 
         artifacts {
             published sourceJar
@@ -155,55 +131,6 @@ subprojects {
             testCompile "org.spockframework:spock-core:$spockVersion"
 
         }
-
-        artifactoryPublish { dependsOn sourceJar, javadocJar }
-
-        artifacts {
-            published sourceJar
-            published javadocJar
-        }
     }
 }
 
-
-//configurations { published }
-
-
-artifactory {
-    //contextUrl = 'http://repo.jfrog.org/artifactory'
-    contextUrl = "http://oss.jfrog.org/artifactory" // "${artifactory_contextUrl}"
-    def repo_user = ''
-    def repo_pass = ''
-    def repo_key = 'oss-snapshot-local'
-
-    if (project.hasProperty('artifactory_user')) {
-        repo_user = artifactory_user
-    }
-    if (project.hasProperty('artifactory_password')){
-         repo_pass = artifactory_password
-    }
-
-    publish {
-        repository {
-            repoKey = repo_key //The Artifactory repository key to publish to
-            username = repo_user //The publisher user name
-            password = repo_pass //The publisher password
-        }
-        defaults {
-            publishConfigs('archives', 'published')
-            properties = ['build.status': "$it.project.status".toString()]
-            publishBuildInfo = true
-            publishArtifacts = true
-            publishPom = true //Publish generated POM files to Artifactory (true by default)
-            publishIvy = false //Publish generated Ivy descriptor files to Artifactory (true by default)
-        }
-    }
-    resolve {
-        repository {
-            repoKey = 'libs-release' //The Artifactory (preferably virtual) repository key to resolve from
-            username = repo_user //Optional resolver user name (leave out to use anonymous resolution)
-            password = repo_pass //The resolver password
-            maven = true
-        }
-    }
-}
