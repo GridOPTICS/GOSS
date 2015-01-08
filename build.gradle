@@ -13,11 +13,6 @@ buildscript {
     }
 }
 
-// declared in buildSrc so that its available to us during the execution
-// of the gradle build script.
-import pnnl.goss.version.Version
-def globalVersion = new Version(currentVersion)
-
 // Things that this project (root) and all subprojects have in common.
 allprojects {
     repositories {
@@ -36,9 +31,9 @@ allprojects {
     }
 
     group = 'pnnl.goss'
-    version = globalVersion
+    version = currentVersion
     // status == 'integration' or 'release'
-    status = version.status
+    //status = version.status
 
     // ext.varname are public to the project level.  With bintray this will
     // automatically publish the artifacts.  bintray gives us 24-hours to
