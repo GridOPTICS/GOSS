@@ -4,65 +4,65 @@
     <repository>mvn:org.apache.activemq/activemq-karaf/@activemqVersion@/xml/features</repository>
 
     <feature name="goss-ipojo" version="@ipojoVersion@">
-    	<feature>goss-dependencies</feature>
+        <feature>goss-dependencies</feature>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/@ipojoVersion@</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/@ipojoVersion@</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/@ipojoVersion@</bundle>
         <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.composite/@ipojoVersion@</bundle>
     </feature>
-    
+
     <feature name="goss-activemq-broker-nosecurity" version="@project.version@">
         <feature version="@activemqVersion@">activemq</feature>
-        <configfile finalname="/etc/org.apache.activemq.server-default.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-broker-config</configfile>        
+        <configfile finalname="/etc/org.apache.activemq.server-default.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-broker-config</configfile>
         <configfile finalname="/etc/pnnl-goss-activemq-broker.xml">mvn:pnnl.goss/goss-feature/@project.version@/xml/goss-broker-nosecurity</configfile>
     </feature>
-        
+
     <feature name="goss-dependencies" version="@project.version@">
-    	<bundle>mvn:eu.infomas/annotation-detector/@annotationDetectorVersion@</bundle>
-    	<bundle>mvn:org.codehaus.groovy/groovy-all/@groovyVersion@</bundle>
-    	<!-- <bundle>mvn:com.ctc.wstx/woodstox-osgi/3.2.1.1</bundle> -->
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/@servicemixXstreamVersion@</bundle>
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/@servicemixCommonsIoVersion@</bundle>
-    	<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/@servicemixCommonsDbcpVersion@</bundle>
-    	<bundle dependency="true">mvn:com.google.code.gson/gson/@gsonVersion@</bundle>
-    	<bundle dependency="true">mvn:mysql/mysql-connector-java/@mysqlConnectorVersion@</bundle>
-    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/@httpCoreComponentsVersion@</bundle>
-    	<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/@httpClientOsgiVersion@</bundle>
-    	
-    	<bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/@stompJmsVersion@</bundle>
-  		<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/@hawtDispatchVersion@</bundle>
-    	<bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/@hawtDispatchVersion@</bundle>
-  		<bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/@hawtBufVersion@</bundle>
-  		<bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.reflections/@servicemixReflectionsVersion@</bundle>
-  		<feature>transaction</feature>
-		<feature>openjpa</feature>
-		<feature>jndi</feature>
-		<feature>activemq</feature>
-		<feature>cxf</feature>
+        <bundle>mvn:eu.infomas/annotation-detector/@annotationDetectorVersion@</bundle>
+        <bundle>mvn:org.codehaus.groovy/groovy-all/@groovyVersion@</bundle>
+        <!-- <bundle>mvn:com.ctc.wstx/woodstox-osgi/3.2.1.1</bundle> -->
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/@servicemixXstreamVersion@</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-io/@servicemixCommonsIoVersion@</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/@servicemixCommonsDbcpVersion@</bundle>
+        <bundle dependency="true">mvn:com.google.code.gson/gson/@gsonVersion@</bundle>
+        <bundle dependency="true">mvn:mysql/mysql-connector-java/@mysqlConnectorVersion@</bundle>
+        <bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/@httpCoreComponentsVersion@</bundle>
+        <bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/@httpClientOsgiVersion@</bundle>
+
+        <bundle dependency="true">mvn:org.fusesource.stompjms/stompjms-client/@stompJmsVersion@</bundle>
+          <bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch-transport/@hawtDispatchVersion@</bundle>
+        <bundle dependency="true">mvn:org.fusesource.hawtdispatch/hawtdispatch/@hawtDispatchVersion@</bundle>
+          <bundle dependency="true">mvn:org.fusesource.hawtbuf/hawtbuf/@hawtBufVersion@</bundle>
+          <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.reflections/@servicemixReflectionsVersion@</bundle>
+          <feature>transaction</feature>
+        <feature>openjpa</feature>
+        <feature>jndi</feature>
+        <feature>activemq</feature>
+        <feature>cxf</feature>
     </feature>
 
     <feature name="goss-core-feature" version="@project.version@">
-    	<configfile finalname="/etc/pnnl.goss.core.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-core</configfile>
+        <configfile finalname="/etc/pnnl.goss.core.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-core</configfile>
         <configfile finalname="/etc/pnnl.goss.datasources.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-datasources</configfile>
-    	
-    	<feature>goss-dependencies</feature>
-    	<feature>goss-ipojo</feature>
-     	    	
-    	<!-- Installs all the necessary activemq info for the broker and web-console -->
-    	<bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/@project.version@</bundle>
-    	   	
-    	<bundle start-level="84" dependency="true">mvn:pnnl.goss/goss-core/@project.version@</bundle>
-    	<bundle start-level="85" dependency="true">mvn:pnnl.goss/goss-core-client/@project.version@</bundle>    	    	
-    	<bundle start-level="86" dependency="true">mvn:pnnl.goss/goss-core-security/@project.version@</bundle>
-    	<bundle start-level="87" dependency="true">mvn:pnnl.goss/goss-core-server/@project.version@</bundle>
 
-    </feature>   
-    
+        <feature>goss-dependencies</feature>
+        <feature>goss-ipojo</feature>
+
+        <!-- Installs all the necessary activemq info for the broker and web-console -->
+        <bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/@project.version@</bundle>
+
+        <bundle start-level="84" dependency="true">mvn:pnnl.goss/goss-core/@project.version@</bundle>
+        <bundle start-level="85" dependency="true">mvn:pnnl.goss/goss-core-client/@project.version@</bundle>
+        <bundle start-level="86" dependency="true">mvn:pnnl.goss/goss-core-security/@project.version@</bundle>
+        <bundle start-level="87" dependency="true">mvn:pnnl.goss/goss-core-server/@project.version@</bundle>
+
+    </feature>
+
     <feature name="goss-core-web-feature" version="@project.version@">
-    	<feature>goss-core-feature</feature>
-    	<feature>http</feature>
-    	<feature>war</feature>
-    	
-    	<bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/@project.version@/war</bundle>
+        <feature>goss-core-feature</feature>
+        <feature>http</feature>
+        <feature>war</feature>
+
+        <bundle dependency="true" start-level="88">mvn:pnnl.goss/goss-core-web/@project.version@/war</bundle>
     </feature>
 </features>
