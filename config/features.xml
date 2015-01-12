@@ -3,14 +3,6 @@
     <repository>mvn:org.apache.cxf.karaf/apache-cxf/@cxfVersion@/xml/features</repository>
     <repository>mvn:org.apache.activemq/activemq-karaf/@activemqVersion@/xml/features</repository>
 
-    <feature name="goss-ipojo" version="@ipojoVersion@">
-        <feature>goss-dependencies</feature>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.api/@ipojoVersion@</bundle>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo/@ipojoVersion@</bundle>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.gogo/@ipojoVersion@</bundle>
-        <bundle>mvn:org.apache.felix/org.apache.felix.ipojo.composite/@ipojoVersion@</bundle>
-    </feature>
-
     <feature name="goss-activemq-broker-nosecurity" version="@project.version@">
         <feature version="@activemqVersion@">activemq</feature>
         <configfile finalname="/etc/org.apache.activemq.server-default.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-broker-config</configfile>
@@ -46,7 +38,6 @@
         <configfile finalname="/etc/pnnl.goss.datasources.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-datasources</configfile>
 
         <feature>goss-dependencies</feature>
-        <feature>goss-ipojo</feature>
 
         <!-- Installs all the necessary activemq info for the broker and web-console -->
         <bundle start-level="80" dependency="true">mvn:pnnl.goss/goss-core-security-utils/@project.version@</bundle>

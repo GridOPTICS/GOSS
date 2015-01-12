@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -44,28 +44,22 @@
 */
 package pnnl.goss.core;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@Instantiate
-@Component(managedservice=GossCore.GOSS_CONFIG_PID)
+
+//@Component(managedservice=GossCore.GOSS_CONFIG_PID)
 public class GossCore {
-	
-	private static Logger log = LoggerFactory.getLogger(GossCore.class);
-	public static final String GOSS_CONFIG_PID = "pnnl.goss.core";
-	
-	@Validate
-	public void start(){
-		log.debug("Starting");
-	}
-	
-	@Invalidate
-	public void stop(){
-		log.debug("Stopping");
-	}
+
+    private static Logger log = LoggerFactory.getLogger(GossCore.class);
+    public static final String GOSS_CONFIG_PID = "pnnl.goss.core";
+
+    public void start(){
+        log.debug("Starting");
+    }
+
+    public void stop(){
+        log.debug("Stopping");
+    }
 }

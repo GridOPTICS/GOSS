@@ -15,26 +15,18 @@ import java.util.Map.Entry;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Requires;
-import org.apache.felix.ipojo.annotations.Updated;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.server.BasicDataSourceCreator;
 import pnnl.goss.core.server.GossDataServices;
 
-@Provides
-@Instantiate
-@Component(immediate=true, managedservice = PROP_DATASOURCES_CONFIG)
+// @Component(immediate=true, managedservice = PROP_DATASOURCES_CONFIG)
 public class GossDataServicesImpl implements GossDataServices {
 
     private static final Logger log = LoggerFactory.getLogger(GossDataServicesImpl.class);
 
-    @Requires
     private BasicDataSourceCreator datasourceCreator;
 
     /**
@@ -67,7 +59,6 @@ public class GossDataServicesImpl implements GossDataServices {
         update(config);
     }
 
-    @Updated
     public void update(@SuppressWarnings("rawtypes") Dictionary config){
         properties.clear();
         @SuppressWarnings("rawtypes")
@@ -150,7 +141,6 @@ public class GossDataServicesImpl implements GossDataServices {
         return dataservices.get(serviceName);
     }
 
-    @Invalidate
     public void releaseServices(){
         log.debug("Clearing services");
         dataservices.clear();

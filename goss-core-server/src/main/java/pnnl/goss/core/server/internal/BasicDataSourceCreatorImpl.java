@@ -4,17 +4,12 @@ import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.server.BasicDataSourceCreator;
 
-@Provides
-@Component
-@Instantiate
 public class BasicDataSourceCreatorImpl implements BasicDataSourceCreator {
 
     private static final Logger log = LoggerFactory.getLogger(BasicDataSourceCreator.class);
