@@ -1,26 +1,26 @@
 
 dependencies {
-	compile project(':goss-core')
+    compile project(':goss-core')
     compile project(':goss-core-security')
 
-	compile "pnnl.goss:goss-buildtools:$gossBuildToolsVersion",
-			"org.apache.servicemix.bundles:org.apache.servicemix.bundles.reflections:$servicemixReflectionsVersion",
-			"org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$servicemixCommonsDbcpVersion",
-			"org.osgi:org.osgi.core:$osgiVersion",
-			"eu.infomas:annotation-detector:$annotationDetectorVersion",
-			"org.apache.activemq:activemq-all:$activemqVersion"
+    compile "pnnl.goss:goss-buildtools:$gossBuildToolsVersion",
+            "org.apache.servicemix.bundles:org.apache.servicemix.bundles.reflections:$servicemixReflectionsVersion",
+            "org.apache.servicemix.bundles:org.apache.servicemix.bundles.commons-dbcp:$servicemixCommonsDbcpVersion",
+            "org.osgi:org.osgi.core:$osgiVersion",
+            "eu.infomas:annotation-detector:$annotationDetectorVersion",
+            "org.apache.activemq:activemq-all:$activemqVersion"
 
-			//"org.reflections:reflections:$reflectionsVersion"
+            //"org.reflections:reflections:$reflectionsVersion"
 }
 
 buildscript {
-	repositories{
-		maven{url "http://dl.bintray.com/gridoptics/GOSS"}
-		mavenLocal()
-	}
-	dependencies {
-		classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
-	}
+    repositories{
+        maven{url "http://dl.bintray.com/gridoptics/GOSS"}
+        mavenLocal()
+    }
+    dependencies {
+        classpath "pnnl.goss:goss-buildtools:$gossBuildToolsVersion"
+    }
 }
 
 jar {
@@ -28,8 +28,6 @@ jar {
         instruction 'DynamicImport-Package', '*'
         instruction 'Import-Package', 'pnnl.goss.core'
         instruction 'Export-Package', 	'pnnl.goss.core.server',
-										'pnnl.goss.core.server.annotations'
+                                        'pnnl.goss.core.server.annotations'
     }
-
-	apply plugin: 'pnnl.goss.ipojoize'
 }

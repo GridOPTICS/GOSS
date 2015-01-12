@@ -111,8 +111,7 @@ subprojects {
                 jcenter()
             }
             dependencies{
-                classpath "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion",
-                        "pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
+                classpath "pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
             }
         }
 
@@ -123,10 +122,11 @@ subprojects {
             // Logging should be available to all projects
             compile "org.slf4j:slf4j-api:$slf4jVersion"
             compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
-            // ipojo annotations for service registry/retrieval.
-            compile "org.apache.felix:org.apache.felix.ipojo.annotations:$ipojoVersion"
-            compile "org.apache.felix:org.apache.felix.ipojo:$ipojoVersion"
-            compile "org.apache.felix:org.apache.felix.ipojo.manipulator:$ipojoVersion"
+
+            // For osgi bundles
+            runtime "org.osgi:org.osgi.core:$osgiVersion"
+            runtime "org.osgi:org.osgi.compendium:4.3.1"
+
             // For testing we are going to use these ubiquitous
             testCompile "junit:junit:$junitVersion"
             testCompile "org.mockito:mockito-core:$mockitoVersion"
