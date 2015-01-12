@@ -1,4 +1,4 @@
-package pnnl.goss.core.client;
+package pnnl.goss.core;
 
 import java.io.Serializable;
 

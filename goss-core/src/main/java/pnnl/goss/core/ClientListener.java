@@ -42,13 +42,10 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client;
+package pnnl.goss.core;
 
+import javax.jms.MessageListener;
 
-import java.io.Serializable;
-
-
-
-public interface GossResponseEvent {
-	public void onMessage(Serializable response);
+public interface ClientListener extends MessageListener {
+	
 }
