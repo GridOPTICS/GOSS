@@ -125,7 +125,7 @@ subprojects {
 
             // For osgi bundles
             runtime "org.osgi:org.osgi.core:$osgiVersion"
-            runtime "org.osgi:org.osgi.compendium:4.3.1"
+            runtime "org.osgi:org.osgi.compendium:$osgiVersion"
 
             // For testing we are going to use these ubiquitous
             testCompile "junit:junit:$junitVersion"
