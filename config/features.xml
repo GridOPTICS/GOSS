@@ -34,8 +34,8 @@
     </feature>
 
     <feature name="goss-core-feature" version="@project.version@">
-        <configfile finalname="/etc/pnnl.goss.core.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-core</configfile>
-        <configfile finalname="/etc/pnnl.goss.datasources.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-datasources</configfile>
+        <!-- <configfile finalname="/etc/pnnl.goss.core.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-core</configfile>
+        <configfile finalname="/etc/pnnl.goss.datasources.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-datasources</configfile>-->
 
         <feature>goss-dependencies</feature>
 
