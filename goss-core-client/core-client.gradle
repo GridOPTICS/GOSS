@@ -9,5 +9,9 @@ dependencies {
 }
 
 jar {
+    manifest {
+        instruction "Bundle-Activator", "pnnl.goss.core.client.CoreClientActivator"
+        instruction 'Export-Package', "pnnl.goss.core.client"
 
+    }
 }
