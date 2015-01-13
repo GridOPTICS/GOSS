@@ -116,6 +116,7 @@ public class GossClient implements Client{
         config= new ClientConfiguration(props);
         assert config.getProperty(PROP_STOMP_URI) != null;
         assert config.getProperty(PROP_OPENWIRE_URI) != null;
+        this.protocol = PROTOCOL.OPENWIRE;
     }
 
     public GossClient(String configFile) throws FileNotFoundException, IOException{
@@ -123,6 +124,7 @@ public class GossClient implements Client{
         properties.load(new FileInputStream(configFile));
         config = new ClientConfiguration(properties);
         setConfiguration(config);
+        this.protocol = PROTOCOL.OPENWIRE;
     }
 
     public GossClient(PROTOCOL protocol) {
@@ -147,6 +149,7 @@ public class GossClient implements Client{
     public void setConfiguration(ClientConfiguration configuration){
         config = configuration;
 
+        this.protocol = PROTOCOL.OPENWIRE;
         assert config.getProperty(PROP_OPENWIRE_URI) != null;
         assert config.getProperty(PROP_STOMP_URI) != null;
     }
