@@ -70,4 +70,8 @@ public interface Client {
 
     public void setCredentials(Credentials credentials);
 
+    public void setProtocol(PROTOCOL protocol);
+
+    public PROTOCOL getProtocol();
+
 }

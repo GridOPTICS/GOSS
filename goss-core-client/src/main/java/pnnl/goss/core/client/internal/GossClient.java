@@ -52,13 +52,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.IllegalStateException;
 import java.util.Dictionary;
 import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -436,6 +436,20 @@ public class GossClient implements Client{
             throw new IllegalArgumentException("Credentials cannot be null!");
         }
         this.credentials = credentials;
+    }
+
+    @Override
+    public void setProtocol(PROTOCOL protocol) throws IllegalStateException {
+        if(session != null){
+            throw new IllegalStateException("Session has alreadly been open. Protocoll can't change");
+        }
+        this.protocol = protocol;
+    }
+
+    @Override
+    public PROTOCOL getProtocol() {
+        // TODO Auto-generated method stub
+        return protocol;
     }
 }
 
