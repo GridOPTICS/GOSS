@@ -79,7 +79,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
-import pnnl.goss.core.Client.PROTOCOL;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
@@ -98,10 +97,12 @@ public class GossClient implements Client{
     volatile ClientPublishser clientPublisher;
     private Connection connection;
     private Session session;
+    private boolean used;
 
     private boolean connected;
 
     private PROTOCOL protocol;
+//    private PROTOCOL protocol;
     private Credentials credentials;
 
     /**
@@ -110,6 +111,7 @@ public class GossClient implements Client{
     public GossClient() {
         this((Credentials)null);
         log.debug("Constructor default!");
+
     }
 
     public GossClient(Properties props){
@@ -129,6 +131,7 @@ public class GossClient implements Client{
 
     public GossClient(PROTOCOL protocol) {
         this((Credentials)null,protocol);
+        used = true;
     }
 
     /**
@@ -438,18 +441,40 @@ public class GossClient implements Client{
         this.credentials = credentials;
     }
 
-    @Override
-    public void setProtocol(PROTOCOL protocol) throws IllegalStateException {
-        if(session != null){
-            throw new IllegalStateException("Session has alreadly been open. Protocoll can't change");
-        }
-        this.protocol = protocol;
-    }
 
     @Override
     public PROTOCOL getProtocol() {
         // TODO Auto-generated method stub
         return protocol;
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Returns whether the current instances is being used or if it can be
+     * used by another process.
+     * @return
+     */
+    public boolean isUsed(){
+        return used;
+    }
+
+    public void setUsed(boolean used){
+        if (used == false){
+            if (session != null){
+                throw new IllegalStateException("Cannot set unused without reset.");
+            }
+        }
+        this.used = used;
+    }
+
+    @Override
+    public String getClientId() {
+        return null;
     }
 }
 

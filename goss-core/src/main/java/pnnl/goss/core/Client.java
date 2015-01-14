@@ -7,12 +7,12 @@ import javax.jms.JMSException;
 
 import org.apache.http.auth.Credentials;
 
-import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
 public interface Client {
 
     public enum PROTOCOL {OPENWIRE, STOMP};
+
 
     /**
      * Sends request and gets response for synchronous communication.
@@ -68,10 +68,29 @@ public interface Client {
      */
     public void close();
 
+    /**
+     * Reset the client to an initial un-connected state.  If the client currently
+     * has a session, then the session should be closed.  If credentials are set
+     * then they will be unset after this call. The protocol of the client
+     * will not be changed.
+     */
+    public void reset();
+
+    /**
+     * A unique identifier for this client.
+     *
+     * @return A UUID string.
+     */
+    public String getClientId();
+
     public void setCredentials(Credentials credentials);
 
-    public void setProtocol(PROTOCOL protocol);
-
+    /**
+     * Gets the type of protocol that the client will use to connect with the
+     * message bus.
+     *
+     * @return
+     */
     public PROTOCOL getProtocol();
 
 }

@@ -1,44 +1,71 @@
 package pnnl.goss.core.client.internal;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Properties;
+import java.util.Hashtable;
+import java.util.List;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceFactory;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 
 import pnnl.goss.core.Client;
+import pnnl.goss.core.Client.PROTOCOL;
+import pnnl.goss.core.ClientFactory;
 
-public class ClientServiceFactory implements ServiceFactory<Client>{
+public class ClientServiceFactory implements ClientFactory{
 
-    Properties properties = null;
+    public static final String CONFIG_PID = "pnnl.goss.core.client";
+
+    List<GossClient> clientInstances = new ArrayList<>();
+    Dictionary<String, Object> properties = new Hashtable<String, Object>();//    // Default to openwire.
+
+    public void updated(Dictionary<String, ?> properties)
+            throws ConfigurationException {
+
+        if(properties != null){
+            synchronized (this.properties) {
+                Enumeration<String> keyEnum = properties.keys();
+                while(keyEnum.hasMoreElements()){
+                    String k = keyEnum.nextElement();
+                    this.properties.put(k, properties.get(k));
+                }
+            }
+        }
+    }
 
     @Override
-    public Client getService(Bundle bundle,
-            ServiceRegistration<Client> registration) {
+    public synchronized Client create(PROTOCOL protocol) {
+        GossClient client = null;
+        for(GossClient c: clientInstances){
+            if(!c.isUsed() && c.getProtocol().equals(protocol)){
+                client = c;
+                client.setUsed(true);
+                break;
+            }
+        }
 
-        Client client = new GossClient(properties);
+        if(client == null){
+            client = new GossClient(protocol);
+            client.setConfiguration(properties);
+            clientInstances.add(client);
+        }
 
         return client;
     }
 
     @Override
-    public void ungetService(Bundle bundle,
-            ServiceRegistration<Client> registration, Client service) {
-
-        service.close();
-
+    public Client get(String uuid) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public void updateConfiguration(Dictionary<String, ?> props){
-        properties = new Properties();
-
-        Enumeration<String> keys = props.keys();
-
-        while(keys.hasMoreElements()){
-            String k=keys.nextElement();
-            properties.setProperty(k, (String)props.get(k));
+    @Override
+    public synchronized void destroy() {
+        while (clientInstances.size() > 0){
+            GossClient client = clientInstances.remove(0);
+            client.reset();
+            client = null;
         }
     }
 }
