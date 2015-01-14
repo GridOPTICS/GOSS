@@ -197,8 +197,8 @@ task copyConfigFiles(type: Copy) {
         javaProps.load(file.newDataInputStream())
     }
     else{
-        println "file not found."
-        return
+        println "WARNING: goss.properties file not found."
+        //return
     }
 
     File cfgFolder = new File("$rootProject.projectDir/config")
