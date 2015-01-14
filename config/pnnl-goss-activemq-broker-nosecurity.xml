@@ -27,7 +27,7 @@
     <broker xmlns="http://activemq.apache.org/schema/core"
             brokerName="${broker-name}"
             dataDirectory="${data}"
-            start="false">
+            start="false" useJmx="true">
 
         <destinationPolicy>
             <policyMap>
@@ -42,18 +42,18 @@
         </destinationPolicy>
 
         <managementContext>
-            <managementContext createConnector="false"/>
+            <managementContext jmxDomainName="goss.domain" connectorPort="1099"/>
         </managementContext>
 
         <persistenceAdapter>
             <kahaDB directory="${data}/kahadb"/>
         </persistenceAdapter>
-		
-		<!--
+
+        <!--
         <plugins>
             <jaasAuthenticationPlugin configuration="karaf" />
         </plugins>-->
-		
+
 
         <systemUsage>
             <systemUsage>
@@ -73,9 +73,9 @@
             <transportConnector name="openwire" uri="tcp://0.0.0.0:@activemq.openwire.port@?wireFormat.maxInactivityDuration=0" />
             <transportConnector name="stomp" uri="stomp://0.0.0.0:@activemq.stomp.port@?wireFormat.maxInactivityDuration=0"/>
             <transportConnector name="ws" uri="ws://0.0.0.0:@activemq.ws.port@?wireFormat.maxInactivityDuration=0" />
-            
+
         </transportConnectors>
-		
+
     </broker>
 
 </beans>
