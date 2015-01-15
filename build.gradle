@@ -2,7 +2,12 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven{url "http://dl.bintray.com/gridoptics/GOSS"}
+        maven{
+            url "http://dl.bintray.com/gridoptics/GOSS"
+            if ("${karafVersion}".contains('-SNAPSHOT')){
+                url "https://repository.apache.org/content/groups/snapshots"
+            }
+        }
         dependencies {
             // Plugin for publishing to bintray for releases.
             classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
