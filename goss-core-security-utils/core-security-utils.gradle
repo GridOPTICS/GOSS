@@ -1,14 +1,14 @@
 
 dependencies {
 
-    compile 'org.apache.activemq:activemq-broker:5.10.0'
-    compile 'org.apache.activemq:activemq-jaas:5.10.0'
-    compile 'org.apache.directory.server:apacheds-protocol-ldap:2.0.0-M17'
-    compile 'org.apache.activemq:activemq-spring:5.10.0'
-    
-    compile 'org.apache.karaf.jaas:org.apache.karaf.jaas.modules:3.0.2'
-    compile 'org.apache.karaf.jaas:org.apache.karaf.jaas.boot:3.0.2'
-    
-    compile 'org.springframework:spring-beans:4.1.1.RELEASE'
+    compile "org.apache.activemq:activemq-broker:${activemqVersion}"
+    compile "org.apache.activemq:activemq-jaas:${activemqVersion}"
+    compile "org.apache.directory.server:apacheds-protocol-ldap:2.0.0-M17"
+    compile "org.apache.activemq:activemq-spring:${activemqVersion}"
+
+    compile "org.apache.karaf.jaas:org.apache.karaf.jaas.modules:${karafVersion}"
+    compile "org.apache.karaf.jaas:org.apache.karaf.jaas.boot:${karafVersion}"
+
+    compile "org.springframework:spring-beans:4.1.1.RELEASE"
 
 }
