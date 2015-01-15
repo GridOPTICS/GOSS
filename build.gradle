@@ -117,20 +117,20 @@ subprojects {
 
         dependencies {
             // Allow us to use groovy throughout the project.
-            compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+            compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
             // Logging should be available to all projects
-            compile "org.slf4j:slf4j-api:$slf4jVersion"
-            compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+            compile "org.slf4j:slf4j-api:${slf4jVersion}"
+            runtime "org.slf4j:slf4j-log4j12:${slf4jVersion}"
 
             // For osgi bundles
-            runtime "org.osgi:org.osgi.core:$osgiVersion"
-            runtime "org.osgi:org.osgi.compendium:$osgiVersion"
+            runtime "org.osgi:org.osgi.core:${osgiVersion}"
+            runtime "org.osgi:org.osgi.compendium:${osgiVersion}"
 
             // For testing we are going to use these ubiquitous
-            testCompile "junit:junit:$junitVersion"
-            testCompile "org.mockito:mockito-core:$mockitoVersion"
-            testCompile "org.spockframework:spock-core:$spockVersion"
+            testCompile "junit:junit:${junitVersion}"
+            testCompile "org.mockito:mockito-core:${mockitoVersion}"
+            testCompile "org.spockframework:spock-core:${spockVersion}"
 
         }
 
