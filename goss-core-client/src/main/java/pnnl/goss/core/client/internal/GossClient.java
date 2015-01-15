@@ -321,23 +321,31 @@ public class GossClient implements Client{
             else if(this.protocol.equals(PROTOCOL.STOMP)){
                 destination = new StompJmsDestination(topicName);
                 DefaultClientConsumer consumer  = new DefaultClientConsumer(session,destination);
-                //TODO change this
-                 while(true) {
-                        Message msg = consumer.getMessageConsumer().receive();
-                        if(msg instanceof StompJmsBytesMessage){
-                            StompJmsBytesMessage stompMessage = (StompJmsBytesMessage)msg;
-                            org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
-                            //System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-                            String message = buffer.toString().substring(buffer.toString().indexOf(":")+1);
+
+                 while(session != null) {
+                    try {
+                        Message msg = consumer.getMessageConsumer().receive(10000);
+                        if (msg instanceof StompJmsBytesMessage) {
+                            StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
+                            org.fusesource.hawtbuf.Buffer buffer = stompMessage
+                                    .getContent();
+                            // System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+                            String message = buffer.toString().substring(
+                                    buffer.toString().indexOf(":") + 1);
                             event.onMessage(new DataResponse(message));
                         }
-                        if(msg instanceof StompJmsTextMessage){
-                            StompJmsTextMessage stompMessage = (StompJmsTextMessage)msg;
-                            org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
-                            //System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-                            String message = buffer.toString().substring(buffer.toString().indexOf(":")+1);
+                        if (msg instanceof StompJmsTextMessage) {
+                            StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
+                            org.fusesource.hawtbuf.Buffer buffer = stompMessage
+                                    .getContent();
+                            // System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+                            String message = buffer.toString().substring(
+                                    buffer.toString().indexOf(":") + 1);
                             event.onMessage(new DataResponse(message));
                         }
+                    } catch (javax.jms.IllegalStateException ex) {
+                        // Happens when a timeout occurs.
+                    }
                  }
             }
 
@@ -477,4 +485,3 @@ public class GossClient implements Client{
         return null;
     }
 }
-
