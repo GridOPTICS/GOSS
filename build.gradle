@@ -116,6 +116,9 @@ subprojects {
                 }
                 mavenLocal()
                 jcenter()
+                if ("${karafVersion}".contains('-SNAPSHOT')){
+                    url "https://repository.apache.org/content/groups/snapshots"
+                }
             }
             dependencies{
                 classpath "pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
