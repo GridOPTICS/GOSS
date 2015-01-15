@@ -5,8 +5,8 @@
 
     <feature name="goss-activemq-broker-nosecurity" version="@project.version@">
         <feature version="@activemqVersion@">activemq</feature>
-        <configfile finalname="/etc/org.apache.activemq.server-default.cfg">mvn:pnnl.goss/goss-feature/@project.version@/cfg/goss-broker-config</configfile>
-        <configfile finalname="/etc/pnnl-goss-activemq-broker.xml">mvn:pnnl.goss/goss-feature/@project.version@/xml/goss-broker-nosecurity</configfile>
+        <configfile finalname="/etc/org.apache.activemq.server-default.cfg">mvn:pnnl.goss/goss-activemq-broker-nosecurity/@project.version@/cfg/goss-broker-config</configfile>
+        <configfile finalname="/etc/pnnl-goss-activemq-broker.xml">mvn:pnnl.goss/goss-activemq-broker-nosecurity/@project.version@/xml/goss-broker-nosecurity</configfile>
     </feature>
 
     <feature name="goss-dependencies" version="@project.version@">
