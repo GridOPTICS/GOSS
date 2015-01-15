@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -54,45 +54,47 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class ClientConfiguration {
-	private static final Log log = LogFactory.getLog(ClientConfiguration.class);
-	protected Properties properties = new Properties();
-	
-	public ClientConfiguration(Properties configuration){
-		log.debug("Constructing");
-		if (configuration != null){
-			properties= configuration;
-			
-		}
-		
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public void update(Dictionary config){
-		String[] keys = {PROP_OPENWIRE_URI, PROP_STOMP_URI};
-		updateProperties(keys, config);
-	}
-	
-	@SuppressWarnings({ "unused", "rawtypes" })
-	protected void updateProperties(String[] keys, Dictionary config){
-		for(String k: keys){
-			properties.setProperty(k, (String)config.get(k));
-		}
-	}
+    private static final Log log = LogFactory.getLog(ClientConfiguration.class);
+    protected Properties properties = new Properties();
 
-	
-	public void setProperties(Properties props){
-		properties = props;
-	}
-	
-	public String getProperty(String propertyName){
-		return properties.getProperty(propertyName);
-	}
+    public ClientConfiguration(Properties configuration){
+        log.debug("Constructing");
+        if (configuration != null){
+            properties= configuration;
+
+        }
+
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void update(Dictionary config){
+        String[] keys = {PROP_OPENWIRE_URI, PROP_STOMP_URI};
+        if (config != null){
+            updateProperties(keys, config);
+        }
+    }
+
+    @SuppressWarnings({ "unused", "rawtypes" })
+    protected void updateProperties(String[] keys, Dictionary config){
+        for(String k: keys){
+            properties.setProperty(k, (String)config.get(k));
+        }
+    }
+
+
+    public void setProperties(Properties props){
+        properties = props;
+    }
+
+    public String getProperty(String propertyName){
+        return properties.getProperty(propertyName);
+    }
 //	public static String getProperty(String propertyName){
 //		if(configProperties!=null){
 //			log.info("Goss-core-client retreived property "+propertyName+"="+ configProperties.get(propertyName));
 //			return (String) configProperties.get(propertyName);
 //		}
-//		
+//
 //		try{
 //			log.info("goss-core-client: no configuration set, retrieving from config.properties");
 //			Properties properties = new Properties();
@@ -106,8 +108,8 @@ public class ClientConfiguration {
 //			e.printStackTrace();
 //			log.error(e);
 //		}
-//		
+//
 //		return null;
 //	}
-	
+
 }
