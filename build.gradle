@@ -4,9 +4,6 @@ buildscript {
         jcenter()
         maven{
             url "http://dl.bintray.com/gridoptics/GOSS"
-            if ("${karafVersion}".contains('-SNAPSHOT')){
-                url "https://repository.apache.org/content/groups/snapshots"
-            }
         }
         dependencies {
             // Plugin for publishing to bintray for releases.
@@ -114,6 +111,9 @@ subprojects {
                 maven{url "http://dl.bintray.com/gridoptics/GOSS"}
                 mavenLocal()
                 jcenter()
+                if ("${karafVersion}".contains('-SNAPSHOT')){
+                    url "https://repository.apache.org/content/groups/snapshots"
+                }
             }
             dependencies{
                 classpath "pnnl.goss:goss-buildtools:${gossBuildToolsVersion}"
