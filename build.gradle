@@ -147,23 +147,15 @@ subprojects {
         // specify where source files can be located fo rthe projects.
         sourceSets {
             main {
-                groovy {
-                    // override the default locations, rather than adding additional ones
-                    srcDirs = ['src/main/groovy', 'src/main/java']
-                }
-                java {
-                    srcDirs = [] // don't compile Java code twice
-                }
+                // override the default locations, rather than adding additional ones
+                groovy { srcDirs = ['src/main/groovy', 'src/main/java'] }
+                // don't compile Java code twice
+                java { srcDirs = [] }
             }
 
             test {
-                groovy {
-                    // override the default locations, rather than adding additional ones
-                    srcDirs = ['src/test/java', 'src/test/groovy']
-                }
-                java {
-                    srcDirs = [] // don't compile Java code twice
-                }
+                groovy { srcDirs = ['src/test/java', 'src/test/groovy'] }
+                java { srcDirs = [] }
             }
         }
     }
