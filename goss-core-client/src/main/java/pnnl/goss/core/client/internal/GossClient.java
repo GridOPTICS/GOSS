@@ -345,7 +345,9 @@ public class GossClient implements Client{
                         }
                     } catch (javax.jms.IllegalStateException ex) {
                         // Happens when a timeout occurs.
+                        //log.debug("Illegal state? "+ ex.getMessage());
                         if (session != null){
+                            log.debug("Closing session");
                             session.close();
                             session = null;
                         }
