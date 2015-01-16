@@ -2,10 +2,10 @@
 include 'goss-core',
         'goss-core-client',
         'goss-core-server',
+        'goss-core-itests',
         //'goss-core-web',
         'goss-core-security',
         'goss-core-security-utils'
-  //'goss-core-itests'
 
 
 // This is goss rather than goss-core because it is the root of the
