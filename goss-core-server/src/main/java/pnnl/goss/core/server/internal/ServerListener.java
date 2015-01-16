@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -48,6 +48,7 @@ import static pnnl.goss.core.GossCoreContants.PROP_USE_AUTHORIZATION;
 
 import java.io.Serializable;
 import java.util.Dictionary;
+import java.util.Map;
 
 import javax.jms.InvalidDestinationException;
 import javax.jms.JMSException;
@@ -77,173 +78,188 @@ import pnnl.goss.core.UploadResponse;
 public class ServerListener implements MessageListener {
 
 
-	private GossRequestHandlerRegistrationService handlerService;
-	private static final Logger log = LoggerFactory.getLogger(ServerListener.class);
-	
-	boolean useAuth = false;
-	
-	public ServerListener(){
-		// TODO Not sure if we need this to be public or not any longer.
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public ServerListener(GossRequestHandlerRegistrationService handlerService){
-		this.handlerService = handlerService;
-		Dictionary config = handlerService.getCoreServerConfig();
-		try {
-			if(config!=null){				
-				log.debug("Using authentication? "+config.get(PROP_USE_AUTHORIZATION));
-				useAuth = new Boolean((String)config.get(PROP_USE_AUTHORIZATION));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO: handle exception
-		}
-	}
+    private GossRequestHandlerRegistrationService handlerService;
+    private static final Logger log = LoggerFactory.getLogger(ServerListener.class);
 
-	// GridOPTICSDB db = GridOPTICSDB.getInstance();
-	// static final String POWERGRID_SERVICE = "/powergrid";
+    boolean useAuth = false;
 
-	public void onMessage(Message message1) {
+    public ServerListener(Map<String, Object> config,
+            GossRequestHandlerRegistrationService handlerService){
+        log.debug("Constructing ServerListener");
 
-		final Message message = message1;
-		//System.out.print(System.currentTimeMillis()+";");		
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				ServerPublisher serverPublisher = new ServerPublisher();
-				try {
-					ObjectMessage objectMessage = (ObjectMessage) message;
+        if (config == null){
+            throw new IllegalArgumentException("Invalid Configuration");
+        }
+        if (handlerService == null){
+            throw new IllegalArgumentException("Invalid service handler");
+        }
+    }
 
-					// Assume that the passed object on the wire is of type Request.  An error will be thrown
-					// if that is not the case.
-					Request request = (Request) objectMessage.getObject();
-					
-					
-										
-					//If you wish to disable authentication and authorization you must remove any authentication plugins from
-					//  the activemq.xml file and set the useAuthorization property in config properties to false
-					if(useAuth){
-						String creds = "fuzzybuckets"; // objectMessage.getStringProperty(GossSecurityConstants.ROLE_CREDENTIALS);
-						String tempDestination = "fuzzybuckedsdest"; // objectMessage.getStringProperty(GossSecurityConstants.TEMP_DESTINATION);
-						log.info("ServerListener received Credentials "+creds+" and temp destintation "+tempDestination);
-						boolean accessAllowed = handlerService.checkAccess(request, creds, tempDestination);
-						log.info("ServerListener access granted for request:"+accessAllowed);
-						//TODO IF NOT ACCESS ALLOWED THEN RETURN
-						if(!accessAllowed){
+
+    @Deprecated
+    public ServerListener() {
+        // TODO Auto-generated constructor stub
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Deprecated
+    public ServerListener(GossRequestHandlerRegistrationService handlerService){
+        this.handlerService = handlerService;
+        Dictionary config = handlerService.getCoreServerConfig();
+        try {
+            if(config!=null){
+                log.debug("Using authentication? "+config.get(PROP_USE_AUTHORIZATION));
+                useAuth = new Boolean((String)config.get(PROP_USE_AUTHORIZATION));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // TODO: handle exception
+        }
+    }
+
+    // GridOPTICSDB db = GridOPTICSDB.getInstance();
+    // static final String POWERGRID_SERVICE = "/powergrid";
+
+    public void onMessage(Message message1) {
+
+        final Message message = message1;
+        //System.out.print(System.currentTimeMillis()+";");
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                ServerPublisher serverPublisher = new ServerPublisher();
+                try {
+                    ObjectMessage objectMessage = (ObjectMessage) message;
+
+                    // Assume that the passed object on the wire is of type Request.  An error will be thrown
+                    // if that is not the case.
+                    Request request = (Request) objectMessage.getObject();
+
+
+
+                    //If you wish to disable authentication and authorization you must remove any authentication plugins from
+                    //  the activemq.xml file and set the useAuthorization property in config properties to false
+                    if(useAuth){
+                        String creds = "fuzzybuckets"; // objectMessage.getStringProperty(GossSecurityConstants.ROLE_CREDENTIALS);
+                        String tempDestination = "fuzzybuckedsdest"; // objectMessage.getStringProperty(GossSecurityConstants.TEMP_DESTINATION);
+                        log.info("ServerListener received Credentials "+creds+" and temp destintation "+tempDestination);
+                        boolean accessAllowed = handlerService.checkAccess(request, creds, tempDestination);
+                        log.info("ServerListener access granted for request:"+accessAllowed);
+                        //TODO IF NOT ACCESS ALLOWED THEN RETURN
+                        if(!accessAllowed){
 //							log.warn("IN SERVER LISTENER, ACCESS SHOULDNT BE ALLOWED, UPDATE ME");
-							log.info("Access denied to "+creds+" for request type "+request.getClass().getName());
-							serverPublisher.sendResponse(new DataResponse(new DataError("Access Denied for the requested data")) , message.getJMSReplyTo());
-							serverPublisher.close();
-							return;
-						}
-					}
-					
+                            log.info("Access denied to "+creds+" for request type "+request.getClass().getName());
+                            serverPublisher.sendResponse(new DataResponse(new DataError("Access Denied for the requested data")) , message.getJMSReplyTo());
+                            serverPublisher.close();
+                            return;
+                        }
+                    }
 
-					if (request instanceof UploadRequest) {
-						try {
-							UploadRequest uploadRequest = (UploadRequest) objectMessage.getObject();
-							
-							String dataType = uploadRequest.getDataType(); 
-							Serializable data = uploadRequest.getData();
 
-							UploadResponse response = (UploadResponse) handlerService.handle(uploadRequest, dataType);
-							response.setId(request.getId());
-							serverPublisher.sendResponse(response, message.getJMSReplyTo());
-							
-							//TODO: Added capability for event processing without upload. Example - FNCS
-							/*UploadResponse response = new UploadResponse(true);
-							response.setId(request.getId());
-							serverPublisher.sendResponse(response, message.getJMSReplyTo());*/
+                    if (request instanceof UploadRequest) {
+                        try {
+                            UploadRequest uploadRequest = (UploadRequest) objectMessage.getObject();
 
-							if (data instanceof Event) {
-								DataResponse dataResponse = new DataResponse();
-								dataResponse.setData(data);
-								serverPublisher.sendEvent(dataResponse, data.getClass().getName().substring(data.getClass().getName().lastIndexOf(".") + 1));
-								serverPublisher.close();
-							}
+                            String dataType = uploadRequest.getDataType();
+                            Serializable data = uploadRequest.getData();
 
-						} catch (Exception e) {
-							e.printStackTrace();
-							UploadResponse uploadResponse = new UploadResponse(false);
-							uploadResponse.setMessage(e.getMessage());
-							serverPublisher.sendResponse(uploadResponse, message.getJMSReplyTo());
-							serverPublisher.close();
-						}
-					} else if (request instanceof RequestAsync) {
-						
-						RequestAsync requestAsync = (RequestAsync)request;
-						
-						AbstractRequestHandler handler = handlerService.getHandler(request);
-						
-						DataResponse response = (DataResponse) handlerService.handle(request);
-						response.setId(request.getId());
+                            UploadResponse response = (UploadResponse) handlerService.handle(uploadRequest, dataType);
+                            response.setId(request.getId());
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo());
 
-						if (message.getStringProperty("RESPONSE_FORMAT") != null)
-							serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-						else
-							serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
-						//System.out.println(System.currentTimeMillis());
-						
-						while(response.isResponseComplete()==false){
-							Thread.sleep(requestAsync.getFrequency());
-							response = (DataResponse) handler.handle(request);
-							response.setId(request.getId());
+                            //TODO: Added capability for event processing without upload. Example - FNCS
+                            /*UploadResponse response = new UploadResponse(true);
+                            response.setId(request.getId());
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo());*/
 
-							if (message.getStringProperty("RESPONSE_FORMAT") != null)
-								serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-							else
-								serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
-						}
-					}
-					else {
+                            if (data instanceof Event) {
+                                DataResponse dataResponse = new DataResponse();
+                                dataResponse.setData(data);
+                                serverPublisher.sendEvent(dataResponse, data.getClass().getName().substring(data.getClass().getName().lastIndexOf(".") + 1));
+                                serverPublisher.close();
+                            }
 
-						DataResponse response = (DataResponse) handlerService.handle(request);
-						
-						//DataResponse response = (DataResponse) ServerRequestHandler.handle(request);
-						response.setResponseComplete(true);
-						response.setId(request.getId());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            UploadResponse uploadResponse = new UploadResponse(false);
+                            uploadResponse.setMessage(e.getMessage());
+                            serverPublisher.sendResponse(uploadResponse, message.getJMSReplyTo());
+                            serverPublisher.close();
+                        }
+                    } else if (request instanceof RequestAsync) {
 
-						if (message.getStringProperty("RESPONSE_FORMAT") != null)
-							serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-						else
-							serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
-						//System.out.println(System.currentTimeMillis());					
-						}
+                        RequestAsync requestAsync = (RequestAsync)request;
 
-				} catch (InvalidDestinationException e) {
+                        AbstractRequestHandler handler = handlerService.getHandler(request);
 
-					e.printStackTrace();
-					try {
-						serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
-					} catch (JMSException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					serverPublisher.close();
-				} catch (Exception e) {
+                        DataResponse response = (DataResponse) handlerService.handle(request);
+                        response.setId(request.getId());
 
-					e.printStackTrace();
-					try {
-						serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
-					} catch (JMSException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					serverPublisher.close();
-				} 
-				catch(Throwable t){
-					t.printStackTrace();
-				}
-				finally {
-					
-				}
+                        if (message.getStringProperty("RESPONSE_FORMAT") != null)
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
+                        else
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                        //System.out.println(System.currentTimeMillis());
 
-			}
+                        while(response.isResponseComplete()==false){
+                            Thread.sleep(requestAsync.getFrequency());
+                            response = (DataResponse) handler.handle(request);
+                            response.setId(request.getId());
 
-		});
+                            if (message.getStringProperty("RESPONSE_FORMAT") != null)
+                                serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
+                            else
+                                serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                        }
+                    }
+                    else {
 
-		thread.start();
+                        DataResponse response = (DataResponse) handlerService.handle(request);
 
-	}
+                        //DataResponse response = (DataResponse) ServerRequestHandler.handle(request);
+                        response.setResponseComplete(true);
+                        response.setId(request.getId());
+
+                        if (message.getStringProperty("RESPONSE_FORMAT") != null)
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
+                        else
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                        //System.out.println(System.currentTimeMillis());
+                        }
+
+                } catch (InvalidDestinationException e) {
+
+                    e.printStackTrace();
+                    try {
+                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
+                    } catch (JMSException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    serverPublisher.close();
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                    try {
+                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
+                    } catch (JMSException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    serverPublisher.close();
+                }
+                catch(Throwable t){
+                    t.printStackTrace();
+                }
+                finally {
+
+                }
+
+            }
+
+        });
+
+        thread.start();
+
+    }
 
 }
