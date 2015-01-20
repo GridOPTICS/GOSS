@@ -201,6 +201,7 @@ public class GossRequestHandlerRegistrationImpl implements
             for (int i = 0; i < ann.value().length; i++) {
                 RequestItem itm = ann.value()[i];
                 addHandlerMapping(itm.value().getName(), c.getName());
+                addSecurityMapping(itm.value(), itm.access());
                 annotatedClasses.add(itm.value().getName());
             }
         }
