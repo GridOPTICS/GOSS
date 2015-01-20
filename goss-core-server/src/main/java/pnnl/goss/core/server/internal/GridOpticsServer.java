@@ -50,6 +50,7 @@ import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import java.io.File;
 import java.net.URI;
 import java.util.Dictionary;
+import java.util.Map;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -72,8 +73,8 @@ public class GridOpticsServer {
     private static Connection connection;
 
     @SuppressWarnings("rawtypes")
-    public GridOpticsServer(GossRequestHandlerRegistrationService handlerServic,
-            Dictionary coreConfiguration, boolean startBroker){
+    public GridOpticsServer(GossRequestHandlerRegistrationService handlerService,
+            Dictionary<String, Object> coreConfiguration, boolean startBroker){
         try {
             Dictionary config = coreConfiguration;
             String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
@@ -97,7 +98,7 @@ public class GridOpticsServer {
 //				new ServerConsumer();
 //			}
 //			else{
-                new ServerConsumer(handlerServic);
+                new ServerConsumer(handlerService);
 //			}
         } catch (JMSException e) {
             e.printStackTrace();
