@@ -52,7 +52,7 @@ public abstract class AbstractRequestHandler {
     protected GossRequestHandlerRegistrationService requestHandlerService;
     protected GossDataServices dataservices;
 
-    public abstract Response handle(Request request);
+    public abstract Response handle(Request request) throws Exception;
 
     public void setHandlerService(GossRequestHandlerRegistrationService requestHandlerService){
         this.requestHandlerService = requestHandlerService;
