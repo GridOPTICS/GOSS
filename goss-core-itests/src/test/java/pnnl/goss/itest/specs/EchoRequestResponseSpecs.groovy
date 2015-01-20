@@ -54,12 +54,25 @@ class EchoRequestResponseSpecs extends Specification {
     }
 
     def cleanupSpec() {
-        client.close()
-        client = null
-        registrationHandler.shutdown()
-        registrationHandler = null
-        server.close()
-        dataServices = null
+        try{
+            client.close()
+        }
+        finally{
+            client = null
+        }
+        try{
+            registrationHandler.shutdown()
+        }
+        finally{
+            registrationHandler = null
+        }
+
+        try{
+            server.close()
+        }
+        finally{
+            dataServices = null
+        }
 
     }
 
