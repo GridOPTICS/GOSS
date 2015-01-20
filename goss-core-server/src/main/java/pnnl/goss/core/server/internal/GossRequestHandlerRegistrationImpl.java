@@ -75,6 +75,7 @@ import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 import pnnl.goss.core.server.annotations.RequestHandler;
 import pnnl.goss.core.server.annotations.RequestItem;
 import pnnl.goss.security.core.GossSecurityHandler;
+import pnnl.goss.security.core.authorization.AbstractAccessControlHandler;
 import eu.infomas.annotation.AnnotationDetector;
 import eu.infomas.annotation.AnnotationDetector.TypeReporter;
 
@@ -223,9 +224,13 @@ public class GossRequestHandlerRegistrationImpl implements
                     RequestHandler ann = (RequestHandler) (Class
                             .forName(className))
                             .getAnnotation(RequestHandler.class);
+
                     for (int i = 0; i < ann.value().length; i++) {
+
                         RequestItem itm = ann.value()[i];
+
                         addHandlerMapping(itm.value().getName(), className);
+                        addSecurityMapping(itm.value(), itm.access());
 
                     }
                 } catch (ClassNotFoundException e) {
