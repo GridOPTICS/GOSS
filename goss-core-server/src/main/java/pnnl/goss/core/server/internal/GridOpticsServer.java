@@ -71,6 +71,7 @@ public class GridOpticsServer {
     private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
 
     private static Connection connection;
+    private BrokerService broker = null;
 
     @SuppressWarnings("rawtypes")
     public GridOpticsServer(GossRequestHandlerRegistrationService handlerService,
@@ -190,7 +191,6 @@ public class GridOpticsServer {
 
     @SuppressWarnings({"rawtypes" })
     private void startBroker(Dictionary config) throws Exception {
-        BrokerService broker = null;
 
         if (config.get(PROP_ACTIVEMQ_CONFIG) != null){
             String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
@@ -244,6 +244,14 @@ public class GridOpticsServer {
     public void close() throws JMSException {
         if (connection != null) {
             connection.close();
+        }
+        if (broker != null){
+            try {
+                broker.stop();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         log.debug("Closing connection");
         connection = null;
