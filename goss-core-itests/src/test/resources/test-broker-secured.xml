@@ -75,6 +75,8 @@
                         groups="users" />
                     <authenticationUser username="guest" password="password"
                         groups="guests" />
+                    <authenticationUser username="goss" password="goss"
+                        groups="users" />
                 </users>
             </simpleAuthenticationPlugin>
             <!-- lets configure a destination based authorization mechanism -->
@@ -102,11 +104,11 @@
 
                         <!-- let's assign roles to temporary destinations. comment this entry
                             if we don't want any roles assigned to temp destinations -->
-                        <tempDestinationAuthorizationEntry>
+                        <!-- <tempDestinationAuthorizationEntry>
                             <tempDestinationAuthorizationEntry
-                                read="tempDestinationAdmins" write="tempDestinationAdmins"
-                                admin="tempDestinationAdmins" />
-                        </tempDestinationAuthorizationEntry>
+                                read="admins,users" write="admins,users"
+                                admin="admins,users" />
+                        </tempDestinationAuthorizationEntry> -->
                     </authorizationMap>
                 </map>
             </authorizationPlugin>
@@ -115,8 +117,8 @@
                 /> </authorizationEntries> </authorizationMap> </map> </authorizationPlugin> -->
 
 
-            <!-- <bean xmlns="http://www.springframework.org/schema/beans" id="gossSecurityBroker"
-                class="pnnl.goss.security.broker.GossSecurityBroker"></bean> -->
+            <bean xmlns="http://www.springframework.org/schema/beans" id="gossSecurityBroker"
+                class="pnnl.goss.security.broker.GossSecurityBroker"></bean>
 
         </plugins>
 

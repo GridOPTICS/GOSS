@@ -95,11 +95,19 @@ public class GossRequestHandlerRegistrationImpl implements
     private BundleContext bundleContext;
 
     public GossRequestHandlerRegistrationImpl(GossDataServices dataServices) {
+        this(dataServices, null);
+    }
+
+    public GossRequestHandlerRegistrationImpl(GossDataServices dataServices,
+            GossSecurityHandler securityHandler) {
         log.debug("Constructing");
         if (dataServices == null) {
             throw new NullPointerException("DataServices cannot be null!");
         }
-
+        if (securityHandler == null){
+            log.warn("Security handler is null all security disableld!");
+        }
+        this.securityHandler = securityHandler;
         this.dataServices = dataServices;
     }
 
