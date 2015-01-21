@@ -27,6 +27,7 @@ buildscript {
 
 jar {
     manifest {
+        instruction "Bundle-Activator", "pnnl.goss.core.server.GossCoreServerActivator"
         instruction 'DynamicImport-Package', '*'
         instruction 'Import-Package', 'pnnl.goss.core'
         instruction 'Export-Package', 	'pnnl.goss.core.server',
