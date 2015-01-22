@@ -11,8 +11,10 @@ import static pnnl.goss.core.GossCoreContants.PROP_SYSTEM_PASSWORD
 
 
 
+
 import javax.jms.JMSException
 import javax.jms.JMSSecurityException
+
 import org.apache.http.auth.UsernamePasswordCredentials
 
 import pnnl.goss.core.DataError
@@ -20,6 +22,7 @@ import pnnl.goss.core.DataResponse
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.Client.PROTOCOL
 import pnnl.goss.core.client.internal.GossClient
+import pnnl.goss.core.server.BasicDataSourceCreator;
 import pnnl.goss.core.server.internal.GossDataServicesImpl
 import pnnl.goss.core.server.internal.GossRequestHandlerRegistrationImpl
 import pnnl.goss.core.server.internal.GridOpticsServer
@@ -95,7 +98,7 @@ class SecuredEchoResponseSpec extends Specification {
     }
 
     def setup() {
-        dataServices  = new GossDataServicesImpl()
+        dataServices  = new GossDataServicesImpl(Mock(BasicDataSourceCreator))
         registrationHandler = new GossRequestHandlerRegistrationImpl(dataServices,
             new GossSecurityHandlerImpl())
         Properties config = new Properties()

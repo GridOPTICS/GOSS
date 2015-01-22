@@ -38,24 +38,18 @@ public class GossDataServicesImpl implements GossDataServices {
      */
     private Hashtable<String, String> properties = new Hashtable<String, String>();
 
-    public GossDataServicesImpl(){
-        log.debug("Constructing");
-        dataservices = new Hashtable<String, Object>();
+    private GossDataServicesImpl(){
+        dataservices = new Hashtable<>();
     }
 
-    @Deprecated
-    public GossDataServicesImpl(String configFile){
-        this();
-        log.debug("Constructing Configuration file: ");
-
-    }
-
-    @SuppressWarnings("rawtypes")
-    public GossDataServicesImpl(BasicDataSourceCreator datasourceCreator,
-            Dictionary config){
+    public GossDataServicesImpl(BasicDataSourceCreator datasourceCreator){
         this();
         this.datasourceCreator = datasourceCreator;
-        log.debug("Constructing Configuration file: ");
+    }
+    public GossDataServicesImpl(BasicDataSourceCreator datasourceCreator,
+            Dictionary<String, Object> config){
+        this();
+        this.datasourceCreator = datasourceCreator;
         update(config);
     }
 

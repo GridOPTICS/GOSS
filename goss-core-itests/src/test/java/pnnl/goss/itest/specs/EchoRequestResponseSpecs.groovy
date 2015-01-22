@@ -3,10 +3,10 @@ package pnnl.goss.itest.specs
 import static pnnl.goss.core.GossCoreContants.PROP_ACTIVEMQ_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
-
 import pnnl.goss.core.Client
 import pnnl.goss.core.DataResponse
 import pnnl.goss.core.client.internal.GossClient
+import pnnl.goss.core.server.BasicDataSourceCreator;
 import pnnl.goss.core.server.internal.GossDataServicesImpl
 import pnnl.goss.core.server.internal.GossRequestHandlerRegistrationImpl
 import pnnl.goss.core.server.internal.GridOpticsServer
@@ -37,7 +37,7 @@ class EchoRequestResponseSpecs extends Specification {
 
 
     def setup() {
-        dataServices  = new GossDataServicesImpl()
+        dataServices  = new GossDataServicesImpl(Mock(BasicDataSourceCreator))
         registrationHandler = new GossRequestHandlerRegistrationImpl(dataServices)
         Properties config = new Properties()
         config.setProperty(PROP_OPENWIRE_URI, "tcp://0.0.0.0:51515")

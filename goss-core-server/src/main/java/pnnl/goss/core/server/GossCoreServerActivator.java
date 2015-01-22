@@ -65,6 +65,9 @@ public class GossCoreServerActivator  implements BundleActivator, ManagedService
         dataSourceCreator = new BasicDataSourceCreatorImpl();
         // TODO fix constructor to use the datasource creator and lookup default datasources.
         dataServices = new GossDataServicesImpl();
+        dataServices = new GossDataServicesImpl(dataSourceCreator);
+        dataServices.update(datasourcesConfig);
+
         registrationService = new GossRequestHandlerRegistrationImpl(dataServices);
 
         registrations.add(context.registerService(BasicDataSourceCreator.class,
