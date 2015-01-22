@@ -15,9 +15,7 @@ public class EchoAuthorizationHandler extends AbstractAccessControlHandler {
 
         if (roles == null){
             roles = new ArrayList<>();
-            roles.add("users");
-            roles.add("admin");
-            roles.add("guest");
+            roles.add("fine-grain-users");
         }
 
         return roles;

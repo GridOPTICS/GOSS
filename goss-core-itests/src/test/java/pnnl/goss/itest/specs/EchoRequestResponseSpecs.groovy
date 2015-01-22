@@ -4,6 +4,7 @@ import static pnnl.goss.core.GossCoreContants.PROP_ACTIVEMQ_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
 
+import pnnl.goss.core.Client
 import pnnl.goss.core.DataResponse
 import pnnl.goss.core.client.internal.GossClient
 import pnnl.goss.core.server.internal.GossDataServicesImpl
@@ -14,10 +15,10 @@ import spock.lang.Specification
 
 class EchoRequestResponseSpecs extends Specification {
 
-    static GossClient client
-    static GridOpticsServer server;
-    static GossRequestHandlerRegistrationImpl registrationHandler
-    static GossDataServicesImpl dataServices
+    Client client
+    GridOpticsServer server;
+    GossRequestHandlerRegistrationImpl registrationHandler
+    GossDataServicesImpl dataServices
 
     def "request response specifications"(){
         expect:
@@ -35,7 +36,7 @@ class EchoRequestResponseSpecs extends Specification {
 
 
 
-    def setupSpec() {
+    def setup() {
         dataServices  = new GossDataServicesImpl()
         registrationHandler = new GossRequestHandlerRegistrationImpl(dataServices)
         Properties config = new Properties()
@@ -53,7 +54,7 @@ class EchoRequestResponseSpecs extends Specification {
 
     }
 
-    def cleanupSpec() {
+    def cleanup() {
         try{
             client.close()
         }

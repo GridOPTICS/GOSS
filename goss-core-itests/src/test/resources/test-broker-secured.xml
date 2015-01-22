@@ -16,7 +16,7 @@
 
 
     <broker xmlns="http://activemq.apache.org/schema/core"
-        brokerName="test-security-broker" start="false" useJmx="true"
+        brokerName="test-security-broker" start="false" useJmx="false"
         persistent="false">
 
         <destinationPolicy>
@@ -68,6 +68,8 @@
             <simpleAuthenticationPlugin>
                 <users>
                     <authenticationUser username="test_user"
+                        password="test_pass" groups="users,admins,fine-grain-users" />
+                    <authenticationUser username="test_user2"
                         password="test_pass" groups="users,admins" />
                     <authenticationUser username="system" password="manager"
                         groups="users,admins" />
@@ -121,9 +123,5 @@
                 class="pnnl.goss.security.broker.GossSecurityBroker"></bean>
 
         </plugins>
-
-        <!--<messageAuthorizationPolicy> <bean class="pnnl.goss.security.core.activemq.GossAuthPolicy"
-            xmlns="http://www.springframework.org/schema/beans"/> </messageAuthorizationPolicy> -->
     </broker>
-
 </beans>
