@@ -149,7 +149,10 @@ public class ServerListener implements MessageListener {
                         if(!accessAllowed){
 //							log.warn("IN SERVER LISTENER, ACCESS SHOULDNT BE ALLOWED, UPDATE ME");
                             log.info("Access denied to "+creds+" for request type "+request.getClass().getName());
-                            serverPublisher.sendResponse(new DataResponse(new DataError("Access Denied for the requested data")) , message.getJMSReplyTo());
+                            DataError err = new DataError("Access Denied for the requested data");
+                            DataResponse errResp = new DataResponse(err);
+                            errResp.setResponseComplete(true);
+                            serverPublisher.sendResponse(errResp, message.getJMSReplyTo());
                             serverPublisher.close();
                             return;
                         }
