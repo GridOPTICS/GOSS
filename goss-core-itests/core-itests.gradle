@@ -7,37 +7,9 @@ dependencies {
 
     compile "org.eclipse.jetty.aggregate:jetty-all-server:$jettyVersion"
     compile "org.apache.activemq:activemq-all:$activemqVersion"
-    compile "org.springframework:spring-beans:$springVersion"
-    compile "org.springframework:spring-context:$springVersion"
-    compile "org.apache.xbean:xbean-spring:$xbeanVersion"
-//    compile "junit:junit:${junitVersion}",
-//            "org.ops4j.pax.exam:pax-exam:${paxExamVersion}",
-//            "org.ops4j.pax.exam:pax-exam-junit4:${paxExamVersion}",
-//            "org.apache.karaf.features:standard:${karafVersion}",
-//            "javax.inject:javax.inject:1",
-//            "org.ops4j.pax.url:pax-url-aether:${paxAetherVersion}",
-//            "org.ops4j.pax.exam:pax-exam-container-karaf:${paxExamVersion}"
-
-
-//	testCompile('org.ops4j.pax.exam:pax-exam:4.3.0')
-//	testCompile('org.ops4j.pax.exam:pax-exam-container-karaf:4.3.0')
-//	testCompile('org.ops4j.pax.exam:pax-exam-junit4:4.3.0')
-//	testCompile('org.ops4j.pax.url:pax-url-aether:2.2.0')
-//	testCompile('org.apache.karaf.features:standard:3.0.2@xml')
-//	testCompile('javax.inject:javax.inject:1')
-//
-//
-//	String paxExamVersion = '4.3.0'
-//
-//	testCompile "junit:junit:4.+",
-//				"org.ops4j.pax.exam:pax-exam-junit4:$paxExamVersion",
-//				"org.eclipse.osgi:org.eclipse.osgi:$equinoxVersion",
-//				"javax.inject:javax.inject:1"
-//
-//	testRuntime "org.ops4j.pax.exam:pax-exam-container-native:$paxExamVersion",
-//				"org.ops4j.pax.exam:pax-exam-link-mvn:$paxExamVersion",
-//				"org.ops4j.pax.url:pax-url-aether:1.3.5"
-//
+    testCompile "org.springframework:spring-beans:$springVersion"
+    testCompile "org.springframework:spring-context:$springVersion"
+    testCompile "org.apache.xbean:xbean-spring:$xbeanVersion"
 
 
 }
