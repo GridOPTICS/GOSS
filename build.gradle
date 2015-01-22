@@ -87,6 +87,10 @@ subprojects {
                     javadoc
                 ]*.options*.encoding = 'UTF-8'
             }
+            // Included this because we allow both groovy and java compiles.
+            // Without setting this then we can end up with multiple file refs
+            // in a single jar file.
+            duplicatesStrategy = "EXCLUDE"
         }
 
         configurations { published }
