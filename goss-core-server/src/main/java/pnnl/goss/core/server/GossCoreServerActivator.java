@@ -21,7 +21,8 @@ import pnnl.goss.core.server.internal.GossRequestHandlerRegistrationImpl;
 import pnnl.goss.core.server.internal.GridOpticsServer;
 
 public class GossCoreServerActivator  implements BundleActivator, ManagedService {
-    private  static final String CONFIG_PID = "pnnl.goss.core.server";
+    private static final String CONFIG_PID = "pnnl.goss.core.server";
+    private static final String DS_CONFIG_PID = "pnnl.goss.datasources";
     private static Logger log = LoggerFactory.getLogger(GossCoreServerActivator.class);
 
     private GridOpticsServer server;
@@ -29,8 +30,10 @@ public class GossCoreServerActivator  implements BundleActivator, ManagedService
     private GossDataServicesImpl dataServices;
     private GossRequestHandlerRegistrationImpl registrationService;
     private List<ServiceRegistration<?>> registrations = new ArrayList<>();
-    private Dictionary<String, Object> config = new Hashtable<>();
+
     private BundleContext context;
+    private Dictionary<String, Object> config = new Hashtable<>();
+    private Dictionary<String, Object> datasourcesConfig = new Hashtable<>();
 
 
     @Override
@@ -39,9 +42,18 @@ public class GossCoreServerActivator  implements BundleActivator, ManagedService
         log.debug("Updated configuration");
         if (properties != null){
             Enumeration<String> keys = properties.keys();
+            Dictionary<String, Object> updatedprops = null;
+            if (properties.get(Constants.SERVICE_PID).equals(CONFIG_PID)){
+                updatedprops = config;
+            }
+            else{
+                log.debug("Updating datasources");
+                updatedprops = datasourcesConfig;
+            }
             while (keys.hasMoreElements()){
                 String k = keys.nextElement();
-                config.put(k, properties.get(k));
+                log.debug("CONFIG: "+k);
+                updatedprops.put(k, properties.get(k));
             }
         }
 
@@ -57,14 +69,19 @@ public class GossCoreServerActivator  implements BundleActivator, ManagedService
         }
     }
 
+    /**
+     * Registers the basic datasource creator, dataservices, and
+     * request handler registration services.  After that this function starts
+     * the goss server for processing.
+     *
+     * @throws Exception
+     */
     private void registerServices() throws Exception{
         if (config.size() <= 0){
             throw new InvalidConfigurationException("Must have configured bundle.");
         }
 
         dataSourceCreator = new BasicDataSourceCreatorImpl();
-        // TODO fix constructor to use the datasource creator and lookup default datasources.
-        dataServices = new GossDataServicesImpl();
         dataServices = new GossDataServicesImpl(dataSourceCreator);
         dataServices.update(datasourcesConfig);
 
@@ -124,8 +141,11 @@ public class GossCoreServerActivator  implements BundleActivator, ManagedService
         this.context = context;
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put(Constants.SERVICE_PID, CONFIG_PID);
-
         context.registerService(ManagedService.class, this, props);
+
+        Hashtable<String, Object> dsProps = new Hashtable<String, Object>();
+        dsProps.put(Constants.SERVICE_PID, DS_CONFIG_PID);
+        context.registerService(ManagedService.class, this, dsProps);
     }
 
     @Override

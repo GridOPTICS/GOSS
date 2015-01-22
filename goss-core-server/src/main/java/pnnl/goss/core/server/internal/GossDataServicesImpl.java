@@ -53,10 +53,9 @@ public class GossDataServicesImpl implements GossDataServices {
         update(config);
     }
 
-    public void update(@SuppressWarnings("rawtypes") Dictionary config){
+    public void update(Dictionary<String, Object> config){
         properties.clear();
-        @SuppressWarnings("rawtypes")
-        Enumeration nummer = config.keys();
+        Enumeration<String> nummer = config.keys();
         Hashtable<String, ConstructableDatasource> possibleConstruction =
                 new Hashtable<>();
 
@@ -79,6 +78,10 @@ public class GossDataServicesImpl implements GossDataServices {
             ds.password = properties.get(entry.getKey()+".password");
             ds.uri = properties.get(entry.getKey()+".uri");
             ds.driver = properties.get(entry.getKey()+".driver");
+            // TODO Do something with the groups so that we can do grouping on types of data.
+            if (properties.contains(entry.getKey()+".groups")){
+                ds.groups = properties.get(entry.getKey()+".groups");
+            }
 
             try {
                 BasicDataSource actualDs = datasourceCreator.create(ds.uri,
@@ -97,6 +100,7 @@ public class GossDataServicesImpl implements GossDataServices {
         public String password;
         public String uri;
         public String driver;
+        public String groups;
     }
 
     @Override
