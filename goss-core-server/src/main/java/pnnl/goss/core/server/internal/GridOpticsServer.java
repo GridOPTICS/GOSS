@@ -72,75 +72,57 @@ public class GridOpticsServer {
 
     private static Connection connection;
     private BrokerService broker = null;
+    private ServerConsumer consumer = null;
 
     @SuppressWarnings("rawtypes")
     public GridOpticsServer(GossRequestHandlerRegistrationService handlerService,
-            Dictionary<String, Object> coreConfiguration, boolean startBroker){
-        try {
-            Dictionary config = coreConfiguration;
-            String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
-            URI uri = URI.create(brokerURI);
-            String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
-            String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
+        Dictionary<String, Object> coreConfiguration, boolean startBroker) throws Exception{
 
-            log.debug("Creating gridoptics server\n\tbrokerURI:"+
-                    brokerURI+"\n\tsystem user: "+user);
+        Dictionary config = coreConfiguration;
+        String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
+        URI uri = URI.create(brokerURI);
+        String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
+        String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
+
+        log.debug("Creating gridoptics server\n\tbrokerURI:"+
+                brokerURI+"\n\tsystem user: "+user);
 
 
 
-            //Needed for standalone server instance
-            if(startBroker){
-                startBroker(config);
-            }
-
-            makeActiveMqConnection(uri, user, pw);
-
-//			if (service == null){
-//				new ServerConsumer();
-//			}
-//			else{
-                new ServerConsumer(handlerService);
-//			}
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-            e.printStackTrace();
+        //Needed for standalone server instance
+        if(startBroker){
+            startBroker(config);
         }
+
+        makeActiveMqConnection(uri, user, pw);
+
+        consumer = new ServerConsumer(handlerService);
 
     }
 
     @SuppressWarnings("rawtypes")
     @Deprecated
-    public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker){
-        try {
-            Dictionary config = service.getCoreServerConfig();
-            String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
-            URI uri = URI.create(brokerURI);
-            String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
-            String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
+    public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker) throws Exception{
 
-            log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
+        Dictionary config = service.getCoreServerConfig();
+        String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
+        URI uri = URI.create(brokerURI);
+        String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
+        String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
+
+        log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
 
 
 
-            //Needed for standalone server instance
-            if(startBroker){
-                startBroker(config);
-            }
-
-            makeActiveMqConnection(uri, user, pw);
-
-//			if (service == null){
-//				new ServerConsumer();
-//			}
-//			else{
-                new ServerConsumer(service);
-//			}
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-            e.printStackTrace();
+        //Needed for standalone server instance
+        if(startBroker){
+            startBroker(config);
         }
+
+        makeActiveMqConnection(uri, user, pw);
+
+        consumer = new ServerConsumer(service);
+
 
     }
 
@@ -244,6 +226,9 @@ public class GridOpticsServer {
     public void close() throws JMSException {
         if (connection != null) {
             connection.close();
+        }
+        if (consumer != null){
+            consumer = null;
         }
         if (broker != null){
             try {

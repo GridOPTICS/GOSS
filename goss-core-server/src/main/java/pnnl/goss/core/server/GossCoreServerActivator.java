@@ -51,13 +51,13 @@ public class GossCoreServerActivator  implements BundleActivator, ManagedService
 
         try {
             registerServices();
-        } catch (InvalidConfigurationException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    private void registerServices() throws InvalidConfigurationException{
+    private void registerServices() throws Exception{
         if (config.size() <= 0){
             throw new InvalidConfigurationException("Must have configured bundle.");
         }
