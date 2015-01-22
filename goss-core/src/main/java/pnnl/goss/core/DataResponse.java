@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -48,41 +48,46 @@ import java.io.Serializable;
 
 public class DataResponse extends Response implements Serializable {
 
-	private static final long serialVersionUID = 3555288982317165831L;
-	Serializable data;
-	
-	boolean responseComplete;
-	
-	public DataResponse(){
-		
-	}
-	
-	public DataResponse(Serializable data){
-		setData(data);
-	}
+    private static final long serialVersionUID = 3555288982317165831L;
+    Serializable data;
 
-	public Object getData() {
-		return data;
-	}
+    boolean responseComplete;
 
-	public void setData(Serializable data) {
-		this.data = data;
-	}
-	
-	/**
-	 * To check if response is complete in case of request with recurring responses. 
-	 * @return True if this is the last response for the query, false otherwise.
-	 */
-	public boolean isResponseComplete() {
-		return responseComplete;
-	}
+    public DataResponse(){
 
-	/**
-	 * To set if response is complete in case of request with recurring responses.  
-	 * @param responseComplete: True if this is the last response for the query, false otherwise.
-	 */
-	public void setResponseComplete(boolean responseComplete) {
-		this.responseComplete = responseComplete;
-	}
+    }
+
+    public DataResponse(Serializable data){
+        setData(data);
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Serializable data) {
+        this.data = data;
+    }
+
+    /**
+     * To check if response is complete in case of request with recurring responses.
+     * @return True if this is the last response for the query, false otherwise.
+     */
+    public boolean isResponseComplete() {
+        return responseComplete;
+    }
+
+    /**
+     * To set if response is complete in case of request with recurring responses.
+     * @param responseComplete: True if this is the last response for the query, false otherwise.
+     */
+    public void setResponseComplete(boolean responseComplete) {
+        this.responseComplete = responseComplete;
+    }
+
+    @Override
+    public String toString() {
+        return (this.data != null)? this.data.toString(): super.toString();
+    }
 
 }
