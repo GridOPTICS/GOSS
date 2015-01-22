@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
 
+import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
 
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
@@ -28,11 +29,12 @@ public interface Client {
      * Sends request and gets response for synchronous communication.
      * @param request instance of pnnl.goss.core.Request or any of its subclass.
      * @return return an Object which could be a  pnnl.goss.core.DataResponse,  pnnl.goss.core.UploadResponse or  pnnl.goss.core.DataError.
+     * @throws ConfigurationException
      * @throws IllegalStateException when GossCLient is initialized with an GossResponseEvent. Cannot synchronously receive a message when a MessageListener is set.
      * @throws JMSException
      */
     public Object getResponse(Request request,
-            RESPONSE_FORMAT responseFormat);
+            RESPONSE_FORMAT responseFormat) throws ConfigurationException, JMSException;
 
     /**
      * Sends request and initializes listener for asynchronous communication

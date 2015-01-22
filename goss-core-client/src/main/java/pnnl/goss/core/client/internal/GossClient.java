@@ -115,10 +115,16 @@ public class GossClient implements Client{
     }
 
     public GossClient(Properties props){
+        this(props, PROTOCOL.OPENWIRE);
+    }
+
+    public GossClient(Properties props, PROTOCOL connectionProtocol){
+        log.debug("Using protocol: " + connectionProtocol);
         config= new ClientConfiguration(props);
         assert config.getProperty(PROP_STOMP_URI) != null;
         assert config.getProperty(PROP_OPENWIRE_URI) != null;
-        this.protocol = PROTOCOL.OPENWIRE;
+        this.protocol = connectionProtocol;
+        used = true;
     }
 
     public GossClient(String configFile) throws FileNotFoundException, IOException{
@@ -165,8 +171,8 @@ public class GossClient implements Client{
         assert config.getProperty(PROP_STOMP_URI) != null;
     }
 
-    private boolean createSession() throws ConfigurationException{
-        assert protocol != null;
+    private boolean createSession() throws JMSException{
+        log.debug("Creating Session!");
 
         if(config == null){
             config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
@@ -183,35 +189,32 @@ public class GossClient implements Client{
         return session != null;
     }
 
-    private void setUpSession(Credentials cred,PROTOCOL protocol){
-        try{
-            this.protocol = protocol;
-            if(protocol.equals(PROTOCOL.OPENWIRE)){
-                ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
-                ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
-                if(cred!=null){
-                    ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
-                    ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
-                }
-                connection = factory.createConnection();
-            }
-            else if(protocol.equals(PROTOCOL.STOMP)){
-                StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-                factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
-                if(cred!=null)
-                    connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
-                else
-                    connection = factory.createConnection();
-            }
+    private void setUpSession(Credentials cred,PROTOCOL protocol) throws JMSException{
 
-            connection.start();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            clientPublisher = new DefaultClientPublisher(session);
+        this.protocol = protocol;
+        if(protocol.equals(PROTOCOL.OPENWIRE)){
+            log.debug("Creating OPENWIRE session!");
+            ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
+            ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
+            if(cred!=null){
+                ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
+                ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
+            }
+            connection = factory.createConnection();
         }
-        catch(Exception e){
-            log.error("Error creating goss-client session", e);
-            e.printStackTrace();
+        else if(protocol.equals(PROTOCOL.STOMP)){
+            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+            factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
+            if(cred!=null)
+                connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
+            else
+                connection = factory.createConnection();
         }
+
+        connection.start();
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        clientPublisher = new DefaultClientPublisher(session);
+
     }
 
     /**
@@ -233,39 +236,37 @@ public class GossClient implements Client{
      * Sends request and gets response for synchronous communication.
      * @param request instance of pnnl.goss.core.Request or any of its subclass.
      * @return return an Object which could be a  pnnl.goss.core.DataResponse,  pnnl.goss.core.UploadResponse or  pnnl.goss.core.DataError.
-     * @throws IllegalStateException when GossCLient is initialized with an GossResponseEvent. Cannot synchronously receive a message when a MessageListener is set.
      * @throws JMSException
      */
     @Override
-    public Object getResponse(Request request, RESPONSE_FORMAT responseFormat) {
+    public Object getResponse(Request request, RESPONSE_FORMAT responseFormat) throws JMSException {
         Object response = null;
-        try {
-            createSession();
-            Destination replyDestination = null;
-            if (this.protocol.equals(PROTOCOL.OPENWIRE))
-                replyDestination = session.createTemporaryQueue();
-            else if (this.protocol.equals(PROTOCOL.STOMP)) {
-                replyDestination = new StompJmsTempQueue();
-            }
 
-            DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session,
-                    replyDestination);
-            clientPublisher.sendMessage(request, replyDestination,
-                    responseFormat);
-            Object message = clientConsumer.getMessageConsumer().receive();
-            if (message instanceof ObjectMessage) {
-                ObjectMessage objectMessage = (ObjectMessage) message;
-                if (objectMessage.getObject() instanceof Response) {
-                    response = (Response) objectMessage.getObject();
-                }
-            } else if (message instanceof TextMessage) {
-                response = ((TextMessage) message).getText();
-            }
-
-            clientConsumer.close();
-        } catch (JMSException e) {
-            log.error("getResponse Error", e);
+        if (!createSession()){
+            throw new IllegalStateException("Couldn't create session to activemq!");
         }
+        Destination replyDestination = null;
+        if (this.protocol.equals(PROTOCOL.OPENWIRE))
+            replyDestination = session.createTemporaryQueue();
+        else if (this.protocol.equals(PROTOCOL.STOMP)) {
+            replyDestination = new StompJmsTempQueue();
+        }
+
+        DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session,
+                replyDestination);
+        clientPublisher.sendMessage(request, replyDestination,
+                responseFormat);
+        Object message = clientConsumer.getMessageConsumer().receive();
+        if (message instanceof ObjectMessage) {
+            ObjectMessage objectMessage = (ObjectMessage) message;
+            if (objectMessage.getObject() instanceof Response) {
+                response = (Response) objectMessage.getObject();
+            }
+        } else if (message instanceof TextMessage) {
+            response = ((TextMessage) message).getText();
+        }
+
+        clientConsumer.close();
 
         return response;
     }
