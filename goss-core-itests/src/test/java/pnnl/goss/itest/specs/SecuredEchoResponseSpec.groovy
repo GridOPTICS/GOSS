@@ -120,7 +120,6 @@ class SecuredEchoResponseSpec extends Specification {
         //config.setProperty(PROP_ACTIVEMQ_CONFIG, "build/resources/test/test-broker-no-security.xml")
         // config.setProperty(GossCoreContants.PROP_SYSTEM_USER, "fuzzy")
         // config.setProperty(GossCoreContants.PROP_SYSTEM_PASSWORD, "buckets")
-        registrationHandler.setCoreServerConfig(config)
         registrationHandler.addHandlersFromClassPath();
         server = new GridOpticsServer(registrationHandler, config, true)
     }

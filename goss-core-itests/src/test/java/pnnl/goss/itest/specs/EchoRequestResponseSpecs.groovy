@@ -19,6 +19,8 @@ class EchoRequestResponseSpecs extends Specification {
     GridOpticsServer server;
     GossRequestHandlerRegistrationImpl registrationHandler
     GossDataServicesImpl dataServices
+    static final String OPENWIRE = "tcp://0.0.0.0:51515"
+    static final String STOMP = "tcp://0.0.0.0:51516"
 
     def "request response specifications"(){
         expect:
@@ -39,18 +41,21 @@ class EchoRequestResponseSpecs extends Specification {
     def setup() {
         dataServices  = new GossDataServicesImpl(Mock(BasicDataSourceCreator))
         registrationHandler = new GossRequestHandlerRegistrationImpl(dataServices)
-        Properties config = new Properties()
-        config.setProperty(PROP_OPENWIRE_URI, "tcp://0.0.0.0:51515")
-        config.setProperty(PROP_STOMP_URI, "stomp://0.0.0.0:51516")
+        Dictionary<String, Object> config = new Hashtable()
+        Properties clientProps = new Properties()
+        clientProps.put(PROP_OPENWIRE_URI, OPENWIRE)
+        clientProps.put(PROP_STOMP_URI, STOMP)
+
+        config.put(PROP_OPENWIRE_URI, "tcp://0.0.0.0:51515")
+        config.put(PROP_STOMP_URI, "stomp://0.0.0.0:51516")
         //def file = new File(getClass().protectionDomain.codeSource.location.path).parent
 //        println file
-        config.setProperty(PROP_ACTIVEMQ_CONFIG, "build/resources/test/test-broker-no-security.xml")
+        config.put(PROP_ACTIVEMQ_CONFIG, "build/resources/test/test-broker-no-security.xml")
         // config.setProperty(GossCoreContants.PROP_SYSTEM_USER, "fuzzy")
         // config.setProperty(GossCoreContants.PROP_SYSTEM_PASSWORD, "buckets")
-        registrationHandler.setCoreServerConfig(config)
         registrationHandler.addHandlersFromClassPath();
-        server = new GridOpticsServer(registrationHandler, true)
-        client = new GossClient(config)
+        server = new GridOpticsServer(registrationHandler, config, true)
+        client = new GossClient(clientProps)
 
     }
 
