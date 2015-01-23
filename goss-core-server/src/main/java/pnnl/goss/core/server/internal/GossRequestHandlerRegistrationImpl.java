@@ -47,11 +47,14 @@ package pnnl.goss.core.server.internal;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
@@ -89,10 +92,13 @@ public class GossRequestHandlerRegistrationImpl implements
     private HashMap<String, Class> handlerToClass = new HashMap<String, Class>();
     private HashMap<String, Set<String>> bundleToClassName = new HashMap<>();
     private GossSecurityHandler securityHandler;
-    private Dictionary coreServerConfig = null;
+
+
+
+    private HashMap<String, List<String>> bundleToPrototypeMap = new LinkedHashMap<>();
+    private HashMap<String, AbstractRequestHandler> prototypeMap = new LinkedHashMap<>();
 
     private GossDataServices dataServices;
-    private BundleContext bundleContext;
 
     public GossRequestHandlerRegistrationImpl(GossDataServices dataServices) {
         this(dataServices, null);
@@ -113,28 +119,30 @@ public class GossRequestHandlerRegistrationImpl implements
 
     public void startHandler() {
         log.debug("Starting handler");
-        if (bundleContext != null) {
-            bundleContext.addBundleListener(new BundleListener() {
-
-                @Override
-                public void bundleChanged(BundleEvent event) {
-
-                    if (event.getType() == BundleEvent.STARTED) {
-                        log.debug("STARTED EVENT FIRED!");
-                        addHandlersFromBundle(event.getBundle());
-                    } else if (event.getType() == BundleEvent.STOPPED) {
-                        log.debug("STOPPED EVENT FIRED!");
-                        removeHandlersFromBundle(event.getBundle());
-                    }
-                }
-            });
-        }
+//        if (bundleContext != null) {
+//            bundleContext.addBundleListener(new BundleListener() {
+//
+//                @Override
+//                public void bundleChanged(BundleEvent event) {
+//
+//                    if (event.getType() == BundleEvent.STARTED) {
+//                        log.debug("STARTED EVENT FIRED!");
+//                        addHandlersFromBundle(event.getBundle());
+//                    } else if (event.getType() == BundleEvent.STOPPED) {
+//                        log.debug("STOPPED EVENT FIRED!");
+//                        removeHandlersFromBundle(event.getBundle());
+//                    }
+//                }
+//            });
+//        }
     }
 
     public void shutdown() {
         log.debug("shutdown");
         this.handlerMap.clear();
     }
+
+
 
     private Set<Class> getHandlersInBundle(Bundle bundle){
         Set<Class> handlers = new HashSet<>();
@@ -236,13 +244,39 @@ public class GossRequestHandlerRegistrationImpl implements
 
                     for (int i = 0; i < ann.value().length; i++) {
 
-                        RequestItem itm = ann.value()[i];
+                        RequestItem item = ann.value()[i];
+                        AbstractRequestHandler prototype = (AbstractRequestHandler) Class
+                                .forName(className).newInstance();
+                        prototypeMap.put(item.value().getName(), prototype.newInstance());
+//                        List<String> mappings = bundleToPrototypeMap.get(bundle.getSymbolicName());
+//                        if (mappings == null){
+//                            mappings = new ArrayList<String>();
+//                            bundleToPrototypeMap.put(bundle.getSymbolicName(), mappings);
+//                        }
+//                        mappings.add(bundle.getSymbolicName());
+//                        prototypeMap.put(item.value().getName(),
+//                                ((AbstractRequestHandler)ann.getClass().newInstance()).newInstance());
 
-                        addHandlerMapping(itm.value().getName(), className);
-                        addSecurityMapping(itm.value(), itm.access());
+                        //addHandlerMapping(itm.value().getName(), className);
+                        addSecurityMapping(item.value(), item.access());
+//                        log.debug("Registering prototype for: "+ item.value().getName());
+//                        AbstractRequestHandler prototype = (AbstractRequestHandler) loaded.newInstance();
+//                        prototypeMap.put(item.value().getName(), prototype.newInstance());
+//                        List<String> mappings = bundleToPrototypeMap.get(bundle.getSymbolicName());
+//                        if (mappings == null){
+//                            mappings = new ArrayList<String>();
+//                            bundleToPrototypeMap.put(bundle.getSymbolicName(), mappings);
+//                        }
+//                        mappings.add(bundle.getSymbolicName());
 
                     }
                 } catch (ClassNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -436,40 +470,16 @@ public class GossRequestHandlerRegistrationImpl implements
         Response response = null;
         AbstractRequestHandler handler = null;
         if (request != null) {
-            log.debug("handling request for:\n\t "
-                    + request.getClass().getName() + " => "
-                    + handlerMap.get(request.getClass().getName()));
+            log.debug("Handling request: "+ request.getClass().getName());
+            handler = prototypeMap.get(request.getClass().getName());
+            log.debug("Servicing with: "+ handler.toString());
 
-            if (handlerMap.containsKey(request.getClass().getName())) {
-                try {
-                    Class handlerClass = handlerToClass.get(request.getClass()
-                            .getName());
-                    // Class handlerClass =
-                    // Class.forName(handlerMap.get(request.getClass().getName()));
-                    handler = (AbstractRequestHandler) handlerClass
-                            .newInstance();
-                    if (handler != null) {
-                        handler.setGossDataservices(dataServices);
-                        handler.setHandlerService(this);
-                        response = handler.handle(request);
-                    }
-                    /*
-                     * String handlerStr =
-                     * handlerMap.get(request.getClass().getName());
-                     * GossRequestHandler handler = (GossRequestHandler)
-                     * Class.forName(handlerStr).newInstance(); response =
-                     * handler.handle(request);
-                     */
-                } catch (Exception e) {
-                    log.error("Handle error exception", e);
-                }
-                /*
-                 * catch (InstantiationException e) { log.error(e, e);
-                 * e.printStackTrace(); } catch (IllegalAccessException e) {
-                 * log.error(e, e); e.printStackTrace(); } catch
-                 * (ClassNotFoundException e) { log.error(e, e);
-                 * e.printStackTrace(); }
-                 */
+            handler.setGossDataservices(dataServices);
+            handler.setHandlerService(this);
+            try {
+                response = handler.handle(request);
+            } catch (Exception e) {
+                log.error("Handle error exception", e);
             }
         }
 
@@ -549,15 +559,6 @@ public class GossRequestHandlerRegistrationImpl implements
         }
     }
 
-    public Dictionary getCoreServerConfig() {
-        return coreServerConfig;
-    }
-
-    public void setCoreServerConfig(Dictionary config) {
-        coreServerConfig = config;
-
-    }
-
     public AbstractRequestHandler getHandler(Request request) {
         AbstractRequestHandler handler = null;
         if (request != null) {
@@ -601,24 +602,58 @@ public class GossRequestHandlerRegistrationImpl implements
             }
         }
     }
-    //
-    // @Override
-    // public void unregisterHandlers(Enumeration<URL> urls) {
-    // Reflections ref = new Reflections(new ConfigurationBuilder()
-    // .setUrls(Collections.list(urls)));
-    //
-    // Set<Class<?>> handers = ref.getTypesAnnotatedWith(RequestHandler.class);
-    //
-    // // For each of the annotations we need to remove all of the requests.
-    // for(Class<?> handler : handers){
-    // log.debug("Found handler: "+handler.getName());
-    // for(Annotation annotation : handler.getAnnotations()){
-    // for(RequestItem item: ((RequestHandler)annotation).value()){
-    // removeHandlerMapping(item.value());
-    // }
-    // }
-    // }
-    //
-    // }
+
+    @Override
+    public void addHandlerFromBundleContext(BundleContext context) {
+        Bundle bundle = context.getBundle();
+        Enumeration<URL> entries = bundle.findEntries("/", "*.class", true);
+
+        // No handlers in a bundle.
+        if (entries == null || !entries.hasMoreElements()) {
+            return;
+        }
+
+        while (entries.hasMoreElements()) {
+            URL url = entries.nextElement();
+            String file = url.getFile();
+            String c = file.replaceAll("/", ".").replaceAll(".class", "")
+                    .replaceFirst(".", "");
+            log.debug("c: " + c);
+            try {
+
+                Class loaded = bundle.loadClass(c);
+
+                boolean annotationPresent = loaded
+                        .isAnnotationPresent(RequestHandler.class);
+
+                if (annotationPresent) {
+                    log.debug("Adding handler: "+ c);
+                    //Annotation ann = loaded.getAnnotation(RequestHandler.class);
+                    for (Annotation annotation : loaded.getAnnotations()) {
+                        for (RequestItem item : ((RequestHandler) annotation).value()) {
+                            log.debug("Registering prototype for: "+ item.value().getName());
+                            AbstractRequestHandler prototype = (AbstractRequestHandler) loaded.newInstance();
+                            prototypeMap.put(item.value().getName(), prototype.newInstance());
+                            List<String> mappings = bundleToPrototypeMap.get(bundle.getSymbolicName());
+                            if (mappings == null){
+                                mappings = new ArrayList<String>();
+                                bundleToPrototypeMap.put(bundle.getSymbolicName(), mappings);
+                            }
+                            mappings.add(bundle.getSymbolicName());
+                        }
+                    }
+                }
+            }
+            catch (ClassNotFoundException e){
+                log.debug("Class not found for: " + c);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                // throw new RuntimeException(e);
+            }
+        }
+
+
+    }
 
 }
