@@ -50,7 +50,6 @@ import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import java.io.File;
 import java.net.URI;
 import java.util.Dictionary;
-import java.util.Map;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -74,11 +73,10 @@ public class GridOpticsServer {
     private BrokerService broker = null;
     private ServerConsumer consumer = null;
 
-    @SuppressWarnings("rawtypes")
     public GridOpticsServer(GossRequestHandlerRegistrationService handlerService,
         Dictionary<String, Object> coreConfiguration, boolean startBroker) throws Exception{
 
-        Dictionary config = coreConfiguration;
+        Dictionary<String, Object> config = coreConfiguration;
         String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
         URI uri = URI.create(brokerURI);
         String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
@@ -96,83 +94,11 @@ public class GridOpticsServer {
 
         makeActiveMqConnection(uri, user, pw);
 
-        consumer = new ServerConsumer(handlerService);
-
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Deprecated
-    public GridOpticsServer(GossRequestHandlerRegistrationService service, boolean startBroker) throws Exception{
-
-        Dictionary config = service.getCoreServerConfig();
-        String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
-        URI uri = URI.create(brokerURI);
-        String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
-        String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
-
-        log.debug("Creating gridoptics server\n\tbrokerURI:"+ brokerURI+"\n\tsystem user: "+user);
-
-
-
-        //Needed for standalone server instance
-        if(startBroker){
-            startBroker(config);
-        }
-
-        makeActiveMqConnection(uri, user, pw);
-
-        consumer = new ServerConsumer(service);
-
-
+        consumer = new ServerConsumer(coreConfiguration, handlerService);
     }
 
 
-    //TO MY KNOWLEDGE THESE CONSTRUCTORS AREN'T NEEDED ANYMORE
-//	public GridOpticsServer(URI brokerUri, GossRequestHandlerRegistrationService service){
-//	try {
-//		makeActiveMqConnection(brokerUri);
-//
-//		if (service == null){
-//			new ServerConsumer();
-//		}
-//		else{
-//			new ServerConsumer(service);
-//		}
-//	} catch (JMSException e) {
-//		e.printStackTrace();
-//	}
-//}
-
-//	public GridOpticsServer(URI brokerUri){
-//		this(brokerUri, null);
-//	}
-//
-//	public GridOpticsServer(GossRequestHandlerRegistrationService service) {
-//		try{
-//			if(connection==null){
-//				//Create and start embedded Broker
-//				//TODO: try vm transport for embedded broker
-//				Utilities.getInstance();
-//				System.setProperty("activemq.base", System.getProperty("user.dir"));
-//				System.out.println("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-//				BrokerService broker = BrokerFactory.createBroker(Utilities.getProperty("brokerConfig"));
-//				Utilities.setbrokerURI(broker.getTransportConnectors().get(0).getConnectUri());
-//				broker.start();
-//
-//				makeActiveMqConnection(Utilities.getbrokerURI());
-//
-//				//Setup Consumer
-//				new ServerConsumer(service);
-//			}
-//
-//		}
-//		catch(Exception e ){
-//			e.printStackTrace();
-//		}
-//	}
-
-    @SuppressWarnings({"rawtypes" })
-    private void startBroker(Dictionary config) throws Exception {
+    private void startBroker(Dictionary<String, Object> config) throws Exception {
 
         if (config.get(PROP_ACTIVEMQ_CONFIG) != null){
             String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
@@ -197,9 +123,6 @@ public class GridOpticsServer {
 
     }
 
-    private void makeActiveMqConnection(URI brokerUri) throws JMSException{
-        makeActiveMqConnection(brokerUri, null, null);
-    }
     private void makeActiveMqConnection(URI brokerUri, String systemUser, String systemPW) throws JMSException{
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
         factory.setUseAsyncSend(true);
