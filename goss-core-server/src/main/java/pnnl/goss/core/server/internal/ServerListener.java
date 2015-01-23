@@ -78,53 +78,33 @@ import pnnl.goss.security.util.GossSecurityConstants;
 
 public class ServerListener implements MessageListener {
 
-
-    private GossRequestHandlerRegistrationService handlerService;
     private static final Logger log = LoggerFactory.getLogger(ServerListener.class);
+    private Dictionary<String, Object> config;
+    private GossRequestHandlerRegistrationService handlerService;
+
 
     boolean useAuth = false;
 
-    public ServerListener(Map<String, Object> config,
+    public ServerListener(Dictionary<String, Object> config,
             GossRequestHandlerRegistrationService handlerService){
         log.debug("Constructing ServerListener");
 
         if (config == null){
             throw new IllegalArgumentException("Invalid Configuration");
         }
+        this.config = config;
+        useAuth = new Boolean((String)this.config.get(PROP_USE_AUTHORIZATION));
+
         if (handlerService == null){
             throw new IllegalArgumentException("Invalid service handler");
         }
-    }
-
-
-    @Deprecated
-    public ServerListener() {
-        // TODO Auto-generated constructor stub
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Deprecated
-    public ServerListener(GossRequestHandlerRegistrationService handlerService){
         this.handlerService = handlerService;
-        Dictionary config = handlerService.getCoreServerConfig();
-        try {
-            if(config!=null){
-                log.debug("Using authentication? "+config.get(PROP_USE_AUTHORIZATION));
-                useAuth = new Boolean((String)config.get(PROP_USE_AUTHORIZATION));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // TODO: handle exception
-        }
     }
-
-    // GridOPTICSDB db = GridOPTICSDB.getInstance();
-    // static final String POWERGRID_SERVICE = "/powergrid";
 
     public void onMessage(Message message1) {
 
         final Message message = message1;
-        //System.out.print(System.currentTimeMillis()+";");
+
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 ServerPublisher serverPublisher = new ServerPublisher();
@@ -202,7 +182,6 @@ public class ServerListener implements MessageListener {
                             serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
                         else
                             serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
-                        //System.out.println(System.currentTimeMillis());
 
                         while(response.isResponseComplete()==false){
                             Thread.sleep(requestAsync.getFrequency());
