@@ -44,6 +44,8 @@
 */
 package pnnl.goss.core.server.internal;
 
+import java.util.Dictionary;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
@@ -57,30 +59,17 @@ import pnnl.goss.core.server.GossRequestHandlerRegistrationService;
 public class ServerConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(ServerConsumer.class);
-    //TODO IS THIS NEEDED? I DON'T THINK SO
-    public ServerConsumer() throws JMSException {
-        startConsuming(null);
-    }
 
-    public ServerConsumer(GossRequestHandlerRegistrationService service) throws NullPointerException, JMSException{
-        startConsuming(service);
-    }
-
-    private void startConsuming(GossRequestHandlerRegistrationService service) throws NullPointerException, JMSException {
-
+    public ServerConsumer(Dictionary<String, Object> coreConfiguration,
+            GossRequestHandlerRegistrationService handlerService) throws NullPointerException, JMSException{
         log.debug("Step: Starting Server Consumer");
         Session session = GridOpticsServer.getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
         Destination destination = session.createQueue("Request");
         MessageConsumer messageConsumer = session.createConsumer(destination);
 
-        if(service == null){
-            messageConsumer.setMessageListener(new ServerListener());
-        }
-        else{
-            messageConsumer.setMessageListener(new ServerListener(service));
-        }
+        messageConsumer.setMessageListener(new ServerListener(coreConfiguration, handlerService));
 
         log.debug("Step: Server Consumer started");
-    }
 
+    }
 }
