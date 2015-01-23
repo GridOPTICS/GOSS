@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -48,6 +48,8 @@ import java.net.URL;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
+import org.osgi.framework.BundleContext;
+
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 
@@ -63,52 +65,54 @@ import pnnl.goss.core.Response;
 public interface GossRequestHandlerRegistrationService {
 
 //	void registerHandlers(Enumeration<URL> urls);
-//	
+//
 //	void unregisterHandlers(Enumeration<URL> urls);
-	/**
-	 * handle the passed Request.  
-	 * 
-	 * @param request
-	 * @return
-	 */
-	Response handle(Request request);
-	
-	/**
-	 * hanle the passed request.  This method is used specifically with
-	 * uploadrequest datatype.
-	 * @param request
-	 * @param dataType
-	 * @return
-	 */
-	Response handle(Request request, String dataType);
-	
-	/**
-	 * Retrieve a specific Handdler based upon the request.
-	 * 
-	 * @param request
-	 * @return
-	 */
-	AbstractRequestHandler getHandler(Request request);
-	
-	void addHandlerMapping(Class request, Class handler);
-	
-	void addHandlerMapping(String request, String handler);
-	
-	void addUploadHandlerMapping(String dataType, String handler);
-	
-	void addUploadHandlerMapping(String dataType, Class handler);
-	
-	void removeHandlerMapping(Class request);	
-	
-	boolean checkAccess(Request request, String userPrincipals, String tempDestination);
-	
-	void addSecurityMapping(Class request, Class handler);
-	
-	void removeSecurityMapping(Class request);
-	
-	@Deprecated
-	Dictionary getCoreServerConfig();
-	@Deprecated
-	void setCoreServerConfig(Dictionary config);
-	
+    /**
+     * handle the passed Request.
+     *
+     * @param request
+     * @return
+     */
+    Response handle(Request request);
+
+    /**
+     * hanle the passed request.  This method is used specifically with
+     * uploadrequest datatype.
+     * @param request
+     * @param dataType
+     * @return
+     */
+    Response handle(Request request, String dataType);
+
+    /**
+     * Retrieve a specific Handler based upon the request.
+     *
+     * @param request
+     * @return
+     */
+    AbstractRequestHandler getHandler(Request request);
+
+    void addHandlerMapping(Class request, Class handler);
+
+    void addHandlerMapping(String request, String handler);
+
+    void addUploadHandlerMapping(String dataType, String handler);
+
+    void addUploadHandlerMapping(String dataType, Class handler);
+
+    void removeHandlerMapping(Class request);
+
+    boolean checkAccess(Request request, String userPrincipals, String tempDestination);
+
+    void addSecurityMapping(Class request, Class handler);
+
+    void removeSecurityMapping(Class request);
+
+    /**
+     * Add handlers from a passed bundle context.
+     *
+     * @param context
+     */
+    void addHandlerFromBundleContext(BundleContext context);
+
 }
