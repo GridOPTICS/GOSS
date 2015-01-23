@@ -52,6 +52,20 @@ public abstract class AbstractRequestHandler {
     protected GossRequestHandlerRegistrationService requestHandlerService;
     protected GossDataServices dataservices;
 
+    public AbstractRequestHandler newInstance(){
+        try{
+            return this.getClass().newInstance();
+        } catch( InstantiationException ie ){
+            throw new RuntimeException( ie );
+        } catch( IllegalAccessException iae ){
+            throw new RuntimeException( iae );
+        }
+    }
+
+    public String toString() {
+        return "This is the class named: \""+ this.getClass().getSimpleName()+"\"";
+    }
+
     public abstract Response handle(Request request) throws Exception;
 
     public void setHandlerService(GossRequestHandlerRegistrationService requestHandlerService){
@@ -60,5 +74,10 @@ public abstract class AbstractRequestHandler {
 
     public void setGossDataservices(GossDataServices dataservices){
         this.dataservices = dataservices;
+    }
+
+    public void release(){
+        this.dataservices = null;
+        this.requestHandlerService = null;
     }
 }
