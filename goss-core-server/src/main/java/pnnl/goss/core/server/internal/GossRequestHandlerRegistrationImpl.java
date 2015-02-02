@@ -248,6 +248,7 @@ public class GossRequestHandlerRegistrationImpl implements
                         AbstractRequestHandler prototype = (AbstractRequestHandler) Class
                                 .forName(className).newInstance();
                         prototypeMap.put(item.value().getName(), prototype.newInstance());
+                        log.debug("adding requests: "+item.value().getName());
 //                        List<String> mappings = bundleToPrototypeMap.get(bundle.getSymbolicName());
 //                        if (mappings == null){
 //                            mappings = new ArrayList<String>();
