@@ -61,6 +61,18 @@ public class DataResponse extends Response implements Serializable {
         setData(data);
     }
 
+    public boolean wasDataError(){
+        return isDataError();
+    }
+
+    public boolean isDataError(){
+        return data.getClass().equals(DataError.class);
+    }
+
+    public DataError toDataError(){
+        return (DataError) data;
+    }
+
     public Object getData() {
         return data;
     }
