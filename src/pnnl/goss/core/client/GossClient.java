@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client.internal;
+package pnnl.goss.core.client;
 
 import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
@@ -65,8 +65,9 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ConfigurationException;
+
+//import org.apache.activemq.ActiveMQConnectionFactory;
+//import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
 import org.fusesource.stomp.jms.StompJmsConnection;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
@@ -80,12 +81,14 @@ import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.ClientPublishser;
+import pnnl.goss.core.ConfigurationException;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-import pnnl.goss.util.Utilities;
+//import pnnl.goss.util.Utilities;
+
 
 import com.google.gson.Gson;
 
@@ -173,47 +176,49 @@ public class GossClient implements Client{
 
     private boolean createSession() throws JMSException{
         log.debug("Creating Session!");
+        //throw new Exception("Not implemented!");
+        return false;
 
-        if(config == null){
-            config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
-
-            if (config == null){
-                throw new ConfigurationException("Invalid ClientConfiguration object!");
-            }
-        }
-
-        if(session == null){
-            setUpSession(this.credentials, this.protocol);
-        }
-
-        return session != null;
+//        if(config == null){
+//            config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
+//
+//            if (config == null){
+//                throw new ConfigurationException("Invalid ClientConfiguration object!");
+//            }
+//        }
+//
+//        if(session == null){
+//            setUpSession(this.credentials, this.protocol);
+//        }
+//
+//        return session != null;
     }
 
     private void setUpSession(Credentials cred,PROTOCOL protocol) throws JMSException{
-
-        this.protocol = protocol;
-        if(protocol.equals(PROTOCOL.OPENWIRE)){
-            log.debug("Creating OPENWIRE session!");
-            ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
-            ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
-            if(cred!=null){
-                ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
-                ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
-            }
-            connection = factory.createConnection();
-        }
-        else if(protocol.equals(PROTOCOL.STOMP)){
-            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-            factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
-            if(cred!=null)
-                connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
-            else
-                connection = factory.createConnection();
-        }
-
-        connection.start();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        clientPublisher = new DefaultClientPublisher(session);
+    	//throw new Exception("Not Implemented Yet!");
+//        this.protocol = protocol;
+//        if(protocol.equals(PROTOCOL.OPENWIRE)){
+//            log.debug("Creating OPENWIRE session!");
+//            ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
+//            ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
+//            if(cred!=null){
+//                ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
+//                ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
+//            }
+//            connection = factory.createConnection();
+//        }
+//        else if(protocol.equals(PROTOCOL.STOMP)){
+//            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+//            factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
+//            if(cred!=null)
+//                connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
+//            else
+//                connection = factory.createConnection();
+//        }
+//
+//        connection.start();
+//        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//        clientPublisher = new DefaultClientPublisher(session);
 
     }
 

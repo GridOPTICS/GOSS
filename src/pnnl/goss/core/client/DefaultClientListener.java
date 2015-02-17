@@ -1,4 +1,4 @@
-package pnnl.goss.core.client.internal;
+package pnnl.goss.core.client;
 
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
