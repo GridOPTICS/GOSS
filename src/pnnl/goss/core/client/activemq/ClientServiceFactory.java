@@ -10,11 +10,7 @@ import java.util.Map;
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
-import org.apache.felix.dm.annotation.api.Property;
-import org.apache.felix.dm.annotation.api.Start;
-import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedService;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.Client.PROTOCOL;
@@ -29,11 +25,6 @@ public class ClientServiceFactory implements ClientFactory {
     private volatile List<Client> clientInstances = new ArrayList<>();
     private volatile Dictionary<String, Object> properties = new Hashtable<String, Object>();//    // Default to openwire.
     
-    @Start
-    public void start(){
-    	System.out.println("Starting client service factory.");
-    }
-
     @ConfigurationDependency(pid=CONFIG_PID)
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 
