@@ -43,3 +43,7 @@ goss-karaf files/
 *resolvedPom.xml
 *pom.xml.orig
 build/
+/bin/
+/bin_test/
+/generated/
+
