@@ -1,4 +1,4 @@
-package pnnl.goss.core.client.activemq;
+package pnnl.goss.core.client;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
