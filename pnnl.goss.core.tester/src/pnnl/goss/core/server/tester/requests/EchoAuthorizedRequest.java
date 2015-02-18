@@ -1,4 +1,4 @@
-package pnnl.goss.itest.requests;
+package pnnl.goss.core.server.tester.requests;
 
 import pnnl.goss.core.Request;
 

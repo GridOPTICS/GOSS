@@ -1,0 +1,10 @@
+Bundle-Version: 0.0.0.${tstamp}
+-buildpath:  \
+	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
+	pnnl.goss.core.goss-core-server-api;version=latest,\
+	pnnl.goss.core.core-api;version=latest,\
+	org.apache.felix.dependencymanager
+Private-Package:  \
+	pnnl.goss.core.server.tester
+Export-Package:  \
+	pnnl.goss.core.server.tester.requests
