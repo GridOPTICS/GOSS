@@ -42,7 +42,7 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client.internal;
+package pnnl.goss.core.client;
 
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
@@ -50,11 +50,12 @@ import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
 import java.util.Dictionary;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class ClientConfiguration {
-    private static final Log log = LogFactory.getLog(ClientConfiguration.class);
+	private static Logger log = LoggerFactory.getLogger(ClientConfiguration.class);
     protected Properties properties = new Properties();
 
     public ClientConfiguration(Properties configuration){

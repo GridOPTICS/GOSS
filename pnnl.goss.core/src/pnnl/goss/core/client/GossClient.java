@@ -42,9 +42,9 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core.client.internal;
+package pnnl.goss.core.client;
 
-import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
+//import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
 
@@ -55,6 +55,7 @@ import java.io.Serializable;
 import java.lang.IllegalStateException;
 import java.util.Dictionary;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -65,8 +66,10 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ConfigurationException;
+
+
+//import org.apache.activemq.ActiveMQConnectionFactory;
+//import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
 import org.fusesource.stomp.jms.StompJmsConnection;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
@@ -85,7 +88,9 @@ import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-import pnnl.goss.util.Utilities;
+//import pnnl.goss.util.Utilities;
+
+
 
 import com.google.gson.Gson;
 
@@ -93,6 +98,7 @@ public class GossClient implements Client{
 
     private static final Logger log = LoggerFactory.getLogger(GossClient.class);
 
+    private UUID uuid = null;
     private ClientConfiguration config;
     volatile ClientPublishser clientPublisher;
     private Connection connection;
@@ -110,6 +116,7 @@ public class GossClient implements Client{
      */
     public GossClient() {
         this((Credentials)null);
+        uuid = UUID.randomUUID();
         log.debug("Constructor default!");
 
     }
@@ -150,6 +157,7 @@ public class GossClient implements Client{
     }
 
     public GossClient(Credentials credentials, PROTOCOL protocol) {
+    	this();
         this.credentials = credentials;
         this.protocol = protocol;
     }
@@ -173,47 +181,49 @@ public class GossClient implements Client{
 
     private boolean createSession() throws JMSException{
         log.debug("Creating Session!");
+        //throw new Exception("Not implemented!");
+        return false;
 
-        if(config == null){
-            config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
-
-            if (config == null){
-                throw new ConfigurationException("Invalid ClientConfiguration object!");
-            }
-        }
-
-        if(session == null){
-            setUpSession(this.credentials, this.protocol);
-        }
-
-        return session != null;
+//        if(config == null){
+//            config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
+//
+//            if (config == null){
+//                throw new ConfigurationException("Invalid ClientConfiguration object!");
+//            }
+//        }
+//
+//        if(session == null){
+//            setUpSession(this.credentials, this.protocol);
+//        }
+//
+//        return session != null;
     }
 
     private void setUpSession(Credentials cred,PROTOCOL protocol) throws JMSException{
-
-        this.protocol = protocol;
-        if(protocol.equals(PROTOCOL.OPENWIRE)){
-            log.debug("Creating OPENWIRE session!");
-            ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
-            ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
-            if(cred!=null){
-                ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
-                ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
-            }
-            connection = factory.createConnection();
-        }
-        else if(protocol.equals(PROTOCOL.STOMP)){
-            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-            factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
-            if(cred!=null)
-                connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
-            else
-                connection = factory.createConnection();
-        }
-
-        connection.start();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        clientPublisher = new DefaultClientPublisher(session);
+    	//throw new Exception("Not Implemented Yet!");
+//        this.protocol = protocol;
+//        if(protocol.equals(PROTOCOL.OPENWIRE)){
+//            log.debug("Creating OPENWIRE session!");
+//            ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
+//            ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
+//            if(cred!=null){
+//                ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
+//                ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
+//            }
+//            connection = factory.createConnection();
+//        }
+//        else if(protocol.equals(PROTOCOL.STOMP)){
+//            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+//            factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
+//            if(cred!=null)
+//                connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
+//            else
+//                connection = factory.createConnection();
+//        }
+//
+//        connection.start();
+//        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//        clientPublisher = new DefaultClientPublisher(session);
 
     }
 
@@ -489,6 +499,6 @@ public class GossClient implements Client{
 
     @Override
     public String getClientId() {
-        return null;
+        return uuid.toString();
     }
 }

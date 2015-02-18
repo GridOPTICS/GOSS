@@ -1,5 +1,5 @@
 /*
-	Copyright (c) 2014, Battelle Memorial Institute
+    Copyright (c) 2014, Battelle Memorial Institute
     All rights reserved.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -42,42 +42,72 @@
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
 */
-package pnnl.goss.core;
+package pnnl.goss.core.client;
 
-import pnnl.goss.util.Utilities;
+import java.io.Serializable;
 
-public class ExecuteRequest extends Request {
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
-	private static final long serialVersionUID = 3599179114722683296L;
-	
-	String jobId;
-	String machineName;
-	String remotePassword;
-	
-	public ExecuteRequest(String jobId, String machineName) {
-		this.jobId = jobId;
-		this.machineName = machineName;
-		this.remotePassword = Utilities.getProperty(machineName);
-	}
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	public String getJobId() {
-		return jobId;
-	}
+import pnnl.goss.core.ClientPublishser;
+import pnnl.goss.core.Request;
+import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
-	}
+public class DefaultClientPublisher implements ClientPublishser {
 
-	public String getMachineName() {
-		return machineName;
-	}
+    private transient Session session;
+    private transient MessageProducer producer;
+    private transient MessageProducer publishingProducer;
+    Destination destination;
+    private static Logger log = LoggerFactory.getLogger(DefaultClientPublisher.class);
 
-	public void setMachineName(String machineName) {
-		this.machineName = machineName;
-	}
+    public DefaultClientPublisher(Session session){
+        try{
+            this.session = session;
+            destination = this.session.createQueue("Request");
+            producer = this.session.createProducer(destination);
+            publishingProducer = this.session.createProducer(null);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
-	public String getRemotePassword() {
-		return remotePassword;
-	}
-	
+    public void close(){
+        try{
+            producer.close();
+        }
+        catch(JMSException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(Request request, Destination replyDestination, RESPONSE_FORMAT responseFormat) throws JMSException {
+        ObjectMessage message = session.createObjectMessage(request);
+        message.setJMSReplyTo(replyDestination);
+        if(responseFormat!=null)
+            message.setStringProperty("RESPONSE_FORMAT", responseFormat.toString());
+        log.debug("Sending: "+ request.getClass()+ " on destination: " + destination);
+        producer.send(destination, message);
+    }
+
+    public void publishTo(Destination destination, Serializable data) throws JMSException {
+        ObjectMessage message = session.createObjectMessage(data);
+        log.debug("Publishing: "+ data.getClass()+ " on destination: " + destination);
+        publishingProducer.send(destination, message);
+    }
+
+    public void publishTo(Destination destination, String data) throws JMSException {
+        TextMessage message = session.createTextMessage(data);
+        log.debug("Publishing on destination: " + destination);
+        publishingProducer.send(destination, message);
+    }
+
 }
