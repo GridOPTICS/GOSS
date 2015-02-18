@@ -7,7 +7,7 @@
 	org.fusesource.stompjms.stompjms-client,\
 	com.springsource.com.thoughtworks.xstream,\
 	com.google.gson,\
-	C:/Users/d3m614/git/goss/cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
+	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
 	org.fusesource.hawtbuf.hawtbuf;version=1.11,\
 	osgi.cmpn;version=4.3,\
 	osgi.core;version=4.3,\
