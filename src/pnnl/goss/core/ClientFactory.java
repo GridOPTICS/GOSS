@@ -1,5 +1,7 @@
 package pnnl.goss.core;
 
+import java.util.Map;
+
 import pnnl.goss.core.Client.PROTOCOL;
 
 public interface ClientFactory {
@@ -20,6 +22,8 @@ public interface ClientFactory {
      * @return
      */
     Client get(String uuid);
+    
+    Map<String, PROTOCOL> list();
 
     /**
      * Destroy all client instances that have been created with the factory.
