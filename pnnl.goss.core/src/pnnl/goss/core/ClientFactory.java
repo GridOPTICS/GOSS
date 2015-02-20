@@ -5,6 +5,8 @@ import java.util.Map;
 import pnnl.goss.core.Client.PROTOCOL;
 
 public interface ClientFactory {
+	
+	static final String CONFIG_PID = "pnnl.goss.core.client";
 
     /**
      * Creates a client instance that can be used to connect to goss.

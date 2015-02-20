@@ -5,36 +5,38 @@ import java.io.Serializable;
 import javax.jms.IllegalStateException;
 import javax.jms.JMSException;
 
+
 //import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
+
+import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
 public interface Client {
 
     public enum PROTOCOL {OPENWIRE, STOMP};
-
-
+    
     /**
-     * Sends request and gets response for synchronous communication.
+     * Perform synchronous call to the server.
+     * 
      * @param request instance of pnnl.goss.core.Request or any of its subclass.
-     * @return return an Object which could be a  pnnl.goss.core.DataResponse,  pnnl.goss.core.UploadResponse or  pnnl.goss.core.DataError.
-     * @throws IllegalStateException when GossCLient is initialized with an GossResponseEvent. Cannot synchronously receive a message when a MessageListener is set.
-     * @throws JMSException
+     * @return a Response object.
+     * @throws SystemException
      */
-    public Object getResponse(Request request)
-            throws IllegalStateException, JMSException;
-
+    public Response getResponse(Request request) throws SystemException;
+  
     /**
-     * Sends request and gets response for synchronous communication.
+     * Perform synchronous call to the server and format the response in a specific
+     * manner.
+     * 
      * @param request instance of pnnl.goss.core.Request or any of its subclass.
-     * @return return an Object which could be a  pnnl.goss.core.DataResponse,  pnnl.goss.core.UploadResponse or  pnnl.goss.core.DataError.
-     * @throws ConfigurationException
-     * @throws IllegalStateException when GossCLient is initialized with an GossResponseEvent. Cannot synchronously receive a message when a MessageListener is set.
-     * @throws JMSException
+     * @param responseFormat 
+     * @return a Response object.
+     * @throws SystemException
      */
-    public Object getResponse(Request request,
-            RESPONSE_FORMAT responseFormat) throws JMSException;
+    public Response getResponse(Request request, RESPONSE_FORMAT responseFormat) 
+    		throws SystemException;
 
     /**
      * Sends request and initializes listener for asynchronous communication
@@ -45,7 +47,7 @@ public interface Client {
      * @return the replyDestination topic
      */
     public String sendRequest(Request request, GossResponseEvent event,
-            RESPONSE_FORMAT responseFormat) throws NullPointerException;
+            RESPONSE_FORMAT responseFormat) throws SystemException;
 
     /**
      * Lets the client subscribe to a Topic of the given name for event based communication.
@@ -53,43 +55,35 @@ public interface Client {
      * throws IllegalStateException if GossCLient is not initialized with an GossResponseEvent. Cannot asynchronously receive a message when a MessageListener is not set.
      * throws JMSException
      */
-    public void subscribeTo(String topicName, GossResponseEvent event)
-            throws NullPointerException;
+    public Client subscribeTo(String topicName, GossResponseEvent event)
+    		throws SystemException;
 
     public void publish(String topicName, Serializable data,
-            RESPONSE_FORMAT responseFormat) throws NullPointerException;
+            RESPONSE_FORMAT responseFormat)  throws SystemException;
 
     public void publish(String topicName, Serializable data)
-            throws NullPointerException;
+    		 throws SystemException;
 
     public void publishString(String topicName, String data)
-            throws NullPointerException;
+    		 throws SystemException;
 
     /**
-     * Closes the GossClient connection with server.
+     * Close a connection with the server.
      */
     public void close();
 
     /**
-     * Reset the client to an initial un-connected state.  If the client currently
-     * has a session, then the session should be closed.  If credentials are set
-     * then they will be unset after this call. The protocol of the client
-     * will not be changed.
+     * Set the credentials on the client before sending traffic to the server.
+     * 
+     * @param credentials
+     * @return
+     * @throws SystemException
      */
-    public void reset();
+    public Client setCredentials(Credentials credentials)
+    		throws SystemException;;
 
     /**
-     * A unique identifier for this client.
-     *
-     * @return A UUID string.
-     */
-    public String getClientId();
-
-    public void setCredentials(Credentials credentials);
-
-    /**
-     * Gets the type of protocol that the client will use to connect with the
-     * message bus.
+     * Gets the type of protocol that the client will use to connect with.
      *
      * @return
      */

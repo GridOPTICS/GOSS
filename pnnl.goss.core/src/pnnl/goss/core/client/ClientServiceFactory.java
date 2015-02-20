@@ -20,49 +20,50 @@ import pnnl.goss.core.GossCoreContants;
 @Component(provides={ClientFactory.class})
 public class ClientServiceFactory implements ClientFactory {
 
-    protected static final String CONFIG_PID = "pnnl.goss.core.client";
-
-    private volatile List<Client> clientInstances = new ArrayList<>();
+    private volatile List<GossClient> clientInstances = new ArrayList<>();
     private volatile Dictionary<String, Object> properties = new Hashtable<String, Object>();//    // Default to openwire.
     
     @ConfigurationDependency(pid=CONFIG_PID)
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 
-        synchronized (this.properties) {
-            Enumeration<String> keyEnum = properties.keys();
-            while(keyEnum.hasMoreElements()){
-                String k = keyEnum.nextElement();
-                this.properties.put(k, properties.get(k));
-            }
-        }
-        
-        String value = (String) this.properties.get(GossCoreContants.PROP_OPENWIRE_URI); 
-        
-        if ( value == null || value.trim().isEmpty()){
-        	throw new ConfigurationException(GossCoreContants.PROP_OPENWIRE_URI, "Not found in configuration file: " + CONFIG_PID);
-        }
-        
-        value = (String) this.properties.get(GossCoreContants.PROP_STOMP_URI);
-        if ( value == null || value.trim().isEmpty()){
-        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI, "Not found in configuration file: " + CONFIG_PID);
-        }
+    	if (properties != null) {
+	        synchronized (this.properties) {
+	            Enumeration<String> keyEnum = properties.keys();
+	            while(keyEnum.hasMoreElements()){
+	                String k = keyEnum.nextElement();
+	                this.properties.put(k, properties.get(k));
+	            }
+	        }
+	        
+	        String value = (String) this.properties.get(GossCoreContants.PROP_OPENWIRE_URI); 
+	        
+	        if ( value == null || value.trim().isEmpty()){
+	        	throw new ConfigurationException(GossCoreContants.PROP_OPENWIRE_URI, "Not found in configuration file: " + CONFIG_PID);
+	        }
+	        
+	        value = (String) this.properties.get(GossCoreContants.PROP_STOMP_URI);
+	        if ( value == null || value.trim().isEmpty()){
+	        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI, "Not found in configuration file: " + CONFIG_PID);
+	        }
+    	}
     }
 
     @Override
     public synchronized Client create(PROTOCOL protocol) {
         GossClient client = null;
-        for(Client c: clientInstances){
+        for(GossClient c: clientInstances){
         	
-            if(!((GossClient)c).isUsed() && c.getProtocol().equals(protocol)){
-                client = (GossClient)c;
+            if(!c.isUsed() && c.getProtocol().equals(protocol)){
+                client = c;
                 client.setUsed(true);
                 break;
             }
         }
 
         if(client == null){
-            client = new GossClient(protocol);
-            client.setConfiguration(properties);
+            client = new GossClient()
+            				.setProtocol(protocol)
+            				.setUri((String)properties.get(GossCoreContants.PROP_OPENWIRE_URI));
             clientInstances.add(client);
         }
 
@@ -87,7 +88,7 @@ public class ClientServiceFactory implements ClientFactory {
 	@Override
 	public Map<String, PROTOCOL> list() {
 		Map<String, PROTOCOL> map = new HashMap<>();
-		for(Client c: clientInstances){
+		for(GossClient c: clientInstances){
 			map.put(c.getClientId(), c.getProtocol());
 		}
 		return map;

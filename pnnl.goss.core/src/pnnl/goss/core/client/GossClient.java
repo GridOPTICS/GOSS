@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.IllegalStateException;
 import java.util.Dictionary;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -65,6 +66,14 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
+
+
+
+
+
+
+import javax.jms.Topic;
 
 
 
@@ -86,147 +95,162 @@ import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request;
+import pnnl.goss.core.ResponseText;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-//import pnnl.goss.util.Utilities;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+
+
+
+
+
+
+
 
 
 
 import com.google.gson.Gson;
+import com.northconcepts.exception.ConnectionCode;
+import com.northconcepts.exception.SystemException;
+import com.northconcepts.exception.ValidationCode;
 
 public class GossClient implements Client{
 
     private static final Logger log = LoggerFactory.getLogger(GossClient.class);
 
     private UUID uuid = null;
+    private String brokerUri = null;
     private ClientConfiguration config;
-    volatile ClientPublishser clientPublisher;
-    private Connection connection;
-    private Session session;
+    private volatile ClientPublishser clientPublisher;
+    private Optional<Connection> connection = Optional.empty();
+    private Optional<Session> session = Optional.empty();
     private boolean used;
 
     private boolean connected;
+    
 
     private PROTOCOL protocol;
 //    private PROTOCOL protocol;
-    private Credentials credentials;
+    private Optional<Credentials> credentials = Optional.empty();
 
+    public GossClient setProtocol(PROTOCOL protocol){
+    	this.protocol = protocol;
+    	return this;
+    }
+       
+    
     /**
      * Creates GossClient for asynchronous communication.
      */
-    public GossClient() {
-        this((Credentials)null);
-        uuid = UUID.randomUUID();
-        log.debug("Constructor default!");
-
-    }
-
-    public GossClient(Properties props){
-        this(props, PROTOCOL.OPENWIRE);
-    }
-
-    public GossClient(Properties props, PROTOCOL connectionProtocol){
-        log.debug("Using protocol: " + connectionProtocol);
-        config= new ClientConfiguration(props);
-        assert config.getProperty(PROP_STOMP_URI) != null;
-        assert config.getProperty(PROP_OPENWIRE_URI) != null;
-        this.protocol = connectionProtocol;
-        used = true;
-    }
-
-    public GossClient(String configFile) throws FileNotFoundException, IOException{
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(configFile));
-        config = new ClientConfiguration(properties);
-        setConfiguration(config);
-        this.protocol = PROTOCOL.OPENWIRE;
-    }
-
-    public GossClient(PROTOCOL protocol) {
-        this((Credentials)null,protocol);
-        used = true;
-    }
-
-    /**
-     * Creates GossClient for synchronous communication.
-     * @param cred is credentials containing username and password
-     */
-    public GossClient(Credentials cred) {
-        this.credentials = cred;
-        this.protocol = PROTOCOL.OPENWIRE;
-    }
-
-    public GossClient(Credentials credentials, PROTOCOL protocol) {
-    	this();
-        this.credentials = credentials;
-        this.protocol = protocol;
-    }
-
-
-    public void setConfiguration(ClientConfiguration configuration){
-        config = configuration;
-
-        this.protocol = PROTOCOL.OPENWIRE;
-        assert config.getProperty(PROP_OPENWIRE_URI) != null;
-        assert config.getProperty(PROP_STOMP_URI) != null;
-    }
-
-
-    public void setConfiguration(Dictionary configuration){
-        config = new ClientConfiguration(null);
-        config.update(configuration);
-        assert config.getProperty(PROP_OPENWIRE_URI) != null;
-        assert config.getProperty(PROP_STOMP_URI) != null;
-    }
-
-    private boolean createSession() throws JMSException{
-        log.debug("Creating Session!");
-        //throw new Exception("Not implemented!");
-        return false;
-
-//        if(config == null){
-//            config = new ClientConfiguration(Utilities.toProperties(Utilities.loadProperties(PROP_CORE_CLIENT_CONFIG)));
+//    public GossClient() {
+//        this((Credentials)null);
+//        uuid = UUID.randomUUID();
+//        log.debug("Constructor default!");
 //
-//            if (config == null){
-//                throw new ConfigurationException("Invalid ClientConfiguration object!");
-//            }
-//        }
+//    }
 //
-//        if(session == null){
-//            setUpSession(this.credentials, this.protocol);
-//        }
+//    public GossClient(Properties props){
+//        this(props, PROTOCOL.OPENWIRE);
+//    }
 //
-//        return session != null;
-    }
-
-    private void setUpSession(Credentials cred,PROTOCOL protocol) throws JMSException{
-    	//throw new Exception("Not Implemented Yet!");
+//    public GossClient(Properties props, PROTOCOL connectionProtocol){
+//        log.debug("Using protocol: " + connectionProtocol);
+//        config= new ClientConfiguration(props);
+//        assert config.getProperty(PROP_STOMP_URI) != null;
+//        assert config.getProperty(PROP_OPENWIRE_URI) != null;
+//        this.protocol = connectionProtocol;
+//        used = true;
+//    }
+//
+//    public GossClient(String configFile) throws FileNotFoundException, IOException{
+//        Properties properties = new Properties();
+//        properties.load(new FileInputStream(configFile));
+//        config = new ClientConfiguration(properties);
+//        setConfiguration(config);
+//        this.protocol = PROTOCOL.OPENWIRE;
+//    }
+//
+//    public GossClient(PROTOCOL protocol) {
+//        this((Credentials)null,protocol);
+//        used = true;
+//    }
+//
+//    /**
+//     * Creates GossClient for synchronous communication.
+//     * @param cred is credentials containing username and password
+//     */
+//    public GossClient(Credentials cred) {
+//        this.credentials = cred;
+//        this.protocol = PROTOCOL.OPENWIRE;
+//    }
+//
+//    public GossClient(Credentials credentials, PROTOCOL protocol) {
+//    	this();
+//        this.credentials = credentials;
 //        this.protocol = protocol;
-//        if(protocol.equals(PROTOCOL.OPENWIRE)){
-//            log.debug("Creating OPENWIRE session!");
-//            ConnectionFactory factory = new ActiveMQConnectionFactory(config.getProperty(PROP_OPENWIRE_URI));
-//            ((ActiveMQConnectionFactory)factory).setUseAsyncSend(true);
-//            if(cred!=null){
-//                ((ActiveMQConnectionFactory)factory).setUserName(cred.getUserPrincipal().getName());
-//                ((ActiveMQConnectionFactory)factory).setPassword(cred.getPassword());
-//            }
-//            connection = factory.createConnection();
-//        }
-//        else if(protocol.equals(PROTOCOL.STOMP)){
-//            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-//            factory.setBrokerURI(config.getProperty(PROP_STOMP_URI));
-//            if(cred!=null)
-//                connection = factory.createConnection(cred.getUserPrincipal().getName(), cred.getPassword());
-//            else
-//                connection = factory.createConnection();
-//        }
+//    }
+
+
+//    public void setConfiguration(ClientConfiguration configuration){
+//        config = configuration;
 //
-//        connection.start();
-//        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//        clientPublisher = new DefaultClientPublisher(session);
+//        this.protocol = PROTOCOL.OPENWIRE;
+//        assert config.getProperty(PROP_OPENWIRE_URI) != null;
+//        assert config.getProperty(PROP_STOMP_URI) != null;
+//    }
+//
+//
+//    public void setConfiguration(Dictionary configuration){
+//        config = new ClientConfiguration(null);
+//        config.update(configuration);
+//        assert config.getProperty(PROP_OPENWIRE_URI) != null;
+//        assert config.getProperty(PROP_STOMP_URI) != null;
+//    }
 
+    private void createSession() throws JMSException{
+        log.debug("Creating Session!");
+        
+        config = new ClientConfiguration()
+        				.set("TCP_BROKER", brokerUri);
+        
+        if (credentials.isPresent()){
+        	config.set("CREDENTIALS", credentials.get());
+        }
+        
+        if(protocol.equals(PROTOCOL.OPENWIRE)){
+            log.debug("Creating OPENWIRE session!");
+            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
+            factory.setUseAsyncSend(true);
+            
+            if (credentials.isPresent()){
+            	Credentials creds = credentials.get();
+            	factory.setUserName(creds.getUserPrincipal().getName());
+            	factory.setPassword(creds.getPassword());
+            }
+            	
+            connection = Optional.of(factory.createConnection());
+        }
+        else if(protocol.equals(PROTOCOL.STOMP)){
+            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+            factory.setBrokerURI(brokerUri);
+            
+            if (credentials.isPresent()){
+            	Credentials creds = credentials.get();
+            	connection = Optional.of(factory.createConnection(creds.getUserPrincipal().getName(), creds.getPassword()));
+            }
+            else{
+            	connection = Optional.of(factory.createConnection());
+            }
+        }
+
+        Connection conn = connection.get();
+        
+        conn.start();
+        session = Optional.of(conn.createSession(false, Session.AUTO_ACKNOWLEDGE));
+        clientPublisher = new DefaultClientPublisher(session.get());
     }
-
+    
     /**
      * Sends request and gets response for synchronous communication.
      * @param request instance of pnnl.goss.core.Request or any of its subclass.
@@ -235,7 +259,7 @@ public class GossClient implements Client{
      * @throws JMSException
      */
     @Override
-    public Object getResponse(Request request) throws IllegalStateException,JMSException  {
+    public Response getResponse(Request request) throws SystemException  {
         if (protocol == null){
             protocol = PROTOCOL.OPENWIRE;
         }
@@ -249,35 +273,35 @@ public class GossClient implements Client{
      * @throws JMSException
      */
     @Override
-    public Object getResponse(Request request, RESPONSE_FORMAT responseFormat) throws JMSException {
-        Object response = null;
+    public Response getResponse(Request request, RESPONSE_FORMAT responseFormat) throws SystemException {
+        Response response = null;
 
-        if (!createSession()){
-            throw new IllegalStateException("Couldn't create session to activemq!");
-        }
-        Destination replyDestination = null;
-        if (this.protocol.equals(PROTOCOL.OPENWIRE))
-            replyDestination = session.createTemporaryQueue();
-        else if (this.protocol.equals(PROTOCOL.STOMP)) {
-            replyDestination = new StompJmsTempQueue();
-        }
-
-        DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session,
-                replyDestination);
-        clientPublisher.sendMessage(request, replyDestination,
-                responseFormat);
-        Object message = clientConsumer.getMessageConsumer().receive();
-        if (message instanceof ObjectMessage) {
-            ObjectMessage objectMessage = (ObjectMessage) message;
-            if (objectMessage.getObject() instanceof Response) {
-                response = (Response) objectMessage.getObject();
-            }
-        } else if (message instanceof TextMessage) {
-            response = ((TextMessage) message).getText();
-        }
-
-        clientConsumer.close();
-
+        Destination replyDestination = getTemporaryDestination();
+                
+        DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session.get(), replyDestination);
+        try {
+			clientPublisher.sendMessage(request, replyDestination,
+			        responseFormat);
+			Object message = clientConsumer.getMessageConsumer().receive();
+	        if (message instanceof ObjectMessage) {
+	            ObjectMessage objectMessage = (ObjectMessage) message;
+	            if (objectMessage.getObject() instanceof Response) {
+	                response = (Response) objectMessage.getObject();
+	            }
+	        } else if (message instanceof TextMessage) {
+	            response = new ResponseText(((TextMessage) message).getText());
+	        }
+		} catch (JMSException e) {
+			SystemException.wrap(e)
+				.set("request", request.getClass())
+				.set("responseFormat", responseFormat);
+							
+		} finally {
+			if (clientConsumer != null){
+				clientConsumer.close();
+			}
+		}
+        
         return response;
     }
 
@@ -289,19 +313,16 @@ public class GossClient implements Client{
      * @param instance of GossResponseEvent
      * @return the replyDestination topic
      */
-    public String sendRequest(Request request,GossResponseEvent event,RESPONSE_FORMAT responseFormat) throws NullPointerException{
+    public String sendRequest(Request request, GossResponseEvent event, RESPONSE_FORMAT responseFormat) throws SystemException {
         try{
             createSession();
-            Destination replyDestination=null;
-            if(this.protocol.equals(PROTOCOL.OPENWIRE))
-                replyDestination = session.createTemporaryQueue();
-            else if(this.protocol.equals(PROTOCOL.STOMP)){
-                replyDestination = new StompJmsTempQueue();
-            }
+            Destination replyDestination=getTemporaryDestination();
+            
             if(event!=null){
-                new DefaultClientConsumer(new DefaultClientListener(event),session,replyDestination);}
+                new DefaultClientConsumer(new DefaultClientListener(event),session.get(),replyDestination);}
             else
                 throw new NullPointerException("event cannot be null");
+            
             clientPublisher.sendMessage(request,replyDestination,responseFormat);
             if(replyDestination!=null){
                 return replyDestination.toString();
@@ -319,19 +340,19 @@ public class GossClient implements Client{
      * throws IllegalStateException if GossCLient is not initialized with an GossResponseEvent. Cannot asynchronously receive a message when a MessageListener is not set.
      * throws JMSException
      */
-    public void subscribeTo(String topicName, GossResponseEvent event) throws NullPointerException{
+    public Client subscribeTo(String topicName, GossResponseEvent event) throws SystemException {
         try{
             createSession();
             if(event==null)
                 throw new NullPointerException("event cannot be null");
             Destination destination = null;
             if(this.protocol.equals(PROTOCOL.OPENWIRE)){
-                destination = session.createTopic(topicName);
-                new DefaultClientConsumer(new DefaultClientListener(event),session,destination);
+                destination = getDestination(topicName); 
+                new DefaultClientConsumer(new DefaultClientListener(event),session.get(),destination);
             }
             else if(this.protocol.equals(PROTOCOL.STOMP)){
                 destination = new StompJmsDestination(topicName);
-                DefaultClientConsumer consumer  = new DefaultClientConsumer(session,destination);
+                DefaultClientConsumer consumer  = new DefaultClientConsumer(session.get(),destination);
 
                  while(session != null) {
                     try {
@@ -357,10 +378,10 @@ public class GossClient implements Client{
                     } catch (javax.jms.IllegalStateException ex) {
                         // Happens when a timeout occurs.
                         //log.debug("Illegal state? "+ ex.getMessage());
-                        if (session != null){
+                        if (session.isPresent()){
                             log.debug("Closing session");
-                            session.close();
-                            session = null;
+                            session.get().close();
+                            session = Optional.empty();
                         }
                     }
                  }
@@ -369,22 +390,23 @@ public class GossClient implements Client{
         }
         catch(JMSException e){
             log.error("Subscribe Error", e);
+            SystemException.wrap(e)
+            	.set("topicName", topicName)
+            	.set("event", event);
         }
+        
+        return this;
     }
 
     @Override
-    public void publish(String topicName, Serializable data, RESPONSE_FORMAT responseFormat) throws NullPointerException{
+    public void publish(String topicName, Serializable data, RESPONSE_FORMAT responseFormat) throws SystemException {
         try{
             createSession();
             if(data==null)
                 throw new NullPointerException("event cannot be null");
 
-            Destination destination = null;
-            if(this.protocol.equals(PROTOCOL.OPENWIRE))
-                destination = session.createTopic(topicName);
-            else if(this.protocol.equals(PROTOCOL.STOMP))
-                destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
-
+            Destination destination = getDestination(topicName);
+            
             if(responseFormat==null)
                 clientPublisher.publishTo(destination, data);
             else if(responseFormat.equals(RESPONSE_FORMAT.JSON)){
@@ -399,22 +421,19 @@ public class GossClient implements Client{
     }
 
     @Override
-    public void publishString(String topicName, String data) throws NullPointerException{
-        try{
-            createSession();
-            if(data==null)
-                throw new NullPointerException("event cannot be null");
-            Destination destination = null;
-            if(this.protocol.equals(PROTOCOL.OPENWIRE))
-                destination = session.createTopic(topicName);
-            else if(this.protocol.equals(PROTOCOL.STOMP))
-                destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
-
-            clientPublisher.publishTo(destination, data);
-        }
-        catch(JMSException e){
-            log.error("publishString", e);
-        }
+    public void publishString(String topicName, String data) throws SystemException {
+    	
+    	Destination destination = getDestination(topicName);
+    	publishTo(destination, data);
+    	
+    }
+        
+    private void publishTo(Destination destination, Serializable data) throws SystemException {
+    	try {
+			clientPublisher.publishTo(destination, data);
+		} catch (JMSException e) {
+			SystemException.wrap(e).set("destination", destination).set("data", data);
+		}
     }
 
     /**
@@ -424,46 +443,100 @@ public class GossClient implements Client{
     public void close(){
         try{
             log.debug("Client closing!");
-            if(session!=null)
-            session.close();
-            if(connection!=null)
-            connection.close();
-            if(clientPublisher!=null)
-            this.clientPublisher.close();
+            if(session.isPresent()){
+            	session.get().close();
+            	session = Optional.empty();
+            }
+            
+            connection = Optional.empty();
+            clientPublisher = null;
         }
         catch(JMSException e){
             log.error("Close Error", e);
         }
 
     }
-
-    @Override
-    public void publish(String topicName, Serializable data)
-            throws NullPointerException {
-        try{
-            createSession();
-            if(data==null)
-                throw new NullPointerException("data cannot be null");
-            Destination destination = null;
-            if(this.protocol.equals(PROTOCOL.OPENWIRE))
-                destination = session.createTopic(topicName);
-            else if(this.protocol.equals(PROTOCOL.STOMP))
-                destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
-
-            clientPublisher.publishTo(destination, data);
-        }
-        catch(JMSException e){
-            log.error("publish data error", e);
-        }
-
+    
+    private Session getSession() throws SystemException {
+    	if (!session.isPresent()){
+    		try {
+    			// Will throw exceptions if not able to create session.
+    			createSession();
+			} catch (JMSException e) {
+				throw SystemException.wrap(e, ConnectionCode.SESSION_ERROR);
+			}
+    	}
+    	
+    	return session.get();
+    }
+    
+    private Destination getTemporaryDestination() throws SystemException {
+    	Destination destination = null;
+    	
+    	try {
+	    	if (protocol.equals(PROTOCOL.OPENWIRE)){
+	    		
+				destination = Optional.ofNullable(getSession().createTemporaryQueue())
+						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+			}
+			else if(protocol.equals(PROTOCOL.STOMP)){
+				destination = new StompJmsTempQueue();
+			}
+    	} catch (JMSException e) {
+    		throw SystemException.wrap(e).set("destination", "null");
+    	}
+    	
+    	return destination;
+    }
+    
+    private Destination getDestination(String topicName) throws SystemException {
+    	Destination destination = null;
+    	
+    	try {
+	    	if (protocol.equals(PROTOCOL.OPENWIRE)){
+	    		
+				destination = Optional.ofNullable(getSession().createTopic(topicName))
+						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+			}
+			else if(protocol.equals(PROTOCOL.STOMP)){
+				if (!connection.isPresent()) {
+					throw new SystemException(ConnectionCode.CONNECTION_ERROR).set("topicName", topicName);
+				}
+				
+				destination = Optional.ofNullable(new StompJmsTopic((StompJmsConnection)connection.get(),topicName))
+						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+			}
+    	} catch (JMSException e) {
+    		throw SystemException.wrap(e).set("destination", "null");
+    	}
+    	
+    	return destination;
     }
 
     @Override
-    public void setCredentials(Credentials credentials) {
-        if(credentials == null){
-            throw new IllegalArgumentException("Credentials cannot be null!");
-        }
-        this.credentials = credentials;
+    public void publish(String topicName, Serializable data)
+            throws SystemException {
+    	    	
+    	Destination destination = null;
+    	
+    	try {
+    		destination = getDestination(topicName);    		
+    		clientPublisher.publishTo(destination, data);
+    		
+    	} catch (JMSException e) {
+    		    		
+    		throw SystemException.wrap(e)
+    			.set("destination", destination)
+    			.set("data", data);
+		}
+    }
+
+    @Override
+    public Client setCredentials(Credentials credentials) 
+    		throws SystemException {
+    	
+    	this.credentials = Optional.of(credentials);
+        return this;
     }
 
 
@@ -473,9 +546,14 @@ public class GossClient implements Client{
         return protocol;
     }
 
-    @Override
+    /**
+     * Reset the client to an initial un-connected state.  If the client currently
+     * has a session, then the session should be closed.  If credentials are set
+     * then they will be unset after this call. The protocol of the client
+     * will not be changed.
+     */
     public void reset() {
-        // TODO Auto-generated method stub
+        
 
     }
 
@@ -497,8 +575,18 @@ public class GossClient implements Client{
         this.used = used;
     }
 
-    @Override
+    /**
+     * An implementation that allows the caching of clients for future use.
+     * 
+     * @return
+     */
     public String getClientId() {
         return uuid.toString();
     }
+
+
+	public GossClient setUri(String uri) {
+		brokerUri = uri;
+		return this;
+	}
 }
