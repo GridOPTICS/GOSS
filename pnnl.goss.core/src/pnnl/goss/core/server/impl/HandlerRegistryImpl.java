@@ -11,8 +11,11 @@ import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.osgi.framework.ServiceReference;
 
 import pnnl.goss.core.Request;
+import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
+import pnnl.goss.core.UploadRequest;
+import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 
@@ -36,8 +39,11 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	}
 
 	@Override
-	public Optional<RequestHandler> getHandler(Class<? extends Request> request) {
-		return Optional.of(handlers.get(request.getName()));
+	public RequestHandler getHandler(Class<? extends Request> request) throws HandlerNotFoundException {
+		
+		Optional<RequestHandler> maybeHandler = Optional.ofNullable(handlers.get(request.getName()));	
+		return maybeHandler.orElseThrow(HandlerNotFoundException::new);
+		
 	}
 
 	@Override
@@ -48,14 +54,21 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	}
 
 	@Override
-	public Response handle(Request request) {
+	public Response handle(Request request) throws HandlerNotFoundException {
 		
-		String requestClass = request.getClass().getName();
-		RequestHandler handler = handlers.get(requestClass);
-		if (handler == null){
-			return new ResponseError("Handler not found for: "+requestClass);
-		}
-		
+		RequestHandler handler = getHandler(request.getClass());
+		return handler.handle(request);
+	}
+
+	@Override
+	public Response handle(UploadRequest request, String datatype) throws HandlerNotFoundException {
+		RequestHandler handler = getHandler(request.getClass());
+		return handler.handle(request);
+	}
+
+	@Override
+	public Response handle(RequestAsync request) throws HandlerNotFoundException {
+		RequestHandler handler = getHandler(request.getClass());
 		return handler.handle(request);
 	}
 
