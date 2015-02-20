@@ -1,2 +1,3 @@
 Export-Package:  \
-	pnnl.goss.core
+	pnnl.goss.core,\
+	com.northconcepts.exception

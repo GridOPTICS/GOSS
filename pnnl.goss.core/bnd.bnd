@@ -1,6 +1,5 @@
 -buildpath:  \
 	org.apache.felix.dependencymanager,\
-	javax.jms-api,\
 	org.apache.httpcomponents.httpclient,\
 	slf4j.api,\
 	slf4j.simple,\
@@ -10,13 +9,19 @@
 	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
 	org.fusesource.hawtbuf.hawtbuf;version=1.11,\
 	osgi.cmpn;version=4.3,\
-	osgi.core;version=4.3,\
+	osgi.core;version=5.0,\
 	org.amdatu.configurator.api,\
 	org.amdatu.configurator.properties,\
 	org.apache.felix.configadmin,\
 	org.apache.felix.log,\
 	org.apache.felix.gogo.command,\
-	org.apache.felix.gogo.runtime
+	org.apache.felix.gogo.runtime,\
+	org.apache.activemq.activemq-osgi,\
+	com.springsource.javax.jms,\
+	com.springsource.javax.ejb,\
+	com.springsource.javax.xml.rpc,\
+	com.springsource.javax.xml.soap,\
+	com.springsource.javax.activation
 	
 -sub:  \
 	*.bnd
