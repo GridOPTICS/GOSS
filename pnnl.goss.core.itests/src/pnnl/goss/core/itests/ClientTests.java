@@ -22,6 +22,7 @@ import pnnl.goss.core.Client.PROTOCOL;
 import pnnl.goss.core.ClientFactory;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
+import pnnl.goss.core.ResponseError;
 import pnnl.goss.core.server.ServerControl;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
 
@@ -88,6 +89,17 @@ public class ClientTests {
 			throw(e);
 		}
 	}	
+	
+	@Test
+	public void clientReceivesRequestErrorOnNullRequest(){
+		
+		Client client =  clientFactory.create(PROTOCOL.OPENWIRE);
+		Response response = client.getResponse(null);
+		assertTrue(response instanceof ResponseError);
+		ResponseError err = (ResponseError)response;
+		assertTrue(err.getMessage().equals("Cannot route a null request"));
+				
+	}
 	
 		
 	@After

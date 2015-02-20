@@ -77,6 +77,7 @@ import javax.jms.Topic;
 
 
 
+
 //import org.apache.activemq.ActiveMQConnectionFactory;
 //import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
@@ -95,11 +96,13 @@ import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request;
+import pnnl.goss.core.ResponseError;
 import pnnl.goss.core.ResponseText;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+
 
 
 
@@ -275,6 +278,11 @@ public class GossClient implements Client{
     @Override
     public Response getResponse(Request request, RESPONSE_FORMAT responseFormat) throws SystemException {
         Response response = null;
+        
+        if (request == null){
+        	// TODO handle with a ErrorCode lookup!
+        	return new ResponseError("Cannot route a null request");
+        }
 
         Destination replyDestination = getTemporaryDestination();
                 
