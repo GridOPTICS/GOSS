@@ -5,7 +5,7 @@ import java.util.List;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 
-public interface RequestHandler {
+public interface RequestHandler extends RequestHandlerInterface {
 
 	/**
 	 * Provides a list of Request classes that the implemented
@@ -13,7 +13,7 @@ public interface RequestHandler {
 	 * 
 	 * @return 
 	 */
-	List<String> getHandles();
+	List<Class<? extends Request>> getHandles();
 	
 	/**
 	 * Handle a request of a specific type of service.

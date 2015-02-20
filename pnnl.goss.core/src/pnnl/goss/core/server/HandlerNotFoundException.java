@@ -1,6 +1,6 @@
 package pnnl.goss.core.server;
 
-import org.omg.CORBA.Request;
+import pnnl.goss.core.Request;
 
 public class HandlerNotFoundException extends Exception {
 	
