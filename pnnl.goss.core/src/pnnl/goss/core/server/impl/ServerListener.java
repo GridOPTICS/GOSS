@@ -161,12 +161,12 @@ public class ServerListener implements MessageListener {
 
                     if (request instanceof UploadRequest) {
                         try {
-                            UploadRequest uploadRequest = (UploadRequest) objectMessage.getObject();
+                            UploadRequest uploadRequest = (UploadRequest) request;
 
                             String dataType = uploadRequest.getDataType();
                             Serializable data = uploadRequest.getData();
 
-                            UploadResponse response = (UploadResponse) handlerRegistry.handle(uploadRequest, dataType);
+                            UploadResponse response = (UploadResponse) handlerRegistry.handle(dataType, data);
                             response.setId(request.getId());
                             serverPublisher.sendResponse(response, message.getJMSReplyTo());
 
@@ -233,7 +233,7 @@ public class ServerListener implements MessageListener {
 
                     e.printStackTrace();
                     try {
-                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
+                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured: "+e.getMessage())) , message.getJMSReplyTo());
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
