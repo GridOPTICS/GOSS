@@ -28,4 +28,7 @@ public class GossCoreContants {
 	// Config file used to start broker in standalone mode
 	public static final String PROP_ACTIVEMQ_CONFIG = "pnnl.goss.activemq.config";
 	
+	// Topic that requests will be sent from the client to the server on
+	public static final String PROP_REQUEST_QUEUE = "pnnl.goss.request.topic";
+	
 }
