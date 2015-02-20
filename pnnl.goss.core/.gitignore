@@ -1,0 +1,49 @@
+.settings
+mvn-build
+*/build/*
+target
+.classpath
+.project
+bin
+log.txt
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# TeXlipse plugin
+.texlipse
+dependencies.xml
+goss-karaf files/
+
+# output from resolver tool
+*resolvedPom.xml
+*pom.xml.orig
+build/
+/bin/
+/bin_test/
+/generated/
+
