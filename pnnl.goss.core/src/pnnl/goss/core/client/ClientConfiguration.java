@@ -44,11 +44,8 @@
 */
 package pnnl.goss.core.client;
 
-import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
-import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
-
-import java.util.Dictionary;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,61 +53,23 @@ import org.slf4j.LoggerFactory;
 
 public class ClientConfiguration {
 	private static Logger log = LoggerFactory.getLogger(ClientConfiguration.class);
-    protected Properties properties = new Properties();
-
-    public ClientConfiguration(Properties configuration){
-        log.debug("Constructing");
-        if (configuration != null){
-            properties= configuration;
-
-        }
-
-    }
-
-    @SuppressWarnings("rawtypes")
-    public void update(Dictionary config){
-        String[] keys = {PROP_OPENWIRE_URI, PROP_STOMP_URI};
-        if (config != null){
-            updateProperties(keys, config);
-        }
-    }
-
-    @SuppressWarnings({ "unused", "rawtypes" })
-    protected void updateProperties(String[] keys, Dictionary config){
-        for(String k: keys){
-            properties.setProperty(k, (String)config.get(k));
-        }
-    }
-
-
-    public void setProperties(Properties props){
-        properties = props;
-    }
-
-    public String getProperty(String propertyName){
-        return properties.getProperty(propertyName);
-    }
-//	public static String getProperty(String propertyName){
-//		if(configProperties!=null){
-//			log.info("Goss-core-client retreived property "+propertyName+"="+ configProperties.get(propertyName));
-//			return (String) configProperties.get(propertyName);
-//		}
-//
-//		try{
-//			log.info("goss-core-client: no configuration set, retrieving from config.properties");
-//			Properties properties = new Properties();
-//			InputStream input = ClientConfiguration.class.getResourceAsStream("/config.properties");
-//			if(input!=null)
-//				properties.load(input);
-//			else
-//				properties.load(new FileInputStream("config.properties"));
-//			return properties.getProperty(propertyName);
-//		}catch(IOException e){
-//			e.printStackTrace();
-//			log.error(e);
-//		}
-//
-//		return null;
-//	}
-
+	
+	private final Map<String, Object> config = new HashMap<>();
+	
+	public ClientConfiguration(){
+		
+	}
+	
+	public ClientConfiguration set(String key, Object value){
+		config.put(key, value);
+		return this;
+	}
+	
+	public Object get(String key){
+		return config.get(key);
+	}
+	
+	public String getAsString(String key){
+		return (String)get(key);
+	}
 }
