@@ -23,7 +23,11 @@ import pnnl.goss.core.ClientFactory;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
+import pnnl.goss.core.UploadRequest;
+import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.server.ServerControl;
+import pnnl.goss.core.server.tester.requests.EchoData;
+import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
 
 public class ClientTests {
@@ -99,6 +103,42 @@ public class ClientTests {
 		ResponseError err = (ResponseError)response;
 		assertTrue(err.getMessage().equals("Cannot route a null request"));
 				
+	}
+	
+	@Test
+	public void clientCanUploadData(){
+		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+		
+		EchoData data = new EchoData()
+			.setBoolData(true)
+			.setDoubleData(104.345)
+			.setIntData(505)
+			.setStringData("a cow jumps over the moon.")
+			.setFloatData(52.9f)
+			.setByteData(hexStringToByteArray("0b234ae51114"));
+		
+		UploadRequest request = new UploadRequest(data, EchoData.class.getName());
+		Response response = client.getResponse(request);
+		assertTrue(response instanceof UploadResponse);
+		UploadResponse uresponse = (UploadResponse)response;
+		assertTrue(uresponse.isSuccess());
+		response = client.getResponse(new EchoDownloadRequest());
+		assertTrue(response instanceof DataResponse);
+		DataResponse received = (DataResponse)response;
+		assertEquals(data.toString(), received.toString());
+		
+		
+		
+	}
+	
+	public static byte[] hexStringToByteArray(String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	                             + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
 	}
 	
 		
