@@ -8,8 +8,10 @@ import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.service.command.CommandProcessor;
 
 import pnnl.goss.core.server.RequestHandler;
+import pnnl.goss.core.server.RequestHandlerInterface;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 //import pnnl.goss.core.server.tester.requests.EchoRequest;
+import pnnl.goss.core.server.RequestUploadHandler;
 
 @Component(properties = {
 		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gs"),
@@ -22,9 +24,18 @@ public class Commands {
 	private volatile RequestHandlerRegistry registry;
 	
 	public void list(){
-		for(RequestHandler rh: registry.list()){
-			for(String r: rh.getHandles()){
-				System.out.println(rh.getClass().getName() + " handles: " + r);
+		for(RequestHandlerInterface rh: registry.list()){
+			if (rh.getClass().isAssignableFrom(RequestHandler.class)){
+				RequestHandler handler = (RequestHandler) rh;
+				handler.getHandles().forEach(p->{
+					System.out.println("RequestHandler: "+handler.getClass().getName() + " handles: " + p.getName());
+				});
+			}
+			else if (rh.getClass().isAssignableFrom(RequestUploadHandler.class)) {
+				RequestUploadHandler handler = (RequestUploadHandler) rh;
+				handler.getHandlerDataTypes().forEach(p->{
+					System.out.println("RequestUploadHandler: "+handler.getClass().getName() + " handles data: " + p);
+				});
 			}
 			
 		}
