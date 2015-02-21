@@ -21,7 +21,9 @@
 	com.springsource.javax.ejb,\
 	com.springsource.javax.xml.rpc,\
 	com.springsource.javax.xml.soap,\
-	com.springsource.javax.activation
+	com.springsource.javax.activation,\
+	org.mockito.mockito-all,\
+	biz.aQute.junit;version=1.3
 	
 -sub:  \
 	*.bnd
