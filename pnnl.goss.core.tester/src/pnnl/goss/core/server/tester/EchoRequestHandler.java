@@ -2,7 +2,9 @@ package pnnl.goss.core.server.tester;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.dm.annotation.api.Component;
 
@@ -10,6 +12,7 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadResponse;
+import pnnl.goss.core.server.AuthorizationHandler;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
 import pnnl.goss.core.server.tester.requests.EchoAuthorizedRequest;
@@ -23,12 +26,13 @@ public class EchoRequestHandler implements RequestHandler, RequestUploadHandler 
 	private volatile EchoData receivedData;
 	
 	@Override
-	public List<Class<? extends Request>> getHandles() {
+	public Map<Class<? extends Request>, Class<? extends AuthorizationHandler>> getHandles() {
+		Map<Class<? extends Request>, Class<? extends AuthorizationHandler>> requests = new HashMap<>();
 		
-		List<Class<? extends Request>> requests = new ArrayList<>();
-		requests.add(EchoRequest.class);
-		requests.add(EchoAuthorizedRequest.class);
-		requests.add(EchoDownloadRequest.class);
+		requests.put(EchoRequest.class, EchoAuthorizationHandler.class);
+		requests.put(EchoAuthorizedRequest.class, EchoAuthorizationHandler.class);
+		requests.put(EchoDownloadRequest.class, EchoAuthorizeAllHandler.class);
+		
 		return requests;
 	}
 
@@ -51,9 +55,9 @@ public class EchoRequestHandler implements RequestHandler, RequestUploadHandler 
 	}
 
 	@Override
-	public List<String> getHandlerDataTypes() {
-		List<String> dataTypes = new ArrayList<String>();
-		dataTypes.add(EchoData.class.getName());
+	public Map<String, Class<? extends AuthorizationHandler>> getHandlerDataTypes() {
+		Map<String, Class<? extends AuthorizationHandler>> dataTypes = new HashMap<>();
+		dataTypes.put(EchoData.class.getName(), EchoAuthorizationHandler.class);
 		return dataTypes;
 	}
 
@@ -73,5 +77,4 @@ public class EchoRequestHandler implements RequestHandler, RequestUploadHandler 
 		
 		return response;
 	}
-
 }

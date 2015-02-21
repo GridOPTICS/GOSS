@@ -12,6 +12,8 @@ public interface RequestHandlerRegistry {
 	
 	public RequestHandler getHandler(Class<? extends Request> request) throws HandlerNotFoundException;
 	
+	public RequestUploadHandler getUploadHandler(String dataType) throws HandlerNotFoundException;
+	
 	public List<RequestHandlerInterface> list();
 	
 	public Response handle(Request request) throws HandlerNotFoundException;
@@ -19,6 +21,5 @@ public interface RequestHandlerRegistry {
 	public Response handle(String datatype, Serializable data) throws HandlerNotFoundException;
 	
 	public Response handle(RequestAsync request) throws HandlerNotFoundException;
-
 }
 
