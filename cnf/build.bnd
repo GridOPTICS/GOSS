@@ -57,3 +57,10 @@ javac.target:          1.8
 # -diffignore:          Git-Descriptor,Git-SHA
 -plugin: ${ext.repositories.-plugin}
 -plugin.dmannotations = org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;path:=${plugin-dir}/org.apache.felix.dependencymanager.annotation-3.2.0.jar;build-import-export-service=false
+# Define default headers for each and every bundle.
+Bundle-Vendor:          Pacific Northwest National Laboratory (PNNL)
+Bundle-Copyright:       ${copyright}
+Bundle-License:         https://github.com/GridOPTICS/GOSS/wiki/PNNL\-License;\
+							description="PNNL Licensed";\
+							link=LICENSE
+-removeheaders:         Include-Resource, Created-By, Tool, Bnd-LastModified
