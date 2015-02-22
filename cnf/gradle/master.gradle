@@ -1,0 +1,31 @@
+/*
+ * Master Gradle build script
+ *
+ * Called by build.gradle in the root of the workspace to configure the project set.
+ *
+ * Depends on bndURI and bndWorkspace properties set by settings.gradle.
+ */
+
+/* Add bnd as a script dependency */
+buildscript {
+    repositories { ivy { url agp_uri } }
+    dependencies {
+        classpath "org.amdatu:amdatu-gradle-plugins:${agp_version}", files(bnd_jar, repo_jar)
+    }
+}
+
+/* Load the BndPlugin class */
+apply from: rootProject.file('cnf/gradle/BndPlugin.gradle')
+/* Load the Amdatu Baseline & Release plugins. */
+allprojects {
+    apply plugin: org.amdatu.gradle.plugins.baseline.AmdatuBaselinePlugin
+}
+apply plugin: org.amdatu.gradle.plugins.release.AmdatuReleasePlugin
+
+/* Configure the subprojects */
+subprojects {
+  def bndProject = bndWorkspace.getProject(name)
+  if (bndProject != null) {
+    plugins.apply BndPlugin
+  }
+}
