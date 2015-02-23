@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.core.server.AuthorizationHandler;
+import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
@@ -49,7 +49,7 @@ public class HandlerRegistryImplTest {
 	private class MyAuthorizationHandler implements AuthorizationHandler{
 
 		@Override
-		public boolean isAuthorized(Request request, String userRoles) {
+		public boolean isAuthorized(Request request, List<String> userRoles) {
 			return false;
 		}
 		

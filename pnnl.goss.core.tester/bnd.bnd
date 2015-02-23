@@ -5,7 +5,8 @@ Bundle-Version: 0.0.0.${tstamp}
 	pnnl.goss.core.core-api;version=latest,\
 	org.apache.felix.dependencymanager,\
 	org.apache.felix.gogo.command,\
-	org.apache.felix.gogo.runtime
+	org.apache.felix.gogo.runtime,\
+	pnnl.goss.core.pnnl-security;version=latest
 Private-Package:  \
 	pnnl.goss.core.server.tester
 Export-Package:  \

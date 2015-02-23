@@ -13,12 +13,15 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.northconcepts.exception.SystemException;
+
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.core.server.AuthorizationHandler;
+import pnnl.goss.core.security.AuthorizationHandler;
+import pnnl.goss.core.security.AuthorizationRoleMapper;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestHandlerInterface;
@@ -33,6 +36,9 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	private final Map<ServiceReference<RequestHandler>, RequestHandler> registeredHandlers = new ConcurrentHashMap<>();
 	private final Map<ServiceReference<AuthorizationHandler>, AuthorizationHandler> authorizationHandlers = new ConcurrentHashMap<>();
 	private final Map<ServiceReference<RequestUploadHandler>, RequestUploadHandler> registeredUploadHandlers = new ConcurrentHashMap<>();
+	
+	@ServiceDependency
+	private volatile AuthorizationRoleMapper roleMapper;
 	
 	// Map
 	private final Map<String, UploadHandlerMapping> uploadHandlers = new ConcurrentHashMap<>();
@@ -205,4 +211,19 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 			throws HandlerNotFoundException {
 		return uploadHandlers.get(dataType).getRequestHandlerInstance();
 	}
+
+	@Override
+	public boolean checkAccess(Request request, String identifier)
+			throws SystemException {
+//		if(roleMapper==null){
+//			throw exception
+//		}
+		List<String> roles = roleMapper.getRolesForUser(identifier);
+
+		HandlerMapping requestToHandlerMapping = handlerMapping.get(request.getClass().getName());
+		AuthorizationHandler authHandler = authorizationInstanceMap.get(requestToHandlerMapping.authorizationHandlerClassName);
+		return authHandler.isAuthorized(request, roles);
+	}
+	
+	
 }

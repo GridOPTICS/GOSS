@@ -90,6 +90,8 @@ public class ServerListener implements MessageListener {
     boolean useAuth = false;
     
     
+    
+    
     public ServerListener setSession(Session session){
     	this.session = session;
     	return this;
@@ -135,7 +137,7 @@ public class ServerListener implements MessageListener {
                     // if that is not the case.
                     Request request = (Request) objectMessage.getObject();
 
-
+                    
 
                     //If you wish to disable authentication and authorization you must remove any authentication plugins from
                     //  the activemq.xml file and set the useAuthorization property in config properties to false
@@ -158,6 +160,8 @@ public class ServerListener implements MessageListener {
 //                        }
 //                    }
 
+                   //ALMOST THERE just need the identifier, or list of roles handlerRegistry.checkAccess(request, identifier);
+                    
 
                     if (request instanceof UploadRequest) {
                         try {
