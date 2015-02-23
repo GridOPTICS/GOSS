@@ -74,7 +74,7 @@ import pnnl.goss.core.UploadResponse;
 //import pnnl.goss.security.util.GossSecurityConstants;
 //import pnnl.goss.security.core.GossSecurityConstants;
 //import pnnl.goss.security.core.SecurityRequestHandler;
-import pnnl.goss.security.util.GossSecurityConstants;
+//import pnnl.goss.security.util.GossSecurityConstants;
 
 //import org.apache.http.impl.cookie.RFC2109DomainHandler;
 
