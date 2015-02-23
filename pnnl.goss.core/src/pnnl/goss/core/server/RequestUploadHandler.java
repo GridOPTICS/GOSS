@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import pnnl.goss.core.Response;
+import pnnl.goss.core.security.AuthorizationHandler;
 
 public interface RequestUploadHandler extends RequestHandlerInterface {
 

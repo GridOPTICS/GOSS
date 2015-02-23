@@ -7,7 +7,7 @@ import org.apache.felix.dm.annotation.api.Property;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.service.command.CommandProcessor;
 
-import pnnl.goss.core.server.AuthorizationHandler;
+import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestHandlerInterface;
 import pnnl.goss.core.server.RequestHandlerRegistry;

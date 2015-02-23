@@ -3,10 +3,13 @@ package pnnl.goss.core.server;
 import java.io.Serializable;
 import java.util.List;
 
+import com.northconcepts.exception.SystemException;
+
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
+import pnnl.goss.core.security.AuthorizationRoleMapper;
 
 public interface RequestHandlerRegistry {
 	
@@ -21,5 +24,7 @@ public interface RequestHandlerRegistry {
 	public Response handle(String datatype, Serializable data) throws HandlerNotFoundException;
 	
 	public Response handle(RequestAsync request) throws HandlerNotFoundException;
+	
+	public boolean checkAccess(Request request, String identifier) throws SystemException;
 }
 

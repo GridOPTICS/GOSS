@@ -5,6 +5,7 @@ import java.util.Map;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
+import pnnl.goss.core.security.AuthorizationHandler;
 
 public interface RequestHandler extends RequestHandlerInterface {
 

@@ -1,10 +1,18 @@
 package pnnl.goss.core.server.tester;
 
+import java.util.List;
+
 import org.apache.felix.dm.annotation.api.Component;
 
-import pnnl.goss.core.server.AbstractAuthorizeAll;
+import pnnl.goss.core.Request;
+import  pnnl.goss.core.security.AuthorizationHandler;
 
 @Component
-public class EchoAuthorizeAllHandler extends AbstractAuthorizeAll {
+public class EchoAuthorizeAllHandler implements AuthorizationHandler {
+
+	@Override
+	public boolean isAuthorized(Request request, List<String> userRoles) {
+		return true;
+	}
 
 }

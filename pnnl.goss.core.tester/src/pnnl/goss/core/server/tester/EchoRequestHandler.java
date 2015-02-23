@@ -10,7 +10,7 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadResponse;
-import pnnl.goss.core.server.AuthorizationHandler;
+import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
 import pnnl.goss.core.server.tester.requests.EchoAuthorizedRequest;
