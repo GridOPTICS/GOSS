@@ -4,18 +4,20 @@ import static org.amdatu.testing.configurator.TestConfigurator.cleanUp;
 import static org.amdatu.testing.configurator.TestConfigurator.configuration;
 import static org.amdatu.testing.configurator.TestConfigurator.configure;
 import static org.amdatu.testing.configurator.TestConfigurator.serviceDependency;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
 import org.amdatu.testing.configurator.TestConfiguration;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.shiro.mgt.SecurityManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.Client.PROTOCOL;
@@ -29,6 +31,8 @@ import pnnl.goss.core.server.ServerControl;
 import pnnl.goss.core.server.tester.requests.EchoData;
 import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
+
+import com.northconcepts.exception.SystemException;
 
 public class ClientTests {
 	
@@ -53,7 +57,8 @@ public class ClientTests {
 						.add(configuration(ClientFactory.CONFIG_PID)
 								.set("goss.openwire.uri", "tcp://localhost:6000")
 								.set("goss.stomp.uri",  "tcp://localhost:6001"))
-						.add(serviceDependency(ClientFactory.class));
+						.add(serviceDependency(ClientFactory.class))
+						.add(serviceDependency(SecurityManager.class));
 		testConfig.apply();
 		
 		// Configuration update is asyncronous, so give a bit of time to catch up
@@ -80,6 +85,7 @@ public class ClientTests {
 		try{
 			String message = "hello world!";
 			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
 			EchoRequest request = new EchoRequest(message);
 			Response response = client.getResponse(request);
 			
