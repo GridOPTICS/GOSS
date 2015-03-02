@@ -1,4 +1,6 @@
 /.gradle/
 /reports/
-/generated/
+*/generated/
+.settings/
 .metadata/
+*.class
