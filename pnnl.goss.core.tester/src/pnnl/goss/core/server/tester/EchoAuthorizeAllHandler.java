@@ -1,6 +1,7 @@
 package pnnl.goss.core.server.tester;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.felix.dm.annotation.api.Component;
 
@@ -11,7 +12,7 @@ import  pnnl.goss.core.security.AuthorizationHandler;
 public class EchoAuthorizeAllHandler implements AuthorizationHandler {
 
 	@Override
-	public boolean isAuthorized(Request request, List<String> userRoles) {
+	public boolean isAuthorized(Request request, Set<String> permissions) {
 		return true;
 	}
 

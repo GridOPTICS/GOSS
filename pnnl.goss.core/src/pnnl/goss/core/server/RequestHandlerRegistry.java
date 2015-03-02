@@ -9,7 +9,7 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
-import pnnl.goss.core.security.AuthorizationRoleMapper;
+//import pnnl.goss.core.security.AuthorizationRoleMapper;
 
 public interface RequestHandlerRegistry {
 	

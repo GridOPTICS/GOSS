@@ -9,3 +9,6 @@
 	aQute.bnd.deployer.repository.FixedIndexedRepo; name=GOSS Dependencies;   locations=https://github.com/GridOPTICS/GOSS-Repository/raw/master/dependencies/index.xml.gz
 
 -releaserepo: Release
+-plugin.amdatu: \
+	aQute.bnd.deployer.repository.FixedIndexedRepo; name=Amdatu Dependencies; locations=http://repository.amdatu.org/dependencies/index.xml.gz,\
+	aQute.bnd.deployer.repository.FixedIndexedRepo; name=Amdatu Release;      locations=http://repository.amdatu.org/release/index.xml.gz

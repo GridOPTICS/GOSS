@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.security.SecurityConstants;
 
 public class DefaultClientPublisher implements ClientPublishser {
 
@@ -66,11 +67,17 @@ public class DefaultClientPublisher implements ClientPublishser {
     private transient MessageProducer producer;
     private transient MessageProducer publishingProducer;
     Destination destination;
+    private transient String username;
     private static Logger log = LoggerFactory.getLogger(DefaultClientPublisher.class);
-
+    
     public DefaultClientPublisher(Session session){
+    	this(null, session);
+    }
+
+    public DefaultClientPublisher(String username, Session session){
         try{
             this.session = session;
+            this.username = username;
             destination = this.session.createQueue("Request");
             producer = this.session.createProducer(destination);
             publishingProducer = this.session.createProducer(null);
@@ -91,6 +98,10 @@ public class DefaultClientPublisher implements ClientPublishser {
 
     public void sendMessage(Request request, Destination replyDestination, RESPONSE_FORMAT responseFormat) throws JMSException {
         ObjectMessage message = session.createObjectMessage(request);
+        message.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
+        if (username != null){
+        	message.setStringProperty(SecurityConstants.SUBJECT_HEADER, username);
+        }
         message.setJMSReplyTo(replyDestination);
         if(responseFormat!=null)
             message.setStringProperty("RESPONSE_FORMAT", responseFormat.toString());

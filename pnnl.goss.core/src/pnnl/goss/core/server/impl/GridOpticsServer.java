@@ -63,12 +63,19 @@ import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
+import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.shiro.ShiroPlugin;
+import org.apache.activemq.shiro.env.IniEnvironment;
+import org.apache.activemq.shiro.subject.ConnectionSubjectFactory;
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.felix.dm.annotation.api.Stop;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.config.Ini.Section;
+import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +84,8 @@ import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.GossCoreContants;
+import pnnl.goss.core.security.GossRealm;
+import pnnl.goss.core.security.PermissionAdapter;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
 
@@ -92,8 +101,6 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_CONNECTIOn_URI = "goss.broker.uri";
     private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
     private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
-    
-    
     
     private BrokerService broker;
     private Connection connection;
@@ -117,9 +124,16 @@ public class GridOpticsServer implements ServerControl {
     
     private ConnectionFactory connectionFactory = null;
     
+    @ServiceDependency
+    private volatile SecurityManager securityManager;
+    
     
     @ServiceDependency
     private volatile RequestHandlerRegistry handlerRegistry;
+    
+    @ServiceDependency
+    private volatile GossRealm permissionAdapter;
+        
         
     @ConfigurationDependency(pid=CONFIG_PID)
     public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
@@ -207,21 +221,39 @@ public class GridOpticsServer implements ServerControl {
     	
 		
     	if (shouldStartBroker) {
+    		
+    		// Create shiro broker plugin
+    		ShiroPlugin shiroPlugin = new ShiroPlugin();
+    		System.out.println(System.getProperty("user.dir"));//  + "conf/shiro.ini"
+    		shiroPlugin.setSecurityManager(securityManager);
+    		//shiroPlugin.setIniConfig("conf/shiro.ini");
+    		
+    		//shiroPlugin.setIni(new IniEnvironment("conf/shiro.ini"));
+    		//shiroPlugin.getSubjectFilter().setConnectionSubjectFactory(subjectConnectionFactory);
+    		    		
+    		// Configure how we are going to use it.
+    		//shiroPlugin.setIniConfig(iniConfig);
+    		
     		broker = new BrokerService();
     		broker.setPersistent(false);
     		try {
 				broker.addConnector(openwireTransport);
-				broker.addConnector(stompTransport);
+				//broker.addConnector(stompTransport);
+				broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
+				
 	    		broker.start();
 			} catch (Exception e) {
-				SystemException.wrap(e, ConnectionCode.BROKER_START_ERROR);
+				e.printStackTrace();
+				//System.err.println(e.getMessage());;
 			}
     		
     	}
     	
     	try {
+
     		connectionFactory = new ActiveMQConnectionFactory(connectionUri);
-    		connection = connectionFactory.createConnection();
+
+    		connection = connectionFactory.createConnection("system", "manager");
     		connection.start();			
 		} catch (JMSException e) {
 			SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
@@ -232,7 +264,7 @@ public class GridOpticsServer implements ServerControl {
 	    	session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	    	destination = session.createQueue(requestQueue);
 	    	
-	    	for(int i=0; i<10; i++){
+	    	for(int i=0; i<1; i++){
 	    		System.out.println("Creating consumer: "+i);
 	    		consumers.add(new ServerConsumer()
 	    				.setDestination(destination)
@@ -244,7 +276,18 @@ public class GridOpticsServer implements ServerControl {
 			SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
 		}
 	}
-
+    
+    private void createAuthenticatedConnectionFactory(String username, String password) throws JMSException {
+		
+		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionUri);
+		
+		// Todo find out how we get password from user via config file?
+		
+		factory.setUserName(username);
+		factory.setPassword(password);
+		connectionFactory = factory;
+		
+	}
 
 
 	@Override

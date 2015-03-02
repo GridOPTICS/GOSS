@@ -23,6 +23,10 @@ public class ClientServiceFactory implements ClientFactory {
     private volatile List<GossClient> clientInstances = new ArrayList<>();
     private volatile Dictionary<String, Object> properties = new Hashtable<String, Object>();//    // Default to openwire.
     
+    public void setOpenwireUri(String brokerToConnectTo){
+    	this.properties.put(GossCoreContants.PROP_OPENWIRE_URI, brokerToConnectTo);
+    }
+    
     @ConfigurationDependency(pid=CONFIG_PID)
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 

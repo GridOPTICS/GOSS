@@ -1,4 +1,4 @@
--runfw: org.apache.felix.framework;version='[4.2.1,5)'
+-runfw: org.apache.felix.framework;version='[4.4.1,4.4.1]'
 -runee: JavaSE-1.8
 -runsystemcapabilities: ${native_capability}
 
@@ -31,6 +31,7 @@
 	pnnl.goss.core.goss-core-commands;version=latest,\
 	pnnl.goss.core.goss-core-server;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
+	pnnl.goss.core.pnnl-security;version=latest,\
 	pnnl.goss.core.tester;version=latest,\
 	javax.annotation,\
 	org.apache.geronimo.specs.geronimo-jms_1.1_spec,\
@@ -59,7 +60,10 @@
 	javax.xml,\
 	com.springsource.com.thoughtworks.xstream,\
 	com.springsource.org.xmlpull,\
-	org.apache.activemq.activemq-osgi
+	org.apache.activemq.activemq-osgi,\
+	org.apache.activemq.shiro,\
+	org.apache.shiro.core
+	
 -runproperties:  \
 	openwire.port=61616,\
 	broker-name=wunderbar,\

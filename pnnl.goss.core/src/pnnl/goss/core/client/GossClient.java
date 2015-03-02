@@ -217,17 +217,24 @@ public class GossClient implements Client{
         config = new ClientConfiguration()
         				.set("TCP_BROKER", brokerUri);
         
+        Credentials creds = null;
+        
         if (credentials.isPresent()){
         	config.set("CREDENTIALS", credentials.get());
+        }
+        
+        if (credentials.isPresent()){
+        	creds = credentials.get();        	
         }
         
         if(protocol.equals(PROTOCOL.OPENWIRE)){
             log.debug("Creating OPENWIRE session!");
             ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
-            factory.setUseAsyncSend(true);
+//            factory.setUserName("system");
+//            factory.setPassword("manager");
+//            factory.setUseAsyncSend(true);
             
-            if (credentials.isPresent()){
-            	Credentials creds = credentials.get();
+            if (creds != null){
             	factory.setUserName(creds.getUserPrincipal().getName());
             	factory.setPassword(creds.getPassword());
             }
@@ -238,8 +245,7 @@ public class GossClient implements Client{
             StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
             factory.setBrokerURI(brokerUri);
             
-            if (credentials.isPresent()){
-            	Credentials creds = credentials.get();
+            if (creds != null){
             	connection = Optional.of(factory.createConnection(creds.getUserPrincipal().getName(), creds.getPassword()));
             }
             else{
@@ -248,10 +254,15 @@ public class GossClient implements Client{
         }
 
         Connection conn = connection.get();
-        
+             
         conn.start();
         session = Optional.of(conn.createSession(false, Session.AUTO_ACKNOWLEDGE));
-        clientPublisher = new DefaultClientPublisher(session.get());
+        if (creds != null){
+        	clientPublisher = new DefaultClientPublisher(creds.getUserPrincipal().getName(), session.get());
+        }
+        else {
+        	clientPublisher = new DefaultClientPublisher(session.get());
+        }
     }
     
     /**

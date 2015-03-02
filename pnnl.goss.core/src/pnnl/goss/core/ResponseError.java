@@ -1,6 +1,6 @@
 package pnnl.goss.core;
 
-public class ResponseError extends Response {
+public class ResponseError extends Response implements Error {
 
 	private static final long serialVersionUID = -6531221350777233341L;
 	

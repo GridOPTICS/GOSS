@@ -6,7 +6,7 @@ public class EchoRequest extends Request {
 
 	private static final long serialVersionUID = 8015050320084135678L;
 	
-	private String message;
+	protected String message;
 	
 	public EchoRequest(String message){
 		this.message = message;

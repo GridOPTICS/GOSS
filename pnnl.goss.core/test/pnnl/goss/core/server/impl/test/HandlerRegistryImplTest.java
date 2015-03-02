@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class HandlerRegistryImplTest {
 	private class MyAuthorizationHandler implements AuthorizationHandler{
 
 		@Override
-		public boolean isAuthorized(Request request, List<String> userRoles) {
+		public boolean isAuthorized(Request request, Set<String> userRoles) {
 			return false;
 		}
 		

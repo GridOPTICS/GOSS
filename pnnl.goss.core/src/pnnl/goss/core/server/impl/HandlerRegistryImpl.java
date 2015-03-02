@@ -9,24 +9,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.northconcepts.exception.SystemException;
-
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
-import pnnl.goss.core.ResponseError;
-import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.security.AuthorizationHandler;
-import pnnl.goss.core.security.AuthorizationRoleMapper;
+import pnnl.goss.core.security.PermissionAdapter;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestHandlerInterface;
-import pnnl.goss.core.server.RequestUploadHandler;
 import pnnl.goss.core.server.RequestHandlerRegistry;
+import pnnl.goss.core.server.RequestUploadHandler;
+
+import com.northconcepts.exception.SystemException;
 
 @Component
 public class HandlerRegistryImpl implements RequestHandlerRegistry {
@@ -38,8 +37,11 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	private final Map<ServiceReference<RequestUploadHandler>, RequestUploadHandler> registeredUploadHandlers = new ConcurrentHashMap<>();
 	
 	@ServiceDependency
-	private volatile AuthorizationRoleMapper roleMapper;
+	private volatile SecurityManager securityManager;
 	
+	@ServiceDependency
+	private volatile PermissionAdapter permissionAdapter;
+		
 	// Map
 	private final Map<String, UploadHandlerMapping> uploadHandlers = new ConcurrentHashMap<>();
 	
@@ -188,6 +190,13 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	@Override
 	public Response handle(Request request) throws HandlerNotFoundException {
 		
+		
+		
+		//securityManager.
+//		Subject subject = securityManager.getSession(null).get; // SecurityUtils.getSubject();
+//		securityManager.checkRole(subject.getPrincipals(), "admin");
+		
+		
 		RequestHandler handler = getHandler(request.getClass());
 		return handler.handle(request);
 	}
@@ -215,14 +224,11 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	@Override
 	public boolean checkAccess(Request request, String identifier)
 			throws SystemException {
-//		if(roleMapper==null){
-//			throw exception
-//		}
-		List<String> roles = roleMapper.getRolesForUser(identifier);
-
+		
+		
 		HandlerMapping requestToHandlerMapping = handlerMapping.get(request.getClass().getName());
 		AuthorizationHandler authHandler = authorizationInstanceMap.get(requestToHandlerMapping.authorizationHandlerClassName);
-		return authHandler.isAuthorized(request, roles);
+		return authHandler.isAuthorized(request, permissionAdapter.getPermissions(identifier));
 	}
 	
 	

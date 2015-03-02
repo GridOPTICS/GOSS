@@ -13,7 +13,7 @@ import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
-import pnnl.goss.core.server.tester.requests.EchoAuthorizedRequest;
+import pnnl.goss.core.server.tester.requests.EchoBlacklistCheckRequest;
 import pnnl.goss.core.server.tester.requests.EchoData;
 import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
@@ -27,8 +27,8 @@ public class EchoRequestHandler implements RequestHandler, RequestUploadHandler 
 	public Map<Class<? extends Request>, Class<? extends AuthorizationHandler>> getHandles() {
 		Map<Class<? extends Request>, Class<? extends AuthorizationHandler>> requests = new HashMap<>();
 		
-		requests.put(EchoRequest.class, EchoAuthorizationHandler.class);
-		requests.put(EchoAuthorizedRequest.class, EchoAuthorizationHandler.class);
+		requests.put(EchoRequest.class, EchoAuthorizeAllHandler.class);
+		requests.put(EchoBlacklistCheckRequest.class, EchoBlacklistedWordsHandler.class);
 		requests.put(EchoDownloadRequest.class, EchoAuthorizeAllHandler.class);
 		
 		return requests;
@@ -55,7 +55,8 @@ public class EchoRequestHandler implements RequestHandler, RequestUploadHandler 
 	@Override
 	public Map<String, Class<? extends AuthorizationHandler>> getHandlerDataTypes() {
 		Map<String, Class<? extends AuthorizationHandler>> dataTypes = new HashMap<>();
-		dataTypes.put(EchoData.class.getName(), EchoAuthorizationHandler.class);
+		dataTypes.put(EchoData.class.getName(), EchoAuthorizeAllHandler.class);
+		//dataTypes.put(EchoBlacklistCheckRequest.class.getName(), EchoBlacklistedWordsHandler.class);
 		return dataTypes;
 	}
 
