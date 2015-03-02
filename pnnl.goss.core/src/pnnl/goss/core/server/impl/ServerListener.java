@@ -67,6 +67,7 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Event;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.security.SecurityConstants;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.UploadRequest;
@@ -87,7 +88,7 @@ public class ServerListener implements MessageListener {
     private volatile RequestHandlerRegistry handlerRegistry;
     
     private Session session;
-    boolean useAuth = false;
+    boolean useAuth = true;
     
     
     
@@ -136,31 +137,23 @@ public class ServerListener implements MessageListener {
                     // Assume that the passed object on the wire is of type Request.  An error will be thrown
                     // if that is not the case.
                     Request request = (Request) objectMessage.getObject();
-
                     
-
-                    //If you wish to disable authentication and authorization you must remove any authentication plugins from
-                    //  the activemq.xml file and set the useAuthorization property in config properties to false
-//                    if(useAuth){
-//                        String creds = objectMessage.getStringProperty(GossSecurityConstants.ROLE_CREDENTIALS);
-//                        String tempDestination = objectMessage.getStringProperty(GossSecurityConstants.TEMP_DESTINATION);
-//                        log.info("ServerListener received Credentials "+creds+" and temp destintation "+tempDestination);
-//                        boolean accessAllowed = handlerService.checkAccess(request, creds, tempDestination);
-//                        log.info("ServerListener access granted for request:"+accessAllowed);
-//                        //TODO IF NOT ACCESS ALLOWED THEN RETURN
-//                        if(!accessAllowed){
-////							log.warn("IN SERVER LISTENER, ACCESS SHOULDNT BE ALLOWED, UPDATE ME");
-//                            log.info("Access denied to "+creds+" for request type "+request.getClass().getName());
-//                            DataError err = new DataError("Access Denied for the requested data");
-//                            DataResponse errResp = new DataResponse(err);
-//                            errResp.setResponseComplete(true);
-//                            serverPublisher.sendResponse(errResp, message.getJMSReplyTo());
-//                            serverPublisher.close();
-//                            return;
-//                        }
-//                    }
-
-                   //ALMOST THERE just need the identifier, or list of roles handlerRegistry.checkAccess(request, identifier);
+                    if (useAuth) {
+                    	if (!message.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)){
+                    		log.error("Identifier not set in message header");
+                    		serverPublisher.sendErrror("Invalid subject in message!", message.getJMSReplyTo());
+                    		return;
+                    		
+                    	}
+                    	String identifier = message.getStringProperty(SecurityConstants.SUBJECT_HEADER);
+                    	
+                    	boolean allowed = handlerRegistry.checkAccess(request, identifier); 
+                    	if (!allowed){
+                    		log.info("Access denied to "+identifier+" for request type "+request.getClass().getName());
+                    		serverPublisher.sendErrror("Access Denied for the requested data", message.getJMSReplyTo());
+                    		return;
+                    	}
+                    }
                     
 
                     if (request instanceof UploadRequest) {

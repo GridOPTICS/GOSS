@@ -56,6 +56,7 @@ import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
@@ -71,6 +72,12 @@ public class ServerPublisher {
 
 	public ServerPublisher(Session session) {
 		this.session = session;
+	}
+	
+	public void sendErrror(String errorString, Destination destination) throws JMSException{
+		DataResponse errResp = new DataResponse(new DataError(errorString));
+		errResp.setResponseComplete(true);
+		sendResponse(errResp, destination);		
 	}
 
 	public void sendResponse(Response response, Destination destination)
