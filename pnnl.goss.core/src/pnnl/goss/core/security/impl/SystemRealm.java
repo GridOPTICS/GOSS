@@ -21,14 +21,12 @@ import pnnl.goss.core.security.GossRealm;
 public class SystemRealm extends AuthorizingRealm implements Realm {
 	
 	private final Map<String, SimpleAccount> accntMap = new ConcurrentHashMap<>();
-		
 	
 	public SystemRealm(){
 		SimpleAccount accnt = new SimpleAccount("system", "manager", getName());
 		accnt.addStringPermission("*");
 		accntMap.put("system", accnt);		
 	}
-
 	
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(

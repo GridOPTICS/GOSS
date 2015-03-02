@@ -36,11 +36,7 @@ public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 			//permissions.add("queue:request:create");
 			permissions.add("temp-queue:*");
 			break;
-		
-		case "system":
-			permissions.add("*");
-			break;
-		
+			
 		case "advisory":
 			permissions.add("topic:*"); //ctiveMQ.Advisory.*");
 			//permissions.add("topic:ActiveMQ.Advisory.*");
