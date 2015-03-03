@@ -90,7 +90,6 @@ public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 //        account.addStringPermission("printer:print:laserjet2000"); //allowed to 'print' to the 'printer' identified
 //        //by the id 'laserjet2000'
 
-    	System.out.println("account: "+ account.getPrincipals().getPrimaryPrincipal()+ " creds: "+account.getCredentials());
         return account;
     }
 	
