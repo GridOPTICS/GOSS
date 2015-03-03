@@ -43,7 +43,7 @@ public class EchoCommands {
 		sb.append("  echo string - Tests handler registration and handling of echo response\n");
 		sb.append("  echoOpenwire string - Test sending of request through queue://request to the server listener\n");
 		sb.append("  connect string string - Changes the client credentials.\n");
-		sb.append("  echoBlacklist string - echoes words except for the word code unless the user has allword permisison (allword, allword has that permission\n");
+		sb.append("  echoBlacklist string - echoes words except for the words(this, that or code) unless the user has allword permisison (allword, allword has that permission\n");
 		sb.append("  doUpload - tests upload of a EchoTestData object with arbitrary datatype\n");
 		
 		System.out.println(sb.toString());
@@ -56,7 +56,7 @@ public class EchoCommands {
 		}
 		client = clientFactory.create(PROTOCOL.OPENWIRE);
 		client.setCredentials(new UsernamePasswordCredentials(uname, pass));
-		System.out.println("Setup to use connection: "+uname+":"+pass);
+		System.out.println("Setup to use connection: "+uname);
 	}
 	
 	public void doUpload(){
