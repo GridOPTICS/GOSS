@@ -89,9 +89,7 @@ public class ServerListener implements MessageListener {
     
     private Session session;
     boolean useAuth = true;
-    
-    
-    
+
     
     public ServerListener setSession(Session session){
     	this.session = session;
