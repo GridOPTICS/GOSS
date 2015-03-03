@@ -2,7 +2,7 @@ package pnnl.goss.core.server.tester.requests;
 
 import java.io.Serializable;
 
-public class EchoData implements Serializable{
+public class EchoTestData implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private byte[] byteData;
@@ -15,42 +15,42 @@ public class EchoData implements Serializable{
 	public byte[] getByteData() {
 		return byteData;
 	}
-	public EchoData setByteData(byte[] byteData) {
+	public EchoTestData setByteData(byte[] byteData) {
 		this.byteData = byteData;
 		return this;
 	}
 	public String getStringData() {
 		return stringData;
 	}
-	public EchoData setStringData(String stringData) {
+	public EchoTestData setStringData(String stringData) {
 		this.stringData = stringData;
 		return this;
 	}
 	public int getIntData() {
 		return intData;
 	}
-	public EchoData setIntData(int intData) {
+	public EchoTestData setIntData(int intData) {
 		this.intData = intData;
 		return this;
 	}
 	public boolean isBoolData() {
 		return boolData;
 	}
-	public EchoData setBoolData(boolean boolData) {
+	public EchoTestData setBoolData(boolean boolData) {
 		this.boolData = boolData;
 		return this;
 	}
 	public double getDoubleData() {
 		return doubleData;
 	}
-	public EchoData setDoubleData(double doubleData) {
+	public EchoTestData setDoubleData(double doubleData) {
 		this.doubleData = doubleData;
 		return this;
 	}
 	public float getFloatData() {
 		return floatData;
 	}
-	public EchoData setFloatData(float floatData) {
+	public EchoTestData setFloatData(float floatData) {
 		this.floatData = floatData;
 		return this;
 	}

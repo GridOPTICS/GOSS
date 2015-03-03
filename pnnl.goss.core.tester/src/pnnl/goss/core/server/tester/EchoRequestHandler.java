@@ -14,14 +14,14 @@ import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
 import pnnl.goss.core.server.tester.requests.EchoBlacklistCheckRequest;
-import pnnl.goss.core.server.tester.requests.EchoData;
+import pnnl.goss.core.server.tester.requests.EchoTestData;
 import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
 
 @Component(provides={RequestUploadHandler.class, RequestHandler.class})
 public class EchoRequestHandler implements RequestHandler, RequestUploadHandler {
 
-	private volatile EchoData receivedData;
+	private volatile EchoTestData receivedData;
 	
 	@Override
 	public Map<Class<? extends Request>, Class<? extends AuthorizationHandler>> getHandles() {
@@ -55,18 +55,18 @@ public class EchoRequestHandler implements RequestHandler, RequestUploadHandler 
 	@Override
 	public Map<String, Class<? extends AuthorizationHandler>> getHandlerDataTypes() {
 		Map<String, Class<? extends AuthorizationHandler>> dataTypes = new HashMap<>();
-		dataTypes.put(EchoData.class.getName(), EchoAuthorizeAllHandler.class);
+		dataTypes.put("Test Datatype Upload", EchoAuthorizeAllHandler.class);
 		//dataTypes.put(EchoBlacklistCheckRequest.class.getName(), EchoBlacklistedWordsHandler.class);
 		return dataTypes;
 	}
 
 	@Override
 	public Response upload(String dataType, Serializable data) {
-		
+		System.out.println("Doing UPLOAD");
 		UploadResponse response = null; 
 		
-		if (dataType.equals(EchoData.class.getName())){
-			receivedData = (EchoData)data;
+		if (dataType.equals("Test Datatype Upload")){
+			receivedData = (EchoTestData)data;
 			response = new UploadResponse(true);
 		}
 		else{
