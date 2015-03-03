@@ -75,8 +75,6 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
 	    		account.addRole(s);
 	    		account.addStringPermissions(getPermissionsByRole(s));
 	    	}
-	    	
-	    	System.out.println("account: " + username + " : " + account.getCredentials().toString());
     	}
     	    	
         return account;
