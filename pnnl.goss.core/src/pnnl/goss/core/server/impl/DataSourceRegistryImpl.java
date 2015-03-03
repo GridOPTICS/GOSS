@@ -1,5 +1,6 @@
 package pnnl.goss.core.server.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.DataSourceObject;
 import pnnl.goss.core.server.DataSourceRegistry;
+import pnnl.goss.core.server.DataSourceType;
 
 @Component
 public class DataSourceRegistryImpl implements DataSourceRegistry {
@@ -42,5 +44,16 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 			obj.onGet();
 		}
 		return obj;
+	}
+
+	@Override
+	public Map<String, DataSourceType> getAvailable() {
+		Map<String, DataSourceType> map = new HashMap<>();
+		
+		for(DataSourceObject o: dataSourceMap.values()){
+			map.put(o.getName(), o.getDataSourceType());
+		}
+		
+		return map;
 	}
 }

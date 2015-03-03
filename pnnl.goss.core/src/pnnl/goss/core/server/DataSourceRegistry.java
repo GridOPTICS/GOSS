@@ -1,5 +1,7 @@
 package pnnl.goss.core.server;
 
+import java.util.Map;
+
 public interface DataSourceRegistry {
 	
 	/**
@@ -11,4 +13,11 @@ public interface DataSourceRegistry {
 	 */
 	public DataSourceObject get(String key);
 	
+	/**
+	 * Retrieve a map of names-> datasourcetype that can be retrieved
+	 * by the user to determine capabilities of datasources.
+	 * 
+	 * @return
+	 */
+	public Map<String, DataSourceType> getAvailable();
 }

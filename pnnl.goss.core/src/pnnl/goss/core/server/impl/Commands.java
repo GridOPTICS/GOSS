@@ -8,6 +8,7 @@ import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.service.command.CommandProcessor;
 
 import pnnl.goss.core.security.AuthorizationHandler;
+import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestHandlerInterface;
 import pnnl.goss.core.server.RequestHandlerRegistry;
@@ -16,15 +17,33 @@ import pnnl.goss.core.server.RequestUploadHandler;
 
 @Component(properties = {
 		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gs"),
-		@Property(name=CommandProcessor.COMMAND_FUNCTION, value={"list"})}, //, "echo", "getEchoHandler"})},
+		@Property(name=CommandProcessor.COMMAND_FUNCTION, value={"listHandlers", "listDataSources", "help"})}, //, "echo", "getEchoHandler"})},
 		provides=Object.class
 )
 public class Commands {
 	
 	@ServiceDependency
 	private volatile RequestHandlerRegistry registry;
+	@ServiceDependency
+	private volatile DataSourceRegistry dsRegistry;
 	
-	public void list(){
+	public void help(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("Help for gs commands\n");
+		sb.append("  listDataSources - Lists the known datasources that have been registered with the server\n");
+		sb.append("  listHandlers - Lists the known request handlers that have been registered with the server.\n");
+		System.out.println(sb.toString());
+	}
+	
+	public void listDataSources(){
+		
+		dsRegistry.getAvailable().forEach((k, v)->{
+			System.out.println("name: "+ k+" type: "+ v);
+		});
+		
+	}
+	
+	public void listHandlers(){
 		for(RequestHandlerInterface rh: registry.list()){
 			if (rh instanceof RequestHandler){
 				RequestHandler handler = (RequestHandler) rh;
