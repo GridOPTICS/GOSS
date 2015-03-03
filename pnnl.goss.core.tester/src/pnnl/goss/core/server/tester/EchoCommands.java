@@ -1,5 +1,7 @@
 package pnnl.goss.core.server.tester;
 
+import java.util.Optional;
+
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.Property;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
@@ -15,8 +17,11 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
+import pnnl.goss.core.server.DataSourceObject;
+import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandlerRegistry;
+import pnnl.goss.core.server.tester.datasource.CommandLogDataSource;
 import pnnl.goss.core.server.tester.requests.EchoBlacklistCheckRequest;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
 import pnnl.goss.core.server.tester.requests.EchoTestData;
@@ -25,7 +30,8 @@ import pnnl.goss.core.server.tester.requests.EchoTestData;
 		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gt"),
 		@Property(name=CommandProcessor.COMMAND_FUNCTION, value={"echo", "echoOpenwire", 
 																	"echoBlacklist", "connect", 
-																	"doUpload", "help"})
+																	"doUpload", "help",
+																	"listCommands", "clearCommands"})
 }, provides=Object.class)
 public class EchoCommands {
 
@@ -35,7 +41,42 @@ public class EchoCommands {
 	@ServiceDependency
 	private volatile ClientFactory clientFactory;
 	
+	@ServiceDependency
+	private volatile DataSourceRegistry dsRegistry;
+	
 	private Client client;
+
+	private CommandLogDataSource getCommandStore(){
+		String key = CommandLogDataSource.class.getName();
+		return (CommandLogDataSource) dsRegistry.get(key);
+	}
+	private void addCommand(String commandText){
+		CommandLogDataSource ds = getCommandStore();
+		if (ds != null){
+			ds.log(commandText);
+		}
+	}
+	
+	public void clearCommands(){
+		CommandLogDataSource ds = getCommandStore();
+		if (ds != null){
+			ds.clear();
+		}
+	}
+	
+	public void listCommands(){
+		CommandLogDataSource ds = getCommandStore();
+		if (ds != null){
+			int i=0;
+			for (String d: ds.getList()){
+				System.out.println((i+1)+") " + d);
+				i++;
+			}
+		}
+		else{
+			System.out.println("Datasource log not found.");
+		}
+	}
 	
 	public void help(){
 		StringBuilder sb = new StringBuilder();
@@ -45,10 +86,15 @@ public class EchoCommands {
 		sb.append("  connect string string - Changes the client credentials.\n");
 		sb.append("  echoBlacklist string - echoes words except for the words(this, that or code) unless the user has allword permisison (allword, allword has that permission\n");
 		sb.append("  doUpload - tests upload of a EchoTestData object with arbitrary datatype\n");
+		sb.append("  listCommands - Lists all of the commands that have been run in the session\n");
+		sb.append("  clearCommands - Clear the commands from the session\n");
 		
 		System.out.println(sb.toString());
 		
+		addCommand("help");
 	}
+	
+	
 	
 	public void connect(String uname, String pass) {
 		if (client != null){
@@ -57,6 +103,8 @@ public class EchoCommands {
 		client = clientFactory.create(PROTOCOL.OPENWIRE);
 		client.setCredentials(new UsernamePasswordCredentials(uname, pass));
 		System.out.println("Setup to use connection: "+uname);
+		
+		addCommand("connect "+ uname);
 	}
 	
 	public void doUpload(){
@@ -83,7 +131,7 @@ public class EchoCommands {
 		else{
 			System.out.println("Invalid response type found!");
 		}
-		
+		addCommand("doUpload");
 	}
 	
 	public void echo(String message) {
@@ -100,6 +148,7 @@ public class EchoCommands {
 		else{
 			System.out.println("Response wasn't DataResponse it was: "+response.getClass().getName());
 		}
+		addCommand("echo "+message);
 	}
 	
 	public void echoBlacklist(String message){
@@ -114,7 +163,7 @@ public class EchoCommands {
 		else{
 			System.out.println("Response wasn't DataResponse it was: "+response.getClass().getName());
 		}
-		
+		addCommand("echoBlacklist "+ message);
 	}
 	
 	public void echoOpenwire(String message){
@@ -128,6 +177,8 @@ public class EchoCommands {
 		else{
 			System.out.println("Response wasn't DataResponse it was: "+response.getClass().getName());
 		}
+		
+		addCommand("echoOpenwire "+ message);
 	}
 
 	private void getClient() {
