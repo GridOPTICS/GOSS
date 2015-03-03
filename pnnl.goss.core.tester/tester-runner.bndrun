@@ -62,7 +62,10 @@
 	com.springsource.org.xmlpull,\
 	org.apache.activemq.activemq-osgi,\
 	org.apache.activemq.shiro,\
-	org.apache.shiro.core
+	org.apache.shiro.core,\
+	org.ops4j.pax.logging.pax-logging-api,\
+	org.ops4j.pax.logging.pax-logging-service,\
+	slf4j.simple
 	
 -runproperties:  \
 	openwire.port=61616,\
