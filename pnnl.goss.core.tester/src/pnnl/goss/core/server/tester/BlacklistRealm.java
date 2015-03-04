@@ -67,10 +67,7 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
     		break;   	
     	}
     	
-    	if (account == null) {
-    		System.err.println("Unknown user: "+username);
-    	}
-    	else{
+    	if (account != null) {
 	    	for(String s: defaultRoles){
 	    		account.addRole(s);
 	    		account.addStringPermissions(getPermissionsByRole(s));
