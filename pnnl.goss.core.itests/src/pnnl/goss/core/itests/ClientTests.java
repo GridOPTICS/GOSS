@@ -28,9 +28,9 @@ import pnnl.goss.core.ResponseError;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.server.ServerControl;
-import pnnl.goss.core.server.tester.requests.EchoData;
 import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.tester.requests.EchoRequest;
+import pnnl.goss.core.server.tester.requests.EchoTestData;
 
 import com.northconcepts.exception.SystemException;
 
@@ -115,7 +115,7 @@ public class ClientTests {
 	public void clientCanUploadData(){
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
 		
-		EchoData data = new EchoData()
+		EchoTestData data = new EchoTestData()
 			.setBoolData(true)
 			.setDoubleData(104.345)
 			.setIntData(505)
@@ -123,7 +123,7 @@ public class ClientTests {
 			.setFloatData(52.9f)
 			.setByteData(hexStringToByteArray("0b234ae51114"));
 		
-		UploadRequest request = new UploadRequest(data, EchoData.class.getName());
+		UploadRequest request = new UploadRequest(data, EchoTestData.class.getName());
 		Response response = client.getResponse(request);
 		assertTrue(response instanceof UploadResponse);
 		UploadResponse uresponse = (UploadResponse)response;

@@ -89,7 +89,10 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
         String username = (String) getAvailablePrincipal(principals);
 
         SimpleAccount account = getAccount(username);
-        builtAccounts.put(username, account);
+        System.out.println("ACCOUNT "+username+"  : " +account);
+        if(account!=null){
+        	builtAccounts.put(username, account);
+        }
         return account;
         //call the underlying EIS for the account data:
         //return getAccount(username);
