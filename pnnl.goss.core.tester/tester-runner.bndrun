@@ -49,6 +49,7 @@
 	pnnl.goss.core.goss-core-server;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
 	pnnl.goss.core.pnnl-security;version=latest,\
+	pnnl.goss.core.security-propertyfile;version=latest,\
 	pnnl.goss.core.tester;version=latest
 	
 -runproperties:  \
@@ -83,4 +84,5 @@
 	osgi.identity;filter:='(osgi.identity=org.amdatu.configurator.properties)',\
 	osgi.identity;filter:='(osgi.identity=org.amdatu.configurator.shell)',\
 	osgi.identity;filter:='(osgi.identity=org.ops4j.pax.logging.pax-logging-api)',\
-	osgi.identity;filter:='(osgi.identity=org.ops4j.pax.logging.pax-logging-service)'
+	osgi.identity;filter:='(osgi.identity=org.ops4j.pax.logging.pax-logging-service)',\
+	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.security-propertyfile)'
