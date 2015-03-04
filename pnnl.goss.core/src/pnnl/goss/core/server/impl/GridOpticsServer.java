@@ -102,6 +102,11 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
     private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
     
+    private static final String PROP_SSL_KEYSTORE = "keystore";
+    private static final String PROP_SSL_KEYSTORE_PASSWORD = "keystore.password";
+    private static final String PROP_SSL_TRUSTSTORE = "truststore";
+    private static final String PROP_SSL_TRUSTSTORE_PASSWORD = "truststore.password";
+            
     private BrokerService broker;
     private Connection connection;
     private Session session;
@@ -217,7 +222,7 @@ public class GridOpticsServer implements ServerControl {
         
     @Override
     @Start
-	public void start() throws SystemException {
+	public void start() {
     	
 		
     	if (shouldStartBroker) {
@@ -243,7 +248,7 @@ public class GridOpticsServer implements ServerControl {
 				
 	    		broker.start();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.debug("Error Starting Broker", e);
 				//System.err.println(e.getMessage());;
 			}
     		
@@ -256,6 +261,7 @@ public class GridOpticsServer implements ServerControl {
     		connection = connectionFactory.createConnection("system", "manager");
     		connection.start();			
 		} catch (JMSException e) {
+			log.debug("Error Connecting to ActiveMQ", e);
 			SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
 		}
     	
