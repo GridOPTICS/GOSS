@@ -21,6 +21,6 @@ public interface RequestHandler extends RequestHandlerInterface {
 	 * 
 	 * @param request
 	 */
-	Response handle(Request request);	
+	Response handle(Request request);
 	
 }
