@@ -6,10 +6,10 @@ Bundle-Version: 0.0.0.${tstamp}
 	org.apache.felix.dependencymanager,\
 	org.apache.felix.gogo.command,\
 	org.apache.felix.gogo.runtime,\
-	pnnl.goss.core.pnnl-security;version=latest,\
 	org.apache.activemq.shiro,\
 	org.apache.shiro.core,\
-	org.apache.httpcomponents.httpclient;version=4.2
+	org.apache.httpcomponents.httpclient;version=4.2,\
+	pnnl.goss.core.goss-core-security;version=latest
 Private-Package:  \
 	pnnl.goss.core.server.tester,\
 	pnnl.goss.core.server.tester.datasource
