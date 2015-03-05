@@ -1,2 +1,3 @@
 Private-Package:  \
 	pnnl.goss.core.commands
+Bundle-Version: 2.0

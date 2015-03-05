@@ -1,2 +1,3 @@
 Private-Package:  \
 	pnnl.goss.core.client
+Bundle-Version: 2.0
