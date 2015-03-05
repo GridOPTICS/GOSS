@@ -1,12 +1,15 @@
 package pnnl.goss.core.security.ldap;
 import java.security.Principal;
+import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.felix.dm.annotation.api.Component;
+import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,17 +21,21 @@ import org.apache.shiro.realm.ldap.JndiLdapRealm;
 import org.apache.shiro.realm.ldap.LdapContextFactory;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import com.northconcepts.exception.SystemException;
+
 import pnnl.goss.core.security.GossRealm;
 
 @Component
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
-
+	 private static final String CONFIG_PID = "pnnl.goss.core.security.ldap";
+	
 	public GossLDAPRealm(){
+		//TODO move these to config
 		setUserDnTemplate("uid={0},ou=users,ou=goss,ou=system");
 		JndiLdapContextFactory fac = new JndiLdapContextFactory();
 		fac.setUrl("ldap://localhost:10389");
 //		fac.setSystemUsername("uid=admin,ou=system");
-//		fac.setSystemPassword("Ldp4Goss$");
+//		fac.setSystemPassword("SYSTEMPW");
 		setContextFactory(fac);
 	}
 	
@@ -112,5 +119,17 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 		System.out.println("SUPPORTS "+supports);
 		return supports;
 	}
+	
+	 @ConfigurationDependency(pid=CONFIG_PID)
+	 public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
+	    	
+	    	if (properties != null) {
+	    		   //TODO 	
+//	    		shouldStartBroker = Boolean.parseBoolean(Optional
+//	    				.ofNullable((String) properties.get(PROP_START_BROKER))
+//	    				.orElse("true"));
+	    		
+	    	}
+	 }
 	
 }
