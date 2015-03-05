@@ -1,11 +1,8 @@
 package pnnl.goss.core.security.impl;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.felix.dm.annotation.api.Component;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -16,14 +13,18 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import pnnl.goss.core.security.GossRealm;
-
 public class SystemRealm extends AuthorizingRealm implements Realm {
 	
 	private final Map<String, SimpleAccount> accntMap = new ConcurrentHashMap<>();
 	
-	public SystemRealm(){
-		SimpleAccount accnt = new SimpleAccount("system", "manager", getName());
+	public SystemRealm(String systemUserName, String systemPassword) throws Exception{
+		if (systemPassword == null || systemPassword.isEmpty()){
+			throw new Exception("Invalid system password");
+		}
+		if (systemUserName == null || systemUserName.isEmpty()){
+			throw new Exception("Invalid system username");
+		}
+		SimpleAccount accnt = new SimpleAccount(systemUserName, systemPassword, getName());
 		accnt.addStringPermission("*");
 		accntMap.put("system", accnt);		
 	}

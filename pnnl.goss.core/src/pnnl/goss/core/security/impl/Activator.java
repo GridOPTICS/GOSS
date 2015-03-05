@@ -21,7 +21,7 @@ public class Activator extends DependencyActivatorBase {
 		//Secu new IniSecurityManagerFactory(
 		//		"conf/shiro.ini");
 
-		Realm defaultRealm = new SystemRealm();
+		Realm defaultRealm = new SystemRealm("system", "manager");
 		Set<Realm> realms = new HashSet<>();
 		realms.add(defaultRealm);
 		DefaultActiveMqSecurityManager securityManager = new DefaultActiveMqSecurityManager();
