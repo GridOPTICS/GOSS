@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.tester;
+package pnnl.goss.core.server.runner;
 
 import java.util.Optional;
 
@@ -21,10 +21,10 @@ import pnnl.goss.core.server.DataSourceObject;
 import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandlerRegistry;
-import pnnl.goss.core.server.tester.datasource.CommandLogDataSource;
-import pnnl.goss.core.server.tester.requests.EchoBlacklistCheckRequest;
-import pnnl.goss.core.server.tester.requests.EchoRequest;
-import pnnl.goss.core.server.tester.requests.EchoTestData;
+import pnnl.goss.core.server.runner.datasource.CommandLogDataSource;
+import pnnl.goss.core.server.runner.requests.EchoBlacklistCheckRequest;
+import pnnl.goss.core.server.runner.requests.EchoRequest;
+import pnnl.goss.core.server.runner.requests.EchoTestData;
 
 @Component(properties={
 		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gt"),

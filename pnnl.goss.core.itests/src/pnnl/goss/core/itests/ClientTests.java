@@ -28,9 +28,9 @@ import pnnl.goss.core.ResponseError;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.server.ServerControl;
-import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
-import pnnl.goss.core.server.tester.requests.EchoRequest;
-import pnnl.goss.core.server.tester.requests.EchoTestData;
+import pnnl.goss.core.server.runner.requests.EchoDownloadRequest;
+import pnnl.goss.core.server.runner.requests.EchoRequest;
+import pnnl.goss.core.server.runner.requests.EchoTestData;
 
 import com.northconcepts.exception.SystemException;
 

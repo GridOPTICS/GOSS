@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.tester;
+package pnnl.goss.core.server.runner;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,10 +13,10 @@ import pnnl.goss.core.UploadResponse;
 import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
-import pnnl.goss.core.server.tester.requests.EchoBlacklistCheckRequest;
-import pnnl.goss.core.server.tester.requests.EchoTestData;
-import pnnl.goss.core.server.tester.requests.EchoDownloadRequest;
-import pnnl.goss.core.server.tester.requests.EchoRequest;
+import pnnl.goss.core.server.runner.requests.EchoBlacklistCheckRequest;
+import pnnl.goss.core.server.runner.requests.EchoDownloadRequest;
+import pnnl.goss.core.server.runner.requests.EchoRequest;
+import pnnl.goss.core.server.runner.requests.EchoTestData;
 
 @Component(provides={RequestUploadHandler.class, RequestHandler.class})
 public class EchoRequestHandler implements RequestHandler, RequestUploadHandler {

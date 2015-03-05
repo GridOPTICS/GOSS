@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.tester;
+package pnnl.goss.core.server.runner;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +7,7 @@ import org.apache.felix.dm.annotation.api.Component;
 
 import pnnl.goss.core.Request;
 import pnnl.goss.core.security.AuthorizationHandler;
-import pnnl.goss.core.server.tester.requests.EchoBlacklistCheckRequest;
+import pnnl.goss.core.server.runner.requests.EchoBlacklistCheckRequest;
 
 @Component
 public class EchoBlacklistedWordsHandler implements AuthorizationHandler {

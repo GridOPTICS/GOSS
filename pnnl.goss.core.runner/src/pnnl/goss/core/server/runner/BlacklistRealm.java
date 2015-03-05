@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.tester;
+package pnnl.goss.core.server.runner;
 
 import java.util.Collection;
 import java.util.HashSet;

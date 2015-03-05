@@ -11,10 +11,10 @@ Bundle-Version: 0.0.0.${tstamp}
 	org.apache.httpcomponents.httpclient;version=4.2,\
 	pnnl.goss.core.goss-core-security;version=latest
 Private-Package:  \
-	pnnl.goss.core.server.tester,\
-	pnnl.goss.core.server.tester.datasource
+	pnnl.goss.core.server.runner,\
+	pnnl.goss.core.server.runner.datasource
 Export-Package:  \
-	pnnl.goss.core.server.tester.requests
+	pnnl.goss.core.server.runner.requests
 -runbundles:  \
 	org.apache.activemq.shiro,\
 	org.apache.shiro.core,\

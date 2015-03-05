@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.tester.requests;
+package pnnl.goss.core.server.runner.requests;
 
 
 public class EchoBlacklistCheckRequest extends EchoRequest {
