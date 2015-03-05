@@ -111,7 +111,7 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
 	@Override
 	public Set<String> getPermissions(String identifier) {
 		Set<String> hashSet = new HashSet<>();
-		
+		System.out.println("GET PERMISSIONS BLACKLIST");
 		if (builtAccounts.containsKey(identifier)){
 			hashSet.addAll(builtAccounts.get(identifier).getStringPermissions());
 		}

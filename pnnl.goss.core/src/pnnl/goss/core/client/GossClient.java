@@ -212,8 +212,7 @@ public class GossClient implements Client{
 //    }
 
     private void createSession() throws JMSException{
-        log.debug("Creating Session!");
-        
+               
         config = new ClientConfiguration()
         				.set("TCP_BROKER", brokerUri);
         
@@ -228,7 +227,13 @@ public class GossClient implements Client{
         }
         
         if(protocol.equals(PROTOCOL.OPENWIRE)){
-            log.debug("Creating OPENWIRE session!");
+        	if (credentials.isPresent()){
+        		log.debug("Creating OPENWIRE client session for "+credentials.get().getUserPrincipal());
+        	}
+        	else{
+        		log.debug("Creating OPENWIRE client session without credentials");
+        	}
+        	
             ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
 //            factory.setUserName("system");
 //            factory.setPassword("manager");
