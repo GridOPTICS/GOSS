@@ -67,7 +67,10 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
     		break;   	
     	}
     	
-    	if (account != null) {
+    	if (account == null) {
+    		System.err.println("Unknown user: "+username);
+    	}
+    	else{
 	    	for(String s: defaultRoles){
 	    		account.addRole(s);
 	    		account.addStringPermissions(getPermissionsByRole(s));
@@ -86,10 +89,9 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
         String username = (String) getAvailablePrincipal(principals);
 
         SimpleAccount account = getAccount(username);
-        if (account != null){
+        if(account!=null){
         	builtAccounts.put(username, account);
         }
-        
         return account;
         //call the underlying EIS for the account data:
         //return getAccount(username);
@@ -108,7 +110,6 @@ public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
 	@Override
 	public Set<String> getPermissions(String identifier) {
 		Set<String> hashSet = new HashSet<>();
-		
 		if (builtAccounts.containsKey(identifier)){
 			hashSet.addAll(builtAccounts.get(identifier).getStringPermissions());
 		}
