@@ -44,11 +44,7 @@
 */
 package pnnl.goss.core.server.impl;
 
-import static pnnl.goss.core.GossCoreContants.PROP_USE_AUTHORIZATION;
-
 import java.io.Serializable;
-import java.util.Dictionary;
-import java.util.Map;
 
 import javax.jms.InvalidDestinationException;
 import javax.jms.JMSException;
@@ -57,8 +53,6 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,11 +61,11 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Event;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
-import pnnl.goss.core.security.SecurityConstants;
-import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
+import pnnl.goss.core.security.SecurityConstants;
+import pnnl.goss.core.server.RequestHandlerRegistry;
 //import pnnl.goss.security.util.GossSecurityConstants;
 //import pnnl.goss.security.core.GossSecurityConstants;
 //import pnnl.goss.security.core.SecurityRequestHandler;
@@ -82,8 +76,7 @@ import pnnl.goss.core.UploadResponse;
 public class ServerListener implements MessageListener {
 
     private static final Logger log = LoggerFactory.getLogger(ServerListener.class);
-    private Dictionary<String, Object> config;
-    
+   
     
     private volatile RequestHandlerRegistry handlerRegistry;
     

@@ -1,9 +1,10 @@
 package pnnl.goss.core.server.impl.test;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
@@ -31,8 +30,6 @@ public class HandlerRegistryImplTest {
 		
 		private static final long serialVersionUID = 402798455538154736L;
 		
-		public String stringData;
-		
 	}
 	
 	private class MyUploadRequest extends UploadRequest{
@@ -42,8 +39,6 @@ public class HandlerRegistryImplTest {
 		public MyUploadRequest(Serializable data, String dataType) {
 			super(data, dataType);
 		}
-		
-		public String stringData;
 		
 	}
 	

@@ -66,8 +66,7 @@ import com.thoughtworks.xstream.XStream;
 public class ServerPublisher {
 
 	private final Session session;
-	private transient MessageProducer producer;
-	
+		
 	private static final Logger log = LoggerFactory.getLogger(ServerPublisher.class);
 
 	public ServerPublisher(Session session) {
