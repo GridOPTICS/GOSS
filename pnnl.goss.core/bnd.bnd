@@ -1,4 +1,4 @@
--buildpath:  \
+-buildpath: \
 	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
 	org.apache.felix.dependencymanager;version=3.1,\
 	org.apache.httpcomponents.httpclient;version=4.2,\
@@ -36,7 +36,8 @@
 	org.mockito.mockito-all;version=1.9,\
 	org.apache.activemq.shiro;version=5.10,\
 	org.apache.shiro.core;version=1.2,\
-	org.apache.shiro.web;version=1.2
+	org.apache.shiro.web;version=1.2,\
+	org.apache.commons.pool
 	
 -sub:  \
 	*.bnd
