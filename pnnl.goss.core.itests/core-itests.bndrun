@@ -58,7 +58,8 @@
 	pnnl.goss.core.security-ldap;version=latest,\
 	pnnl.goss.core.security-propertyfile;version=latest,\
 	slf4j.api;version='[1.7.7,1.7.8)',\
-	slf4j.simple;version='[1.7.7,1.7.8)'
+	slf4j.simple;version='[1.7.7,1.7.8)',\
+	org.apache.felix.metatype,\
 	org.ops4j.pax.logging.pax-logging-service
 
 -runrequires:  \
