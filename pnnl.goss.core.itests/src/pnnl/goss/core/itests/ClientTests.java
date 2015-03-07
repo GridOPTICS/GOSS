@@ -36,7 +36,7 @@ import com.northconcepts.exception.SystemException;
 
 public class ClientTests {
 	
-	private static final Logger log = LoggerFactory.getLogger(ClientTests.class);
+	private static Logger log = LoggerFactory.getLogger(ClientTests.class);
 	private TestConfiguration testConfig;
 	private volatile ClientFactory clientFactory;
 	private volatile ServerControl serverControl;
@@ -49,6 +49,7 @@ public class ClientTests {
 	public void before() throws InterruptedException{	
 		testConfig = configure(this)
 						.add(TestSteps.configureServerAndClientPropertiesConfig())
+						.add(serviceDependency().setService(Logger.class))
 						.add(serviceDependency().setService(SecurityManager.class))
 						.add(serviceDependency().setService(ServerControl.class))
 						.add(serviceDependency().setService(ClientFactory.class));
@@ -60,12 +61,14 @@ public class ClientTests {
 	
 	@Test
 	public void serverCanStartSuccessfully() {
+		log.debug("TEST: serverCanStartSuccessfully");
+		System.out.println("TEST: serverCanStartSuccessfully");
 		assertNotNull(serverControl);
 	}
 		
 	@Test
 	public void clientFactoryRegistryOk(){
-		
+		System.out.println("TEST: clientFactoryRegistryOk");
 		assertNotNull(clientFactory);	
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
 		assertNotNull(client);
@@ -75,6 +78,7 @@ public class ClientTests {
 	
 	@Test
 	public void clientCanGetEcho(){
+		System.out.println("TEST: clientCanGetEcho");
 		try{
 			String message = "hello world!";
 			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
@@ -95,7 +99,7 @@ public class ClientTests {
 	
 	@Test
 	public void clientReceivesRequestErrorOnNullRequest(){
-		
+		System.out.println("TEST: clientReceivesRequestErrorOnNullRequest");
 		Client client =  clientFactory.create(PROTOCOL.OPENWIRE);
 		Response response = client.getResponse(null);
 		assertTrue(response instanceof ResponseError);
@@ -106,6 +110,7 @@ public class ClientTests {
 	
 	@Test
 	public void clientCanUploadData(){
+		System.out.println("TEST: clientCanUploadData");
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
 		// This is in the BlaclistRealm.java in the runner project.
 		client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
