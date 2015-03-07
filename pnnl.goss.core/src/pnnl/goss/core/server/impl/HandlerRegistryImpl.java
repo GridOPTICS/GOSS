@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
+import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.security.PermissionAdapter;
 import pnnl.goss.core.server.HandlerNotFoundException;
@@ -203,6 +204,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 
 	@Override
 	public Response handle(String dataType, Serializable data) throws HandlerNotFoundException {
+		log.debug("handling datatype: "+ dataType);
 		RequestUploadHandler handler = Optional
 				.ofNullable(uploadHandlers.get(dataType).getRequestHandlerInstance())
 				.orElseThrow(()-> new HandlerNotFoundException(dataType));
@@ -211,6 +213,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 
 	@Override
 	public Response handle(RequestAsync request) throws HandlerNotFoundException {
+		log.debug("handling async request:");
 		RequestHandler handler = getHandler(request.getClass());
 		return handler.handle(request);
 	}
@@ -225,9 +228,23 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	public boolean checkAccess(Request request, String identifier)
 			throws SystemException {
 		
+		AuthorizationHandler authHandler = null;
+		log.debug("Checking access for request " + request.getClass() + " identifier " + identifier);
+		if (request instanceof UploadRequest){
+			// Upload request handling.
+			log.debug("Handle auth request for upload!");
+			UploadRequest upRquest = (UploadRequest)request;
+			UploadHandlerMapping mapTo = uploadHandlers.get(upRquest.getDataType());
+			authHandler = authorizationInstanceMap.get(mapTo.getAuthorizationHandlerClassName());
+		}
+		else {
+			HandlerMapping requestToHandlerMapping = handlerMapping.get(request.getClass().getName());
+			authHandler = authorizationInstanceMap.get(requestToHandlerMapping.authorizationHandlerClassName);
+		}
 		
-		HandlerMapping requestToHandlerMapping = handlerMapping.get(request.getClass().getName());
-		AuthorizationHandler authHandler = authorizationInstanceMap.get(requestToHandlerMapping.authorizationHandlerClassName);
+		if (authHandler == null){
+			return false;
+		}
 		return authHandler.isAuthorized(request, permissionAdapter.getPermissions(identifier));
 	}
 	
