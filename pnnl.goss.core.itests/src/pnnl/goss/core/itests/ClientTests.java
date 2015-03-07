@@ -56,7 +56,7 @@ public class ClientTests {
 		testConfig.apply();
 		
 		// Configuration update is asyncronous, so give a bit of time to catch up
-		TimeUnit.MILLISECONDS.sleep(500);
+		TimeUnit.MILLISECONDS.sleep(1000);
 	}
 	
 	@Test
