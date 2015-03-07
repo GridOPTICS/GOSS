@@ -80,34 +80,26 @@ public class ClientTests {
 	@Test
 	public void clientCanGetEcho(){
 		System.out.println("TEST: clientCanGetEcho");
-		try{
-			String message = "hello world!";
-			assertNotNull(clientFactory);
-			System.out.println("Client factory isn't null!");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
-			System.out.println("Client created");
-			client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
-			System.out.println("Client set creds created");
-			EchoRequest request = new EchoRequest(message);
-			System.out.println("Client Created request");
-			Response response = client.getResponse(request);
-			System.out.println("Client Sent request to server");
-			
-			assertNotNull(response);
-			System.out.println("Response wasn't null");
-			assertTrue(response instanceof DataResponse);
-			System.out.println("Response was a DataResponse obj");
-			DataResponse dataResponse = (DataResponse)response;
-			assertEquals(message, dataResponse.getData().toString());
-			System.out.println("The message was correct");
-		}
-		catch (SystemException e){
-			e.printStackTrace();
-			throw(e);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
+		
+		String message = "hello world!";
+		assertNotNull(clientFactory);
+		System.out.println("Client factory isn't null!");
+		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+		System.out.println("Client created");
+		client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
+		System.out.println("Client set creds created");
+		EchoRequest request = new EchoRequest(message);
+		System.out.println("Client Created request");
+		Response response = client.getResponse(request);
+		System.out.println("Client Sent request to server");
+		
+		assertNotNull(response);
+		System.out.println("Response wasn't null");
+		assertTrue(response instanceof DataResponse);
+		System.out.println("Response was a DataResponse obj");
+		DataResponse dataResponse = (DataResponse)response;
+		assertEquals(message, dataResponse.getData().toString());
+		System.out.println("The message was correct");
 		System.out.println("TEST_END: clientCanGetEcho");
 	}	
 	
