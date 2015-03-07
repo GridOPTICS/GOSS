@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.felix.dm.annotation.api.Component;
+import org.apache.felix.dm.annotation.api.Start;
+import org.apache.felix.dm.annotation.api.Stop;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -17,12 +19,25 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.security.GossRealm;
 
 @Component
 public class BlacklistRealm extends AuthorizingRealm implements GossRealm  {
 	private final Map<String, SimpleAccount> builtAccounts = new ConcurrentHashMap<>();
+	private static final Logger log = LoggerFactory.getLogger(BlacklistRealm.class);
+	
+	@Start
+	public void startService(){
+		log.debug("Starting Service");
+	}
+	
+	@Stop
+	public void stoppingService(){
+		log.debug("Stopping Service");
+	}
 	
 	private Collection<String> getPermissionsByRole(String role){
 		Set<String> permissions = new HashSet<>();
