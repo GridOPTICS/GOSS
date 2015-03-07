@@ -1,7 +1,0 @@
-dependencies {
-	compile project(':goss-core')
-    
-    compile "mysql:mysql-connector-java:$mysqlConnectorVersion",
-			"org.apache.activemq:activemq-broker:$activemqVersion",
-			"org.apache.activemq:activemq-jaas:$activemqVersion"
-}

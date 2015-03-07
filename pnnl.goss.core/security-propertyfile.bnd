@@ -1,0 +1,3 @@
+Private-Package:  \
+	pnnl.goss.core.security.propertyfile
+Bundle-Version: 2.0.0

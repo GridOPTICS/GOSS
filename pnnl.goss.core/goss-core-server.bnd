@@ -1,0 +1,6 @@
+Private-Package:  \
+	pnnl.goss.core.server.impl
+
+#Include-Resource: \
+#	OSGI-INF/blueprint/blueprint.xml=config/blueprint.xml
+Bundle-Version: 2.0.0
