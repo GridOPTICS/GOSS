@@ -48,17 +48,10 @@ public class ClientTests {
 	@Before
 	public void before() throws InterruptedException{	
 		testConfig = configure(this)
-						.add(configuration("pnnl.goss.core.server")
-								.set("goss.openwire.uri", "tcp://localhost:6000")
-								.set("goss.stomp.uri",  "tcp://localhost:6001") //vm:(broker:(tcp://localhost:6001)?persistent=false)?marshal=false")
-								.set("goss.start.broker", "true")
-								.set("goss.broker.uri", "tcp://localhost:6000"))
-						.add(serviceDependency(ServerControl.class))
-						.add(configuration(ClientFactory.CONFIG_PID)
-								.set("goss.openwire.uri", "tcp://localhost:6000")
-								.set("goss.stomp.uri",  "tcp://localhost:6001"))
-						.add(serviceDependency(ClientFactory.class))
-						.add(serviceDependency(SecurityManager.class));
+						.add(TestSteps.configureServerAndClientPropertiesConfig())
+						.add(serviceDependency().setService(SecurityManager.class))
+						.add(serviceDependency().setService(ServerControl.class))
+						.add(serviceDependency().setService(ClientFactory.class));
 		testConfig.apply();
 		
 		// Configuration update is asyncronous, so give a bit of time to catch up
@@ -114,6 +107,8 @@ public class ClientTests {
 	@Test
 	public void clientCanUploadData(){
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+		// This is in the BlaclistRealm.java in the runner project.
+		client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
 		
 		EchoTestData data = new EchoTestData()
 			.setBoolData(true)
@@ -123,9 +118,9 @@ public class ClientTests {
 			.setFloatData(52.9f)
 			.setByteData(hexStringToByteArray("0b234ae51114"));
 		
-		UploadRequest request = new UploadRequest(data, EchoTestData.class.getName());
+		UploadRequest request = new UploadRequest(data, "Test Datatype Upload");
 		Response response = client.getResponse(request);
-		assertTrue(response instanceof UploadResponse);
+		assertTrue("response is a "+response.getClass(), response instanceof UploadResponse);
 		UploadResponse uresponse = (UploadResponse)response;
 		assertTrue(uresponse.isSuccess());
 		response = client.getResponse(new EchoDownloadRequest());

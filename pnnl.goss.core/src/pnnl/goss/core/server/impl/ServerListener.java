@@ -93,31 +93,11 @@ public class ServerListener implements MessageListener {
     	this.handlerRegistry = registry;
     	return this;
     }
-    
-    
-    
-
-
-    
-
-//    public ServerListener() {
-//        log.debug("Constructing ServerListener");
-//
-//        if (config == null){
-//            throw new IllegalArgumentException("Invalid Configuration");
-//        }
-//        this.config = config;
-//        useAuth = new Boolean((String)this.config.get(PROP_USE_AUTHORIZATION));
-//
-//        if (handlerService == null){
-//            throw new IllegalArgumentException("Invalid service handler");
-//        }
-//        this.handlerService = handlerService;
-//    }
 
     public void onMessage(Message message1) {
 
         final Message message = message1;
+        log.debug("Message of type: "+ message1.getClass() + " received");
 
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -128,6 +108,7 @@ public class ServerListener implements MessageListener {
                     // Assume that the passed object on the wire is of type Request.  An error will be thrown
                     // if that is not the case.
                     Request request = (Request) objectMessage.getObject();
+                    log.debug("Handling request type: " + request.getClass());
                     
                     if (useAuth) {
                     	if (!message.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)){
@@ -136,24 +117,28 @@ public class ServerListener implements MessageListener {
                     		return;
                     		
                     	}
+                    	
                     	String identifier = message.getStringProperty(SecurityConstants.SUBJECT_HEADER);
                     	
                     	boolean allowed = handlerRegistry.checkAccess(request, identifier); 
+                    	
                     	if (!allowed){
                     		log.info("Access denied to "+identifier+" for request type "+request.getClass().getName());
                     		serverPublisher.sendErrror("Access Denied for the requested data", message.getJMSReplyTo());
                     		return;
                     	}
+                    	log.debug("Access allowed to the request");
                     }
                     
 
                     if (request instanceof UploadRequest) {
+
                         try {
                             UploadRequest uploadRequest = (UploadRequest) request;
 
                             String dataType = uploadRequest.getDataType();
                             Serializable data = uploadRequest.getData();
-
+                            
                             UploadResponse response = (UploadResponse) handlerRegistry.handle(dataType, data);
                             response.setId(request.getId());
                             serverPublisher.sendResponse(response, message.getJMSReplyTo());
@@ -172,6 +157,7 @@ public class ServerListener implements MessageListener {
 
                         } catch (Exception e) {
                             e.printStackTrace();
+                            log.error("Upload request failed!" + e);
                             UploadResponse uploadResponse = new UploadResponse(false);
                             uploadResponse.setMessage(e.getMessage());
                             serverPublisher.sendResponse(uploadResponse, message.getJMSReplyTo());
@@ -186,20 +172,24 @@ public class ServerListener implements MessageListener {
                         DataResponse response = (DataResponse) handlerRegistry.handle(request);
                         response.setId(request.getId());
 
-                        if (message.getStringProperty("RESPONSE_FORMAT") != null)
+                        if (message.getStringProperty("RESPONSE_FORMAT") != null) {
                             serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-                        else
+                        }
+                        else {
                             serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                        }
 
                         while(response.isResponseComplete()==false){
                             Thread.sleep(requestAsync.getFrequency());
                             response = (DataResponse) handlerRegistry.handle(request);
                             response.setId(request.getId());
 
-                            if (message.getStringProperty("RESPONSE_FORMAT") != null)
+                            if (message.getStringProperty("RESPONSE_FORMAT") != null) {
                                 serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-                            else
+                            }
+                            else {
                                 serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                            }
                         }
                     }
                     else {

@@ -32,8 +32,6 @@ public class H2TestDataSource extends AbstractSqlPooledDatasource implements Dat
 	public void start() {
 		Properties properties = new Properties();
 		
-		System.out.println("Starting service!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println("factory is: "+ factory.toString());
 		properties.setProperty("url", "jdbc:h2:mem:fusion");
 		properties.setProperty(OsgiDataSourceFactory.JDBC_USER, "sa");
 		properties.setProperty(OsgiDataSourceFactory.JDBC_PASSWORD, "sa");
