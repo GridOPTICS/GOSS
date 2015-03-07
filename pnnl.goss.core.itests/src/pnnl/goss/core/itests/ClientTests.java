@@ -64,6 +64,7 @@ public class ClientTests {
 		log.debug("TEST: serverCanStartSuccessfully");
 		System.out.println("TEST: serverCanStartSuccessfully");
 		assertNotNull(serverControl);
+		log.debug("TEST_END: serverCanStartSuccessfully");
 	}
 		
 	@Test
@@ -73,7 +74,7 @@ public class ClientTests {
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
 		assertNotNull(client);
 		assertEquals(PROTOCOL.OPENWIRE, client.getProtocol());
-		
+		System.out.println("TEST_END: clientFactoryRegistryOk");
 	}
 	
 	@Test
@@ -95,6 +96,7 @@ public class ClientTests {
 			e.printStackTrace();
 			throw(e);
 		}
+		System.out.println("TEST_END: clientCanGetEcho");
 	}	
 	
 	@Test
@@ -105,7 +107,7 @@ public class ClientTests {
 		assertTrue(response instanceof ResponseError);
 		ResponseError err = (ResponseError)response;
 		assertTrue(err.getMessage().equals("Cannot route a null request"));
-				
+		System.out.println("TEST_END: clientReceivesRequestErrorOnNullRequest");
 	}
 	
 	@Test
@@ -134,7 +136,7 @@ public class ClientTests {
 		assertEquals(data.toString(), received.toString());
 		
 		
-		
+		System.out.println("TEST_END: clientCanUploadData");
 	}
 	
 	public static byte[] hexStringToByteArray(String s) {

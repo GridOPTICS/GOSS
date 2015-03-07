@@ -59,17 +59,20 @@ public class DataSourceTesting {
 	
 	@Test
 	public void canGetLogDataSource(){
+		System.out.println("TEST: canGetLogDataSource");
 		assertNotNull(registry);
 		Map<String, DataSourceType> available = registry.getAvailable();
 		assertNotNull(available);
 		assertTrue(available.size() > 0);
 		assertNotNull(available.get("pnnl.goss.core.server.runner.datasource.CommandLogDataSource"));
 		DataSourceObject obj = registry.get("pnnl.goss.core.server.runner.datasource.CommandLogDataSource");
-		assertEquals(DataSourceType.DS_TYPE_OTHER, obj.getDataSourceType());				
+		assertEquals(DataSourceType.DS_TYPE_OTHER, obj.getDataSourceType());
+		System.out.println("TEST_END: canGetLogDataSource");
 	}
 	
 	@Test
 	public void canCreateTableOnConnection(){
+		System.out.println("TEST: canCreateTableOnConnection");
 		DataSourceObject obj = registry.get("pnnl.goss.core.server.runner.datasource.H2TestDataSource");
 		assertNotNull(obj);
 		assertEquals(DataSourceType.DS_TYPE_JDBC, obj.getDataSourceType());
@@ -87,6 +90,7 @@ public class DataSourceTesting {
 			e1.printStackTrace();
 			fail();
 		}
+		System.out.println("TEST_END: canCreateTableOnConnection");
 	}
 	
 	
