@@ -82,6 +82,8 @@ public class ClientTests {
 		System.out.println("TEST: clientCanGetEcho");
 		try{
 			String message = "hello world!";
+			assertNotNull(clientFactory);
+			System.out.println("Client factory isn't null!");
 			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
 			System.out.println("Client created");
 			client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
