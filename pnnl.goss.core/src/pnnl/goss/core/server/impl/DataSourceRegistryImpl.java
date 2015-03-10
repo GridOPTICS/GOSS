@@ -34,15 +34,12 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 		log.debug("Removing datasource: " + serviceRefMap.get(ref).getName());
 		DataSourceObject toRemove = serviceRefMap.remove(ref);
 		dataSourceMap.remove(toRemove);
-		toRemove.onRemoved();
 	}
 
 	@Override
 	public DataSourceObject get(String key) {
 		DataSourceObject obj = dataSourceMap.get(key);
-		if(obj != null){
-			obj.onGet();
-		}
+		
 		return obj;
 	}
 
@@ -56,4 +53,16 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 		
 		return map;
 	}
+
+	@Override
+	public void add(String key, DataSourceObject obj) {
+		dataSourceMap.put(key, obj);
+	}
+
+	@Override
+	public void remove(String key) {
+		dataSourceMap.remove(key);		
+	}
+	
+	
 }
