@@ -17,6 +17,17 @@ import pnnl.goss.core.server.DataSourceBuilder;
 import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.DataSourceType;
 
+/**
+ * The PooledBasicDataSourceBuilderImpl class implements the DataSourceBuilder inteface.  It
+ * creates a DataSourceObject wrapper so that one can easily register datasources without
+ * having to create another class.  
+ * 
+ * The easiest way to do this would be during the loading of a component, either in the
+ * service Activator or in the @Start annotated method if using dependencymanager. 
+ *  
+ * @author Craig Allwardt
+ *
+ */
 @Component
 public class PooledBasicDataSourceBuilderImpl implements DataSourceBuilder {
 	
