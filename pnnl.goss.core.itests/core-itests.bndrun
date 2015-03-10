@@ -60,7 +60,8 @@
 	slf4j.api;version='[1.7.7,1.7.8)',\
 	slf4j.simple;version='[1.7.7,1.7.8)',\
 	org.apache.felix.metatype,\
-	org.ops4j.pax.logging.pax-logging-service
+	org.ops4j.pax.logging.pax-logging-service,\
+	org.apache.servicemix.bundles.commons-dbcp;version=1.4.0
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.core-api)',\
@@ -85,4 +86,5 @@
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=0.10.0))',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.shell)(version>=0.10.0))',\
 	osgi.identity;filter:='(osgi.identity=slf4j.api)',\
-	osgi.identity;filter:='(osgi.identity=slf4j.simple)'
+	osgi.identity;filter:='(osgi.identity=slf4j.simple)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.servicemix.bundles.commons-dbcp)'

@@ -83,4 +83,5 @@
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.goss-core-security)',\
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.runner)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=0.12.1))',\
-	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.shell)(version>=0.10.0))'
+	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.shell)(version>=0.10.0))',\
+	osgi.identity;filter:='(osgi.identity=org.apache.servicemix.bundles.commons-dbcp)'
