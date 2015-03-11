@@ -25,3 +25,5 @@ Export-Package:  \
 	pnnl.goss.core.goss-core-server;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
 	pnnl.goss.core.pnnl-security;version=latest
+	
+-baselining: *
