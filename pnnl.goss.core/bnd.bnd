@@ -38,7 +38,8 @@
 	org.apache.shiro.core;version=1.2,\
 	org.apache.shiro.web;version=1.2,\
 	org.apache.commons.pool,\
-	org.apache.servicemix.bundles.commons-dbcp
+	org.apache.servicemix.bundles.commons-dbcp,\
+	org.apache.commons.io;version=2.4
 	
 -sub:  \
 	*.bnd
