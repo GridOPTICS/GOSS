@@ -20,6 +20,7 @@
 	org.apache.aries.blueprint;version='[1.1.0,1.1.1)',\
 	org.apache.aries.proxy.api;version='[1.0.0,1.0.1)',\
 	org.apache.aries.util;version='[1.1.0,1.1.1)',\
+	org.apache.commons.io;version='[2.4.0,2.4.1)',\
 	org.apache.commons.pool;version='[1.5.4,1.5.5)',\
 	org.apache.felix.configadmin;version='[1.8.0,1.8.1)',\
 	org.apache.felix.dependencymanager;version='[3.1.0,3.1.1)',\
@@ -58,15 +59,20 @@
 	activemq.host=localhost,\
 	data=wunderdata,\
 	activemq.broker.file=pnnl-goss-activemq-broker-nosecurity.xml,\
-	openwire.port=61443,\
+	openwire.port=61616,\
 	broker-name=wunderbar,\
 	activemq.start.broker=true,\
 	client.keystore=keystores/myclient.ks,\
 	client.keystore.password=GossTempClient,\
-	stomp.port=61444,\
-	client.truststore=${user.dir}/keystores/myclient.ts,\
+	client.truststore=keystores/myclient.ts,\
 	client.truststore.password=GossTrustClient,\
-	ssl.enabled=true
+	ssl.enabled=true,\
+	ssl.port = 61443,\
+	stomp.port=61444,\
+	server.keystore=keystores/mybroker.ks,\
+	server.keystore.password=GossTempServer,\
+	server.truststore=keystores/mybroker.ts,\
+	server.truststore.password=GossTrustServer
 	
 -runrequires:  \
 	osgi.identity;filter:='(&(osgi.identity=org.apache.activemq.shiro)(version>=5.11.1))',\
@@ -94,4 +100,5 @@
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.goss-core-security)',\
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.security-propertyfile)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.servicemix.bundles.commons-dbcp)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.commons.pool)'
+	osgi.identity;filter:='(osgi.identity=org.apache.commons.pool)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.commons.io)'
