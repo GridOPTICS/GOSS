@@ -251,6 +251,38 @@ public class GridOpticsServer implements ServerControl {
     public Session getSession(){
 		return session;
 	}
+    
+    /**
+     * Creates a broker with shiro security plugin installed.
+     * 
+     * After this function the broker variable 
+     */
+    private void createBroker() throws Exception{
+    	// Create shiro broker plugin
+		ShiroPlugin shiroPlugin = new ShiroPlugin();
+				
+		shiroPlugin.setSecurityManager(securityManager);
+		//shiroPlugin.setIniConfig("conf/shiro.ini");
+		
+		//shiroPlugin.setIni(new IniEnvironment("conf/shiro.ini"));
+		//shiroPlugin.getSubjectFilter().setConnectionSubjectFactory(subjectConnectionFactory);
+		    		
+		// Configure how we are going to use it.
+		//shiroPlugin.setIniConfig(iniConfig);
+		
+		broker = new BrokerService();
+		broker.setPersistent(false);
+		try {
+			broker.addConnector(openwireTransport);
+			//broker.addConnector(stompTransport);
+			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
+			
+    		broker.start();
+		} catch (Exception e) {
+			log.debug("Error Starting Broker", e);
+			//System.err.println(e.getMessage());;
+		}
+    }
         
     @Override
     @Start
@@ -258,32 +290,13 @@ public class GridOpticsServer implements ServerControl {
     	
 		
     	if (shouldStartBroker) {
-    		
-    		// Create shiro broker plugin
-    		ShiroPlugin shiroPlugin = new ShiroPlugin();
-    		System.out.println(System.getProperty("user.dir"));//  + "conf/shiro.ini"
-    		shiroPlugin.setSecurityManager(securityManager);
-    		//shiroPlugin.setIniConfig("conf/shiro.ini");
-    		
-    		//shiroPlugin.setIni(new IniEnvironment("conf/shiro.ini"));
-    		//shiroPlugin.getSubjectFilter().setConnectionSubjectFactory(subjectConnectionFactory);
-    		    		
-    		// Configure how we are going to use it.
-    		//shiroPlugin.setIniConfig(iniConfig);
-    		
-    		broker = new BrokerService();
-    		broker.setPersistent(false);
     		try {
-				broker.addConnector(openwireTransport);
-				//broker.addConnector(stompTransport);
-				broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
-				
-	    		broker.start();
+				createBroker();
 			} catch (Exception e) {
-				log.debug("Error Starting Broker", e);
-				//System.err.println(e.getMessage());;
+				e.printStackTrace();
+				log.error("Error starting broker: ", e);
+				throw SystemException.wrap(e);
 			}
-    		
     	}
     	
     	try {
@@ -294,7 +307,7 @@ public class GridOpticsServer implements ServerControl {
     		connection.start();			
 		} catch (JMSException e) {
 			log.debug("Error Connecting to ActiveMQ", e);
-			SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
+			throw SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
 		}
     	
     	
@@ -311,7 +324,7 @@ public class GridOpticsServer implements ServerControl {
 	    				.consume());
 	    	}
     	} catch (JMSException e) {
-			SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
+			throw SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
 		}
 	}
     
