@@ -1,5 +1,5 @@
 Bundle-Version: 0.0.0.${tstamp}
--buildpath: \
+-buildpath:  \
 	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-client;version=latest,\
@@ -15,7 +15,9 @@ Bundle-Version: 0.0.0.${tstamp}
 	slf4j.simple;version='[1.7.7,1.7.8)',\
 	org.apache.shiro.core,\
 	org.apache.httpcomponents.httpclient;version=4.2,\
-	pnnl.goss.core.runner;version=latest
+	pnnl.goss.core.runner;version=latest,\
+	org.apache.activemq.activemq-osgi,\
+	com.springsource.javax.jms
 -runfw: org.apache.felix.framework;version='[4.2.1,5)'
 -runee: JavaSE-1.8
 Test-Cases: ${classes;ANNOTATION;org.junit.Test}
