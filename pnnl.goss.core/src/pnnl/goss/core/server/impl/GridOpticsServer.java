@@ -98,7 +98,7 @@ public class GridOpticsServer implements ServerControl {
     
     private static final String PROP_USE_AUTH = "goss.use.authorization";
     private static final String PROP_START_BROKER = "goss.start.broker";
-    private static final String PROP_CONNECTIOn_URI = "goss.broker.uri";
+    private static final String PROP_CONNECTION_URI = "goss.broker.uri";
     private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
     private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
     
@@ -150,7 +150,7 @@ public class GridOpticsServer implements ServerControl {
     				.orElse("true"));
     		
     		connectionUri = Optional
-    				.ofNullable((String)properties.get(PROP_CONNECTIOn_URI))
+    				.ofNullable((String)properties.get(PROP_CONNECTION_URI))
     				.orElse("tcp://localhost:61616");
     		
 	    	openwireTransport = Optional
