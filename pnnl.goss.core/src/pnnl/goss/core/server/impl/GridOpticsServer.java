@@ -47,8 +47,13 @@ package pnnl.goss.core.server.impl;
 import static pnnl.goss.core.GossCoreContants.PROP_ACTIVEMQ_CONFIG;
 import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
@@ -59,15 +64,22 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.shiro.ShiroPlugin;
 import org.apache.activemq.shiro.env.IniEnvironment;
 import org.apache.activemq.shiro.subject.ConnectionSubjectFactory;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
@@ -76,6 +88,7 @@ import org.apache.felix.dm.annotation.api.Stop;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.Ini.Section;
 import org.apache.shiro.mgt.SecurityManager;
+import org.iq80.leveldb.util.FileUtils;
 import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,10 +117,15 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_SSL_TRANSPORT = "goss.ssl.uri";
     
     private static final String PROP_SSL_ENABLED = "ssl.enabled";
-    private static final String PROP_SSL_KEYSTORE = "client.keystore";
-    private static final String PROP_SSL_KEYSTORE_PASSWORD = "client.keystore.password";
-    private static final String PROP_SSL_TRUSTSTORE = "client.truststore";
-    private static final String PROP_SSL_TRUSTSTORE_PASSWORD = "client.truststore.password";
+    private static final String PROP_SSL_CLIENT_KEYSTORE = "client.keystore";
+    private static final String PROP_SSL_CLIENT_KEYSTORE_PASSWORD = "client.keystore.password";
+    private static final String PROP_SSL_CLIENT_TRUSTSTORE = "client.truststore";
+    private static final String PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD = "client.truststore.password";
+    
+    private static final String PROP_SSL_SERVER_KEYSTORE = "server.keystore";
+    private static final String PROP_SSL_SERVER_KEYSTORE_PASSWORD = "server.keystore.password";
+    private static final String PROP_SSL_SERVER_TRUSTSTORE = "server.truststore";
+    private static final String PROP_SSL_SERVER_TRUSTSTORE_PASSWORD = "server.truststore.password";
             
     private BrokerService broker;
     private Connection connection;
@@ -133,6 +151,11 @@ public class GridOpticsServer implements ServerControl {
     private String sslClientKeyStorePassword = null;
     private String sslClientTrustStore = null;
     private String sslClientTrustStorePassword = null;
+    
+    private String sslServerKeyStore = null;
+    private String sslServerKeyStorePassword = null;
+    private String sslServerTrustStore = null;
+    private String sslServerTrustStorePassword = null;
     
     // A list of consumers all listening to the requestQueue
     private final List<ServerConsumer> consumers = new ArrayList<>(); 
@@ -185,16 +208,28 @@ public class GridOpticsServer implements ServerControl {
 	    			.orElse("tcp://localhost:61443");
 	    	
 	    	sslClientKeyStore = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_KEYSTORE))
+	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_KEYSTORE))
 	    			.orElse(null);
 	    	sslClientKeyStorePassword = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_KEYSTORE_PASSWORD))
+	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD))
 	    			.orElse(null);
 	    	sslClientTrustStore = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_TRUSTSTORE))
+	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE))
 	    			.orElse(null);
 	    	sslClientTrustStorePassword = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_TRUSTSTORE_PASSWORD))
+	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD))
+	    			.orElse(null);
+	    	sslServerKeyStore = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_KEYSTORE))
+	    			.orElse(null);
+	    	sslServerKeyStorePassword = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_KEYSTORE_PASSWORD))
+	    			.orElse(null);
+	    	sslServerTrustStore = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE))
+	    			.orElse(null);
+	    	sslServerTrustStorePassword = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD))
 	    			.orElse(null);
 	    	
 	    	//start();
@@ -253,6 +288,32 @@ public class GridOpticsServer implements ServerControl {
 	}
     
     /**
+     * Consults the variables created in the update method for whether
+     * there is enough information to create ssl broker and that the
+     * ssl.enable property is set to true.
+     * 
+     * @return true if the server supports ssl and ssl.enabled is true.
+     */
+    private boolean shouldUsSsl(){
+    	// Do we want ssl from the config file?
+    	boolean useSsl = sslEnabled;
+    	
+    	if (useSsl) {
+    		
+    		// FileNameUtils.getName will return an empty string if the file
+    		// does not exist.
+    		if (FilenameUtils.getName(sslClientKeyStore).isEmpty() ||
+    				FilenameUtils.getName(sslClientTrustStore).isEmpty())
+    		{
+    			useSsl = false;
+    		}
+    	}
+    	
+    	return useSsl;
+    	
+    }
+    
+    /**
      * Creates a broker with shiro security plugin installed.
      * 
      * After this function the broker variable 
@@ -270,10 +331,18 @@ public class GridOpticsServer implements ServerControl {
 		// Configure how we are going to use it.
 		//shiroPlugin.setIniConfig(iniConfig);
 		
-		broker = new BrokerService();
-		broker.setPersistent(false);
 		try {
-			broker.addConnector(openwireTransport);
+			if (shouldUsSsl()){
+				broker = new SslBrokerService();
+				broker.setPersistent(false);
+				
+				KeyManager[] km = getKeyManager(sslServerKeyStore, sslServerKeyStorePassword);
+		        TrustManager[] tm = getTrustManager(sslClientTrustStore);
+		        ((SslBrokerService) broker).addSslConnector(sslTransport, km, tm, null);
+
+			} else {
+				broker.addConnector(openwireTransport);
+			}
 			//broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 			
@@ -288,7 +357,8 @@ public class GridOpticsServer implements ServerControl {
     @Start
 	public void start() {
     	
-		
+		// If goss should have start the broker service then this will be set.
+    	// this variable is mapped from goss.start.broker
     	if (shouldStartBroker) {
     		try {
 				createBroker();
@@ -300,13 +370,26 @@ public class GridOpticsServer implements ServerControl {
     	}
     	
     	try {
-
-    		connectionFactory = new ActiveMQConnectionFactory(connectionUri);
+    		if (shouldUsSsl()){
+    			connectionFactory = new ActiveMQSslConnectionFactory(sslTransport);
+    		}
+    		else {
+    			connectionFactory = new ActiveMQConnectionFactory(connectionUri);
+    		}
 
     		connection = connectionFactory.createConnection("system", "manager");
     		connection.start();			
 		} catch (JMSException e) {
 			log.debug("Error Connecting to ActiveMQ", e);
+			if (shouldStartBroker){
+				try {
+					broker.stop();
+					broker.waitUntilStopped();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+			}
 			throw SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
 		}
     	
@@ -381,6 +464,53 @@ public class GridOpticsServer implements ServerControl {
 		
 		return broker.isStarted();
 	}
+	
+	public static TrustManager[] getTrustManager(String clientTrustStore) throws Exception {
+        TrustManager[] trustStoreManagers = null;
+        KeyStore trustedCertStore = KeyStore.getInstance("jks"); //ActiveMQSslConnectionFactoryTest.KEYSTORE_TYPE);
+        
+        trustedCertStore.load(new FileInputStream(clientTrustStore), null);
+        TrustManagerFactory tmf  = 
+            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+  
+        tmf.init(trustedCertStore);
+        trustStoreManagers = tmf.getTrustManagers();
+        return trustStoreManagers; 
+    }
+
+    public static KeyManager[] getKeyManager(String serverKeyStore, String serverKeyStorePassword) throws Exception {
+        KeyManagerFactory kmf = 
+            KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());  
+        KeyStore ks = KeyStore.getInstance("jks"); //ActiveMQSslConnectionFactoryTest.KEYSTORE_TYPE);
+        KeyManager[] keystoreManagers = null;
+        
+        byte[] sslCert = loadClientCredential(serverKeyStore);
+        
+       
+        if (sslCert != null && sslCert.length > 0) {
+            ByteArrayInputStream bin = new ByteArrayInputStream(sslCert);
+            ks.load(bin, serverKeyStorePassword.toCharArray());
+            kmf.init(ks, serverKeyStorePassword.toCharArray());
+            keystoreManagers = kmf.getKeyManagers();
+        }
+        return keystoreManagers;          
+    }
+
+    private static byte[] loadClientCredential(String fileName) throws IOException {
+        if (fileName == null) {
+            return null;
+        }
+        FileInputStream in = new FileInputStream(fileName);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buf = new byte[512];
+        int i = in.read(buf);
+        while (i  > 0) {
+            out.write(buf, 0, i);
+            i = in.read(buf);
+        }
+        in.close();
+        return out.toByteArray();
+    }
     
     
     
