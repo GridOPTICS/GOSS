@@ -60,18 +60,18 @@
 	data=wunderdata,\
 	activemq.broker.file=pnnl-goss-activemq-broker-nosecurity.xml,\
 	openwire.port=61616,\
-	broker-name=wunderbar,\
+	broker-name=broker,\
 	activemq.start.broker=true,\
 	client.keystore=keystores/myclient.ks,\
 	client.keystore.password=GossTempClient,\
 	client.truststore=keystores/myclient.ts,\
-	client.truststore.password=GossTrustClient,\
+	client.truststore.password=GossClientTemp,\
 	ssl.enabled=true,\
 	ssl.port = 61443,\
 	stomp.port=61444,\
 	server.keystore=keystores/mybroker.ks,\
-	server.keystore.password=GossTempServer,\
-	server.truststore=keystores/mybroker.ts,\
+	server.keystore.password=GossServerTemp,\
+	server.truststore=keystores/myserver.ts,\
 	server.truststore.password=GossTrustServer
 	
 -runrequires:  \
@@ -102,3 +102,4 @@
 	osgi.identity;filter:='(osgi.identity=org.apache.servicemix.bundles.commons-dbcp)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.commons.pool)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.commons.io)'
+-runprogramargs: -Djavax.net.debug=all
