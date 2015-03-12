@@ -57,7 +57,6 @@
 -runproperties:  \
 	activemq.host=localhost,\
 	data=wunderdata,\
-	client.truststore.password=GossTrustClient,\
 	activemq.broker.file=pnnl-goss-activemq-broker-nosecurity.xml,\
 	openwire.port=61443,\
 	broker-name=wunderbar,\
@@ -65,7 +64,9 @@
 	client.keystore=keystores/myclient.ks,\
 	client.keystore.password=GossTempClient,\
 	stomp.port=61444,\
-	client.truststore=keystores/myclient.ts
+	client.truststore=${user.dir}/keystores/myclient.ts,\
+	client.truststore.password=GossTrustClient,\
+	ssl.enabled=true
 	
 -runrequires:  \
 	osgi.identity;filter:='(&(osgi.identity=org.apache.activemq.shiro)(version>=5.11.1))',\

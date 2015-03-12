@@ -101,11 +101,13 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_CONNECTION_URI = "goss.broker.uri";
     private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
     private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
+    private static final String PROP_SSL_TRANSPORT = "goss.ssl.uri";
     
-    private static final String PROP_SSL_KEYSTORE = "keystore";
-    private static final String PROP_SSL_KEYSTORE_PASSWORD = "keystore.password";
-    private static final String PROP_SSL_TRUSTSTORE = "truststore";
-    private static final String PROP_SSL_TRUSTSTORE_PASSWORD = "truststore.password";
+    private static final String PROP_SSL_ENABLED = "ssl.enabled";
+    private static final String PROP_SSL_KEYSTORE = "client.keystore";
+    private static final String PROP_SSL_KEYSTORE_PASSWORD = "client.keystore.password";
+    private static final String PROP_SSL_TRUSTSTORE = "client.truststore";
+    private static final String PROP_SSL_TRUSTSTORE_PASSWORD = "client.truststore.password";
             
     private BrokerService broker;
     private Connection connection;
@@ -118,15 +120,23 @@ public class GridOpticsServer implements ServerControl {
     private String connectionUri = null;
     // The tcp transport for openwire
     private String openwireTransport = null;
+    // The ssl transport for connections to the server
+    private String sslTransport = null;
     // The tcp transport for stomp
     private String stompTransport = null;
     // Topic to listen on for receiving requests
     private String requestQueue = null;
     
+    // SSL Parameters
+    private boolean sslEnabled = false;
+    private String sslClientKeyStore = null;
+    private String sslClientKeyStorePassword = null;
+    private String sslClientTrustStore = null;
+    private String sslClientTrustStorePassword = null;
+    
     // A list of consumers all listening to the requestQueue
     private final List<ServerConsumer> consumers = new ArrayList<>(); 
-        
-    
+     
     private ConnectionFactory connectionFactory = null;
     
     @ServiceDependency
@@ -164,6 +174,28 @@ public class GridOpticsServer implements ServerControl {
 	    	requestQueue = Optional
 	    			.ofNullable((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE))
 	    			.orElse("Request");
+	    	
+	    	// SSL IS DISABLED BY DEFAULT.
+	    	sslEnabled = Boolean.parseBoolean(Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_ENABLED))
+	    			.orElse("false"));
+	    	
+	    	sslTransport = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_TRANSPORT))
+	    			.orElse("tcp://localhost:61443");
+	    	
+	    	sslClientKeyStore = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_KEYSTORE))
+	    			.orElse(null);
+	    	sslClientKeyStorePassword = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_KEYSTORE_PASSWORD))
+	    			.orElse(null);
+	    	sslClientTrustStore = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_TRUSTSTORE))
+	    			.orElse(null);
+	    	sslClientTrustStorePassword = Optional
+	    			.ofNullable((String) properties.get(PROP_SSL_TRUSTSTORE_PASSWORD))
+	    			.orElse(null);
 	    	
 	    	//start();
     	}
