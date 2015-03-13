@@ -62,7 +62,8 @@
 	org.apache.felix.metatype,\
 	org.ops4j.pax.logging.pax-logging-service,\
 	org.apache.servicemix.bundles.commons-dbcp;version=1.4.0,\
-	org.apache.commons.pool;version=1.5.4
+	org.apache.commons.pool;version=1.5.4,\
+	org.apache.commons.io;version=2.4
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.core-api)',\

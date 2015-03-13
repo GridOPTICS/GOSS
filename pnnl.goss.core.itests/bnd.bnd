@@ -23,6 +23,7 @@ Bundle-Version: 0.0.0.${tstamp}
 Test-Cases: ${classes;ANNOTATION;org.junit.Test}
 -include: ${workspace}/pnnl.goss.core.itests/core-itests.bndrun
 Private-Package:  \
-	pnnl.goss.core.itests
+	pnnl.goss.core.itests,\
+	pnnl.goss.activemq.testing
 	
 -baselining: *
