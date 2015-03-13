@@ -1,3 +1,7 @@
+# included file contains shared.props that can be included in directives like
+# 		-runproperties: ${shard.props}  this code is actually below
+# note that the ordering matters.  Anything before can be overwritten by
+# later elements.
 -include: goss-core.shared.bndrun
 
 -runfw: org.apache.felix.framework;version='[4.2.1,5]'
@@ -58,14 +62,9 @@
 	pnnl.goss.core.runner;version=latest,\
 	pnnl.goss.core.security-propertyfile;version=latest
 	
+# Add broker name to the properties defined in shared.runprops
 -runproperties:  ${shared.runprops},\
-	openwire.port=61616,\
-	broker-name=broker,\
-	activemq.host=localhost,\
-	stomp.port=61614,\
-	data=wunderdata,\
-	activemq.broker.file=pnnl-goss-activemq-broker-nosecurity.xml,\
-	activemq.start.broker=true
+	broker-name=goss default broker
 	
 -runrequires:  \
 	${shared.runrequires}
