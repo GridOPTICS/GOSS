@@ -171,6 +171,29 @@ public class GridOpticsServer implements ServerControl {
     
     @ServiceDependency
     private volatile GossRealm permissionAdapter;
+    
+    /**
+     * Return a default value if the passed string is null or empty,
+     * or if the value starts with a ${ (assumes that a property
+     * wasn't set in a properties file.).
+     * 
+     * @param value			The value to interrogate.
+     * @param defaultValue  A default value to return if our checks weren't valid
+     * @return				The value or defaultValue
+     */
+    private String getProperty(String value, String defaultValue){
+    	String retValue = defaultValue;
+    	
+    	if (value != null && !value.isEmpty()){
+    		// Let the value pass through because it doesn't
+    		// start with ${
+    		if (!value.startsWith("${")){
+    			retValue = value;
+    		}
+    	}
+    	
+    	return retValue;
+    }
         
         
     @ConfigurationDependency(pid=CONFIG_PID)
@@ -178,59 +201,45 @@ public class GridOpticsServer implements ServerControl {
     	
     	if (properties != null) {
     		    	
-    		shouldStartBroker = Boolean.parseBoolean(Optional
-    				.ofNullable((String) properties.get(PROP_START_BROKER))
-    				.orElse("true"));
+    		shouldStartBroker = Boolean.parseBoolean(
+    				getProperty((String) properties.get(PROP_START_BROKER), "true"));
     		
-    		connectionUri = Optional
-    				.ofNullable((String)properties.get(PROP_CONNECTION_URI))
-    				.orElse("tcp://localhost:61616");
+    		connectionUri = getProperty((String)properties.get(PROP_CONNECTION_URI),
+    				"tcp://localhost:61616");
     		
-	    	openwireTransport = Optional
-	    			.ofNullable((String) properties.get(PROP_OPENWIRE_TRANSPORT))
-	    			.orElse("tcp://localhost:61616");
+	    	openwireTransport = getProperty((String) properties.get(PROP_OPENWIRE_TRANSPORT),
+	    			"tcp://localhost:61616");
 	    	
-	    	stompTransport = Optional
-	    			.ofNullable((String) properties.get(PROP_STOMP_TRANSPORT))
-	    			.orElse("tcp://localhost:61613");
+	    	stompTransport = getProperty((String) properties.get(PROP_STOMP_TRANSPORT),
+	    			"tcp://localhost:61613");
 	    	
-	    	requestQueue = Optional
-	    			.ofNullable((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE))
-	    			.orElse("Request");
+	    	requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE)
+	    			,"Request");
 	    	
 	    	// SSL IS DISABLED BY DEFAULT.
-	    	sslEnabled = Boolean.parseBoolean(Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_ENABLED))
-	    			.orElse("false"));
+	    	sslEnabled = Boolean.parseBoolean(
+	    			getProperty((String) properties.get(PROP_SSL_ENABLED)
+	    			,"false"));
 	    	
-	    	sslTransport = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_TRANSPORT))
-	    			.orElse("tcp://localhost:61443");
+	    	sslTransport = getProperty((String) properties.get(PROP_SSL_TRANSPORT)
+	    			,"tcp://localhost:61443");
 	    	
-	    	sslClientKeyStore = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_KEYSTORE))
-	    			.orElse(null);
-	    	sslClientKeyStorePassword = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD))
-	    			.orElse(null);
-	    	sslClientTrustStore = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE))
-	    			.orElse(null);
-	    	sslClientTrustStorePassword = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD))
-	    			.orElse(null);
-	    	sslServerKeyStore = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_KEYSTORE))
-	    			.orElse(null);
-	    	sslServerKeyStorePassword = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_KEYSTORE_PASSWORD))
-	    			.orElse(null);
-	    	sslServerTrustStore = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE))
-	    			.orElse(null);
-	    	sslServerTrustStorePassword = Optional
-	    			.ofNullable((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD))
-	    			.orElse(null);
+	    	sslClientKeyStore = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE)
+	    			,null);
+	    	sslClientKeyStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD)
+	    			,null);
+	    	sslClientTrustStore = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE)
+	    			,null);
+	    	sslClientTrustStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD)
+	    			,null);
+	    	sslServerKeyStore = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE)
+	    			,null);
+	    	sslServerKeyStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE_PASSWORD)
+	    			,null);
+	    	sslServerTrustStore = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE)
+	    			,null);
+	    	sslServerTrustStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD)
+	    			,null);
 	    	
 	    	//start();
     	}
