@@ -85,6 +85,7 @@ public class ClientTests {
 		assertNotNull(clientFactory);
 		System.out.println("Client factory isn't null!");
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+		assertNotNull("Client was null from the factory!", client);
 		System.out.println("Client created");
 		client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
 		System.out.println("Client set creds created");
