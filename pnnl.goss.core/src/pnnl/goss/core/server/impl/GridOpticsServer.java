@@ -126,11 +126,18 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_SSL_SERVER_KEYSTORE_PASSWORD = "server.keystore.password";
     private static final String PROP_SSL_SERVER_TRUSTSTORE = "server.truststore";
     private static final String PROP_SSL_SERVER_TRUSTSTORE_PASSWORD = "server.truststore.password";
+    
+    private static final String PROP_SYSTEM_MANAGER = "goss.system.manager";
+    private static final String PROP_SYSTEM_MANAGER_PASSWORD = "goss.system.manager.password";
             
     private BrokerService broker;
     private Connection connection;
     private Session session;
     private Destination destination;
+    
+    // System manager username/password (required * privleges on the message bus)
+    private String systemManager = null;
+    private String systemManagerPassword = null;
     
     // Should we automatically start the broker?
     private boolean shouldStartBroker = false;
@@ -200,6 +207,11 @@ public class GridOpticsServer implements ServerControl {
     public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
     	
     	if (properties != null) {
+    		
+    		systemManager = getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
+    				"system");
+    		systemManagerPassword = getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
+    				"manager"); 
     		    	
     		shouldStartBroker = Boolean.parseBoolean(
     				getProperty((String) properties.get(PROP_START_BROKER), "true"));
