@@ -311,8 +311,8 @@ public class GridOpticsServer implements ServerControl {
 				broker = new SslBrokerService();
 				broker.setPersistent(false);
 				
-				KeyManager[] km = getKeyManager("keystores/mybroker.ks", "GossServerTemp");
-		        TrustManager[] tm = getTrustManager("keystores/myserver.ts");
+				KeyManager[] km = getKeyManager(sslServerKeyStore, sslServerKeyStorePassword);
+		        TrustManager[] tm = getTrustManager(sslClientTrustStore);
 		        ((SslBrokerService) broker).addSslConnector(sslTransport, km, tm, null);
 		        log.debug("Starting broker with ssl connector: " + sslTransport);
 
@@ -351,8 +351,8 @@ public class GridOpticsServer implements ServerControl {
     		if (shouldUsSsl()){
     			connectionFactory = new ActiveMQSslConnectionFactory(sslTransport);
     			
-    			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStore("keystores/myclient.ts"); //sslClientTrustStore);
-    			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStorePassword("GossClientTrust"); //sslClientTrustStorePassword);
+    			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStore(sslClientTrustStore); //sslClientTrustStore);
+    			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStorePassword(sslClientTrustStorePassword); //sslClientTrustStorePassword);
   	        
     		}
     		else{
@@ -365,8 +365,10 @@ public class GridOpticsServer implements ServerControl {
 			log.debug("Error Connecting to ActiveMQ", e);
 			if (shouldStartBroker){
 				try {
-					broker.stop();
-					broker.waitUntilStopped();
+					if (broker != null){
+						broker.stop();
+						broker.waitUntilStopped();	
+					}					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
