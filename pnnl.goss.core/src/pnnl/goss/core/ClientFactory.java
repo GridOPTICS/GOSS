@@ -7,6 +7,7 @@ import pnnl.goss.core.Client.PROTOCOL;
 public interface ClientFactory {
 	
 	static final String CONFIG_PID = "pnnl.goss.core.client";
+	static final String DEFAULT_BROKER_URI = "default.broker.uri";
 
     /**
      * Creates a client instance that can be used to connect to goss.

@@ -21,10 +21,15 @@ import pnnl.goss.core.GossCoreContants;
 public class ClientServiceFactory implements ClientFactory {
 
     private volatile List<GossClient> clientInstances = new ArrayList<>();
-    private volatile Dictionary<String, Object> properties = new Hashtable<String, Object>();//    // Default to openwire.
+    private volatile Dictionary<String, Object> properties = new Hashtable<String, Object>();
+    private boolean sslEnabled = false;
     
     public void setOpenwireUri(String brokerToConnectTo){
     	this.properties.put(GossCoreContants.PROP_OPENWIRE_URI, brokerToConnectTo);
+    }
+    
+    boolean exists(String value){
+    	return !(value == null || value.isEmpty());
     }
     
     @ConfigurationDependency(pid=CONFIG_PID)
@@ -38,16 +43,39 @@ public class ClientServiceFactory implements ClientFactory {
 	                this.properties.put(k, properties.get(k));
 	            }
 	        }
+	        System.out.println("UPDATING!!!");
+	        sslEnabled = Boolean.parseBoolean((String)this.properties.get(GossCoreContants.PROP_SSL_ENABLED));
 	        
-	        String value = (String) this.properties.get(GossCoreContants.PROP_OPENWIRE_URI); 
-	        
-	        if ( value == null || value.trim().isEmpty()){
-	        	throw new ConfigurationException(GossCoreContants.PROP_OPENWIRE_URI, "Not found in configuration file: " + CONFIG_PID);
+	        if (sslEnabled){
+	        	String uri = (String)this.properties.get(GossCoreContants.PROP_SSL_URI);
+	        	String trustStore = (String)this.properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE);
+	        	String trustPassword = (String)this.properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD);
+
+	        	if (!exists(trustStore)){
+	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE, "Wasn't set");
+	        	}
+	        	if (!exists(trustPassword)){
+	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD, "Wasn't set");
+	        	}
+	        	if (!exists(uri)){
+	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_URI, "Wasn't set");
+	        	}
+	        	
+	        	
+	        	this.properties.put(DEFAULT_BROKER_URI, uri);
 	        }
+	        else{
 	        
-	        value = (String) this.properties.get(GossCoreContants.PROP_STOMP_URI);
-	        if ( value == null || value.trim().isEmpty()){
-	        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI, "Not found in configuration file: " + CONFIG_PID);
+		        String value = (String) this.properties.get(GossCoreContants.PROP_OPENWIRE_URI); 
+		        
+		        if (!exists(value)){
+		        	throw new ConfigurationException(GossCoreContants.PROP_OPENWIRE_URI, "Not found in configuration file: " + CONFIG_PID);
+		        }
+		        
+		        value = (String) this.properties.get(GossCoreContants.PROP_STOMP_URI);
+		        if (!exists(value)){
+		        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI, "Not found in configuration file: " + CONFIG_PID);
+		        }
 	        }
     	}
     }
@@ -65,9 +93,18 @@ public class ClientServiceFactory implements ClientFactory {
         }
 
         if(client == null){
-            client = new GossClient()
-            				.setProtocol(protocol)
-            				.setUri((String)properties.get(GossCoreContants.PROP_OPENWIRE_URI));
+        	if (sslEnabled){
+        		client = new GossClient()
+        					.setProtocol(PROTOCOL.SSL)
+        					.setUri((String)ClientFactory.DEFAULT_BROKER_URI)
+        					.setClientTrustStorePassword((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD))
+        					.setClientTrustStore((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE));        					
+        	}
+        	else{
+	            client = new GossClient()
+	            				.setProtocol(protocol)
+	            				.setUri((String)properties.get(GossCoreContants.PROP_OPENWIRE_URI));
+        	}
             clientInstances.add(client);
         }
 

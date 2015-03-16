@@ -78,6 +78,8 @@ import javax.jms.Topic;
 
 
 
+
+
 //import org.apache.activemq.ActiveMQConnectionFactory;
 //import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
@@ -101,6 +103,7 @@ import pnnl.goss.core.ResponseText;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 
@@ -112,6 +115,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 
 
+
+import org.apache.activemq.ActiveMQSslConnectionFactory;
 
 import com.google.gson.Gson;
 import com.northconcepts.exception.ConnectionCode;
@@ -129,7 +134,9 @@ public class GossClient implements Client{
     private Optional<Connection> connection = Optional.empty();
     private Optional<Session> session = Optional.empty();
     private boolean used;
-
+    private String clientTrustStore;
+    private String clientTrustStorePassword;
+    
     private boolean connected;
     
 
@@ -141,8 +148,45 @@ public class GossClient implements Client{
     	this.protocol = protocol;
     	return this;
     }
-       
     
+    
+    public String getClientTrustStore() {
+		return clientTrustStore;
+	}
+
+
+
+	public GossClient setClientTrustStore(String clientTrustStore) {
+		this.clientTrustStore = clientTrustStore;
+		return this;
+	}
+
+
+
+	public String getClientTrustStorePassword() {
+		return clientTrustStorePassword;
+	}
+
+
+
+	public GossClient setClientTrustStorePassword(String clientTrustStorePassword) {
+		this.clientTrustStorePassword = clientTrustStorePassword;
+		return this;
+	}
+
+
+
+	private void createSslSession() {
+		ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(brokerUri);
+        try {
+			cf.setTrustStore(clientTrustStore);
+	        cf.setTrustStorePassword(clientTrustStorePassword);
+	        connection = Optional.of((ActiveMQConnection)cf.createConnection());
+        } catch (Exception e) {
+			e.printStackTrace();
+			throw SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
+		}
+    }
 
     private void createSession() throws JMSException{
                
@@ -159,7 +203,11 @@ public class GossClient implements Client{
         	creds = credentials.get();        	
         }
         
-        if(protocol.equals(PROTOCOL.OPENWIRE)){
+        if (protocol.equals(PROTOCOL.SSL)){
+        	createSslSession();
+        }
+        
+        else if(protocol.equals(PROTOCOL.OPENWIRE)){
         	if (credentials.isPresent()){
         		log.debug("Creating OPENWIRE client session for "+credentials.get().getUserPrincipal());
         	}
@@ -418,7 +466,12 @@ public class GossClient implements Client{
     	if (!session.isPresent()){
     		try {
     			// Will throw exceptions if not able to create session.
-    			createSession();
+    			if (protocol == PROTOCOL.SSL){
+    				createSslSession();
+    			}
+    			else{
+    				createSession();
+    			}
 			} catch (JMSException e) {
 				throw SystemException.wrap(e, ConnectionCode.SESSION_ERROR);
 			}

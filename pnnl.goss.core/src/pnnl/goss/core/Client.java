@@ -15,7 +15,7 @@ import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
 public interface Client {
 
-    public enum PROTOCOL {OPENWIRE, STOMP};
+    public enum PROTOCOL {OPENWIRE, STOMP, SSL};
     
     /**
      * Perform synchronous call to the server.
