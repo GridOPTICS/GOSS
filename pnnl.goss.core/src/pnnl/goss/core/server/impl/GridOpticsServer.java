@@ -253,54 +253,8 @@ public class GridOpticsServer implements ServerControl {
 	    	sslServerTrustStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD)
 	    			,null);
 	    	
-	    	//start();
+	    	
     	}
-//    	else {
-//    		if(isRunning()){
-//    			stop();
-//    		}
-//    	}
-    	
-    	
-//	    	
-//	    	validatedAndStart();
-//	    	
-//	    	String brokerConfig = "xbean:conf/" + (String) properties.get("goss.broker.file"); // config.get(PROP_ACTIVEMQ_CONFIG);
-//	        log.debug("Starting broker using config: " + brokerConfig);
-//	        System.setProperty("activemq.base", System.getProperty("user.dir"));
-//	        log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-//	        //log.debug("Broker started not using xbean "+ (String)config.get(PROP_OPENWIRE_URI));
-//	        try {
-//	        	openWireUri = (String)properties.get(PROP_OPENWIRE_URI);
-//	        	start();
-//	        			
-////	        	broker = new BrokerService();
-////	        
-////				broker.addConnector((String)properties.get(PROP_OPENWIRE_URI));
-////				
-////		        log.warn("Persistent storage is off");
-////		        String datadir = System.getProperty("java.io.tmpdir") + File.separatorChar
-////		                + "gossdata";
-////		        broker.setDataDirectory(datadir);
-////		        // TODO allow configuration.
-////		        // Should start less than 10 seconds.
-////		        broker.start(); //.waitUntilStarted(10000);
-//	        } catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//    	}
-//        
-//        try {
-//			broker = BrokerFactory.createBroker(brokerConfig, true);
-//			broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
-//			broker.waitUntilStarted();
-//			String brokerURI = (String)properties.get(PROP_OPENWIRE_URI);
-//			URI uri = URI.create(brokerURI);
-//			makeActiveMqConnection(uri, "goss", "goss");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
         
     }
     
