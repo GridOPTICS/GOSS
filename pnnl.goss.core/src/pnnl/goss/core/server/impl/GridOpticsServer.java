@@ -399,9 +399,11 @@ public class GridOpticsServer implements ServerControl {
     			
     			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStore("keystores/myclient.ts"); //sslClientTrustStore);
     			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStorePassword("GossClientTrust"); //sslClientTrustStorePassword);
-    	        
-    	        
-    		}   		
+  	        
+    		}
+    		else{
+    			connectionFactory = new ActiveMQConnectionFactory(openwireTransport);
+    		}
     		
     		connection = connectionFactory.createConnection("system", "manager");
     		connection.start();			
