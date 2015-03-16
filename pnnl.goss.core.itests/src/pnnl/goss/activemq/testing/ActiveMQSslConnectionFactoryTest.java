@@ -17,37 +17,30 @@ package pnnl.goss.activemq.testing;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.security.KeyStore;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-
-import static org.junit.Assert.*;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
-import org.apache.activemq.broker.SslContext;
 import org.apache.activemq.broker.TransportConnector;
-//import org.apache.activemq.transport.TransportBrokerTestSupport;
-import org.apache.activemq.transport.TransportFactory;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import org.apache.activemq.transport.TransportBrokerTestSupport;
 
 public class ActiveMQSslConnectionFactoryTest  {
     private static final Logger LOG = LoggerFactory.getLogger(ActiveMQSslConnectionFactoryTest.class);
