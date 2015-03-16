@@ -54,6 +54,8 @@ public class TestSteps {
 					.set("server.truststore.password", "")
 					.set("client.truststore", "resources/keystores/myclient.ts")
 					.set("client.truststore.password", "GossClientTrust")
+					.set("client.keystore", "resources/keystores/myclient.ks")
+					.set("client.keystore.password", "GossClientTemp")
 					.set("ssl.enabled", "true"))
 				.add(configuration(ClientFactory.CONFIG_PID)
 					.set("goss.ssl.uri", "ssl://localhost:61611")
