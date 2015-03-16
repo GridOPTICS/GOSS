@@ -1,7 +1,6 @@
 package pnnl.goss.core.itests;
 
 import static org.amdatu.testing.configurator.TestConfigurator.cleanUp;
-import static org.amdatu.testing.configurator.TestConfigurator.configuration;
 import static org.amdatu.testing.configurator.TestConfigurator.configure;
 import static org.amdatu.testing.configurator.TestConfigurator.serviceDependency;
 import static org.junit.Assert.assertEquals;
@@ -15,6 +14,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.shiro.mgt.SecurityManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +31,6 @@ import pnnl.goss.core.server.ServerControl;
 import pnnl.goss.core.server.runner.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.runner.requests.EchoRequest;
 import pnnl.goss.core.server.runner.requests.EchoTestData;
-
-import com.northconcepts.exception.SystemException;
 
 public class SslClientTests {
 	
@@ -68,9 +66,9 @@ public class SslClientTests {
 	public void clientFactoryRegistryOk(){
 		System.out.println("TEST: clientFactoryRegistryOk");
 		assertNotNull(clientFactory);	
-		Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+		Client client = clientFactory.create(PROTOCOL.SSL);
 		assertNotNull(client);
-		assertEquals(PROTOCOL.OPENWIRE, client.getProtocol());
+		assertEquals(PROTOCOL.SSL, client.getProtocol());
 		System.out.println("TEST_END: clientFactoryRegistryOk");
 	}
 	
