@@ -94,6 +94,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
+import pnnl.goss.core.ClientErrorCode;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
@@ -176,19 +177,33 @@ public class GossClient implements Client{
 
 
 
-	private void createSslSession() {
+	private void createSslSession() throws Exception {
 		ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(brokerUri);
-        try {
-			cf.setTrustStore(clientTrustStore);
-	        cf.setTrustStorePassword(clientTrustStorePassword);
-	        connection = Optional.of((ActiveMQConnection)cf.createConnection());
-        } catch (Exception e) {
-			e.printStackTrace();
-			throw SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
-		}
+        
+		cf.setTrustStore(clientTrustStore);
+        cf.setTrustStorePassword(clientTrustStorePassword);
+        
+        Credentials creds = null;
+        if (credentials.isPresent()){
+        	creds = credentials.get();
+        	cf.setUserName(creds.getUserPrincipal().getName());
+        	cf.setPassword(creds.getPassword());
+        }
+        
+        connection = Optional.of((ActiveMQConnection)cf.createConnection());
+        Connection conn = connection.get();
+        conn.start();
+        session = Optional.of(conn.createSession(false, Session.AUTO_ACKNOWLEDGE));
+        
+        if (creds != null){
+        	clientPublisher = new DefaultClientPublisher(creds.getUserPrincipal().getName(), session.get());
+        }
+        else {
+        	clientPublisher = new DefaultClientPublisher(session.get());
+        }
     }
 
-    private void createSession() throws JMSException{
+    private void createSession() throws Exception{
                
         config = new ClientConfiguration()
         				.set("TCP_BROKER", brokerUri);
@@ -335,7 +350,11 @@ public class GossClient implements Client{
         }
         catch(JMSException e){
             log.error("sendRequest Error", e);
-        }
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw SystemException.wrap(e);
+		}
         return null;
     }
 
@@ -398,7 +417,11 @@ public class GossClient implements Client{
             SystemException.wrap(e)
             	.set("topicName", topicName)
             	.set("event", event);
-        }
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw SystemException.wrap(e);
+		}
         
         return this;
     }
@@ -422,7 +445,11 @@ public class GossClient implements Client{
         }
         catch(JMSException e){
             log.error("publish error", e);
-        }
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw SystemException.wrap(e);
+		}
     }
 
     @Override
@@ -474,6 +501,10 @@ public class GossClient implements Client{
     			}
 			} catch (JMSException e) {
 				throw SystemException.wrap(e, ConnectionCode.SESSION_ERROR);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw SystemException.wrap(e);
 			}
     	}
     	
@@ -484,14 +515,20 @@ public class GossClient implements Client{
     	Destination destination = null;
     	
     	try {
-	    	if (protocol.equals(PROTOCOL.OPENWIRE)){
-	    		
-				destination = Optional.ofNullable(getSession().createTemporaryQueue())
+    		if (protocol.equals(PROTOCOL.SSL)){
+    			destination = Optional.ofNullable(getSession().createTemporaryQueue())
 						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
-			}
-			else if(protocol.equals(PROTOCOL.STOMP)){
-				destination = new StompJmsTempQueue();
-			}
+    		}
+    		else{
+		    	if (protocol.equals(PROTOCOL.OPENWIRE)){
+		    		
+					destination = Optional.ofNullable(getSession().createTemporaryQueue())
+							.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+				}
+				else if(protocol.equals(PROTOCOL.STOMP)){
+					destination = new StompJmsTempQueue();
+				}
+    		}
     	} catch (JMSException e) {
     		throw SystemException.wrap(e).set("destination", "null");
     	}
