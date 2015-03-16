@@ -363,6 +363,7 @@ public class GridOpticsServer implements ServerControl {
 		        log.debug("Starting broker with ssl connector: " + sslTransport);
 
 			} else {
+				broker = new BrokerService();
 				broker.addConnector(openwireTransport);
 			}
 			//broker.addConnector(stompTransport);
