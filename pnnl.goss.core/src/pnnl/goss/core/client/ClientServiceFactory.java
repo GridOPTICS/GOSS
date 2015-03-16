@@ -96,7 +96,7 @@ public class ClientServiceFactory implements ClientFactory {
         	if (sslEnabled){
         		client = new GossClient()
         					.setProtocol(PROTOCOL.SSL)
-        					.setUri((String)ClientFactory.DEFAULT_BROKER_URI)
+        					.setUri((String)properties.get(ClientFactory.DEFAULT_BROKER_URI))
         					.setClientTrustStorePassword((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD))
         					.setClientTrustStore((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE));        					
         	}
