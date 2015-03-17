@@ -54,7 +54,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.IllegalStateException;
 import java.util.Dictionary;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -132,8 +131,8 @@ public class GossClient implements Client{
     private String brokerUri = null;
     private ClientConfiguration config;
     private volatile ClientPublishser clientPublisher;
-    private Optional<Connection> connection = Optional.empty();
-    private Optional<Session> session = Optional.empty();
+    private Connection connection = null;
+    private Session session = null;
     private boolean used;
     private String clientTrustStore;
     private String clientTrustStorePassword;
@@ -143,7 +142,7 @@ public class GossClient implements Client{
 
     private PROTOCOL protocol;
 //    private PROTOCOL protocol;
-    private Optional<Credentials> credentials = Optional.empty();
+    private Credentials credentials = null;
 
     public GossClient setProtocol(PROTOCOL protocol){
     	this.protocol = protocol;
@@ -183,23 +182,27 @@ public class GossClient implements Client{
 		cf.setTrustStore(clientTrustStore);
         cf.setTrustStorePassword(clientTrustStorePassword);
         
-        Credentials creds = null;
-        if (credentials.isPresent()){
-        	creds = credentials.get();
-        	cf.setUserName(creds.getUserPrincipal().getName());
-        	cf.setPassword(creds.getPassword());
+        if (credentials != null){
+        	cf.setUserName(credentials.getUserPrincipal().getName());
+        	cf.setPassword(credentials.getPassword());
         }
         
-        connection = Optional.of((ActiveMQConnection)cf.createConnection());
-        Connection conn = connection.get();
-        conn.start();
-        session = Optional.of(conn.createSession(false, Session.AUTO_ACKNOWLEDGE));
+        connection = (ActiveMQConnection)cf.createConnection();
+        if (connection == null){
+        	throw new SystemException(ConnectionCode.CONNECTION_ERROR);
+        }
         
-        if (creds != null){
-        	clientPublisher = new DefaultClientPublisher(creds.getUserPrincipal().getName(), session.get());
+        connection.start();
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        if (session == null){
+        	throw new SystemException(ConnectionCode.SESSION_ERROR);
+        }
+        
+        if (credentials != null){
+        	clientPublisher = new DefaultClientPublisher(credentials.getUserPrincipal().getName(), session);
         }
         else {
-        	clientPublisher = new DefaultClientPublisher(session.get());
+        	clientPublisher = new DefaultClientPublisher(session);
         }
     }
 
@@ -208,23 +211,19 @@ public class GossClient implements Client{
         config = new ClientConfiguration()
         				.set("TCP_BROKER", brokerUri);
         
-        Credentials creds = null;
-        
-        if (credentials.isPresent()){
-        	config.set("CREDENTIALS", credentials.get());
+                
+        if (credentials != null){
+        	config.set("CREDENTIALS", credentials);
         }
         
-        if (credentials.isPresent()){
-        	creds = credentials.get();        	
-        }
         
         if (protocol.equals(PROTOCOL.SSL)){
         	createSslSession();
         }
         
         else if(protocol.equals(PROTOCOL.OPENWIRE)){
-        	if (credentials.isPresent()){
-        		log.debug("Creating OPENWIRE client session for "+credentials.get().getUserPrincipal());
+        	if (credentials != null){
+        		log.debug("Creating OPENWIRE client session for "+credentials.getUserPrincipal());
         	}
         	else{
         		log.debug("Creating OPENWIRE client session without credentials");
@@ -235,34 +234,32 @@ public class GossClient implements Client{
 //            factory.setPassword("manager");
 //            factory.setUseAsyncSend(true);
             
-            if (creds != null){
-            	factory.setUserName(creds.getUserPrincipal().getName());
-            	factory.setPassword(creds.getPassword());
+            if (credentials != null){
+            	factory.setUserName(credentials.getUserPrincipal().getName());
+            	factory.setPassword(credentials.getPassword());
             }
             	
-            connection = Optional.of(factory.createConnection());
+            connection = factory.createConnection();
         }
         else if(protocol.equals(PROTOCOL.STOMP)){
             StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
             factory.setBrokerURI(brokerUri);
             
-            if (creds != null){
-            	connection = Optional.of(factory.createConnection(creds.getUserPrincipal().getName(), creds.getPassword()));
+            if (credentials != null){
+            	connection = factory.createConnection(credentials.getUserPrincipal().getName(), credentials.getPassword());
             }
             else{
-            	connection = Optional.of(factory.createConnection());
+            	connection = factory.createConnection();
             }
         }
-
-        Connection conn = connection.get();
              
-        conn.start();
-        session = Optional.of(conn.createSession(false, Session.AUTO_ACKNOWLEDGE));
-        if (creds != null){
-        	clientPublisher = new DefaultClientPublisher(creds.getUserPrincipal().getName(), session.get());
+        connection.start();
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        if (credentials != null){
+        	clientPublisher = new DefaultClientPublisher(credentials.getUserPrincipal().getName(), session);
         }
         else {
-        	clientPublisher = new DefaultClientPublisher(session.get());
+        	clientPublisher = new DefaultClientPublisher(session);
         }
     }
     
@@ -298,7 +295,7 @@ public class GossClient implements Client{
 
         Destination replyDestination = getTemporaryDestination();
                 
-        DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session.get(), replyDestination);
+        DefaultClientConsumer clientConsumer = new DefaultClientConsumer(session, replyDestination);
         try {
 			clientPublisher.sendMessage(request, replyDestination,
 			        responseFormat);
@@ -339,7 +336,7 @@ public class GossClient implements Client{
             Destination replyDestination=getTemporaryDestination();
             
             if(event!=null){
-                new DefaultClientConsumer(new DefaultClientListener(event),session.get(),replyDestination);}
+                new DefaultClientConsumer(new DefaultClientListener(event),session,replyDestination);}
             else
                 throw new NullPointerException("event cannot be null");
             
@@ -372,11 +369,11 @@ public class GossClient implements Client{
             Destination destination = null;
             if(this.protocol.equals(PROTOCOL.OPENWIRE)){
                 destination = getDestination(topicName); 
-                new DefaultClientConsumer(new DefaultClientListener(event),session.get(),destination);
+                new DefaultClientConsumer(new DefaultClientListener(event),session,destination);
             }
             else if(this.protocol.equals(PROTOCOL.STOMP)){
                 destination = new StompJmsDestination(topicName);
-                DefaultClientConsumer consumer  = new DefaultClientConsumer(session.get(),destination);
+                DefaultClientConsumer consumer  = new DefaultClientConsumer(session,destination);
 
                  while(session != null) {
                     try {
@@ -402,10 +399,10 @@ public class GossClient implements Client{
                     } catch (javax.jms.IllegalStateException ex) {
                         // Happens when a timeout occurs.
                         //log.debug("Illegal state? "+ ex.getMessage());
-                        if (session.isPresent()){
+                        if (session != null){
                             log.debug("Closing session");
-                            session.get().close();
-                            session = Optional.empty();
+                            session.close();
+                            session = null;
                         }
                     }
                  }
@@ -475,12 +472,12 @@ public class GossClient implements Client{
     public void close(){
         try{
             log.debug("Client closing!");
-            if(session.isPresent()){
-            	session.get().close();
-            	session = Optional.empty();
+            if(session != null){
+            	session.close();
+            	session =null;
             }
             
-            connection = Optional.empty();
+            connection = null;
             clientPublisher = null;
         }
         catch(JMSException e){
@@ -490,7 +487,7 @@ public class GossClient implements Client{
     }
     
     private Session getSession() throws SystemException {
-    	if (!session.isPresent()){
+    	if (session == null){
     		try {
     			// Will throw exceptions if not able to create session.
     			if (protocol == PROTOCOL.SSL){
@@ -508,7 +505,7 @@ public class GossClient implements Client{
 			}
     	}
     	
-    	return session.get();
+    	return session;
     }
     
     private Destination getTemporaryDestination() throws SystemException {
@@ -516,14 +513,18 @@ public class GossClient implements Client{
     	
     	try {
     		if (protocol.equals(PROTOCOL.SSL)){
-    			destination = Optional.ofNullable(getSession().createTemporaryQueue())
-						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+    			destination = getSession().createTemporaryQueue();
+    			if (destination ==  null){
+    				throw new SystemException(ConnectionCode.DESTINATION_ERROR);
+    			}
     		}
     		else{
 		    	if (protocol.equals(PROTOCOL.OPENWIRE)){
 		    		
-					destination = Optional.ofNullable(getSession().createTemporaryQueue())
-							.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+					destination = getSession().createTemporaryQueue();
+					if (destination == null) {
+						throw new SystemException(ConnectionCode.DESTINATION_ERROR);
+					}
 				}
 				else if(protocol.equals(PROTOCOL.STOMP)){
 					destination = new StompJmsTempQueue();
@@ -542,16 +543,18 @@ public class GossClient implements Client{
     	try {
 	    	if (protocol.equals(PROTOCOL.OPENWIRE)){
 	    		
-				destination = Optional.ofNullable(getSession().createTopic(topicName))
-						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+				destination = getSession().createTopic(topicName);
+				
+				if (destination == null){
+					throw new SystemException(ConnectionCode.DESTINATION_ERROR);
+				}
 			}
 			else if(protocol.equals(PROTOCOL.STOMP)){
-				if (!connection.isPresent()) {
+				if (connection == null) {
 					throw new SystemException(ConnectionCode.CONNECTION_ERROR).set("topicName", topicName);
 				}
 				
-				destination = Optional.ofNullable(new StompJmsTopic((StompJmsConnection)connection.get(),topicName))
-						.orElseThrow(()->new SystemException(ConnectionCode.DESTINATION_ERROR));
+				destination = new StompJmsTopic((StompJmsConnection)connection,topicName);
 			}
     	} catch (JMSException e) {
     		throw SystemException.wrap(e).set("destination", "null");
@@ -582,7 +585,7 @@ public class GossClient implements Client{
     public Client setCredentials(Credentials credentials) 
     		throws SystemException {
     	
-    	this.credentials = Optional.of(credentials);
+    	this.credentials = credentials;
         return this;
     }
 
