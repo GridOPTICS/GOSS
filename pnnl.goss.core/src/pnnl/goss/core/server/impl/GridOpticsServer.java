@@ -223,7 +223,7 @@ public class GridOpticsServer implements ServerControl {
 	    			"tcp://localhost:61616");
 	    	
 	    	stompTransport = getProperty((String) properties.get(PROP_STOMP_TRANSPORT),
-	    			"tcp://localhost:61613");
+	    			"stomp://localhost:61613");
 	    	
 	    	requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE)
 	    			,"Request");
@@ -319,6 +319,7 @@ public class GridOpticsServer implements ServerControl {
 			} else {
 				broker = new BrokerService();
 				broker.addConnector(openwireTransport);
+				broker.addConnector(stompTransport);
 			}
 			//broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});

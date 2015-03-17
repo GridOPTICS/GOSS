@@ -18,7 +18,7 @@ public class TestSteps {
 					.set("goss.broker.uri", "tcp://localhost:6000"))
 				.add(configuration(ClientFactory.CONFIG_PID)
 					.set("goss.openwire.uri", "tcp://localhost:6000")
-					.set("goss.stomp.uri",  "tcp://localhost:6001"))
+					.set("goss.stomp.uri",  "stomp://localhost:6001"))
 				.add(configuration("org.ops4j.pax.logging")
 					.set("log4j.rootLogger", "DEBUG, out, osgi:*")
 					.set("log4j.throwableRenderer", "org.apache.log4j.OsgiThrowableRenderer")
