@@ -12,7 +12,7 @@ shared.runprops: \
 # there were a shared.runprops then values would overwrite
 # matching properties in the above shared.runprops header
 -include: \
-	${user.home}/goss.private.bnd
+	-${user.home}/goss.private.bnd
 
 shared.runrequires: \
 	osgi.identity;filter:='(&(osgi.identity=org.apache.activemq.shiro)(version>=5.11.1))',\
