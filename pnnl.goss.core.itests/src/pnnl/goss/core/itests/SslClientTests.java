@@ -31,6 +31,7 @@ import pnnl.goss.core.server.ServerControl;
 import pnnl.goss.core.server.runner.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.runner.requests.EchoRequest;
 import pnnl.goss.core.server.runner.requests.EchoTestData;
+import pnnl.goss.core.testutil.CoreConfigSteps;
 
 public class SslClientTests {
 	
@@ -43,7 +44,7 @@ public class SslClientTests {
 	@Before
 	public void before() throws InterruptedException{	
 		testConfig = configure(this)
-						.add(TestSteps.configureSSLServerAndClientPropertiesConfig())
+						.add(CoreConfigSteps.configureSSLServerAndClientPropertiesConfig())
 						.add(serviceDependency().setService(Logger.class))
 						.add(serviceDependency().setService(SecurityManager.class))
 						.add(serviceDependency().setService(ServerControl.class))
