@@ -64,9 +64,6 @@ public interface Client {
     public void publishString(String topicName, String data)
     		 throws SystemException;
     
-    public void publishBlobMessage(String topicName, File file)
-   		 throws SystemException;
-
     /**
      * Close a connection with the server.
      */
