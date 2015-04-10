@@ -243,7 +243,7 @@ public class GossClient implements Client{
         }
         else if(protocol.equals(PROTOCOL.STOMP)){
             StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-            factory.setBrokerURI(brokerUri);
+            factory.setBrokerURI("tcp://localhost:61614");
             
             if (credentials != null){
             	connection = factory.createConnection(credentials.getUserPrincipal().getName(), credentials.getPassword());
