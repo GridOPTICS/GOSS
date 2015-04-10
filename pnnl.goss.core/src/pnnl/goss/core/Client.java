@@ -1,17 +1,14 @@
 package pnnl.goss.core;
 
+import java.io.File;
 import java.io.Serializable;
-
-import javax.jms.IllegalStateException;
-import javax.jms.JMSException;
-
 
 //import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
 
-import com.northconcepts.exception.SystemException;
-
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+
+import com.northconcepts.exception.SystemException;
 
 public interface Client {
 
@@ -66,6 +63,9 @@ public interface Client {
 
     public void publishString(String topicName, String data)
     		 throws SystemException;
+    
+    public void publishBlobMessage(String topicName, File file)
+   		 throws SystemException;
 
     /**
      * Close a connection with the server.

@@ -77,6 +77,7 @@ public class ClientServiceFactory implements ClientFactory {
 		        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI, "Not found in configuration file: " + CONFIG_PID);
 		        }
 	        }
+
     	}
     }
 
