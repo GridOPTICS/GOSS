@@ -1,4 +1,4 @@
-package pnnl.goss.core.itests;
+package pnnl.goss.core.testutil;
 
 import static org.amdatu.testing.configurator.TestConfigurator.configuration;
 
@@ -6,8 +6,21 @@ import org.amdatu.testing.configurator.ConfigurationSteps;
 
 import pnnl.goss.core.ClientFactory;
 
-public class TestSteps {
+/**
+ * Standard configuration that is required for us to use goss in integration tests.
+ * 
+ * These configuration steps can be used as a guide to building cfg files
+ * for the bundles.
+ * 
+ * @author Craig Allwardt
+ *
+ */
+public class CoreConfigSteps {
 	
+	/**
+	 * Minimal configuration for goss including broker uri
+	 * @return
+	 */
 	public static ConfigurationSteps configureServerAndClientPropertiesConfig(){
 		
 		return ConfigurationSteps.create()

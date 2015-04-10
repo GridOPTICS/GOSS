@@ -1,0 +1,13 @@
+Bundle-Version: 0.0.0.${tstamp}
+-buildpath:  \
+	pnnl.goss.core.core-api;version=latest,\
+	org.amdatu.testing.configurator,\
+	pnnl.goss.core.goss-client;version=latest,\
+	pnnl.goss.core.goss-core-commands;version=latest,\
+	pnnl.goss.core.goss-core-exceptions;version=latest,\
+	pnnl.goss.core.goss-core-security;version=latest,\
+	pnnl.goss.core.goss-core-server;version=latest,\
+	pnnl.goss.core.goss-core-server-api;version=latest,\
+	pnnl.goss.core.security-propertyfile;version=latest
+Export-Package:  \
+	pnnl.goss.core.testutil

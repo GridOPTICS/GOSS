@@ -63,7 +63,8 @@
 	org.ops4j.pax.logging.pax-logging-service,\
 	org.apache.servicemix.bundles.commons-dbcp;version=1.4.0,\
 	org.apache.commons.pool;version=1.5.4,\
-	org.apache.commons.io;version=2.4
+	org.apache.commons.io;version=2.4,\
+	pnnl.goss.core.testutil;version=latest
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.core-api)',\
@@ -90,4 +91,5 @@
 	osgi.identity;filter:='(osgi.identity=slf4j.api)',\
 	osgi.identity;filter:='(osgi.identity=slf4j.simple)',\
 	osgi.identity;filter:='(osgi.identity=org.apache.servicemix.bundles.commons-dbcp)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.commons.pool)'
+	osgi.identity;filter:='(osgi.identity=org.apache.commons.pool)',\
+	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.testutil)'

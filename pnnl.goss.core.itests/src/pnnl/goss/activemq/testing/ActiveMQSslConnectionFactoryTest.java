@@ -32,6 +32,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
@@ -84,7 +85,7 @@ public class ActiveMQSslConnectionFactoryTest  {
         broker = createBroker("tcp://localhost:61610?wireFormat.tcpNoDelayEnabled=true");
 
         // This should create the connection.
-        ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory("tcp://localhost:61610?wireFormat.tcpNoDelayEnabled=true");
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:61610?wireFormat.tcpNoDelayEnabled=true");
         connection = (ActiveMQConnection)cf.createConnection();
         assertNotNull(connection);
 
