@@ -17,7 +17,8 @@ Bundle-Version: 0.0.0.${tstamp}
 	org.apache.httpcomponents.httpclient;version=4.2,\
 	pnnl.goss.core.runner;version=latest,\
 	org.apache.activemq.activemq-osgi,\
-	com.springsource.javax.jms
+	com.springsource.javax.jms,\
+	pnnl.goss.core.testutil;version=latest
 -runfw: org.apache.felix.framework;version='[4.2.1,5)'
 -runee: JavaSE-1.8
 Test-Cases: ${classes;ANNOTATION;org.junit.Test}

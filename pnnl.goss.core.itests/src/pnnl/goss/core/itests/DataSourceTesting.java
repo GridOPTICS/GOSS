@@ -26,6 +26,7 @@ import pnnl.goss.core.server.DataSourceObject;
 import pnnl.goss.core.server.DataSourcePooledJdbc;
 import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.DataSourceType;
+import pnnl.goss.core.testutil.CoreConfigSteps;
 
 public class DataSourceTesting {
 
@@ -37,7 +38,7 @@ public class DataSourceTesting {
 	@Before
 	public void before() throws InterruptedException{
 		testConfig = configure(this)
-				.add(TestSteps.configureServerAndClientPropertiesConfig())
+				.add(CoreConfigSteps.configureServerAndClientPropertiesConfig())
 				
 				.add(configuration("pnnl.goss.core.security.propertyfile")
 					.set("reader", "reader,queue:*,topic:*,temp-queue:*"))

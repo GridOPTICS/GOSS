@@ -30,6 +30,7 @@ import pnnl.goss.core.server.ServerControl;
 import pnnl.goss.core.server.runner.requests.EchoDownloadRequest;
 import pnnl.goss.core.server.runner.requests.EchoRequest;
 import pnnl.goss.core.server.runner.requests.EchoTestData;
+import pnnl.goss.core.testutil.CoreConfigSteps;
 
 public class ClientTests {
 	
@@ -45,7 +46,7 @@ public class ClientTests {
 	@Before
 	public void before() throws InterruptedException{	
 		testConfig = configure(this)
-						.add(TestSteps.configureServerAndClientPropertiesConfig())
+						.add(CoreConfigSteps.configureServerAndClientPropertiesConfig())
 						.add(serviceDependency().setService(ClientFactory.class))
 						.add(serviceDependency().setService(Logger.class))
 						.add(serviceDependency().setService(SecurityManager.class))
