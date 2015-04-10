@@ -1,5 +1,5 @@
-Bundle-Version: 0.0.0.${tstamp}
--buildpath: \
+Bundle-Version: 0.0.1.${tstamp}
+-buildpath:  \
 	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-client;version=latest,\

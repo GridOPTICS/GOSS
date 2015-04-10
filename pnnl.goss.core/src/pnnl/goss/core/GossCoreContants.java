@@ -9,6 +9,7 @@ public class GossCoreContants {
 	// Different protocol uris
 	public static final String PROP_OPENWIRE_URI = "goss.openwire.uri";
 	public static final String PROP_STOMP_URI = "goss.stomp.uri";
+	public static final String PROP_WS_URI = "goss.ws.uri";
 	
 	// System users for accessing the message broker
 	public static final String PROP_SYSTEM_USER = "goss.system.user";

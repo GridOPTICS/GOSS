@@ -45,21 +45,12 @@
 package pnnl.goss.core.client;
 
 //import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
-import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
-import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.File;
 import java.io.Serializable;
-import java.lang.IllegalStateException;
-import java.util.Dictionary;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -67,17 +58,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-
-
-
-
-
-
-import javax.jms.Topic;
-
-
-
-
+import org.apache.activemq.ActiveMQConnectionFactory;
 //import org.apache.activemq.ActiveMQConnectionFactory;
 //import org.apache.activemq.ConfigurationException;
 import org.apache.http.auth.Credentials;
@@ -96,27 +77,14 @@ import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request;
-import pnnl.goss.core.ResponseError;
-import pnnl.goss.core.ResponseText;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-
-import org.apache.activemq.ActiveMQConnectionFactory;
-
-
-
-
-
-
-
-
-
-
+import pnnl.goss.core.ResponseError;
+import pnnl.goss.core.ResponseText;
 
 import com.google.gson.Gson;
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
-import com.northconcepts.exception.ValidationCode;
 
 public class GossClient implements Client{
 
@@ -248,7 +216,7 @@ public class GossClient implements Client{
         }
         else if(protocol.equals(PROTOCOL.STOMP)){
             StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-            factory.setBrokerURI(brokerUri);
+            factory.setBrokerURI("tcp://localhost:61614");
             
             if (creds != null){
             	connection = Optional.of(factory.createConnection(creds.getUserPrincipal().getName(), creds.getPassword()));
@@ -268,6 +236,7 @@ public class GossClient implements Client{
         else {
         	clientPublisher = new DefaultClientPublisher(session.get());
         }
+        
     }
     
     /**
@@ -457,6 +426,15 @@ public class GossClient implements Client{
 			clientPublisher.publishTo(destination, data);
 		} catch (JMSException e) {
 			SystemException.wrap(e).set("destination", destination).set("data", data);
+		}
+    }
+    
+    public void publishBlobMessage(String topicName, File file) throws SystemException{
+    	Destination destination = getDestination(topicName);
+    	try {
+    		clientPublisher.publishBlobMessage(destination, file);
+		} catch (JMSException e) {
+			SystemException.wrap(e).set("destination", destination).set("data", file.getAbsolutePath());
 		}
     }
 
