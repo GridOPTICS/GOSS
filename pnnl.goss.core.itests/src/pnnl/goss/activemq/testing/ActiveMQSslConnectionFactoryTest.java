@@ -127,7 +127,6 @@ public class ActiveMQSslConnectionFactoryTest  {
         }
         catch (javax.jms.JMSException ignore) {
         	// Expected exception
-        	LOG.info("Expected java.io.Exception [" + ignore + "]");
         }
         assertNull(connection);
 

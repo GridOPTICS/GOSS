@@ -43,7 +43,7 @@ public class ClientServiceFactory implements ClientFactory {
 	                this.properties.put(k, properties.get(k));
 	            }
 	        }
-	        System.out.println("UPDATING!!!");
+	        
 	        sslEnabled = Boolean.parseBoolean((String)this.properties.get(GossCoreContants.PROP_SSL_ENABLED));
 	        
 	        if (sslEnabled){
