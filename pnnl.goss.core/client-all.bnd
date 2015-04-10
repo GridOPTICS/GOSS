@@ -1,4 +1,10 @@
-Bundle-Version: 2.2.1
+Bundle-Version: 4.0.0
+Include-Resource: \
+	resources/activemq.xsd=resources/activemq.xsd,\
+	META-INF/services=resources/services
+Bundle-ClassPath: \
+	resources/activemq.xsd
+-classpath=resources	
 Export-Package:  \
 	pnnl.goss.core,\
 	pnnl.goss.core.client,\
@@ -7,9 +13,88 @@ Export-Package:  \
 	com.northconcepts.exception,\
 	javax.jms,\
 	org.apache.activemq,\
+	org.apache.activemq.broker.region,\
+	org.fusesource.hawtdispatch.internal,\
+	org.fusesource.hawtdispatch.util,\
+	org.fusesource.hawtdispatch.internal.pool,\
+	org.fusesource.hawtdispatch.internal.util,\
+	org.fusesource.hawtdispatch.jmx,\
+	org.apache.activemq.plugin.jaxb2_commons,\
+	org.fusesource.hawtdispatch,\
+	org.fusesource.hawtdispatch.transport,\
+	org.fusesource.stomp.client,\
+	org.fusesource.stomp.codec,\
+	org.fusesource.stomp.jms.jndi,\
+	org.fusesource.stomp.jms.util,\
+	org.apache.activemq.transport.xstream,\
+	org.apache.activemq.web,\
+	org.apache.activemq.web.config,\
+	org.apache.activemq.web.view,\
+	org.apache.activemq.wireformat,\
+	org.apache.activemq.xbean,\
+	org.apache.activemq.advisory,\
+	org.apache.activemq.apollo.filter,\
+	org.apache.activemq.plugin.jmx,\
+	org.apache.activemq.schema.core,\
+	org.apache.activemq.store.jdbc.adapter,\
+	org.apache.activemq.transport.http,\
+	org.apache.activemq.transport.util,\
+	org.apache.activemq.apollo.selector,\
+	org.apache.activemq.blob,\
+	org.apache.activemq.broker,\
+	org.apache.activemq.broker.region.cursors,\
+	org.apache.activemq.broker.region.group,\
+	org.apache.activemq.broker.region.virtual,\
+	org.apache.activemq.broker.util,\
+	org.apache.activemq.command,\
+	org.apache.activemq.broker.cluster,\
+	org.apache.activemq.broker.jmx,\
+	org.apache.activemq.broker.scheduler,\
+	org.apache.activemq.filter.function,\
+	org.apache.activemq.jaas,\
+	org.apache.activemq.memory,\
+	org.apache.activemq.memory.buffer,\
+	org.apache.activemq.network.jms,\
+	org.apache.activemq.openwire,\
+	org.apache.activemq.plugin,\
+	org.apache.activemq.proxy,\
+	org.apache.activemq.store.jdbc,\
+	org.apache.activemq.store.journal,\
+	org.apache.activemq.transport,\
+	org.apache.activemq.store.memory,\
+	org.apache.activemq.transport.discovery,\
+	org.apache.activemq.transport.https,\
+	org.apache.activemq.transport.tcp,\
+	org.apache.activemq.transport.vm,\
+	org.apache.activemq.transport.tcp,\
+	org.apache.activemq.wireformat,\
+	org.apache.activemq.filter,\
+	org.apache.activemq.memory.list,\
+	org.apache.activemq.network,\
+	org.apache.activemq.security,\
+	org.apache.activemq.selector,\
+	org.apache.activemq.spring,\
+	org.apache.activemq.state,\
+	org.apache.activemq.store,\
+	org.apache.activemq.thread,\
+	org.apache.activemq.transaction,\
+	org.apache.activemq.transport.failover,\
+	org.apache.activemq.usage,\
+	org.apache.activemq.util,\
+	org.apache.activemq.broker.region.policy,\
+	javax.management.j2ee.statistics,\
+	org.apache.activemq.jndi,\
+	org.apache.activemq.management,\
+	org.apache.activemq.osgi,\
 	org.apache.http.auth,\
 	org.fusesource.hawtbuf,\
 	org.fusesource.stomp.jms,\
 	org.fusesource.stomp.jms.message,\
 	org.osgi.service.cm,\
-	org.slf4j
+	org.slf4j,\
+	org.slf4j.helpers,\
+	org.slf4j.impl,\
+	org.slf4j.spi,\
+	org.apache.activemq.openwire.v10
+Import-Package:  \
+	*

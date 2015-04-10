@@ -44,6 +44,7 @@
 */
 package pnnl.goss.core.client;
 
+import java.io.File;
 import java.io.Serializable;
 
 import javax.jms.Destination;
@@ -53,6 +54,8 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.apache.activemq.ActiveMQSession;
+import org.apache.activemq.BlobMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,6 +120,13 @@ public class DefaultClientPublisher implements ClientPublishser {
 
     public void publishTo(Destination destination, String data) throws JMSException {
         TextMessage message = session.createTextMessage(data);
+        log.debug("Publishing on destination: " + destination);
+        publishingProducer.send(destination, message);
+    }
+    
+    public void publishBlobMessage(Destination destination, File file) throws JMSException {
+    	ActiveMQSession activeMQSession = (ActiveMQSession) session;
+    	BlobMessage message  = activeMQSession.createBlobMessage(file);
         log.debug("Publishing on destination: " + destination);
         publishingProducer.send(destination, message);
     }
