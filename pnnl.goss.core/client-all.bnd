@@ -1,0 +1,15 @@
+Bundle-Version: 2.2.1
+Export-Package:  \
+	pnnl.goss.core,\
+	pnnl.goss.core.client,\
+	pnnl.goss.core.exception,\
+	com.google.gson,\
+	com.northconcepts.exception,\
+	javax.jms,\
+	org.apache.activemq,\
+	org.apache.http.auth,\
+	org.fusesource.hawtbuf,\
+	org.fusesource.stomp.jms,\
+	org.fusesource.stomp.jms.message,\
+	org.osgi.service.cm,\
+	org.slf4j
