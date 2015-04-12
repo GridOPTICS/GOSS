@@ -114,6 +114,7 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_CONNECTION_URI = "goss.broker.uri";
     private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
     private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
+    private static final String PROP_WS_TRANSPORT = "goss.ws.uri";
     private static final String PROP_SSL_TRANSPORT = "goss.ssl.uri";
     
     private static final String PROP_SSL_ENABLED = "ssl.enabled";
@@ -149,6 +150,8 @@ public class GridOpticsServer implements ServerControl {
     private String sslTransport = null;
     // The tcp transport for stomp
     private String stompTransport = null;
+    // The  transport for stomp
+    private String wsTransport = null;
     // Topic to listen on for receiving requests
     private String requestQueue = null;
     
@@ -224,6 +227,9 @@ public class GridOpticsServer implements ServerControl {
 	    	
 	    	stompTransport = getProperty((String) properties.get(PROP_STOMP_TRANSPORT),
 	    			"stomp://localhost:61613");
+	    	
+	    	wsTransport = getProperty((String) properties.get(PROP_WS_TRANSPORT),
+	    			"ws://localhost:61614");
 	    	
 	    	requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE)
 	    			,"Request");
@@ -320,6 +326,7 @@ public class GridOpticsServer implements ServerControl {
 				broker = new BrokerService();
 				broker.addConnector(openwireTransport);
 				broker.addConnector(stompTransport);
+				broker.addConnector(wsTransport);
 			}
 			//broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
