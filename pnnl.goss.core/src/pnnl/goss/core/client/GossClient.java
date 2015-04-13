@@ -449,21 +449,27 @@ public class GossClient implements Client{
 		}
     }
 
-    @Override
-    public void publishString(String topicName, String data) throws SystemException {
-    	
-    	Destination destination = getDestination(topicName);
-    	publishTo(destination, data);
-    	
-    }
+	@Override
+	public void publishString(String topicName, String data)
+			throws SystemException {
+		Destination destination = getDestination(topicName);
+		try {
+			// publishTo(destination, data);
+			clientPublisher.publishTo(destination, data);
+		} catch (JMSException e) {
+			SystemException.wrap(e).set("destination", destination)
+					.set("data", data);
+		}
+
+	}
         
-    private void publishTo(Destination destination, Serializable data) throws SystemException {
+   /* private void publishTo(Destination destination, Serializable data) throws SystemException {
     	try {
 			clientPublisher.publishTo(destination, data);
 		} catch (JMSException e) {
 			SystemException.wrap(e).set("destination", destination).set("data", data);
 		}
-    }
+    }*/
 
     /**
      * Closes the GossClient connection with server.
