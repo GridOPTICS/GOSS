@@ -65,8 +65,8 @@
 	pnnl.goss.core.security-propertyfile;version=latest
 	
 # Add broker name to the properties defined in shared.runprops
--runproperties: \
-	activemq.host=localhost,\
+-runproperties:  \
+	activemq.host=0.0.0.0,\
 	data=wunderdata,\
 	openwire.port=61616,\
 	broker-name=broker,\
