@@ -315,8 +315,7 @@ public class GridOpticsServer implements ServerControl {
 		try {
 			if (shouldUsSsl()){
 				broker = new SslBrokerService();
-				broker.setPersistent(false);
-				
+								
 				KeyManager[] km = getKeyManager(sslServerKeyStore, sslServerKeyStorePassword);
 		        TrustManager[] tm = getTrustManager(sslClientTrustStore);
 		        ((SslBrokerService) broker).addSslConnector(sslTransport, km, tm, null);
@@ -328,6 +327,7 @@ public class GridOpticsServer implements ServerControl {
 				broker.addConnector(stompTransport);
 				broker.addConnector(wsTransport);
 			}
+			broker.setPersistent(false);
 			//broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 			
