@@ -328,6 +328,9 @@ public class GridOpticsServer implements ServerControl {
 				broker.addConnector(wsTransport);
 			}
 			broker.setPersistent(false);
+			broker.setUseJmx(false);
+			broker.setPersistenceAdapter(null);
+			
 			//broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
 			
