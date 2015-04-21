@@ -9,16 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
+import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,5 +107,10 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	@Override
 	public boolean hasIdentifier(String identifier) {
 		return userMap.containsKey(identifier);
+	}
+	
+	 @Override
+	public PermissionResolver getPermissionResolver() {
+		return new GossWildcardPermissionResolver();
 	}
 }
