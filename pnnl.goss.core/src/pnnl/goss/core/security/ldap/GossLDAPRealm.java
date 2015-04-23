@@ -15,6 +15,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
 import org.apache.shiro.realm.ldap.JndiLdapRealm;
@@ -24,6 +25,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.security.GossRealm;
+import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
 
 @Component
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
@@ -130,6 +132,11 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 //	    				.orElse("true"));
 	    		
 	    	}
+	 }
+	 
+	 @Override
+	 public PermissionResolver getPermissionResolver() {
+		 return new GossWildcardPermissionResolver();
 	 }
 	
 }
