@@ -53,6 +53,7 @@
 	pnnl.goss.core.goss-core-security;version=latest,\
 	pnnl.goss.core.goss-core-server;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
+	pnnl.goss.core.goss-core-server-registry;version=latest,\
 	pnnl.goss.core.itests;version=latest,\
 	pnnl.goss.core.runner;version=latest,\
 	pnnl.goss.core.security-ldap;version=latest,\

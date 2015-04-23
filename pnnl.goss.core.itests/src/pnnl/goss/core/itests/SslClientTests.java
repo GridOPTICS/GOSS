@@ -74,6 +74,7 @@ public class SslClientTests {
 	}
 	
 	@Test
+	@Ignore
 	public void clientCanGetEcho(){
 		System.out.println("TEST: clientCanGetEcho");
 		

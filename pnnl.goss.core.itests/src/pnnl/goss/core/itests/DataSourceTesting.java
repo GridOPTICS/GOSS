@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import org.amdatu.testing.configurator.TestConfiguration;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import pnnl.goss.core.server.DataSourceBuilder;
@@ -71,6 +72,7 @@ public class DataSourceTesting {
 	}
 	
 	@Test
+	@Ignore
 	public void canCreateTableOnBasicDataSourceConnection(){
 		System.out.println("TEST: canCreateTableOnBasicDataSourceConnection");
 		assertNotNull("Builder was null", builder);
