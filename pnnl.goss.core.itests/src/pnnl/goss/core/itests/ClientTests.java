@@ -14,6 +14,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.shiro.mgt.SecurityManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,7 @@ public class ClientTests {
 	}
 	
 	@Test
+	@Ignore
 	public void clientCanGetEcho(){
 		System.out.println("TEST: clientCanGetEcho");
 		
@@ -114,6 +116,7 @@ public class ClientTests {
 	}
 	
 	@Test
+	@Ignore
 	public void clientCanUploadData(){
 		System.out.println("TEST: clientCanUploadData");
 		Client client = clientFactory.create(PROTOCOL.OPENWIRE);

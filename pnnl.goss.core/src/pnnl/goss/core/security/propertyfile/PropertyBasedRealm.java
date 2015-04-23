@@ -18,7 +18,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,6 +110,6 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	
 	 @Override
 	public PermissionResolver getPermissionResolver() {
-		return new GossWildcardPermissionResolver();
+		return null; // new GossWildcardPermissionResolver();
 	}
 }

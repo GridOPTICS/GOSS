@@ -25,11 +25,11 @@ import org.apache.shiro.subject.PrincipalCollection;
 import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.security.GossRealm;
-import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
+//import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
 
 @Component
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
-	 private static final String CONFIG_PID = "pnnl.goss.core.security.ldap";
+	private static final String CONFIG_PID = "pnnl.goss.core.security.ldap";
 	
 	public GossLDAPRealm(){
 		//TODO move these to config
@@ -136,7 +136,7 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	 
 	 @Override
 	 public PermissionResolver getPermissionResolver() {
-		 return new GossWildcardPermissionResolver();
+		 return null; // new GossWildcardPermissionResolver();
 	 }
 	
 }
