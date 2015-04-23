@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.impl;
+package pnnl.goss.server.registry;
 
 import java.sql.Connection;
 import java.sql.SQLException;
