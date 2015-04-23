@@ -1,4 +1,3 @@
 Private-Package:  \
-	pnnl.goss.core.security.propertyfile,\
-	pnnl.goss.core.security.impl
-Bundle-Version: 2.0.7.${tstamp}
+	pnnl.goss.core.security.propertyfile
+Bundle-Version: 2.0.8.${tstamp}
