@@ -1,36 +1,36 @@
 package pnnl.goss.core.security.ldap;
-import java.security.Principal;
 import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
-import javax.naming.NamingException;
-import javax.naming.ldap.LdapContext;
+
+
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
+import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
-import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
 import org.apache.shiro.realm.ldap.JndiLdapRealm;
-import org.apache.shiro.realm.ldap.LdapContextFactory;
 import org.apache.shiro.subject.PrincipalCollection;
 
 import com.northconcepts.exception.SystemException;
 
+import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
-import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
 
 @Component
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	 private static final String CONFIG_PID = "pnnl.goss.core.security.ldap";
 	
+	 @ServiceDependency
+	 GossPermissionResolver gossPermissionResolver;
+	 
 	public GossLDAPRealm(){
 		//TODO move these to config
 		setUserDnTemplate("uid={0},ou=users,ou=goss,ou=system");
@@ -136,7 +136,10 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	 
 	 @Override
 	 public PermissionResolver getPermissionResolver() {
-		 return new GossWildcardPermissionResolver();
+		 if(gossPermissionResolver!=null)
+			 return gossPermissionResolver;
+		 else 
+			 return super.getPermissionResolver();
 	 }
 	
 }

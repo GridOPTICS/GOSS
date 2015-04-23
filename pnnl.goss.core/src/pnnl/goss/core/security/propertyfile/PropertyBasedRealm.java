@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
+import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,10 +19,10 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import pnnl.goss.core.security.impl.GossWildcardPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
 
 import com.northconcepts.exception.SystemException;
@@ -49,6 +50,9 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	
 	private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> userPermissions = new ConcurrentHashMap<>();
+	
+	@ServiceDependency
+	GossPermissionResolver gossPermissionResolver;
 	
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
@@ -111,6 +115,9 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	
 	 @Override
 	public PermissionResolver getPermissionResolver() {
-		return new GossWildcardPermissionResolver();
+		 if(gossPermissionResolver!=null)
+			 return gossPermissionResolver;
+		 else 
+			 return super.getPermissionResolver();
 	}
 }
