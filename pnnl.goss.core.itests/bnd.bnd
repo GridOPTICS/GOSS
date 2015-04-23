@@ -21,8 +21,8 @@ Bundle-Version: 2.0.0.${tstamp}
 	pnnl.goss.core.testutil;version=latest
 -runfw: org.apache.felix.framework;version='[4.2.1,5)'
 -runee: JavaSE-1.8
-Test-Cases: ${classes;ANNOTATION;org.junit.Test}
--include: ${workspace}/pnnl.goss.core.itests/core-itests.bndrun
+#Test-Cases: ${classes;ANNOTATION;org.junit.Test}
+#-include: ${workspace}/pnnl.goss.core.itests/core-itests.bndrun
 Private-Package:  \
 	pnnl.goss.core.itests,\
 	pnnl.goss.activemq.testing
