@@ -1,4 +1,4 @@
-package pnnl.goss.core.server.impl;
+package pnnl.goss.server.registry;
 
 import java.util.Arrays;
 import java.util.List;
