@@ -336,7 +336,8 @@ public class GridOpticsServer implements ServerControl {
 			
     		broker.start();
 		} catch (Exception e) {
-			log.debug("Error Starting Broker", e);
+			log.error("Error Starting Broker", e);
+			
 			//System.err.println(e.getMessage());;
 		}
     }
