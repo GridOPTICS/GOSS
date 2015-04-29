@@ -55,7 +55,8 @@
 	pnnl.goss.core.goss-core-server;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
 	pnnl.goss.core.runner;version=latest,\
-	pnnl.goss.core.security-propertyfile;version=latest
+	pnnl.goss.core.security-propertyfile;version=latest,\
+	pnnl.goss.core.goss-core-server-registry;version=latest
 
 # if exists will overwrite any properties defined before. (see ~/goss.private.bnd)
 # so properties defined in ${private.props} could overwrite ssl.enabled.

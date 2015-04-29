@@ -34,4 +34,5 @@
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-client;version=latest,\
 	pnnl.goss.core.goss-core-exceptions;version=latest,\
-	slf4j.api;version='[1.7.7,1.7.8)'
+	slf4j.api;version='[1.7.7,1.7.8)',\
+	pnnl.goss.core.goss-core-server-registry;version=latest
