@@ -65,7 +65,10 @@
 	org.apache.servicemix.bundles.commons-dbcp;version=1.4.0,\
 	org.apache.commons.pool;version=1.5.4,\
 	org.apache.commons.io;version=2.4,\
-	pnnl.goss.core.testutil;version=latest
+	pnnl.goss.core.testutil;version=latest,\
+	org.eclipse.jetty.aggregate.jetty-all-server,\
+	javax.annotation,\
+	org.apache.felix.http.servlet-api
 
 -runrequires:  \
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.core-api)',\
