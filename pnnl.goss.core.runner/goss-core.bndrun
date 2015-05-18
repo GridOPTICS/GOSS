@@ -63,7 +63,9 @@
 	pnnl.goss.core.runner;version=latest,\
 	pnnl.goss.core.security-propertyfile;version=latest,\
 	pnnl.goss.core.goss-core-server-registry;version=latest,\
-	org.eclipse.jetty.aggregate.jetty-all-server
+	org.eclipse.jetty.aggregate.jetty-all-server,\
+	com.mysql.jdbc,\
+	kundera
 	
 # Add broker name to the properties defined in shared.runprops
 -runproperties:  \
