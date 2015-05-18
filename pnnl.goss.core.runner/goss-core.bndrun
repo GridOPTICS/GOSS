@@ -35,11 +35,10 @@
 	org.apache.felix.gogo.command;version='[0.14.0,0.14.1)',\
 	org.apache.felix.gogo.runtime;version='[0.12.1,0.12.2)',\
 	org.apache.felix.gogo.shell;version='[0.10.0,0.10.1)',\
-	org.apache.felix.http.servlet-api;version='[1.0.0,1.0.1)',\
+	org.apache.felix.http.servlet-api,\
 	org.apache.geronimo.specs.geronimo-jta_1.1_spec;version='[1.1.1,1.1.2)',\
 	org.apache.servicemix.bundles.commons-dbcp;version='[1.4.0,1.4.1)',\
 	org.apache.shiro.core;version='[1.2.3,1.2.4)',\
-	org.eclipse.jetty.aggregate.jetty-all-server;version='[7.6.9,7.6.10)',\
 	org.fusesource.hawtbuf.hawtbuf;version='[1.11.0,1.11.1)',\
 	org.fusesource.hawtdispatch.hawtdispatch;version='[1.21.0,1.21.1)',\
 	org.fusesource.hawtdispatch.hawtdispatch-transport;version='[1.21.0,1.21.1)',\
@@ -63,7 +62,8 @@
 	pnnl.goss.core.goss-core-server-api;version=latest,\
 	pnnl.goss.core.runner;version=latest,\
 	pnnl.goss.core.security-propertyfile;version=latest,\
-	pnnl.goss.core.goss-core-server-registry;version=latest
+	pnnl.goss.core.goss-core-server-registry;version=latest,\
+	org.eclipse.jetty.aggregate.jetty-all-server
 	
 # Add broker name to the properties defined in shared.runprops
 -runproperties:  \
