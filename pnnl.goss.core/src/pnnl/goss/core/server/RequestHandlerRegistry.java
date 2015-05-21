@@ -3,12 +3,11 @@ package pnnl.goss.core.server;
 import java.io.Serializable;
 import java.util.List;
 
-import com.northconcepts.exception.SystemException;
-
 import pnnl.goss.core.Request;
 import pnnl.goss.core.RequestAsync;
 import pnnl.goss.core.Response;
-import pnnl.goss.core.UploadRequest;
+
+import com.northconcepts.exception.SystemException;
 //import pnnl.goss.core.security.AuthorizationRoleMapper;
 
 public interface RequestHandlerRegistry {

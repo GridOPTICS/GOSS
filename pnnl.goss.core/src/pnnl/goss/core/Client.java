@@ -1,14 +1,11 @@
 package pnnl.goss.core;
 
-import java.io.File;
 import java.io.Serializable;
-
-//import org.apache.activemq.ConfigurationException;
-import org.apache.http.auth.Credentials;
 
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
 import com.northconcepts.exception.SystemException;
+//import org.apache.activemq.ConfigurationException;
 
 public interface Client {
 
@@ -76,9 +73,9 @@ public interface Client {
      * @return
      * @throws SystemException
      */
-    public Client setCredentials(Credentials credentials)
+    /*public Client setCredentials(Credentials credentials)
     		throws SystemException;;
-
+    */
     /**
      * Gets the type of protocol that the client will use to connect with.
      *

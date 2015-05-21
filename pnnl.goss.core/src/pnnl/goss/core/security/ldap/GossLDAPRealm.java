@@ -3,9 +3,6 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
@@ -19,10 +16,10 @@ import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
 import org.apache.shiro.realm.ldap.JndiLdapRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import com.northconcepts.exception.SystemException;
-
 import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
+
+import com.northconcepts.exception.SystemException;
 
 @Component
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{

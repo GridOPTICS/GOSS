@@ -2,12 +2,15 @@ package pnnl.goss.core;
 
 import java.util.Map;
 
+import org.apache.http.auth.Credentials;
+
 import pnnl.goss.core.Client.PROTOCOL;
 
 public interface ClientFactory {
 	
 	static final String CONFIG_PID = "pnnl.goss.core.client";
-	static final String DEFAULT_BROKER_URI = "default.broker.uri";
+	static final String DEFAULT_OPENWIRE_URI = "default.openwire.uri";
+	static final String DEFAULT_STOMP_URI = "default.stomp.uri";
 
     /**
      * Creates a client instance that can be used to connect to goss.
@@ -15,7 +18,15 @@ public interface ClientFactory {
      * @param protocol
      * @return
      */
-    Client create(PROTOCOL protocol);
+    Client create(PROTOCOL protocol)  throws Exception ;
+    
+    /**
+     * Creates a client instance that can be used to connect to goss.
+     *
+     * @param protocol
+     * @return
+     */
+    Client create(PROTOCOL protocol, Credentials credentials) throws Exception ;
 
     /**
      * Retrieve a client instance from a uuid.  If not available then returns

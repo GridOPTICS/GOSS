@@ -45,20 +45,10 @@
 package pnnl.goss.core.client;
 
 //import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
-import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
-import static pnnl.goss.core.GossCoreContants.PROP_STOMP_URI;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
-import java.lang.IllegalStateException;
-import java.util.Dictionary;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -66,21 +56,9 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-
-
-
-
-
-
-import javax.jms.Topic;
-
-
-
-
-
-
-//import org.apache.activemq.ActiveMQConnectionFactory;
-//import org.apache.activemq.ConfigurationException;
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.http.auth.Credentials;
 import org.fusesource.stomp.jms.StompJmsConnection;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
@@ -93,35 +71,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
-import pnnl.goss.core.ClientErrorCode;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request;
-import pnnl.goss.core.ResponseError;
-import pnnl.goss.core.ResponseText;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
-
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQConnectionFactory;
-
-
-
-
-
-
-
-
-
-
-
-import org.apache.activemq.ActiveMQSslConnectionFactory;
+import pnnl.goss.core.ResponseError;
+import pnnl.goss.core.ResponseText;
 
 import com.google.gson.Gson;
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
-import com.northconcepts.exception.ValidationCode;
 
 public class GossClient implements Client{
 
@@ -129,6 +90,7 @@ public class GossClient implements Client{
 
     private UUID uuid = null;
     private String brokerUri = null;
+    private String stompUri = null;
     private ClientConfiguration config;
     private volatile ClientPublishser clientPublisher;
     private Connection connection = null;
@@ -206,7 +168,7 @@ public class GossClient implements Client{
         }
     }
 
-    private void createSession() throws Exception{
+	public void createSession() throws Exception{
                
         config = new ClientConfiguration()
         				.set("TCP_BROKER", brokerUri);
@@ -243,7 +205,7 @@ public class GossClient implements Client{
         }
         else if(protocol.equals(PROTOCOL.STOMP)){
             StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-            factory.setBrokerURI("tcp://localhost:61614");
+            factory.setBrokerURI(stompUri);
             
             if (credentials != null){
             	connection = factory.createConnection(credentials.getUserPrincipal().getName(), credentials.getPassword());
@@ -332,7 +294,6 @@ public class GossClient implements Client{
      */
     public String sendRequest(Request request, GossResponseEvent event, RESPONSE_FORMAT responseFormat) throws SystemException {
         try{
-            createSession();
             Destination replyDestination=getTemporaryDestination();
             
             if(event!=null){
@@ -363,7 +324,6 @@ public class GossClient implements Client{
      */
     public Client subscribeTo(String topicName, GossResponseEvent event) throws SystemException {
         try{
-            createSession();
             if(event==null)
                 throw new NullPointerException("event cannot be null");
             Destination destination = null;
@@ -426,7 +386,6 @@ public class GossClient implements Client{
     @Override
     public void publish(String topicName, Serializable data, RESPONSE_FORMAT responseFormat) throws SystemException {
         try{
-            createSession();
             if(data==null)
                 throw new NullPointerException("event cannot be null");
 
@@ -587,7 +546,6 @@ public class GossClient implements Client{
 		}
     }
 
-    @Override
     public Client setCredentials(Credentials credentials) 
     		throws SystemException {
     	
@@ -598,7 +556,6 @@ public class GossClient implements Client{
 
     @Override
     public PROTOCOL getProtocol() {
-        // TODO Auto-generated method stub
         return protocol;
     }
 
@@ -641,8 +598,13 @@ public class GossClient implements Client{
     }
 
 
-	public GossClient setUri(String uri) {
+	public GossClient setOpenwireUri(String uri) {
 		brokerUri = uri;
+		return this;
+	}
+	
+	public GossClient setStompUri(String uri) {
+		stompUri = uri;
 		return this;
 	}
 }

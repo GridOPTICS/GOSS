@@ -44,20 +44,14 @@
 */
 package pnnl.goss.core.server.impl;
 
-import static pnnl.goss.core.GossCoreContants.PROP_ACTIVEMQ_CONFIG;
-import static pnnl.goss.core.GossCoreContants.PROP_OPENWIRE_URI;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Optional;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -69,38 +63,29 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
-import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.shiro.ShiroPlugin;
-import org.apache.activemq.shiro.env.IniEnvironment;
-import org.apache.activemq.shiro.subject.ConnectionSubjectFactory;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.felix.dm.annotation.api.Stop;
-import org.apache.shiro.config.Ini;
-import org.apache.shiro.config.Ini.Section;
 import org.apache.shiro.mgt.SecurityManager;
-import org.iq80.leveldb.util.FileUtils;
-import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.northconcepts.exception.ConnectionCode;
-import com.northconcepts.exception.SystemException;
-
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossRealm;
-import pnnl.goss.core.security.PermissionAdapter;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
+
+import com.northconcepts.exception.ConnectionCode;
+import com.northconcepts.exception.SystemException;
 
 
 @Component

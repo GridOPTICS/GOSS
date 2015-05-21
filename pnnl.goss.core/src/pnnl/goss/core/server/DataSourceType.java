@@ -1,6 +1,5 @@
 package pnnl.goss.core.server;
 
-import com.northconcepts.exception.ErrorCode;
 
 public enum DataSourceType {
 	DS_TYPE_JDBC(10),

@@ -1,7 +1,5 @@
 package pnnl.goss.core.server.impl;
 
-import java.util.Optional;
-
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.Property;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
