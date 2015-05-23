@@ -6,3 +6,4 @@
 *.class
 cnf/releaserepo/
 pnnl.goss.core/bin/
+./.project
