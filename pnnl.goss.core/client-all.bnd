@@ -1,10 +1,11 @@
 Bundle-Version: 2.0.1.${tstamp}
 Include-Resource: \
 	resources/activemq.xsd=resources/activemq.xsd,\
-	META-INF/services=resources/services
+	META-INF/services=resources/services,\
+	resources/rt.jar=${java.home}/lib/rt.jar
 Bundle-ClassPath: \
-	resources/activemq.xsd,${java.home}/lib/rt.jar
--classpath=resources	
+	resources/activemq.xsd
+-classpath=resources,${java.home}/lib	
 Export-Package:  \
 	pnnl.goss.core,\
 	pnnl.goss.core.client,\
