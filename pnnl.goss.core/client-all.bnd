@@ -1,10 +1,13 @@
 Bundle-Version: 3.0.0.${tstamp}
 Include-Resource: \
+	@org.apache.activemq.activemq-osgi-5.11.1.jar,\
+	@org.apache.activemq.shiro-5.11.1.jar,\
 	resources/activemq.xsd=resources/activemq.xsd,\
 	META-INF/services=resources/services,\
-	resources/rt.jar=${java.home}/lib/rt.jar
-Bundle-ClassPath: \
+	resources/rt.jar=${java.home}/lib/rt.jar	
+Bundle-ClassPath: .,\
 	resources/activemq.xsd
+	
 -classpath=resources,${java.home}/lib	
 Export-Package:  \
 	pnnl.goss.core,\
