@@ -3,7 +3,7 @@ Include-Resource: \
 	resources/activemq.xsd=resources/activemq.xsd,\
 	META-INF/services=resources/services
 Bundle-ClassPath: \
-	resources/activemq.xsd,${java.home}/jre/lib/rt.jar
+	resources/activemq.xsd,${java.home}/lib/rt.jar
 -classpath=resources	
 Export-Package:  \
 	pnnl.goss.core,\
