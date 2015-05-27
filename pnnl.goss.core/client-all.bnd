@@ -1,4 +1,4 @@
-Bundle-Version: 2.0.1.${tstamp}
+Bundle-Version: 3.0.0.${tstamp}
 Include-Resource: \
 	resources/activemq.xsd=resources/activemq.xsd,\
 	META-INF/services=resources/services,\
