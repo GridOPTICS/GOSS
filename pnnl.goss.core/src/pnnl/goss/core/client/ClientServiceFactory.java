@@ -13,10 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.naming.ConfigurationException;
+
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.http.auth.Credentials;
-import org.osgi.service.cm.ConfigurationException;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.Client.PROTOCOL;
@@ -58,13 +59,13 @@ public class ClientServiceFactory implements ClientFactory {
 	        	String trustPassword = (String)this.properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD);
 
 	        	if (!exists(trustStore)){
-	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE, "Wasn't set");
+	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE + " Wasn't set");
 	        	}
 	        	if (!exists(trustPassword)){
-	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD, "Wasn't set");
+	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD + " Wasn't set");
 	        	}
 	        	if (!exists(uri)){
-	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_URI, "Wasn't set");
+	        		throw new ConfigurationException(GossCoreContants.PROP_SSL_URI + " Wasn't set");
 	        	}
 	        	
 	        	
@@ -76,12 +77,12 @@ public class ClientServiceFactory implements ClientFactory {
 		        String value = (String) this.properties.get(GossCoreContants.PROP_OPENWIRE_URI); 
 		        
 		        if (!exists(value)){
-		        	throw new ConfigurationException(GossCoreContants.PROP_OPENWIRE_URI, "Not found in configuration file: " + CONFIG_PID);
+		        	throw new ConfigurationException(GossCoreContants.PROP_OPENWIRE_URI + " Not found in configuration file: " + CONFIG_PID);
 		        }
 		        
 		        value = (String) this.properties.get(GossCoreContants.PROP_STOMP_URI);
 		        if (!exists(value)){
-		        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI, "Not found in configuration file: " + CONFIG_PID);
+		        	throw new ConfigurationException(GossCoreContants.PROP_STOMP_URI + " Not found in configuration file: " + CONFIG_PID);
 		        }
 	        }
 
