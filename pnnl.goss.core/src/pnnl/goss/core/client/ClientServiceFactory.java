@@ -131,7 +131,7 @@ public class ClientServiceFactory implements ClientFactory {
         		client = new GossClient()
         					.setProtocol(PROTOCOL.SSL)
         					.setOpenwireUri((String)properties.get(ClientFactory.DEFAULT_OPENWIRE_URI))
-        					.setOpenwireUri((String)properties.get(ClientFactory.DEFAULT_STOMP_URI))
+        					.setStompUri((String)properties.get(ClientFactory.DEFAULT_STOMP_URI))
         					.setClientTrustStorePassword((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD))
         					.setClientTrustStore((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE));
         		if(credentials != null){
@@ -141,7 +141,8 @@ public class ClientServiceFactory implements ClientFactory {
         	else{
 	            client = new GossClient()
 	            				.setProtocol(protocol)
-	            				.setOpenwireUri((String)properties.get(GossCoreContants.PROP_OPENWIRE_URI));
+	            				.setOpenwireUri((String)properties.get(GossCoreContants.PROP_OPENWIRE_URI))
+	            				.setStompUri((String)properties.get(GossCoreContants.PROP_STOMP_URI));
 	            if(credentials != null){
         			client.setCredentials(credentials);
 	            }
