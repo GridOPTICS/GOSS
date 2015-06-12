@@ -32,7 +32,6 @@ Export-Package:  \
 	pnnl.goss.core,\
 	pnnl.goss.core.client,\
 	pnnl.goss.core.exception,\
-	com.northconcepts.exception
 	com.northconcepts.exception,\
 	org.apache.http.auth,\
 	org.slf4j
