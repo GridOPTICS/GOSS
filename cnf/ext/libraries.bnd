@@ -72,14 +72,20 @@ activemq-runpath: ${activemq};version=file,\
 #	slf4j.simple;version=1.7.7,\
 #	org.amdatu.jta;version=2.0.0,\
 #	org.amdatu.jta.api;version=1.0.0
-	
+
+# Config Admin
+#
+configadmin: ${repo;org.apache.felix.configadmin;[1.8.0,1.8.1);HIGHEST}
+configadmin-buildpath: ${configadmin};version=file
+configadmin-runpath: ${configadmin};version=file	
 	
 # Amdatu Components
 amdatu-config-api: ${repo;org.amdatu.configurator.api;[1.0.1,1.0.2);HIGHEST}
 amdatu-config-autoconf:	${repo;org.amdatu.configurator.autoconf;[1.0.1,1.0.2);HIGHEST}
 amdatu-config-props: ${repo;org.amdatu.configurator.properties;[1.0.1,1.0.2);HIGHEST}
 amdatu-config-shell: ${repo;org.amdatu.configurator.shell;[1.0.1,1.0.2);HIGHEST}
-amdatu-config-runpath: ${amdatu-config-api};version=file,\
+amdatu-config-runpath: ${configadmin-buildpath},\
+  ${amdatu-config-api};version=file,\
   ${amdatu-config-autoconf};version=file,\
   ${amdatu-config-props};version=file,\
   ${amdatu-config-shell};version=file
@@ -101,11 +107,7 @@ gogo-runpath: ${gogo-command};version=file,\
   ${gogo-runtime};version=file,\
   ${gogo-shell};version=file
 
-# Config Admin
-#
-configadmin: ${repo;org.apache.felix.configadmin;[1.8.0,1.8.1);HIGHEST}
-configadmin-buildpath: ${configadmin};version=file
-configadmin-runpath: ${configadmin};version=file
+
 
 # Event Admin
 #
@@ -134,9 +136,11 @@ servlet-buildpath: ${servlet};version=file
 servlet-runpath: ${servlet};version=file
 
 httpservice: ${repo;org.apache.felix.http.jetty;[2.2.2,2.3);HIGHEST}
+httpservice-whiteboard: ${repo;org.apache.felix.http.whiteboard;[2.2.2,2.3);HIGHEST}
 httpservice-buildpath: ${httpservice};version=file,\
   ${servlet-buildpath}
-httpservice-runpath: ${httpservice};version=file,\
+httpservice-runpath: ${httpservice};version=file, \
+  ${httpservice-whiteboard};version=file, \
   ${servlet-buildpath}
   
 # All javax elements should go here.
