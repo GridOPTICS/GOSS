@@ -1,5 +1,5 @@
 Export-Package:  \
 	pnnl.goss.core,\
 	com.northconcepts.exception
-Bundle-Version: 3.0.0.${tstamp}
+Bundle-Version: 2.0.3.${tstamp}
 -baseline: *
