@@ -4,9 +4,72 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script type="text/javascript" src="js/stomp.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
 </head>
 <body>
 <h1>Hello World!</h1>
 <p>Applesauce</p>
+<input type="text" id="wsaddr" placeholder="Websocke url" value="ws://localhost:61614" />
+<button id="connect">Connect</button> <button id="disconnect">Disconnect</button><br />
+<textarea rows="5" cols="80"></textarea><br />
+<button id="send">Send</button><br />
+<button id="list_handlers">List Handlers</button>
+<button id="list_datasources">List Data Sources</button>
+<p>Log</p>
+<div id="log"></div>
+<p>Debug</p>
+<div id="debug"></div>
+
+<script type="text/javascript">
+	var client = null;
+
+	var onConnect = function(){
+		logMessage('Conneccted!');
+		client.subscribe("/topic/goss/management/response", onResponse);
+	}
+
+	var onDisconnect = function() {
+		logMessage('Disconnecting');
+	}
+
+	var onResponse = function (message) {
+		logMessage("Response Id: "+message.id);
+		logMessage("Response: "+message.body);
+	}
+	
+	var onError = function(error) {
+		logMessage("ERROR: "+ error);
+	}
+
+	var logMessage = function(text){
+		$("#log").append('<pre>'+text+'\n</pre>');
+	}
+
+	$("#disconnect").click(function(){
+		client.disconnect();
+	});	
+	$("#connect").click(function(){		
+		client = Stomp.client('ws://localhost:61614');
+		client.heartbeat.outgoing = 0;
+		client.heartbeat.incoming = 0;
+		
+		client.debug = function(str) {
+			// append the debug log to a #debug div somewhere in the page using JQuery:
+		    $("#debug").append(str + "\n");
+		};
+		
+		client.connect('system', 'manager', onConnect, onError);
+		
+		$("#list_handlers").click(function() {
+			client.send("/topic/goss/management/request", {}, 
+					"list_handlers");
+		});
+		$("#list_datasources").click(function() {
+			client.send("/topic/goss/management/request", {}, 
+					"list_datasources");
+		});
+	});
+</script>
 </body>
 </html>
