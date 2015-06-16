@@ -1,3 +1,4 @@
+DynamicImport-Package: *
 Private-Package:  \
 	pnnl.goss.core.server.web
 

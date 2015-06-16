@@ -49,10 +49,12 @@ public class ManagementLauncher {
 			if (response instanceof DataResponse){
 				String request = (String)((DataResponse) response).getData();
 				if (request.trim().equals("list_handlers")){
-					responseData = gson.toJson(handlerRegistry.list());
+					responseData = "Listing handlers here!";
+					//responseData = gson.toJson(handlerRegistry.list());
 				}
 				else if (request.trim().equals("list_datasources")){
-					responseData = gson.toJson(datasourceRegistry.getAvailable());
+					responseData = "Listing Datasources here!";
+					//responseData = gson.toJson(datasourceRegistry.getAvailable());
 				}
 			}
 
@@ -69,6 +71,7 @@ public class ManagementLauncher {
 			Client client = clientFactory.create(PROTOCOL.STOMP,
 					new UsernamePasswordCredentials("system", "manager"));
 			client.subscribeTo("/topic/goss/management/request", new ResponseEvent(client));
+			client.subscribeTo("/topic/goss/management/go", new ResponseEvent(client));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

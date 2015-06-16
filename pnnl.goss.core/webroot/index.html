@@ -19,13 +19,12 @@
 <p>Log</p>
 <div id="log"></div>
 <p>Debug</p>
-<div id="debug"></div>
+<pre id="debug"></pre>
 
 <script type="text/javascript">
 	var client = null;
 
 	var onConnect = function(){
-		logMessage('Conneccted!');
 		client.subscribe("/topic/goss/management/response", onResponse);
 	}
 
@@ -49,8 +48,9 @@
 	$("#disconnect").click(function(){
 		client.disconnect();
 	});	
-	$("#connect").click(function(){		
-		client = Stomp.client('ws://localhost:61614');
+	$("#connect").click(function(){	
+		var socket = $("#wsaddr").val();
+		client = Stomp.client(socket);
 		client.heartbeat.outgoing = 0;
 		client.heartbeat.incoming = 0;
 		
