@@ -1,3 +1,10 @@
 Private-Package:  \
 	pnnl.goss.core.server.web
+
 Bundle-Version: 1.0.0.${tstamp}
+
+# Import webroot folder to path resources/webroot
+Include-Resource: resources/webroot=webroot
+X-Web-Resource-Version: 1.0
+X-Web-Resource: /goss;/resources/webroot
+# X-Web-Resource-Default-Page: index.html
