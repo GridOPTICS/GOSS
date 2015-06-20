@@ -149,6 +149,7 @@ public class ClientServiceFactory implements ClientFactory {
 	            }
 	        }
         	
+        	client.setUsed(true);
         	client.createSession();
             clientInstances.add(client);
         }
@@ -158,8 +159,17 @@ public class ClientServiceFactory implements ClientFactory {
 
     @Override
     public Client get(String uuid) {
-        // TODO Auto-generated method stub
-        return null;
+    	Client client = null;
+    	
+    	for(int i=0; i<clientInstances.size(); i++){
+    		GossClient c =  clientInstances.get(i);
+    		if (c.getClientId().equals(uuid)){
+    			client = c;
+    			break;
+    		}
+    	}    		
+    	
+        return client;
     }
 
     @Override

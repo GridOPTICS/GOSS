@@ -107,6 +107,10 @@ public class GossClient implements Client {
 	private PROTOCOL protocol;
 	// private PROTOCOL protocol;
 	private Credentials credentials = null;
+	
+	public GossClient(){
+		this.uuid = UUID.randomUUID();
+	}
 
 	public GossClient setProtocol(PROTOCOL protocol) {
 		this.protocol = protocol;
