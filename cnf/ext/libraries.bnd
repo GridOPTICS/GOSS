@@ -44,7 +44,8 @@ aries-blueprint-api: ${repo;org.apache.aries.blueprint.api;[1.0.0,1.0.1);HIGHEST
 aries-proxy-api: ${repo;org.apache.aries.proxy.api;[1.0.0,1.0.1);HIGHEST}
 aries-util: ${repo;org.apache.aries.util;[1.1.0,1.1.1);HIGHEST}
 asm: ${repo;org.objectweb.asm.all;[4.1.0,4.1.1);HIGHEST}
-activemq-runpath: ${activemq};version=file,\
+activemq-buildpath: ${activemq};version=file
+activemq-runpath: ${activemq-buildpath},\
   ${shiro};version=file,\
   ${activemq-shiro};version=file,\
   ${aries};version=file,\

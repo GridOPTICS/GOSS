@@ -11,11 +11,10 @@
 	aQute.bnd.jpm.Repository; \
 		includeStaged=true; \
 		name=JPM4J; \
-		index=${build}/jpm-index.json
+		index=${build}/jpm-index.json,\
+	aQute.bnd.deployer.repository.FixedIndexedRepo; name=Amdatu Dependencies; locations=http://repository.amdatu.org/dependencies/index.xml.gz,\
+	aQute.bnd.deployer.repository.FixedIndexedRepo; name=Amdatu Release;      locations=http://repository.amdatu.org/release/index.xml.gz
 # per https://groups.google.com/forum/#!topic/bndtools-users/zmQL9uavaWM
 # this must be writable.
 -releaserepo: Release
 
--plugin.amdatu: \
-	aQute.bnd.deployer.repository.FixedIndexedRepo; name=Amdatu Dependencies; locations=http://repository.amdatu.org/dependencies/index.xml.gz,\
-	aQute.bnd.deployer.repository.FixedIndexedRepo; name=Amdatu Release;      locations=http://repository.amdatu.org/release/index.xml.gz
