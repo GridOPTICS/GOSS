@@ -1,6 +1,6 @@
 # OSGi bundles
 #
-# On a combined buildpath the R6 remoteserviceadmin must be before the R5 enterprise so it overrides it on 
+# On a combined buildpath the R6 remoteserviceadmin must be before the R5 enterprise so it overrides it on
 # the classpath.
 #
 framework: ${repo;org.apache.felix.framework;[4.3.1,5);HIGHEST}
@@ -10,9 +10,11 @@ framework-runpath: ${framework};version=file
 osgi-core: ${repo;osgi.core;[5,6);HIGHEST}
 osgi-core-buildpath: ${osgi-core};version=file
 osgi-core-runpath: ${osgi-core};version=file
+
 osgi-cmpn: ${repo;osgi.cmpn;[5,6);HIGHEST}
 osgi-cmpn-buildpath: ${osgi-cmpn};version=file
 osgi-cmpn-runpath: ${osgi-cmpn};version=file
+
 osgi-enterprise: ${repo;osgi.enterprise;[5,6);HIGHEST}
 osgi-enterprise-buildpath: ${osgi-enterprise};version=file
 osgi-enterprise-runpath: ${osgi-enterprise};version=file
@@ -31,9 +33,8 @@ osgi-buildpath: \
 osgi-runpath: \
   ${osgi-enterprise-buildpath},\
   ${osgi-cmpn-buildpath}
-  
 
-# Activemq 
+# Activemq
 # In order to use activemq one must include ${javax-runpath} as well.
 activemq: ${repo;org.apache.activemq.activemq-osgi;[5.11.1,5.11.2);HIGHEST}
 activemq-shiro: ${repo;org.apache.activemq.shiro;[5.11.1,5.11.2);HIGHEST}
@@ -77,8 +78,8 @@ activemq-runpath: ${activemq};version=file,\
 #
 configadmin: ${repo;org.apache.felix.configadmin;[1.8.0,1.8.1);HIGHEST}
 configadmin-buildpath: ${configadmin};version=file
-configadmin-runpath: ${configadmin};version=file	
-	
+configadmin-runpath: ${configadmin};version=file
+
 # Amdatu Components
 amdatu-config-api: ${repo;org.amdatu.configurator.api;[1.0.1,1.0.2);HIGHEST}
 amdatu-config-autoconf:	${repo;org.amdatu.configurator.autoconf;[1.0.1,1.0.2);HIGHEST}
@@ -93,9 +94,8 @@ amdatu-config-runpath: ${configadmin-buildpath},\
 amdatu-jta: ${repo;org.amdatu.jta;[2.0.0,2.0.1);HIGHEST}
 amdatu-jta-api: ${repo;org.amdatu.jta.api;[1.0.0,1.0.1);HIGHEST}
 amdatu-jta-runpath: ${amdatu-jta};version=file,\
-  ${amdatu-jta-api};version=file 
+  ${amdatu-jta-api};version=file
 
- 
 # Gogo Shell
 #
 gogo-command: ${repo;org.apache.felix.gogo.command;[0.12.0,0.13.0);HIGHEST}
@@ -106,8 +106,6 @@ gogo-buildpath: ${gogo-command};version=file,\
 gogo-runpath: ${gogo-command};version=file,\
   ${gogo-runtime};version=file,\
   ${gogo-shell};version=file
-
-
 
 # Event Admin
 #
@@ -125,7 +123,7 @@ dm-runpath: ${dm};version=file,\
   ${dm-runtime};version=file,\
   ${dm-shell};version=file
 
-	
+
 # Http Service
 #
 # Felix servlet-api provides us with a Servlet 3.0 bundles that also exports itself as Servlet 2.6. This allows
@@ -142,10 +140,43 @@ httpservice-buildpath: ${httpservice};version=file,\
 httpservice-runpath: ${httpservice};version=file, \
   ${httpservice-whiteboard};version=file, \
   ${servlet-buildpath}
-  
+
+# Jackson json/xml parser
+# Allows easy conversion from object to json.
+jackson: ${repo;com.fasterxml.jackson.core.jackson-core;[2.5.4,2.6);HIGHEST}
+jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.5.4,2.6);HIGHEST}
+jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.5.4,2.6);HIGHEST}
+jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.5.4,2.6);HIGHEST}
+jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.5.4,2.6);HIGHEST}
+jaxrs: ${repo;org.amdatu.web.rest.jaxrs;[1.0.5,1.1);HIGHEST}
+jaxrs-wink: ${repo;org.amdatu.web.rest.wink;[2.0.0,2.1);HIGHEST}
+jackson-buildpath: \
+  ${jackson};version=file, \
+  ${jackson-annotations};version=file, \
+  ${jackson-databind};version=file, \
+  ${jackson-base};version=file, \
+  ${jackson-json-provider};version=file
+jaxrs-buildpath: ${jaxrs};version=file, \
+  ${jaxrs-wink};version=file
+jaxrs-runpath: \
+  ${jaxrs-buildpath}, \
+  ${jackson-buildpath}
+
+# Swagger gives web api help for web services.
+swagger: ${repo;org.amdatu.web.rest.doc;[1.2.2,1.3);HIGHEST}
+swagger-doc: ${repo;org.amdatu.web.rest.doc.swagger;[1.0.9,1.1);HIGHEST}
+swagger-ui: ${repo;org.amdatu.web.rest.doc.swagger.ui;[1.0.7,1.1);HIGHEST}
+swagger-buildpath: \
+  ${swagger};version=file,\
+  ${swagger-doc};version=file
+swagger-runpath: \
+  ${swagger-buildpath},\
+  ${swagger-ui};version=file
+
+
 # All javax elements should go here.
-	com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
-	javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
+com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
+javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
 
 javax-annotation: ${repo;javax.annotation;[1.1.0,1.1.1);HIGHEST}
 javax-ejb: ${repo;org.glassfish.javax.ejb;[3.1.1,3.1.2);HIGHEST}
@@ -159,7 +190,7 @@ javax-runpath: ${javax-annotation};version=file,\
   ${javax-management};version=file,\
   ${javax-xml};version=file,\
   ${javax-xml-stream};version=file
-	
+
 # Commons lang3
 #
 lang3=${repo;org.apache.commons.lang3;[3.1.0,3.2.0);HIGHEST}
