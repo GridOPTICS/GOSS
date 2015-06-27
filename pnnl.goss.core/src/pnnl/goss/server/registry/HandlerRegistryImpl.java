@@ -56,6 +56,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 		private volatile String authorizationHandlerClassName;
 		private volatile RequestUploadHandler uploadRequestHandlerInstance;
 				
+		@SuppressWarnings("unused")
 		public String getUploadDataType() {
 			return uploadDataType;
 		}
@@ -85,6 +86,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 		private volatile String authorizationHandlerClassName;
 		private volatile RequestHandler requestHandlerInstance;
 				
+		@SuppressWarnings("unused")
 		public String getRequestClassName() {
 			return requestClassName;
 		}
@@ -92,6 +94,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 			this.requestClassName = requestClassName;
 			return this;
 		}
+		@SuppressWarnings("unused")
 		public String getAuthorizationHandlerClassName() {
 			return authorizationHandlerClassName;
 		}
@@ -191,15 +194,9 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	@Override
 	public Response handle(Request request) throws HandlerNotFoundException {
 		
-		
-		
-		//securityManager.
-//		Subject subject = securityManager.getSession(null).get; // SecurityUtils.getSubject();
-//		securityManager.checkRole(subject.getPrincipals(), "admin");
-		
-		
 		RequestHandler handler = getHandler(request.getClass());
 		return handler.handle(request);
+		
 	}
 
 	@Override
