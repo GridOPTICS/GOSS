@@ -2,7 +2,7 @@ package pnnl.goss.core.itests;
 
 import static org.amdatu.testing.configurator.TestConfigurator.cleanUp;
 import static org.amdatu.testing.configurator.TestConfigurator.configure;
-import static org.amdatu.testing.configurator.TestConfigurator.serviceDependency;
+import static org.amdatu.testing.configurator.TestConfigurator.createServiceDependency;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -46,10 +46,10 @@ public class SslClientTests {
 	public void before() throws InterruptedException{	
 		testConfig = configure(this)
 						.add(CoreConfigSteps.configureSSLServerAndClientPropertiesConfig())
-						.add(serviceDependency().setService(Logger.class))
-						.add(serviceDependency().setService(SecurityManager.class))
-						.add(serviceDependency().setService(ServerControl.class))
-						.add(serviceDependency().setService(ClientFactory.class));
+						.add(createServiceDependency().setService(Logger.class))
+						.add(createServiceDependency().setService(SecurityManager.class))
+						.add(createServiceDependency().setService(ServerControl.class))
+						.add(createServiceDependency().setService(ClientFactory.class));
 		testConfig.apply();
 		
 		// Configuration update is asyncronous, so give a bit of time to catch up

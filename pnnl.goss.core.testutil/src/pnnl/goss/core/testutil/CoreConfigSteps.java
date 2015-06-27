@@ -1,8 +1,7 @@
 package pnnl.goss.core.testutil;
 
-import static org.amdatu.testing.configurator.TestConfigurator.configuration;
-
 import org.amdatu.testing.configurator.ConfigurationSteps;
+import static org.amdatu.testing.configurator.TestConfigurator.createConfiguration;
 
 import pnnl.goss.core.ClientFactory;
 
@@ -24,17 +23,17 @@ public class CoreConfigSteps {
 	public static ConfigurationSteps configureServerAndClientPropertiesConfig(){
 		
 		return ConfigurationSteps.create()
-				.add(configuration("pnnl.goss.core.server")
+				.add(createConfiguration("pnnl.goss.core.server")
 					.set("goss.openwire.uri", "tcp://localhost:6000")
 					.set("goss.stomp.uri",  "stomp://localhost:6001") //vm:(broker:(tcp://localhost:6001)?persistent=false)?marshal=false")
 					.set("goss.ws.uri", "ws://localhost:6002")
 					.set("goss.start.broker", "true")
 					.set("goss.broker.uri", "tcp://localhost:6000"))
-				.add(configuration(ClientFactory.CONFIG_PID)
+				.add(createConfiguration(ClientFactory.CONFIG_PID)
 					.set("goss.openwire.uri", "tcp://localhost:6000")
 					.set("goss.stomp.uri",  "stomp://localhost:6001")
 					.set("goss.ws.uri", "ws://localhost:6002"))
-				.add(configuration("org.ops4j.pax.logging")
+				.add(createConfiguration("org.ops4j.pax.logging")
 					.set("log4j.rootLogger", "DEBUG, out, osgi:*")
 					.set("log4j.throwableRenderer", "org.apache.log4j.OsgiThrowableRenderer")
 
@@ -60,7 +59,7 @@ public class CoreConfigSteps {
 	public static ConfigurationSteps configureSSLServerAndClientPropertiesConfig(){
 		
 		return ConfigurationSteps.create()
-				.add(configuration("pnnl.goss.core.server")
+				.add(createConfiguration("pnnl.goss.core.server")
 					.set("goss.ssl.uri", "ssl://localhost:61611")
 					.set("goss.start.broker", "true")
 					.set("server.keystore", "resources/keystores/mybroker.ks")
@@ -72,12 +71,12 @@ public class CoreConfigSteps {
 					.set("client.keystore", "resources/keystores/myclient.ks")
 					.set("client.keystore.password", "GossClientTemp")
 					.set("ssl.enabled", "true"))
-				.add(configuration(ClientFactory.CONFIG_PID)
+				.add(createConfiguration(ClientFactory.CONFIG_PID)
 					.set("goss.ssl.uri", "ssl://localhost:61611")
 					.set("client.truststore", "resources/keystores/myclient.ts")
 					.set("client.truststore.password", "GossClientTrust")
 					.set("ssl.enabled", "true"))
-				.add(configuration("org.ops4j.pax.logging")
+				.add(createConfiguration("org.ops4j.pax.logging")
 					.set("log4j.rootLogger", "DEBUG, out, osgi:*")
 					.set("log4j.throwableRenderer", "org.apache.log4j.OsgiThrowableRenderer")
 

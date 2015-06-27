@@ -1,9 +1,9 @@
 package pnnl.goss.core.itests;
 
 import static org.amdatu.testing.configurator.TestConfigurator.cleanUp;
-import static org.amdatu.testing.configurator.TestConfigurator.configuration;
+import static org.amdatu.testing.configurator.TestConfigurator.createConfiguration;
 import static org.amdatu.testing.configurator.TestConfigurator.configure;
-import static org.amdatu.testing.configurator.TestConfigurator.serviceDependency;
+import static org.amdatu.testing.configurator.TestConfigurator.createServiceDependency;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +41,7 @@ public class DataSourceTesting {
 		testConfig = configure(this)
 				.add(CoreConfigSteps.configureServerAndClientPropertiesConfig())
 				
-				.add(configuration("pnnl.goss.core.security.propertyfile")
+				.add(createConfiguration("pnnl.goss.core.security.propertyfile")
 					.set("reader", "reader,queue:*,topic:*,temp-queue:*"))
 				//.add(configureServerAndClientPropertiesConfig())
 				//.add(serviceDependency(SecurityManager.class))
@@ -49,8 +49,8 @@ public class DataSourceTesting {
 				//.add(serviceDependency(ServerControl.class))
 				//.add(serviceDependency(ClientFactory.class))				
 //				.add(TestSteps.configureServerAndClientPropertiesConfig())
-				.add(serviceDependency(DataSourceBuilder.class))
-				.add(serviceDependency(DataSourceRegistry.class));
+				.add(createServiceDependency().setService(DataSourceBuilder.class))
+				.add(createServiceDependency().setService(DataSourceRegistry.class));
 				//.add(serviceDependency(SecurityManager.class));
 		testConfig.apply();
 		
