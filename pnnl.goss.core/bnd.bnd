@@ -4,6 +4,7 @@
 	${dm-buildpath},\
 	${osgi-buildpath},\
 	${activemq-buildpath},\
+	${httpservice-buildpath},\
 	org.apache.httpcomponents.httpclient;version=4.2,\
 	slf4j.api;version=1.7,\
 	slf4j.simple;version=1.7,\
@@ -41,8 +42,7 @@
 	org.apache.commons.pool,\
 	org.apache.servicemix.bundles.commons-dbcp,\
 	org.apache.commons.io;version=2.4,\
-	${jackson-buildpath},\
-	org.apache.felix.http.servlet-api;version=1.1
+	${jackson-buildpath}
 	
 -sub:  \
 	*.bnd
