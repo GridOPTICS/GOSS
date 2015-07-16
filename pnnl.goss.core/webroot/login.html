@@ -21,13 +21,11 @@
 	<br/>
 
 
-<form action="/powergrid/upload.html" onsubmit="return sign_in()" >
 <div class="row">
 <div class="large-4 large-centered columns">
   <div class="login-box">
   <div class="row">
   <div class="large-12 columns">
-    <form>
        <div class="row">
          <div class="large-12 columns">
              <input type="text" id="username" placeholder="Username" />
@@ -40,19 +38,22 @@
       </div>
       <div class="row">
         <div class="large-12 large-centered columns">
-          <input type="submit" class="button expand" value="Log In" />
+          <input type="button" id="login_button" class="button expand" value="Log In" />
         </div>
       </div>
-    </form>
+       
+       </div>
   </div>
 </div>
 </div>
 </div>
-</div>
-</form>
 
 <div class="row">
+	  <div class="large-8 large-centered columns">
+         <label for="status" />
+      </div>
       <div class="large-8 large-centered columns">
+      <div class="row">
       	<div class="panel">
 	        <div class="row">
 	        	<div class="large-6 medium-6 columns">
@@ -66,9 +67,15 @@
       	</div>
       </div>
     </div>
-	
+</div>	
 
 <script type="text/javascript">
+
+
+$('#login_button').click(function(){
+	
+	sign_in();    	
+});
 
 function sign_in() {
 
@@ -88,13 +95,29 @@ function sign_in() {
             .done(function(jsonObj){
             	//alert(JSON.stringify(jsonObj, null, 2));
             	var obj = jQuery.parseJSON(JSON.stringify(jsonObj, null, 2));
-           		alert(obj.token);
-           		document.cookie="authToken="+obj.token;
-           		alert(document.cookie)
-           		return true;
-            	}
+           		//alert(obj.token);
+           		if(obj.token!=null){
+           			localStorage.setItem("authToken", obj.token);
+// 	           		document.cookie="authToken="+obj.token;
+// 	           		alert(document.cookie)
+	           		
+	           		var referUrl = getParameterByName('refer');
+					if(referUrl!=null){
+						window.location.replace(referUrl);
+					} else {
+						 $("label[for = status]").text("Login Sucessful: "+obj.token);
+					}
+	            } else {
+	            	$("label[for = status]").text("Login failed");
+	            }
+            }
             );
 	
+}
+
+function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
 </script>
 </body>
