@@ -18,6 +18,11 @@ public class Activator extends DependencyActivatorBase {
 						.setService(SecurityManager.class))
 				.add(createServiceDependency()
 						.setService(TokenIdentifierMap.class)));
+		
+		manager.add(createComponent()
+				.setInterface(Object.class.getName(), null).setImplementation(
+						LoginTestService.class));
+		
 	}
 
 	@Override

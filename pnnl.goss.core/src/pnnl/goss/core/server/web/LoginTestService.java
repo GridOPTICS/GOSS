@@ -15,29 +15,17 @@ import org.apache.shiro.mgt.SecurityManager;
 
 import pnnl.goss.core.server.TokenIdentifierMap;
 
-@Path("/login")
-public class LoginService {
+@Path("/loginTest")
+public class LoginTestService {
 	
-	private volatile SecurityManager securityManager;
-	
-	private volatile TokenIdentifierMap tokenMap;	
 	
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
 	@Produces(MediaType.APPLICATION_JSON)
-	public String authenticate(@Context HttpServletRequest request, UsernamePasswordToken params){
-		String sessionToken = null;
-		try{
-			@SuppressWarnings("unused")
-			AuthenticationInfo info = securityManager.authenticate(params);
-			sessionToken = tokenMap.registerIdentifier(request.getRemoteAddr(), params.getUsername());
-			
-		} catch(AuthenticationException e){
-			return "{\"error\": \"Invalid Login\"}";
-		}
+	public String authenticate(@Context HttpServletRequest request){
 		
-		return "{\"token\": \"" + sessionToken + "\"}";
+		return "{\"status\": \"Success\"}";
 	}
 	
 
