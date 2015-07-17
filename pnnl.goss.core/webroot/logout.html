@@ -13,10 +13,21 @@
 
 <script type="text/javascript">
 
+function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+var referUrl = getParameterByName('refer');
+
 
 localStorage.setItem("authToken", null);
 
-window.location.replace('/goss/login.html');
+if(referUrl!=null){
+	window.location.replace('/goss/login.html?refer='+referUrl);
+} else {
+	window.location.replace('/goss/login.html');
+}
  
 
 
