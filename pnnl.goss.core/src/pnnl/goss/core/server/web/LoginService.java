@@ -18,10 +18,15 @@ import pnnl.goss.core.server.TokenIdentifierMap;
 @Path("/login")
 public class LoginService {
 	
+	// Injected from Activator
 	private volatile SecurityManager securityManager;
 	
+	// Injected from Activator.
 	private volatile TokenIdentifierMap tokenMap;	
 	
+	public void start(){
+		System.out.println("I AM STARTING!");
+	}
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})

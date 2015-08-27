@@ -117,17 +117,16 @@ import com.google.gson.JsonObject;
  * @author Craig Allwardt
  *
  */
-@Component
 public class LoggedInFilter implements Filter
 {
 
-	@ServiceDependency
+	// Injected by Activator
     private volatile ExtHttpService httpService;
 
-	@ServiceDependency
+	// Injected by Activator
 	private volatile TokenIdentifierMap idMap;
 
-    @Start
+
     public void start() throws ServletException{
     	System.out.println("Starting "+this.getClass().getName());
     	try {
@@ -139,7 +138,6 @@ public class LoggedInFilter implements Filter
 
     }
 
-    @Stop
     public void stop(){
     	httpService.unregisterFilter(this);
     }
