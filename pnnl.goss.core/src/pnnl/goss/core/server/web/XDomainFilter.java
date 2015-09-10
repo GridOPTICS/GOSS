@@ -28,7 +28,20 @@ public class XDomainFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse)resp;
-		response.addHeader("Access-Control-Allow-Origin", "*");
+		HttpServletRequest request = (HttpServletRequest)req;
+
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Headers", 
+					"Origin, X-Requested-With, Content-Type, Accept,AuthToken");			
+		response.setHeader("Access-Control-Allow-Methods", 
+				"GET,PUT,POST,DELETE,OPTIONS");
+			
+		// if its an optionss requrest. we allow it to return successful.
+		if (request.getMethod().equalsIgnoreCase("options")){
+			response.setStatus(200); // ok
+			return;
+		}
+		
 		chain.doFilter(req, resp);
 	}
 
