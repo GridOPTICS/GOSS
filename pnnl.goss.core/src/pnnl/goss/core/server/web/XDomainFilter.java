@@ -8,7 +8,9 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
@@ -17,26 +19,9 @@ import org.apache.felix.http.api.ExtHttpService;
 
 public class XDomainFilter implements Filter {
 	
-	// Injected from Activator
-    private volatile ExtHttpService httpService;
-
-    public void start() throws ServletException{
-    	try{
-    		httpService.registerFilter(this, ".*",  null,  100,  null);
-		} catch (ServletException e) {
-			e.printStackTrace();
-			throw e;
-		}
-    }
-    
-    public void stop(){
-    	httpService.unregisterFilter(this);
-    }
-
 	@Override
 	public void destroy() {
-		
-		
+			
 	}
 
 	@Override

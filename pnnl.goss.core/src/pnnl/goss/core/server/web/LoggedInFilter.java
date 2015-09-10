@@ -44,26 +44,8 @@ public class LoggedInFilter implements Filter
 {
 
 	// Injected by Activator
-    private volatile ExtHttpService httpService;
-
-	// Injected by Activator
 	private volatile TokenIdentifierMap idMap;
 
-
-    public void start() throws ServletException{
-    	System.out.println("Starting "+this.getClass().getName());
-    	try {
-			httpService.registerFilter(this, "/loginTest",  null,  100,  null);
-		} catch (ServletException e) {
-			e.printStackTrace();
-			throw e;
-		}
-
-    }
-
-    public void stop(){
-    	httpService.unregisterFilter(this);
-    }
 
     @Override
     public void init(FilterConfig config)
@@ -154,7 +136,7 @@ public class LoggedInFilter implements Filter
         throws IOException, ServletException
     {
     	HttpServletRequest httpReq = (HttpServletRequest) req;
-    	MultiReadHttpServletRequestWrapper wrapper = new MultiReadHttpServletRequestWrapper(httpReq);
+    	MultiReadHttpServletRequestWrapper wrapper = new MultiReadHttpServletRequestWrapper(httpReq);   	    	
     	String authToken = getTokenIfPresent(wrapper);
     	String ip = httpReq.getRemoteAddr();
     	String identifier = null;
