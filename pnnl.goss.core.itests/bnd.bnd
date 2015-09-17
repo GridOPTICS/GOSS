@@ -1,6 +1,5 @@
 Bundle-Version: 2.0.1.${tstamp}
--buildpath:  \
-	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
+-buildpath: \
 	org.amdatu.testing.configurator;version='[3.1.0,3.2)',\
 	${osgi-buildpath},\
 	biz.aQute.junit;version=1.3,\
@@ -16,9 +15,11 @@ Bundle-Version: 2.0.1.${tstamp}
 	pnnl.goss.core.goss-client;version=latest,\
 	pnnl.goss.core.goss-core-server;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
-	pnnl.goss.core.testutil;version=latest
+	pnnl.goss.core.testutil;version=latest,\
+	org.apache.felix.dependencymanager.annotation;version=4.0
 	
-	
+-plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
+
 -runfw: org.apache.felix.framework;version='[4.2.1,5)'
 -runee: JavaSE-1.8
 Test-Cases: ${classes;ANNOTATION;org.junit.Test}
