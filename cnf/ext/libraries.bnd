@@ -116,13 +116,14 @@ eventadmin-runpath: ${eventadmin};version=file
 
 # Dependency Manager
 #
-dm: ${repo;org.apache.felix.dependencymanager;[4.0.1,4.0.2);HIGHEST}
-dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.1,4.0.2);HIGHEST}
-dm-runtime: ${repo;org.apache.felix.dependencymanager.runtime;[4.0.1,4.0.2);HIGHEST}
+dm: ${repo;org.apache.felix.dependencymanager;[4.1,4.2);HIGHEST}
+dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.2,4.1);HIGHEST}
+dm-runtime: ${repo;org.apache.felix.dependencymanager.runtime;[4.0.1,4.1);HIGHEST}
 dm-buildpath: ${dm};version=file
 dm-runpath: ${dm};version=file,\
   ${dm-runtime};version=file,\
   ${dm-shell};version=file
+
 
 
 # Http Service
