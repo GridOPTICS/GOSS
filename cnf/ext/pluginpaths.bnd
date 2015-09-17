@@ -1,2 +1,3 @@
--pluginpath:\
-	${plugin-dir}/biz.aQute.repository/biz.aQute.repository.jar
+-pluginpath: \
+	${plugin-dir}/biz.aQute.repository/biz.aQute.repository.jar,\
+	${workspace}/cnf/buildrepo/org.apache.felix.dependencymanager.annotation/org.apache.felix.dependencymanager.annotation-4.0.1.jar
