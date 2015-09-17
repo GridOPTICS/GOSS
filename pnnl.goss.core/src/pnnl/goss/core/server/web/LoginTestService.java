@@ -8,18 +8,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.mgt.SecurityManager;
-
-import pnnl.goss.core.server.TokenIdentifierMap;
-
 @Path("/loginTest")
 public class LoginTestService {
-	
-	
-	
+		
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
 	@Produces(MediaType.APPLICATION_JSON)

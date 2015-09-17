@@ -16,12 +16,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
-import org.apache.felix.dm.annotation.api.Start;
-import org.apache.felix.dm.annotation.api.Stop;
-import org.apache.felix.http.api.ExtHttpService;
-
 import pnnl.goss.core.server.TokenIdentifierMap;
 
 import com.google.gson.Gson;

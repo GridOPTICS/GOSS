@@ -10,11 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.Property;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.felix.dm.annotation.api.Stop;
-import org.osgi.service.http.HttpService;
-
 
 @Component(
 		provides = {Servlet.class}, 

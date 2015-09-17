@@ -6,10 +6,8 @@ import javax.servlet.Filter;
 
 import org.apache.felix.dm.DependencyActivatorBase;
 import org.apache.felix.dm.DependencyManager;
-import org.apache.felix.http.api.ExtHttpService;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.apache.shiro.mgt.SecurityManager;
+import org.osgi.framework.BundleContext;
 
 import pnnl.goss.core.server.TokenIdentifierMap;
 

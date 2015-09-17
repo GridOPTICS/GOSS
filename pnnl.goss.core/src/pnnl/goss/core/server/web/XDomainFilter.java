@@ -10,20 +10,19 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
-import org.apache.felix.http.api.ExtHttpService;
-
-
+/**
+ * This class allows all access to web services from any domain. 
+ * 
+ * @author Craig Allwardt
+ */
 public class XDomainFilter implements Filter {
 	
 	@Override
 	public void destroy() {
 			
 	}
-
+	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {
@@ -42,13 +41,13 @@ public class XDomainFilter implements Filter {
 			return;
 		}
 		
+		// Continue on to the next chain.
 		chain.doFilter(req, resp);
 	}
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		System.out.println("FILTER CONFIGURED: "+ config.toString());
-		
+		// NOOP		
 	}
 
 }
