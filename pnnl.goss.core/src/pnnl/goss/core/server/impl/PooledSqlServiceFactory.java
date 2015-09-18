@@ -31,15 +31,10 @@ public class PooledSqlServiceFactory implements ManagedServiceFactory{
 	@Inject
 	private volatile DependencyManager dm;
 
-//	@ServiceDependency
-//	private volatile DataSourceRegistry dsRegistry;
-
 	// Map of service pid to the actual component.  Note we use long form
 	// of component because it is different than the annotation component
 	// used on the top of the class.
 	private final Map<String, org.apache.felix.dm.Component> components = new ConcurrentHashMap<>();
-
-	//private final Map<String, String> pidToDsName = new ConcurrentHashMap<>();
 
 	@Override
 	public String getName() {
@@ -61,12 +56,6 @@ public class PooledSqlServiceFactory implements ManagedServiceFactory{
 
 	@Override
 	public void updated(String pid, Dictionary<String, ?> properties) throws ConfigurationException {
-		// Required values are
-		String[] reqKeys = {"name",
-				DataSourceBuilder.DATASOURCE_USER,
-				DataSourceBuilder.DATASOURCE_PASSWORD,
-				DataSourceBuilder.DATASOURCE_URL};
-		String errorString = "";
 		Map<String, String> props = new HashMap<>();
 		Map<String, String> otherProps = new HashMap<>();
 
@@ -108,16 +97,10 @@ public class PooledSqlServiceFactory implements ManagedServiceFactory{
 
 		components.put(pid, c);
 		dm.add(c);
-
-		//pidToDsName.put(pid, props.get("name"));
-		dsRegistry.add(props.get("name"), service);
-
 	}
 
 	@Override
 	public void deleted(String pid) {
-		//dsRegistry.remove(pidToDsName.get(pid));
-		//pidToDsName.remove(pid);
 		dm.remove(components.remove(pid));
 	}
 
