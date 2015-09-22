@@ -17,9 +17,9 @@ import pnnl.goss.core.server.DataSourceType;
 
 @Component
 public class DataSourceRegistryImpl implements DataSourceRegistry {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(DataSourceRegistryImpl.class);
-	
+
 	private final Map<String, DataSourceObject> dataSourceMap = new ConcurrentHashMap<>();
 	private final Map<ServiceReference<DataSourceObject>, DataSourceObject> serviceRefMap = new ConcurrentHashMap<>();
 
@@ -29,7 +29,7 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 		dataSourceMap.put(obj.getName(), obj);
 		serviceRefMap.put(ref, obj);
 	}
-	
+
 	public void datasourceRemoved(ServiceReference<AuthorizationHandler> ref){
 		log.debug("Removing datasource: " + serviceRefMap.get(ref).getName());
 		DataSourceObject toRemove = serviceRefMap.remove(ref);
@@ -39,18 +39,18 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 	@Override
 	public DataSourceObject get(String key) {
 		DataSourceObject obj = dataSourceMap.get(key);
-		
+
 		return obj;
 	}
 
 	@Override
 	public Map<String, DataSourceType> getAvailable() {
 		Map<String, DataSourceType> map = new HashMap<>();
-		
+
 		for(DataSourceObject o: dataSourceMap.values()){
 			map.put(o.getName(), o.getDataSourceType());
 		}
-		
+
 		return map;
 	}
 
@@ -61,8 +61,8 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 
 	@Override
 	public void remove(String key) {
-		dataSourceMap.remove(key);		
+		dataSourceMap.remove(key);
 	}
-	
-	
+
+
 }
