@@ -25,7 +25,7 @@ public class LoginService {
 	private volatile TokenIdentifierMap tokenMap;	
 	
 	public void start(){
-		System.out.println("I AM STARTING!");
+		//System.out.println("I AM STARTING!");
 	}
 	
 	@POST
