@@ -8,6 +8,9 @@ import org.apache.felix.dm.DependencyActivatorBase;
 import org.apache.felix.dm.DependencyManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpContext;
+import org.osgi.service.http.HttpService;
 
 import pnnl.goss.core.server.TokenIdentifierMap;
 
@@ -27,9 +30,24 @@ public class Activator extends DependencyActivatorBase {
 		
 		// Try and keep httpcontext of gosscontext across the board.
 		Hashtable loggedInFilterProps = new Hashtable();
-		loggedInFilterProps.put("pattern", "/.*");
+		loggedInFilterProps.put("pattern", ".*\\/api\\/.*");
 		loggedInFilterProps.put("contextId", "GossContext");
 		
+		Hashtable contextWrapperProps = new Hashtable();
+		contextWrapperProps.put("contextId", "GossContext");
+		contextWrapperProps.put("context.shared", true);
+		
+		ServiceReference<HttpService>httpRef = context.getServiceReference(HttpService.class);
+		HttpService httpService = context.getService(httpRef);
+		
+		if(httpService == null){
+			throw new Exception("HttpService not available.");
+		}
+		
+		manager.add(createComponent()
+				.setInterface(HttpContext.class.getName(), contextWrapperProps)
+				.setImplementation(httpService.createDefaultHttpContext()));
+				
 		manager.add(createComponent()
 				.setInterface(Filter.class.getName(), xDomainProps)
 				.setImplementation(XDomainFilter.class));
