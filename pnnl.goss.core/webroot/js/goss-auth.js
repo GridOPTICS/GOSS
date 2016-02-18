@@ -5,7 +5,7 @@ if(authToken!=null && authToken!='null' && authToken!=''){
 	parameters['AuthToken'] = authToken;
 	$.ajax({
         type: 'POST',
-        url: '/loginTest',
+        url: '/api/loginTest',
         data: JSON.stringify(parameters),
         dataType: 'json',
         contentType: 'application/json',

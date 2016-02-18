@@ -43,5 +43,13 @@ public class LoginTestService {
 		return Response.status(Status.OK).entity(obj.toString()).build();
 	}
 	
-
+	@POST
+	@Path("/loginTest")
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
+	@Produces(MediaType.APPLICATION_JSON)
+	public String authenticate(@Context HttpServletRequest request){
+		
+		return "{\"status\": \"Success\"}";
+	}
+	
 }
