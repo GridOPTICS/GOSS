@@ -92,7 +92,8 @@ public class ClientTests {
 			assertNotNull(clientFactory);
 			System.out.println("Client factory isn't null!");
 			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(credentials);
 			assertNotNull("Client was null from the factory!", client);
 			System.out.println("Client with credentials created");
 			EchoRequest request = new EchoRequest(message);
@@ -134,7 +135,8 @@ public class ClientTests {
 		try{
 			System.out.println("TEST: clientCanUploadData");
 			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(credentials);
 			// This is in the BlaclistRealm.java in the runner project.
 			
 			

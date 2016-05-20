@@ -69,9 +69,9 @@ public class SslClientTests {
 		try{
 			System.out.println("TEST: clientFactoryRegistryOk");
 			assertNotNull(clientFactory);	
-			Client client = clientFactory.create(PROTOCOL.SSL);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
 			assertNotNull(client);
-			assertEquals(PROTOCOL.SSL, client.getProtocol());
+			assertEquals(PROTOCOL.OPENWIRE, client.getProtocol());
 			System.out.println("TEST_END: clientFactoryRegistryOk");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -88,7 +88,8 @@ public class SslClientTests {
 			assertNotNull(clientFactory);
 			System.out.println("Client factory isn't null!");
 			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE,credentials);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(credentials);
 			assertNotNull("Client was null from the factory!", client);
 			System.out.println("Client with credentials created");
 			EchoRequest request = new EchoRequest(message);
@@ -129,7 +130,8 @@ public class SslClientTests {
 		try{
 			System.out.println("TEST: clientCanUploadData");
 			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(credentials);
 			// This is in the BlaclistRealm.java in the runner project.
 			
 			EchoTestData data = new EchoTestData()

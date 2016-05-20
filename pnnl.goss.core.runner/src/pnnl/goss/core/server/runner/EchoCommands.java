@@ -99,7 +99,8 @@ public class EchoCommands {
 				client.close();
 			}
 			Credentials credentials = new UsernamePasswordCredentials(uname, pass);
-			client = clientFactory.create(PROTOCOL.OPENWIRE,credentials);
+			client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(credentials);
 			System.out.println("Setup to use connection: "+uname);
 			
 			addCommand("connect "+ uname);
@@ -186,7 +187,8 @@ public class EchoCommands {
 		try{
 			if (client == null){
 				Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-				client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
+				client = clientFactory.create(PROTOCOL.OPENWIRE);
+				client.setCredentials(credentials);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

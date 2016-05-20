@@ -1,15 +1,15 @@
 Bundle-Version: 2.0.2.${tstamp}
--buildpath:  \
+-buildpath: \
 	org.apache.felix.dependencymanager.annotation,\
-	pnnl.goss.core.goss-core-server-api;version=latest,\
-	pnnl.goss.core.core-api;version=latest,\
+	pnnl.goss.core.goss-core-server-api,\
+	pnnl.goss.core.core-api,\
 	org.apache.felix.dependencymanager,\
 	org.apache.felix.gogo.command,\
 	org.apache.felix.gogo.runtime,\
 	org.apache.activemq.shiro,\
 	org.apache.shiro.core,\
 	org.apache.httpcomponents.httpclient;version=4.2,\
-	pnnl.goss.core.goss-core-security;version=latest,\
+	pnnl.goss.core.goss-core-security,\
 	org.h2,\
 	osgi.enterprise,\
 	slf4j.simple,\
