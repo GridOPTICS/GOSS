@@ -24,7 +24,7 @@ Private-Package: \
 	com.google.gson.internal.bind,\
 	com.google.gson.reflect,\
 	com.google.gson.stream,\
-	org.apache.activemq,\	
+	org.apache.activemq,\
 	javax.management.j2ee.statisticts,\
 	org.fusesource.hawtbuf
 	
