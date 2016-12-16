@@ -1,6 +1,5 @@
 package pnnl.goss.core.server;
 
-import java.util.List;
 import java.util.Map;
 
 import pnnl.goss.core.Request;

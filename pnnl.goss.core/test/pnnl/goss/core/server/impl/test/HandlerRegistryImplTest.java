@@ -19,7 +19,7 @@ import pnnl.goss.core.security.AuthorizationHandler;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
-import pnnl.goss.core.server.impl.HandlerRegistryImpl;
+import pnnl.goss.server.registry.HandlerRegistryImpl;
 
 
 public class HandlerRegistryImplTest {

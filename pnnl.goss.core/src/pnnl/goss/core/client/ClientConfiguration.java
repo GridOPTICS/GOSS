@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class ClientConfiguration {
+	
 	private static Logger log = LoggerFactory.getLogger(ClientConfiguration.class);
 	
 	private final Map<String, Object> config = new HashMap<>();

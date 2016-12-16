@@ -1,6 +1,5 @@
 package pnnl.goss.core.security.impl;
 
-import java.util.List;
 import java.util.Set;
 
 import pnnl.goss.core.Request;

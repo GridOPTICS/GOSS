@@ -1,0 +1,40 @@
+Bundle-Version: 2.0.13.${tstamp}
+Include-Resource: \
+	@lib/activemq-client-5.11.1.jar,\
+	@lib/org.apache.activemq.shiro-5.11.1.jar,\
+	@lib/org.apache.httpcomponents.httpclient-4.2.3.jar,\
+	@lib/slf4j.api-1.7.7.jar,\
+	@lib/slf4j.simple-1.7.7.jar,\
+	@lib/javax.management.j2ee-api-1.1.1.jar,\
+	@lib/org.fusesource.hawtbuf.hawtbuf-1.11.0.jar,\
+	resources/activemq.xsd=resources/activemq.xsd,\
+	META-INF/services=resources/services,\
+	resources/rt.jar=${java.home}/lib/rt.jar	
+Bundle-ClassPath: .,\
+	resources/activemq.xsd
+	
+-classpath=lib,resources,${java.home}/lib
+
+Private-Package: \
+	com.google.gson,\
+	javax.jms,\
+	com.google.gson,\
+	com.google.gson.annotations,\
+	com.google.gson.internal,\
+	com.google.gson.internal.bind,\
+	com.google.gson.reflect,\
+	com.google.gson.stream,\
+	org.apache.activemq,\
+	javax.management.j2ee.statisticts,\
+	org.fusesource.hawtbuf
+	
+Export-Package:  \
+	pnnl.goss.core,\
+	pnnl.goss.core.client,\
+	pnnl.goss.core.exception,\
+	com.northconcepts.exception,\
+	org.apache.http.auth,\
+	org.slf4j
+
+Import-Package:  \
+	*

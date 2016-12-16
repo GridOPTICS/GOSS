@@ -44,7 +44,6 @@
 */
 package pnnl.goss.core;
 
-import java.io.Serializable;
 
 public class DataError implements Error {
 

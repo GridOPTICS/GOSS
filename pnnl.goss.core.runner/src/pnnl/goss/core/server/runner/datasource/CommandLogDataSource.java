@@ -5,12 +5,11 @@ import java.util.List;
 
 import org.apache.felix.dm.annotation.api.Component;
 
-import pnnl.goss.core.server.AbstractDataSourceObject;
 import pnnl.goss.core.server.DataSourceObject;
 import pnnl.goss.core.server.DataSourceType;
 
 @Component
-public class CommandLogDataSource extends AbstractDataSourceObject implements DataSourceObject  {
+public class CommandLogDataSource implements DataSourceObject  {
 	
 	private final List<String> log = new ArrayList<>();
 		
@@ -22,12 +21,6 @@ public class CommandLogDataSource extends AbstractDataSourceObject implements Da
 	public DataSourceType getDataSourceType() {
 		return DataSourceType.DS_TYPE_OTHER;
 	}
-
-	@Override
-	public void onRemoved() {
-		log.clear();
-	}
-
 	public void log(String cmdText){
 		log.add(cmdText);
 	}
@@ -35,4 +28,10 @@ public class CommandLogDataSource extends AbstractDataSourceObject implements Da
 	public void clear(){
 		log.clear();
 	}
+
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
+
 }

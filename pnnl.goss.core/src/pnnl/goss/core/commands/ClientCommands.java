@@ -23,17 +23,25 @@ public class ClientCommands {
 	private volatile ClientFactory factory;
 		
 	public void makeOpenwire(){
-		System.out.println("Making openwire client");
-		Client client = factory.create(PROTOCOL.OPENWIRE);
-		System.out.println("Client is null? "+ (client == null));
-		client.close();
+		try{
+			System.out.println("Making openwire client");
+			Client client = factory.create(PROTOCOL.OPENWIRE);
+			System.out.println("Client is null? "+ (client == null));
+			client.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	public void makeStomp(){
-		System.out.println("Making stomp client");
-		Client client = factory.create(PROTOCOL.STOMP);
-		System.out.println("Client is null? "+ (client == null));
-		client.close();
+		try{
+			System.out.println("Making stomp client");
+			Client client = factory.create(PROTOCOL.STOMP);
+			System.out.println("Client is null? "+ (client == null));
+			client.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	public void list(){

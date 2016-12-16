@@ -1,0 +1,215 @@
+# OSGi bundles
+#
+# On a combined buildpath the R6 remoteserviceadmin must be before the R5 enterprise so it overrides it on
+# the classpath.
+#
+framework: ${repo;org.apache.felix.framework;[4.3.1,5);HIGHEST}
+framework-buildpath: ${framework};version=file
+framework-runpath: ${framework};version=file
+
+osgi-core: ${repo;osgi.core;[5,6);HIGHEST}
+osgi-core-buildpath: ${osgi-core};version=file
+osgi-core-runpath: ${osgi-core};version=file
+
+osgi-cmpn: ${repo;osgi.cmpn;[5,6);HIGHEST}
+osgi-cmpn-buildpath: ${osgi-cmpn};version=file
+osgi-cmpn-runpath: ${osgi-cmpn};version=file
+
+osgi-enterprise: ${repo;osgi.enterprise;[5,6);HIGHEST}
+osgi-enterprise-buildpath: ${osgi-enterprise};version=file
+osgi-enterprise-runpath: ${osgi-enterprise};version=file
+
+# Removed these until I get them better.
+#osgi-rsa: ${repo;org.osgi.service.remoteserviceadmin;[1.1.0,1.2);HIGHEST}
+#osgi-rsa-buildpath: ${osgi-rsa};version=file
+#osgi-rsa-runpath: ${osgi-rsa};version=file
+#${osgi-rsa-buildpath},\
+
+osgi-buildpath: \
+  ${osgi-core-buildpath},\
+  ${osgi-enterprise-buildpath},\
+  ${osgi-cmpn-buildpath}
+
+osgi-runpath: \
+  ${osgi-enterprise-buildpath},\
+  ${osgi-cmpn-buildpath}
+
+# Activemq
+# In order to use activemq one must include ${javax-runpath} as well.
+activemq: ${repo;org.apache.activemq.activemq-osgi;[5.11.1,5.11.2);HIGHEST}
+activemq-shiro: ${repo;org.apache.activemq.shiro;[5.11.1,5.11.2);HIGHEST}
+shiro: ${repo;org.apache.shiro.core;[1.2.3,1.2.4);HIGHEST}
+aries: ${repo;org.apache.aries.blueprint;[1.1.0, 1.1.1);HIGHEST}
+aries-blueprint-api: ${repo;org.apache.aries.blueprint.api;[1.0.0,1.0.1);HIGHEST}
+aries-proxy-api: ${repo;org.apache.aries.proxy.api;[1.0.0,1.0.1);HIGHEST}
+aries-util: ${repo;org.apache.aries.util;[1.1.0,1.1.1);HIGHEST}
+asm: ${repo;org.objectweb.asm.all;[4.1.0,4.1.1);HIGHEST}
+activemq-buildpath: ${activemq};version=file
+activemq-runpath: ${activemq-buildpath},\
+  ${shiro};version=file,\
+  ${activemq-shiro};version=file,\
+  ${aries};version=file,\
+  ${aries-blueprint-api};version=file,\
+  ${aries-proxy-api};version=file,\
+  ${aries-util};version=file,\
+  ${asm};version=file
+#	com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
+#	javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
+#	org.apache.activemq.activemq-osgi;version='[5.11.1,5.11.2)',\
+#	org.apache.activemq.shiro;version='[5.11.1,5.11.2)',\
+#	org.apache.aries.blueprint;version=1.1.0,\
+#	org.apache.aries.blueprint.api;version=1.0.0,\
+#	org.apache.aries.proxy.api;version='[1.0.0,1.0.1)',\
+#	org.apache.aries.util;version='[1.1.0,1.1.1)',\
+#	org.apache.felix.configadmin;version='[1.8.0,1.8.1)',\
+#	org.apache.felix.gogo.command;version='[0.14.0,0.14.1)',\
+#	org.apache.felix.gogo.runtime;version='[0.16.2,0.16.3)',\
+#	org.apache.felix.gogo.shell;version='[0.10.0,0.10.1)',\
+#	org.apache.geronimo.specs.geronimo-jms_1.1_spec;version='[1.1.1,1.1.2)',\
+#	org.apache.shiro.core;version='[1.2.3,1.2.4)',\
+#	org.glassfish.javax.ejb;version='[3.1.1,3.1.2)',\
+#	org.objectweb.asm.all;version='[4.1.0,4.1.1)',\
+#	osgi.enterprise;version='[4.2.0,4.2.1)',\
+#	slf4j.api;version=1.7.7,\
+#	slf4j.simple;version=1.7.7,\
+#	org.amdatu.jta;version=2.0.0,\
+#	org.amdatu.jta.api;version=1.0.0
+
+# Config Admin
+#
+configadmin: ${repo;org.apache.felix.configadmin;[1.8.0,1.8.1);HIGHEST}
+configadmin-buildpath: ${configadmin};version=file
+configadmin-runpath: ${configadmin};version=file
+
+# Amdatu Components
+amdatu-config-api: ${repo;org.amdatu.configurator.api;[1.0.1,1.0.2);HIGHEST}
+amdatu-config-autoconf:	${repo;org.amdatu.configurator.autoconf;[1.0.1,1.0.2);HIGHEST}
+amdatu-config-props: ${repo;org.amdatu.configurator.properties;[1.0.1,1.0.2);HIGHEST}
+amdatu-config-shell: ${repo;org.amdatu.configurator.shell;[1.0.1,1.0.2);HIGHEST}
+amdatu-config-runpath: ${configadmin-buildpath},\
+  ${amdatu-config-api};version=file,\
+  ${amdatu-config-autoconf};version=file,\
+  ${amdatu-config-props};version=file,\
+  ${amdatu-config-shell};version=file
+
+amdatu-jta: ${repo;org.amdatu.jta;[2.0.0,2.0.1);HIGHEST}
+amdatu-jta-api: ${repo;org.amdatu.jta.api;[1.0.0,1.0.1);HIGHEST}
+amdatu-jta-runpath: ${amdatu-jta};version=file,\
+  ${amdatu-jta-api};version=file
+
+# Gogo Shell
+#
+gogo-command: ${repo;org.apache.felix.gogo.command;[0.12.0,0.13.0);HIGHEST}
+gogo-runtime: ${repo;org.apache.felix.gogo.runtime;[0.10.0,0.11.0);HIGHEST}
+gogo-shell: ${repo;org.apache.felix.gogo.shell;[0.10.0,0.11.0);HIGHEST}
+gogo-buildpath: ${gogo-command};version=file,\
+  ${gogo-runtime};version=file
+gogo-runpath: ${gogo-command};version=file,\
+  ${gogo-runtime};version=file,\
+  ${gogo-shell};version=file
+
+# Event Admin
+#
+eventadmin: ${repo;org.apache.felix.eventadmin;[1,2);HIGHEST}
+eventadmin-buildpath: ${eventadmin};version=file
+eventadmin-runpath: ${eventadmin};version=file
+
+# Dependency Manager
+#
+dm: ${repo;org.apache.felix.dependencymanager;[4.1,4.2);HIGHEST}
+dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.2,4.1);HIGHEST}
+dm-runtime: ${repo;org.apache.felix.dependencymanager.runtime;[4.0.1,4.1);HIGHEST}
+dm-buildpath: ${dm};version=file
+dm-runpath: ${dm};version=file,\
+  ${dm-runtime};version=file,\
+  ${dm-shell};version=file
+
+
+
+# Http Service
+#
+# Felix servlet-api provides us with a Servlet 3.0 bundles that also exports itself as Servlet 2.6. This allows
+# Bundles requiring [2.3,3) to operate normally because 3.0 is beckward compatible.
+#
+servlet: ${repo;org.apache.felix.http.servlet-api;[1.0.0, 1.1);HIGHEST}
+servlet-buildpath: ${servlet};version=file
+servlet-runpath: ${servlet};version=file
+
+httpservice: ${repo;org.apache.felix.http.jetty;[2.2.2,2.3);HIGHEST}
+httpservice-whiteboard: ${repo;org.apache.felix.http.whiteboard;[2.2.2,2.3);HIGHEST}
+httpservice-buildpath: ${httpservice};version=file,\
+  ${servlet-buildpath}
+httpservice-runpath: ${httpservice};version=file, \
+  ${httpservice-whiteboard};version=file, \
+  ${servlet-buildpath}
+
+# Jackson json/xml parser
+# Allows easy conversion from object to json.
+jackson: ${repo;com.fasterxml.jackson.core.jackson-core;[2.5.4,2.6);HIGHEST}
+jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.5.4,2.6);HIGHEST}
+jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.5.4,2.6);HIGHEST}
+jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.5.4,2.6);HIGHEST}
+jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.5.4,2.6);HIGHEST}
+jaxrs: ${repo;org.amdatu.web.rest.jaxrs;[1.0.5,1.1);HIGHEST}
+jaxrs-wink: ${repo;org.amdatu.web.rest.wink;[2.0.0,2.1);HIGHEST}
+jackson-buildpath: \
+  ${jackson};version=file, \
+  ${jackson-annotations};version=file, \
+  ${jackson-databind};version=file, \
+  ${jackson-base};version=file, \
+  ${jackson-json-provider};version=file
+jaxrs-buildpath: ${jaxrs};version=file, \
+  ${jaxrs-wink};version=file
+jaxrs-runpath: \
+  ${jaxrs-buildpath}, \
+  ${jackson-buildpath}
+
+# Swagger gives web api help for web services.
+swagger: ${repo;org.amdatu.web.rest.doc;[1.2.2,1.3);HIGHEST}
+swagger-doc: ${repo;org.amdatu.web.rest.doc.swagger;[1.0.9,1.1);HIGHEST}
+swagger-ui: ${repo;org.amdatu.web.rest.doc.swagger.ui;[1.0.7,1.1);HIGHEST}
+swagger-buildpath: \
+  ${swagger};version=file,\
+  ${swagger-doc};version=file
+swagger-runpath: \
+  ${swagger-buildpath},\
+  ${swagger-ui};version=file
+
+
+# All javax elements should go here.
+com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
+javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
+
+javax-annotation: ${repo;javax.annotation;[1.1.0,1.1.1);HIGHEST}
+javax-ejb: ${repo;org.glassfish.javax.ejb;[3.1.1,3.1.2);HIGHEST}
+javax-jms: ${repo;com.springsource.javax.jms;[1.1.0,1.1.1);HIGHEST}
+javax-management: ${repo;javax.management.j2ee-api;[1.1.1,1.1.2);HIGHEST}
+javax-xml: ${repo;javax.xml;[1.3.4,1.3.5);HIGHEST}
+javax-xml-stream: ${repo;javax.xml.stream;[1.0.1,1.0.2);HIGHEST}
+javax-runpath: ${javax-annotation};version=file,\
+  ${javax-ejb};version=file,\
+  ${javax-jms};version=file,\
+  ${javax-management};version=file,\
+  ${javax-xml};version=file,\
+  ${javax-xml-stream};version=file
+
+# Commons lang3
+#
+lang3=${repo;org.apache.commons.lang3;[3.1.0,3.2.0);HIGHEST}
+lang3-buildpath: ${lang3};version=file
+lang3-runpath: ${lang3};version=file
+
+# Log Service
+#
+logservice: ${repo;org.apache.felix.log;[1.0.1,1.1);HIGHEST}
+logservice-buildpath: ${logservice};version=file
+logservice-runpath: ${logservice};version=file
+
+# SLF4j
+#
+slf4j-api: ${repo;slf4j.api;[1.7.7,1.8);HIGHEST}
+slf4j-simple: ${repo;slf4j.simple;[1.7.7,1.8);HIGHEST}
+slf4j-buildpath: ${slf4j-api};version=file,\
+  ${slf4j-simple};version=file
+slf4j-runpath: ${slf4j-api};version=file,\
+  ${slf4j-simple};version=file

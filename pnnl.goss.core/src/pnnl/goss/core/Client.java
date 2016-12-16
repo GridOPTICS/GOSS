@@ -2,20 +2,14 @@ package pnnl.goss.core;
 
 import java.io.Serializable;
 
-import javax.jms.IllegalStateException;
-import javax.jms.JMSException;
-
-
-//import org.apache.activemq.ConfigurationException;
-import org.apache.http.auth.Credentials;
+import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
 import com.northconcepts.exception.SystemException;
-
-import pnnl.goss.core.Request.RESPONSE_FORMAT;
+//import org.apache.activemq.ConfigurationException;
 
 public interface Client {
 
-    public enum PROTOCOL {OPENWIRE, STOMP};
+    public enum PROTOCOL {OPENWIRE, STOMP, SSL};
     
     /**
      * Perform synchronous call to the server.
@@ -66,7 +60,7 @@ public interface Client {
 
     public void publishString(String topicName, String data)
     		 throws SystemException;
-
+    
     /**
      * Close a connection with the server.
      */
@@ -79,9 +73,9 @@ public interface Client {
      * @return
      * @throws SystemException
      */
-    public Client setCredentials(Credentials credentials)
+    /*public Client setCredentials(Credentials credentials)
     		throws SystemException;;
-
+    */
     /**
      * Gets the type of protocol that the client will use to connect with.
      *

@@ -1,27 +1,26 @@
-Bundle-Version: 2.0
--buildpath:  \
-	../cnf/plugins/org.apache.felix.dependencymanager.annotation-3.2.0.jar;version=file,\
-	pnnl.goss.core.goss-core-server-api;version=latest,\
-	pnnl.goss.core.core-api;version=latest,\
+Bundle-Version: 2.0.2.${tstamp}
+-buildpath: \
+	org.apache.felix.dependencymanager.annotation,\
+	pnnl.goss.core.goss-core-server-api,\
+	pnnl.goss.core.core-api,\
 	org.apache.felix.dependencymanager,\
 	org.apache.felix.gogo.command,\
 	org.apache.felix.gogo.runtime,\
 	org.apache.activemq.shiro,\
 	org.apache.shiro.core,\
 	org.apache.httpcomponents.httpclient;version=4.2,\
-	pnnl.goss.core.goss-core-security;version=latest,\
+	pnnl.goss.core.goss-core-security,\
 	org.h2,\
 	osgi.enterprise,\
 	slf4j.simple,\
 	slf4j.api
+
+-plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
+
 Private-Package:  \
 	pnnl.goss.core.server.runner,\
 	pnnl.goss.core.server.runner.datasource
 Export-Package:  \
 	pnnl.goss.core.server.runner.requests
--runbundles:  \
-	org.apache.activemq.shiro,\
-	org.apache.shiro.core,\
-	pnnl.goss.core.goss-core-server;version=latest,\
-	pnnl.goss.core.goss-core-server-api;version=latest,\
-	pnnl.goss.core.pnnl-security;version=latest
+	
+-baselining: *

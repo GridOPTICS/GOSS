@@ -44,7 +44,6 @@
 */
 package pnnl.goss.core.server.impl;
 
-import java.util.Dictionary;
 import java.util.Optional;
 
 import javax.jms.Destination;
@@ -52,16 +51,13 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
-import org.apache.felix.dm.annotation.api.Start;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.server.RequestHandlerRegistry;
+
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
-
-import pnnl.goss.core.server.RequestHandlerRegistry;
 
 public class ServerConsumer {
 

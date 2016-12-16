@@ -16,12 +16,13 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAccount;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
 
 import com.northconcepts.exception.SystemException;
@@ -49,6 +50,9 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	
 	private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> userPermissions = new ConcurrentHashMap<>();
+	
+	@ServiceDependency
+	GossPermissionResolver gossPermissionResolver;
 	
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
@@ -107,5 +111,13 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	@Override
 	public boolean hasIdentifier(String identifier) {
 		return userMap.containsKey(identifier);
+	}
+	
+	 @Override
+	public PermissionResolver getPermissionResolver() {
+		 if(gossPermissionResolver!=null)
+			 return gossPermissionResolver;
+		 else 
+			 return super.getPermissionResolver();
 	}
 }

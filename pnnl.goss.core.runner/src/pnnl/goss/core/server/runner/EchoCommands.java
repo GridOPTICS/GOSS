@@ -1,14 +1,12 @@
 package pnnl.goss.core.server.runner;
 
-import java.util.Optional;
-
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.Property;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Stop;
 import org.apache.felix.service.command.CommandProcessor;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.shiro.authc.UsernamePasswordToken;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.Client.PROTOCOL;
@@ -17,7 +15,6 @@ import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.UploadRequest;
 import pnnl.goss.core.UploadResponse;
-import pnnl.goss.core.server.DataSourceObject;
 import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.HandlerNotFoundException;
 import pnnl.goss.core.server.RequestHandlerRegistry;
@@ -97,14 +94,19 @@ public class EchoCommands {
 	
 	
 	public void connect(String uname, String pass) {
-		if (client != null){
-			client.close();
+		try{
+			if (client != null){
+				client.close();
+			}
+			Credentials credentials = new UsernamePasswordCredentials(uname, pass);
+			client = clientFactory.create(PROTOCOL.OPENWIRE);
+			client.setCredentials(credentials);
+			System.out.println("Setup to use connection: "+uname);
+			
+			addCommand("connect "+ uname);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		client = clientFactory.create(PROTOCOL.OPENWIRE);
-		client.setCredentials(new UsernamePasswordCredentials(uname, pass));
-		System.out.println("Setup to use connection: "+uname);
-		
-		addCommand("connect "+ uname);
 	}
 	
 	public void doUpload(){
@@ -182,9 +184,14 @@ public class EchoCommands {
 	}
 
 	private void getClient() {
-		if (client == null){
-			client = clientFactory.create(PROTOCOL.OPENWIRE);
-			client.setCredentials(new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed"));
+		try{
+			if (client == null){
+				Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
+				client = clientFactory.create(PROTOCOL.OPENWIRE);
+				client.setCredentials(credentials);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	
