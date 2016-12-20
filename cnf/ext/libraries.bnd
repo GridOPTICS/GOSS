@@ -116,8 +116,8 @@ eventadmin-runpath: ${eventadmin};version=file
 
 # Dependency Manager
 #
-dm: ${repo;org.apache.felix.dependencymanager;[4.1,4.2);HIGHEST}
-dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.2,4.1);HIGHEST}
+dm: ${repo;org.apache.felix.dependencymanager;[4.3,5);HIGHEST}
+dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.4,4.1);HIGHEST}
 dm-runtime: ${repo;org.apache.felix.dependencymanager.runtime;[4.0.1,4.1);HIGHEST}
 dm-buildpath: ${dm};version=file
 dm-runpath: ${dm};version=file,\
@@ -145,11 +145,11 @@ httpservice-runpath: ${httpservice};version=file, \
 
 # Jackson json/xml parser
 # Allows easy conversion from object to json.
-jackson: ${repo;com.fasterxml.jackson.core.jackson-core;[2.5.4,2.6);HIGHEST}
-jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.5.4,2.6);HIGHEST}
-jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.5.4,2.6);HIGHEST}
-jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.5.4,2.6);HIGHEST}
-jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.5.4,2.6);HIGHEST}
+jackson: ${repo;com.fasterxml.jackson.core.jackson-core;[2.6.3,2.7);HIGHEST}
+jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.6.3,2.7);HIGHEST}
+jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.6.3,2.7);HIGHEST}
+jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.6.3,2.7);HIGHEST}
+jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.6.3,2.7);HIGHEST}
 jaxrs: ${repo;org.amdatu.web.rest.jaxrs;[1.0.5,1.1);HIGHEST}
 jaxrs-wink: ${repo;org.amdatu.web.rest.wink;[2.0.0,2.1);HIGHEST}
 jackson-buildpath: \
@@ -177,8 +177,8 @@ swagger-runpath: \
 
 
 # All javax elements should go here.
-com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
-javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
+#com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
+#javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
 
 javax-annotation: ${repo;javax.annotation;[1.1.0,1.1.1);HIGHEST}
 javax-ejb: ${repo;org.glassfish.javax.ejb;[3.1.1,3.1.2);HIGHEST}
