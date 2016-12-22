@@ -1,4 +1,4 @@
-Bundle-Version: 2.0.13.${tstamp}
+Bundle-Version: 3.0.1.${tstamp}
 Include-Resource: \
 	@lib/activemq-client-5.11.1.jar,\
 	@lib/org.apache.activemq.shiro-5.11.1.jar,\

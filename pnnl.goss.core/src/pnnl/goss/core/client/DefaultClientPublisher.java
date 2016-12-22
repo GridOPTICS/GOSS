@@ -46,9 +46,11 @@ package pnnl.goss.core.client;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Random;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
@@ -60,7 +62,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.ClientPublishser;
-import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.security.SecurityConstants;
 
@@ -98,19 +99,32 @@ public class DefaultClientPublisher implements ClientPublishser {
             e.printStackTrace();
         }
     }
-
-    public void sendMessage(Request request, Destination replyDestination, RESPONSE_FORMAT responseFormat) throws JMSException {
-        ObjectMessage message = session.createObjectMessage(request);
-        message.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
+    
+    @Override
+	public void sendMessage(Serializable message, Destination replyDestination,
+			RESPONSE_FORMAT responseFormat) throws JMSException {
+    	
+    	Message messageObj = null;
+    	
+    	if(message instanceof String)
+    		messageObj = session.createTextMessage(message.toString());
+    	else
+    		messageObj = session.createObjectMessage(message);
+				
+    	
+    	messageObj.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
         if (username != null){
-        	message.setStringProperty(SecurityConstants.SUBJECT_HEADER, username);
+        	messageObj.setStringProperty(SecurityConstants.SUBJECT_HEADER, username);
         }
-        message.setJMSReplyTo(replyDestination);
+        messageObj.setJMSReplyTo(replyDestination);
+        String correlationId = this.createRandomString();
+        messageObj.setJMSCorrelationID(correlationId);
         if(responseFormat!=null)
-            message.setStringProperty("RESPONSE_FORMAT", responseFormat.toString());
-        log.debug("Sending: "+ request.getClass()+ " on destination: " + destination);
-        producer.send(destination, message);
-    }
+        	messageObj.setStringProperty("RESPONSE_FORMAT", responseFormat.toString());
+        log.debug("Sending: "+ message+ " on destination: " + destination);
+        producer.send(destination, messageObj);
+		
+	}
 
     public void publishTo(Destination destination, Serializable data) throws JMSException {
         ObjectMessage message = session.createObjectMessage(data);
@@ -130,5 +144,12 @@ public class DefaultClientPublisher implements ClientPublishser {
         log.debug("Publishing on destination: " + destination);
         publishingProducer.send(destination, message);
     }
+    	
+	private String createRandomString() {
+        Random random = new Random(System.currentTimeMillis());
+        long randomLong = random.nextLong();
+        return Long.toHexString(randomLong);
+    }
+
 
 }

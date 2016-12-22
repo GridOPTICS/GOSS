@@ -90,13 +90,6 @@ public class ClientServiceFactory implements ClientFactory {
     }
 
     @Override
-    public synchronized Client create(PROTOCOL protocol) throws Exception {
-    	
-    	return this.create(protocol, null);
-        
-    }
-    
-    @Override
     public synchronized Client create(PROTOCOL protocol, Credentials credentials) throws Exception {
     	
     	Properties configProperties = new Properties();
@@ -128,25 +121,21 @@ public class ClientServiceFactory implements ClientFactory {
         }
 
         if(client == null){
-        	if (sslEnabled){
-        		client = new GossClient()
-        					.setProtocol(PROTOCOL.SSL)
-        					.setOpenwireUri((String)properties.get(ClientFactory.DEFAULT_OPENWIRE_URI))
-        					.setStompUri((String)properties.get(ClientFactory.DEFAULT_STOMP_URI))
-        					.setClientTrustStorePassword((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD))
-        					.setClientTrustStore((String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE));
-        		if(credentials != null){
-        			client.setCredentials(credentials);
-        		}
+        	
+        	String openwireUri = (String)properties.get(ClientFactory.DEFAULT_OPENWIRE_URI);
+    		String stompUri = (String)properties.get(ClientFactory.DEFAULT_STOMP_URI);
+    		
+    		if (sslEnabled){
+        		protocol = PROTOCOL.SSL;
+        		String trustStorePassword = (String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD);
+        		String trustStore = (String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE);
+        		
+        		client = new GossClient(protocol, credentials, openwireUri, stompUri, trustStorePassword, trustStore);
+        		
         	}
         	else{
-	            client = new GossClient()
-	            				.setProtocol(protocol)
-	            				.setOpenwireUri((String)properties.get(GossCoreContants.PROP_OPENWIRE_URI))
-	            				.setStompUri((String)properties.get(GossCoreContants.PROP_STOMP_URI));
-	            if(credentials != null){
-        			client.setCredentials(credentials);
-	            }
+        		client = new GossClient(protocol, credentials, openwireUri, stompUri);
+	            
 	        }
         	
         	client.setUsed(true);

@@ -9,17 +9,9 @@ import pnnl.goss.core.Client.PROTOCOL;
 public interface ClientFactory {
 	
 	static final String CONFIG_PID = "pnnl.goss.core.client";
-	static final String DEFAULT_OPENWIRE_URI = "default.openwire.uri";
-	static final String DEFAULT_STOMP_URI = "default.stomp.uri";
+	static final String DEFAULT_OPENWIRE_URI = "goss.openwire.uri";
+	static final String DEFAULT_STOMP_URI = "goss.stomp.uri";
 
-    /**
-     * Creates a client instance that can be used to connect to goss.
-     *
-     * @param protocol
-     * @return
-     */
-    Client create(PROTOCOL protocol)  throws Exception ;
-    
     /**
      * Creates a client instance that can be used to connect to goss.
      *

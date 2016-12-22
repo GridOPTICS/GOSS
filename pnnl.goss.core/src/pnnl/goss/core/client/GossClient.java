@@ -48,6 +48,7 @@ package pnnl.goss.core.client;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.jms.Connection;
@@ -80,7 +81,6 @@ import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
-import pnnl.goss.core.ResponseText;
 
 import com.google.gson.Gson;
 import com.northconcepts.exception.ConnectionCode;
@@ -98,50 +98,40 @@ public class GossClient implements Client {
 	private Connection connection = null;
 	private Session session = null;
 	private boolean used;
-	private String clientTrustStore;
-	private String clientTrustStorePassword;
-
-	private boolean connected;
+	private String trustStore;
+	private String trustStorePassword;
 	private List<Thread> threads = new ArrayList<Thread>();
-
 	private PROTOCOL protocol;
-	// private PROTOCOL protocol;
 	private Credentials credentials = null;
-	
-	public GossClient(){
+
+	public GossClient(PROTOCOL protocol, Credentials credentials,
+			String openwireUri, String stompUri, String trustStorePassword,
+			String trustStore) {
 		this.uuid = UUID.randomUUID();
-	}
-
-	public GossClient setProtocol(PROTOCOL protocol) {
 		this.protocol = protocol;
-		return this;
+		this.credentials = credentials;
+		this.brokerUri = openwireUri;
+		this.stompUri = stompUri;
+		this.trustStorePassword = trustStorePassword;
+		this.trustStore = trustStore;
+	}
+	
+	public GossClient(PROTOCOL protocol, Credentials credentials,
+			String openwireUri, String stompUri) {
+		this.uuid = UUID.randomUUID();
+		this.protocol = protocol;
+		this.credentials = credentials;
+		this.brokerUri = openwireUri;
+		this.stompUri = stompUri;
 	}
 
-	public String getClientTrustStore() {
-		return clientTrustStore;
-	}
-
-	public GossClient setClientTrustStore(String clientTrustStore) {
-		this.clientTrustStore = clientTrustStore;
-		return this;
-	}
-
-	public String getClientTrustStorePassword() {
-		return clientTrustStorePassword;
-	}
-
-	public GossClient setClientTrustStorePassword(
-			String clientTrustStorePassword) {
-		this.clientTrustStorePassword = clientTrustStorePassword;
-		return this;
-	}
 
 	private void createSslSession() throws Exception {
 		ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(
 				brokerUri);
 
-		cf.setTrustStore(clientTrustStore);
-		cf.setTrustStorePassword(clientTrustStorePassword);
+		cf.setTrustStore(trustStore);
+		cf.setTrustStorePassword(trustStorePassword);
 
 		if (credentials != null) {
 			cf.setUserName(credentials.getUserPrincipal().getName());
@@ -189,10 +179,7 @@ public class GossClient implements Client {
 
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
 					brokerUri);
-			// factory.setUserName("system");
-			// factory.setPassword("manager");
-			// factory.setUseAsyncSend(true);
-
+			
 			if (credentials != null) {
 				factory.setUserName(credentials.getUserPrincipal().getName());
 				factory.setPassword(credentials.getPassword());
@@ -236,51 +223,43 @@ public class GossClient implements Client {
 	 * @throws JMSException
 	 */
 	@Override
-	public Response getResponse(Request request) throws SystemException {
+	public Serializable getResponse(Serializable message, String topic,
+			RESPONSE_FORMAT responseFormat) throws SystemException {
 		if (protocol == null) {
 			protocol = PROTOCOL.OPENWIRE;
 		}
-		return getResponse(request, null);
-	}
 
-	/**
-	 * Sends request and gets response for synchronous communication.
-	 *
-	 * @param request
-	 *            instance of pnnl.goss.core.Request or any of its subclass.
-	 * @return return an Object which could be a pnnl.goss.core.DataResponse,
-	 *         pnnl.goss.core.UploadResponse or pnnl.goss.core.DataError.
-	 * @throws JMSException
-	 */
-	@Override
-	public Response getResponse(Request request, RESPONSE_FORMAT responseFormat)
-			throws SystemException {
-		Response response = null;
-
-		if (request == null) {
+		if (topic == null) {
 			// TODO handle with a ErrorCode lookup!
-			return new ResponseError("Cannot route a null request");
+			return new ResponseError("topic cannot be null");
+		}
+		if (message == null) {
+			// TODO handle with a ErrorCode lookup!
+			return new ResponseError("message cannot be null");
 		}
 
+		Serializable response = null;
 		Destination replyDestination = getTemporaryDestination();
 
 		DefaultClientConsumer clientConsumer = new DefaultClientConsumer(
 				session, replyDestination);
 		try {
-			clientPublisher.sendMessage(request, replyDestination,
+			clientPublisher.sendMessage(message, replyDestination,
 					responseFormat);
-			Object message = clientConsumer.getMessageConsumer().receive();
-			if (message instanceof ObjectMessage) {
-				ObjectMessage objectMessage = (ObjectMessage) message;
+			Message responseMessage = clientConsumer.getMessageConsumer()
+					.receive();
+			response = ((TextMessage) responseMessage).getText();
+			if (responseMessage instanceof ObjectMessage) {
+				ObjectMessage objectMessage = (ObjectMessage) responseMessage;
 				if (objectMessage.getObject() instanceof Response) {
 					response = (Response) objectMessage.getObject();
 				}
-			} else if (message instanceof TextMessage) {
-				response = new ResponseText(((TextMessage) message).getText());
+			} else if (responseMessage instanceof TextMessage) {
+				response = ((TextMessage) responseMessage).getText();
 			}
+
 		} catch (JMSException e) {
-			SystemException.wrap(e).set("request", request.getClass())
-					.set("responseFormat", responseFormat);
+			SystemException.wrap(e).set("topic", topic).set("message", message);
 
 		} finally {
 			if (clientConsumer != null) {
@@ -338,83 +317,90 @@ public class GossClient implements Client {
 	 *            with an GossResponseEvent. Cannot asynchronously receive a
 	 *            message when a MessageListener is not set. throws JMSException
 	 */
-	public Client subscribeTo(String topicName, GossResponseEvent event) throws SystemException {
-        try{
-            if(event==null)
-                throw new NullPointerException("event cannot be null");
-            Destination destination = null;
-            if(this.protocol.equals(PROTOCOL.OPENWIRE)){
-                destination = getDestination(topicName);
-                new DefaultClientConsumer(new DefaultClientListener(event),session,destination);
-            }
-            else if(this.protocol.equals(PROTOCOL.STOMP)){
-            	Thread thread = new Thread(new Runnable() {
-            		Destination destination = new StompJmsDestination(topicName);
-                    DefaultClientConsumer consumer  = new DefaultClientConsumer(session,destination);
+	public Client subscribe(String topicName, GossResponseEvent event)
+			throws SystemException {
+		try {
+			if (event == null)
+				throw new NullPointerException("event cannot be null");
+			Destination destination = null;
+			if (this.protocol.equals(PROTOCOL.OPENWIRE)) {
+				destination = getDestination(topicName);
+				new DefaultClientConsumer(new DefaultClientListener(event),
+						session, destination);
+			} else if (this.protocol.equals(PROTOCOL.STOMP)) {
+				Thread thread = new Thread(new Runnable() {
+					Destination destination = new StompJmsDestination(topicName);
+					DefaultClientConsumer consumer = new DefaultClientConsumer(
+							session, destination);
 
-                    @Override
+					@Override
 					public void run() {
-            			while(session != null) {
-            				try {
-            					Message msg = consumer.getMessageConsumer().receive(10000);
-                                if (msg instanceof StompJmsBytesMessage) {
-                                    StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
-                                    org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
-                                    // System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-                                    String message = buffer.toString().substring(
-                                            buffer.toString().indexOf(":") + 1);
-                                    event.onMessage(new DataResponse(message));
-                                }
-                                if (msg instanceof StompJmsTextMessage) {
-                                    StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
-                                    org.fusesource.hawtbuf.Buffer buffer = stompMessage
-                                            .getContent();
-                                    // System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-                                    String message = buffer.toString().substring(
-                                            buffer.toString().indexOf(":") + 1);
-                                    event.onMessage(new DataResponse(message));
-                                }
-                            } catch (JMSException ex) {
-                                // Happens when a timeout occurs.
-                                //log.debug("Illegal state? "+ ex.getMessage());
-                                if (session != null){
-                                    log.debug("Closing session");
-                                    try {
+						while (session != null) {
+							try {
+								Message msg = consumer.getMessageConsumer()
+										.receive(10000);
+								if (msg instanceof StompJmsBytesMessage) {
+									StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
+									org.fusesource.hawtbuf.Buffer buffer = stompMessage
+											.getContent();
+									// System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+									String message = buffer.toString()
+											.substring(
+													buffer.toString().indexOf(
+															":") + 1);
+									event.onMessage(new DataResponse(message));
+								}
+								if (msg instanceof StompJmsTextMessage) {
+									StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
+									org.fusesource.hawtbuf.Buffer buffer = stompMessage
+											.getContent();
+									// System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
+									String message = buffer.toString()
+											.substring(
+													buffer.toString().indexOf(
+															":") + 1);
+									event.onMessage(new DataResponse(message));
+								}
+							} catch (JMSException ex) {
+								// Happens when a timeout occurs.
+								// log.debug("Illegal state? "+
+								// ex.getMessage());
+								if (session != null) {
+									log.debug("Closing session");
+									try {
 										session.close();
 									} catch (JMSException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-                                    session = null;
-                                }
-                            }
-            			}
-                    }
+									session = null;
+								}
+							}
+						}
+					}
 				});
 
-            	thread.start();
-            	threads.add(thread);
-            }
-        }
-        finally{
+				thread.start();
+				threads.add(thread);
+			}
+		} finally {
 
-        }
+		}
 
-        return this;
-    }
+		return this;
+	}
 
 	@Override
-	public void publish(String topicName, Serializable data,
-			RESPONSE_FORMAT responseFormat) throws SystemException {
+	public void publish(String topic, Serializable data) throws SystemException {
 		try {
 			if (data == null)
 				throw new NullPointerException("event cannot be null");
 
-			Destination destination = getDestination(topicName);
+			Destination destination = getDestination(topic);
 
-			if (responseFormat == null)
+			if (data instanceof String)
 				clientPublisher.publishTo(destination, data);
-			else if (responseFormat.equals(RESPONSE_FORMAT.JSON)) {
+			else {
 				Gson gson = new Gson();
 				clientPublisher.publishTo(destination, gson.toJson(data));
 			}
@@ -426,20 +412,6 @@ public class GossClient implements Client {
 			e.printStackTrace();
 			throw SystemException.wrap(e);
 		}
-	}
-
-	@Override
-	public void publishString(String topicName, String data)
-			throws SystemException {
-		Destination destination = getDestination(topicName);
-		try {
-			// publishTo(destination, data);
-			clientPublisher.publishTo(destination, data);
-		} catch (JMSException e) {
-			SystemException.wrap(e).set("destination", destination)
-					.set("data", data);
-		}
-
 	}
 
 	/*
@@ -545,23 +517,6 @@ public class GossClient implements Client {
 		return destination;
 	}
 
-	@Override
-	public void publish(String topicName, Serializable data)
-			throws SystemException {
-
-		Destination destination = null;
-
-		try {
-			destination = getDestination(topicName);
-			clientPublisher.publishTo(destination, data);
-
-		} catch (JMSException e) {
-
-			throw SystemException.wrap(e).set("destination", destination)
-					.set("data", data);
-		}
-	}
-
 	public Client setCredentials(Credentials credentials)
 			throws SystemException {
 
@@ -612,14 +567,7 @@ public class GossClient implements Client {
 	public String getClientId() {
 		return uuid.toString();
 	}
+	
+	
 
-	public GossClient setOpenwireUri(String uri) {
-		brokerUri = uri;
-		return this;
-	}
-
-	public GossClient setStompUri(String uri) {
-		stompUri = uri;
-		return this;
-	}
 }

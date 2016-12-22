@@ -12,7 +12,7 @@ public interface ClientPublishser {
 
 	void close();
 	
-	void sendMessage(Request request, Destination replyDestination, RESPONSE_FORMAT responseFormat) throws JMSException;
+	void sendMessage(Serializable message, Destination replyDestination, RESPONSE_FORMAT responseFormat) throws JMSException;
 	
 	void publishTo(Destination destination, Serializable data) throws JMSException;
 	
