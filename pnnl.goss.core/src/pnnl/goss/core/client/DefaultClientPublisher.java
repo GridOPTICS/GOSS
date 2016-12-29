@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.ClientPublishser;
+import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.security.SecurityConstants;
 
@@ -108,8 +109,10 @@ public class DefaultClientPublisher implements ClientPublishser {
     	
     	if(message instanceof String)
     		messageObj = session.createTextMessage(message.toString());
-    	else
+    	else if(message instanceof Request)
     		messageObj = session.createObjectMessage(message);
+    	//TODO: throw error in else
+    		
 				
     	
     	messageObj.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
