@@ -48,7 +48,6 @@ package pnnl.goss.core.client;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.jms.Connection;
@@ -77,7 +76,6 @@ import pnnl.goss.core.Client;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
-import pnnl.goss.core.Request;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
@@ -224,7 +222,7 @@ public class GossClient implements Client {
 	 */
 	@Override
 	public Serializable getResponse(Serializable message, String topic,
-			RESPONSE_FORMAT responseFormat) throws SystemException {
+			RESPONSE_FORMAT responseFormat) throws SystemException, JMSException {
 		if (protocol == null) {
 			protocol = PROTOCOL.OPENWIRE;
 		}
@@ -240,11 +238,12 @@ public class GossClient implements Client {
 
 		Serializable response = null;
 		Destination replyDestination = getTemporaryDestination();
+		Destination destination = session.createQueue(topic);
 
 		DefaultClientConsumer clientConsumer = new DefaultClientConsumer(
 				session, replyDestination);
 		try {
-			clientPublisher.sendMessage(message, replyDestination,
+			clientPublisher.sendMessage(message, destination, replyDestination,
 					responseFormat);
 			Message responseMessage = clientConsumer.getMessageConsumer()
 					.receive();
@@ -268,44 +267,6 @@ public class GossClient implements Client {
 		}
 
 		return response;
-	}
-
-	/**
-	 * Sends request and initializes listener for asynchronous communication To
-	 * get data, request object should extend
-	 * gov.pnnl.goss.communication.RequestData. To upload data, request object
-	 * should extend gov.pnnl.goss.communication.RequestUpload.
-	 *
-	 * @param request
-	 *            gov.pnnl.goss.communication.Request.
-	 * @param instance
-	 *            of GossResponseEvent
-	 * @return the replyDestination topic
-	 */
-	public String sendRequest(Request request, GossResponseEvent event,
-			RESPONSE_FORMAT responseFormat) throws SystemException {
-		try {
-			Destination replyDestination = getTemporaryDestination();
-
-			if (event != null) {
-				new DefaultClientConsumer(new DefaultClientListener(event),
-						session, replyDestination);
-			} else
-				throw new NullPointerException("event cannot be null");
-
-			clientPublisher.sendMessage(request, replyDestination,
-					responseFormat);
-			if (replyDestination != null) {
-				return replyDestination.toString();
-			}
-		} catch (JMSException e) {
-			log.error("sendRequest Error", e);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw SystemException.wrap(e);
-		}
-		return null;
 	}
 
 	/**
@@ -399,10 +360,10 @@ public class GossClient implements Client {
 			Destination destination = getDestination(topic);
 
 			if (data instanceof String)
-				clientPublisher.publishTo(destination, data);
+				clientPublisher.publish(destination, data);
 			else {
 				Gson gson = new Gson();
-				clientPublisher.publishTo(destination, gson.toJson(data));
+				clientPublisher.publish(destination, gson.toJson(data));
 			}
 
 		} catch (JMSException e) {

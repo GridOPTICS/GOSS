@@ -70,8 +70,6 @@ public class DefaultClientPublisher implements ClientPublishser {
 
     private transient Session session;
     private transient MessageProducer producer;
-    private transient MessageProducer publishingProducer;
-    Destination destination;
     private transient String username;
     private static Logger log = LoggerFactory.getLogger(DefaultClientPublisher.class);
     
@@ -83,9 +81,7 @@ public class DefaultClientPublisher implements ClientPublishser {
         try{
             this.session = session;
             this.username = username;
-            destination = this.session.createQueue("Request");
-            producer = this.session.createProducer(destination);
-            publishingProducer = this.session.createProducer(null);
+            producer = this.session.createProducer(null);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -102,7 +98,8 @@ public class DefaultClientPublisher implements ClientPublishser {
     }
     
     @Override
-	public void sendMessage(Serializable message, Destination replyDestination,
+	public void sendMessage(Serializable message, Destination destination, 
+			Destination replyDestination,
 			RESPONSE_FORMAT responseFormat) throws JMSException {
     	
     	Message messageObj = null;
@@ -129,23 +126,23 @@ public class DefaultClientPublisher implements ClientPublishser {
 		
 	}
 
-    public void publishTo(Destination destination, Serializable data) throws JMSException {
+    public void publish(Destination destination, Serializable data) throws JMSException {
         ObjectMessage message = session.createObjectMessage(data);
         log.debug("Publishing: "+ data.getClass()+ " on destination: " + destination);
-        publishingProducer.send(destination, message);
+        producer.send(destination, message);
     }
 
-    public void publishTo(Destination destination, String data) throws JMSException {
+    public void publish(Destination destination, String data) throws JMSException {
         TextMessage message = session.createTextMessage(data);
         log.debug("Publishing on destination: " + destination);
-        publishingProducer.send(destination, message);
+        producer.send(destination, message);
     }
     
     public void publishBlobMessage(Destination destination, File file) throws JMSException {
     	ActiveMQSession activeMQSession = (ActiveMQSession) session;
     	BlobMessage message  = activeMQSession.createBlobMessage(file);
         log.debug("Publishing on destination: " + destination);
-        publishingProducer.send(destination, message);
+        producer.send(destination, message);
     }
     	
 	private String createRandomString() {

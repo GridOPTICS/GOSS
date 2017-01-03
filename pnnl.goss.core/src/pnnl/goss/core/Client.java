@@ -2,6 +2,8 @@ package pnnl.goss.core;
 
 import java.io.Serializable;
 
+import javax.jms.JMSException;
+
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 
 import com.northconcepts.exception.SystemException;
@@ -24,7 +26,7 @@ public interface Client {
 	 * @throws SystemException
 	 */
 	public Serializable getResponse(Serializable request, String topic,
-			RESPONSE_FORMAT responseFormat) throws SystemException;
+			RESPONSE_FORMAT responseFormat) throws SystemException, JMSException;
 
 	/**
 	 * Lets the client subscribe to a Topic of the given name for event based
