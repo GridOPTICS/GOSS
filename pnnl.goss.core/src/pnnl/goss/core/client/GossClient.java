@@ -309,7 +309,11 @@ public class GossClient implements Client {
 											.substring(
 													buffer.toString().indexOf(
 															":") + 1);
-									event.onMessage(new DataResponse(message));
+									DataResponse dataResponse = new DataResponse(message);
+									dataResponse.setDestination(msg.getJMSDestination().toString());
+									if(msg.getJMSReplyTo() != null)
+										dataResponse.setReplyDestination(msg.getJMSReplyTo().toString());
+									event.onMessage(dataResponse);
 								}
 								if (msg instanceof StompJmsTextMessage) {
 									StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
@@ -320,7 +324,11 @@ public class GossClient implements Client {
 											.substring(
 													buffer.toString().indexOf(
 															":") + 1);
-									event.onMessage(new DataResponse(message));
+									DataResponse dataResponse = new DataResponse(message);
+									dataResponse.setDestination(msg.getJMSDestination().toString());
+									if(msg.getJMSReplyTo() != null)
+										dataResponse.setReplyDestination(msg.getJMSReplyTo().toString());
+									event.onMessage(new DataResponse(dataResponse));
 								}
 							} catch (JMSException ex) {
 								// Happens when a timeout occurs.
