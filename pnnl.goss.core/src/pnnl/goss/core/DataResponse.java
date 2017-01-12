@@ -77,7 +77,7 @@ public class DataResponse extends Response implements Serializable {
     	return (Error) data;
     }
     
-    public Object getData() {
+    public Serializable getData() {
         return data;
     }
 
