@@ -69,7 +69,8 @@ public class SslClientTests {
 		try{
 			System.out.println("TEST: clientFactoryRegistryOk");
 			assertNotNull(clientFactory);	
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
+			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
 			assertNotNull(client);
 			assertEquals(PROTOCOL.OPENWIRE, client.getProtocol());
 			System.out.println("TEST_END: clientFactoryRegistryOk");
@@ -88,13 +89,12 @@ public class SslClientTests {
 			assertNotNull(clientFactory);
 			System.out.println("Client factory isn't null!");
 			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
-			client.setCredentials(credentials);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
 			assertNotNull("Client was null from the factory!", client);
 			System.out.println("Client with credentials created");
 			EchoRequest request = new EchoRequest(message);
 			System.out.println("Client Created request");
-			Response response = client.getResponse(request);
+			Response response = (Response)client.getResponse(request, "Request", null);
 			System.out.println("Client Sent request to server");
 			
 			assertNotNull(response);
@@ -114,8 +114,9 @@ public class SslClientTests {
 	public void clientReceivesRequestErrorOnNullRequest(){
 		try{
 			System.out.println("TEST: clientReceivesRequestErrorOnNullRequest");
-			Client client =  clientFactory.create(PROTOCOL.OPENWIRE);
-			Response response = client.getResponse(null);
+			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
+			Client client =  clientFactory.create(PROTOCOL.OPENWIRE, credentials);
+			Response response = (Response)client.getResponse(null, null, null);
 			assertTrue(response instanceof ResponseError);
 			ResponseError err = (ResponseError)response;
 			assertTrue(err.getMessage().equals("Cannot route a null request"));
@@ -130,8 +131,7 @@ public class SslClientTests {
 		try{
 			System.out.println("TEST: clientCanUploadData");
 			Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-			Client client = clientFactory.create(PROTOCOL.OPENWIRE);
-			client.setCredentials(credentials);
+			Client client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
 			// This is in the BlaclistRealm.java in the runner project.
 			
 			EchoTestData data = new EchoTestData()
@@ -143,11 +143,11 @@ public class SslClientTests {
 				.setByteData(hexStringToByteArray("0b234ae51114"));
 			
 			UploadRequest request = new UploadRequest(data, "Test Datatype Upload");
-			Response response = client.getResponse(request);
+			Response response = (Response)client.getResponse(request, "Request", null);
 			assertTrue("response is a "+response.getClass(), response instanceof UploadResponse);
 			UploadResponse uresponse = (UploadResponse)response;
 			assertTrue(uresponse.isSuccess());
-			response = client.getResponse(new EchoDownloadRequest());
+			response = (Response)client.getResponse(new EchoDownloadRequest(), "Request", null);
 			assertTrue(response instanceof DataResponse);
 			DataResponse received = (DataResponse)response;
 			assertEquals(data.toString(), received.toString());

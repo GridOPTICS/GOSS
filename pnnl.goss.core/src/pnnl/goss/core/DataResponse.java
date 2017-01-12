@@ -52,7 +52,11 @@ public class DataResponse extends Response implements Serializable {
     Serializable data;
 
     boolean responseComplete;
-
+    
+    String destination;
+    
+    String replyDestination;
+    
     public DataResponse(){
 
     }
@@ -73,7 +77,7 @@ public class DataResponse extends Response implements Serializable {
     	return (Error) data;
     }
     
-    public Object getData() {
+    public Serializable getData() {
         return data;
     }
 
@@ -96,8 +100,26 @@ public class DataResponse extends Response implements Serializable {
     public void setResponseComplete(boolean responseComplete) {
         this.responseComplete = responseComplete;
     }
+    
+    public String getDestination() {
+		return destination;
+	}
 
-    @Override
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+	
+	
+
+	public String getReplyDestination() {
+		return replyDestination;
+	}
+
+	public void setReplyDestination(String replyDestination) {
+		this.replyDestination = replyDestination;
+	}
+
+	@Override
     public String toString() {
         return (this.data != null)? this.data.toString(): super.toString();
     }

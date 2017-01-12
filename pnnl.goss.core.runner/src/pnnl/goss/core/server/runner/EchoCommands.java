@@ -1,5 +1,7 @@
 package pnnl.goss.core.server.runner;
 
+import javax.jms.JMSException;
+
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.Property;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
@@ -7,6 +9,8 @@ import org.apache.felix.dm.annotation.api.Stop;
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+
+import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.Client.PROTOCOL;
@@ -99,8 +103,7 @@ public class EchoCommands {
 				client.close();
 			}
 			Credentials credentials = new UsernamePasswordCredentials(uname, pass);
-			client = clientFactory.create(PROTOCOL.OPENWIRE);
-			client.setCredentials(credentials);
+			client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
 			System.out.println("Setup to use connection: "+uname);
 			
 			addCommand("connect "+ uname);
@@ -120,7 +123,10 @@ public class EchoCommands {
 			.setByteData(hexStringToByteArray("0b234ae51114"));
 		System.out.println("Sending different data datatypes across the wire");
 		UploadRequest request = new UploadRequest(data, "Test Datatype Upload");
-		Response response = client.getResponse(request);
+		Response response;
+		try {
+			response = (Response)client.getResponse(request,"Request", null);
+		
 		if (response instanceof UploadResponse){
 			UploadResponse ures = (UploadResponse)response;
 			if (ures.isSuccess()){
@@ -134,6 +140,13 @@ public class EchoCommands {
 			System.out.println("Invalid response type found!");
 		}
 		addCommand("doUpload");
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void echo(String message) {
@@ -156,7 +169,10 @@ public class EchoCommands {
 	public void echoBlacklist(String message){
 		getClient();
 		
-		Response response = client.getResponse(new EchoBlacklistCheckRequest(message));
+		Response response;
+		try {
+			response = (Response)client.getResponse(new EchoBlacklistCheckRequest(message),"Request",null);
+		
 		
 		
 		if (response instanceof DataResponse){
@@ -166,13 +182,23 @@ public class EchoCommands {
 			System.out.println("Response wasn't DataResponse it was: "+response.getClass().getName());
 		}
 		addCommand("echoBlacklist "+ message);
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void echoOpenwire(String message){
 		
 		getClient();
 		
-		Response response = client.getResponse(new EchoRequest(message));
+		Response response;
+		try {
+			response = (Response)client.getResponse(new EchoRequest(message),"Request",null);
+		
 		if (response instanceof DataResponse){
 			System.out.println("Response was: " + ((DataResponse)response).getData());
 		}
@@ -181,14 +207,20 @@ public class EchoCommands {
 		}
 		
 		addCommand("echoOpenwire "+ message);
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void getClient() {
 		try{
 			if (client == null){
 				Credentials credentials = new UsernamePasswordCredentials("darkhelmet", "ludicrousspeed");
-				client = clientFactory.create(PROTOCOL.OPENWIRE);
-				client.setCredentials(credentials);
+				client = clientFactory.create(PROTOCOL.OPENWIRE, credentials);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

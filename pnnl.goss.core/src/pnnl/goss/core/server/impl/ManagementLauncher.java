@@ -69,8 +69,8 @@ public class ManagementLauncher {
 		try {
 			Client client = clientFactory.create(PROTOCOL.STOMP,
 					new UsernamePasswordCredentials("system", "manager"));
-			client.subscribeTo("/topic/goss/management/request", new ResponseEvent(client));
-			client.subscribeTo("/topic/goss/management/go", new ResponseEvent(client));
+			client.subscribe("/topic/goss/management/request", new ResponseEvent(client));
+			client.subscribe("/topic/goss/management/go", new ResponseEvent(client));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
