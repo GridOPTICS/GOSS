@@ -4,6 +4,6 @@
 .settings/
 .metadata/
 *.class
-cnf/releaserepo/
+cnf/localrepo/.*
 pnnl.goss.core/bin/
 ./.project
