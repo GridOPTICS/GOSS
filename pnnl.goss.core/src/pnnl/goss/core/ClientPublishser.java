@@ -16,7 +16,5 @@ public interface ClientPublishser {
 	
 	void publish(Destination destination, Serializable data) throws JMSException;
 	
-	void publish(Destination destination, String data) throws JMSException;
-	
 	void publishBlobMessage(Destination destination, File file) throws JMSException;
 }
