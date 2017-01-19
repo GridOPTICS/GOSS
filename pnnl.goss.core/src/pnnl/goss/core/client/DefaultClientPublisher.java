@@ -52,9 +52,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.BlobMessage;
@@ -127,17 +125,15 @@ public class DefaultClientPublisher implements ClientPublishser {
 	}
 
     public void publish(Destination destination, Serializable data) throws JMSException {
-        ObjectMessage message = session.createObjectMessage(data);
+    	Message message= null;
+    	if(data instanceof String)
+    		 message = session.createTextMessage(data.toString());
+    	else
+    		message = session.createObjectMessage(data);
         log.debug("Publishing: "+ data.getClass()+ " on destination: " + destination);
         producer.send(destination, message);
     }
 
-    public void publish(Destination destination, String data) throws JMSException {
-        TextMessage message = session.createTextMessage(data);
-        log.debug("Publishing on destination: " + destination);
-        producer.send(destination, message);
-    }
-    
     public void publishBlobMessage(Destination destination, File file) throws JMSException {
     	ActiveMQSession activeMQSession = (ActiveMQSession) session;
     	BlobMessage message  = activeMQSession.createBlobMessage(file);
