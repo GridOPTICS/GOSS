@@ -2,6 +2,7 @@ package pnnl.goss.core;
 
 import java.io.Serializable;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
 
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
@@ -41,6 +42,9 @@ public interface Client {
 			throws SystemException;
 
 	public void publish(String topicName, Serializable message)
+			throws SystemException;
+	
+	public void publish(Destination destination, Serializable data) 
 			throws SystemException;
 
 	/**

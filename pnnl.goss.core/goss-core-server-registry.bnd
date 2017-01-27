@@ -1,4 +1,4 @@
-Bundle-Version: 1.0.9.${tstamp}
+Bundle-Version: 1.0.10.${tstamp}
 Private-Package:  \
 	pnnl.goss.server.registry
 DynamicImport-Package: *

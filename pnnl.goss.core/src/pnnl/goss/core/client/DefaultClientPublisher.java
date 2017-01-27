@@ -117,6 +117,7 @@ public class DefaultClientPublisher implements ClientPublishser {
         messageObj.setJMSReplyTo(replyDestination);
         String correlationId = this.createRandomString();
         messageObj.setJMSCorrelationID(correlationId);
+        messageObj.setJMSDestination(destination);
         if(responseFormat!=null)
         	messageObj.setStringProperty("RESPONSE_FORMAT", responseFormat.toString());
         log.debug("Sending: "+ message+ " on destination: " + destination);

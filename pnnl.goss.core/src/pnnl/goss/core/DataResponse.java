@@ -46,6 +46,8 @@ package pnnl.goss.core;
 
 import java.io.Serializable;
 
+import javax.jms.Destination;
+
 public class DataResponse extends Response implements Serializable {
 
     private static final long serialVersionUID = 3555288982317165831L;
@@ -55,7 +57,7 @@ public class DataResponse extends Response implements Serializable {
     
     String destination;
     
-    String replyDestination;
+    Destination replyDestination;
     
     public DataResponse(){
 
@@ -111,11 +113,11 @@ public class DataResponse extends Response implements Serializable {
 	
 	
 
-	public String getReplyDestination() {
+	public Destination getReplyDestination() {
 		return replyDestination;
 	}
 
-	public void setReplyDestination(String replyDestination) {
+	public void setReplyDestination(Destination replyDestination) {
 		this.replyDestination = replyDestination;
 	}
 
