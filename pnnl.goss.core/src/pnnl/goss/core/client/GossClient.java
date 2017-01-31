@@ -239,7 +239,8 @@ public class GossClient implements Client {
 		Serializable response = null;
 		Destination replyDestination = getTemporaryDestination();
 		Destination destination = session.createQueue(topic);
-
+		
+		log.debug("Creating consumer for destination "+replyDestination);
 		DefaultClientConsumer clientConsumer = new DefaultClientConsumer(
 				session, replyDestination);
 		try {
@@ -312,11 +313,12 @@ public class GossClient implements Client {
 									DataResponse dataResponse = new DataResponse(message);
 									dataResponse.setDestination(msg.getJMSDestination().toString());
 									if(msg.getJMSReplyTo() != null)
-										dataResponse.setReplyDestination(msg.getJMSReplyTo().toString());
+										dataResponse.setReplyDestination(msg.getJMSReplyTo());
 									event.onMessage(dataResponse);
 								}
 								if (msg instanceof StompJmsTextMessage) {
 									StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
+									
 									org.fusesource.hawtbuf.Buffer buffer = stompMessage
 											.getContent();
 									// System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
@@ -325,10 +327,10 @@ public class GossClient implements Client {
 													buffer.toString().indexOf(
 															":") + 1);
 									DataResponse dataResponse = new DataResponse(message);
-									dataResponse.setDestination(msg.getJMSDestination().toString());
+									dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
 									if(msg.getJMSReplyTo() != null)
-										dataResponse.setReplyDestination(msg.getJMSReplyTo().toString());
-									event.onMessage(new DataResponse(dataResponse));
+										dataResponse.setReplyDestination(msg.getJMSReplyTo());
+									event.onMessage(dataResponse);
 								}
 							} catch (JMSException ex) {
 								// Happens when a timeout occurs.
@@ -366,6 +368,28 @@ public class GossClient implements Client {
 				throw new NullPointerException("event cannot be null");
 
 			Destination destination = getDestination(topic);
+
+			if (data instanceof String)
+				clientPublisher.publish(destination, data);
+			else {
+				Gson gson = new Gson();
+				clientPublisher.publish(destination, gson.toJson(data));
+			}
+
+		} catch (JMSException e) {
+			log.error("publish error", e);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw SystemException.wrap(e);
+		}
+	}
+	
+	@Override
+	public void publish(Destination destination, Serializable data) throws SystemException {
+		try {
+			if (data == null)
+				throw new NullPointerException("data cannot be null");
 
 			if (data instanceof String)
 				clientPublisher.publish(destination, data);
@@ -449,7 +473,7 @@ public class GossClient implements Client {
 								ConnectionCode.DESTINATION_ERROR);
 					}
 				} else if (protocol.equals(PROTOCOL.STOMP)) {
-					destination = new StompJmsTempQueue();
+					destination = new StompJmsTempQueue("/queue/", UUID.randomUUID().toString());
 				}
 			}
 		} catch (JMSException e) {
@@ -475,7 +499,6 @@ public class GossClient implements Client {
 					throw new SystemException(ConnectionCode.CONNECTION_ERROR)
 							.set("topicName", topicName);
 				}
-
 				destination = new StompJmsTopic(
 						(StompJmsConnection) connection, topicName);
 			}
