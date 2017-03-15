@@ -230,7 +230,7 @@ public class GridOpticsServer implements ServerControl {
 	    			,"Request");
 	    	
 	    	gossClockTickTopic = getProperty((String) properties.get(GossCoreContants.PROP_TICK_TOPIC)
-	    			, "goss/system/tick");
+	    			, "GOSS/SYSTEM/TICK");
 	    	
 	    	// SSL IS DISABLED BY DEFAULT.
 	    	sslEnabled = Boolean.parseBoolean(
@@ -340,19 +340,25 @@ public class GridOpticsServer implements ServerControl {
 		}
     }
     
+    /**
+     * ClockTick runnable that will be called once a second.     *
+     */
     private static class ClockTick implements Runnable{
     	
     	private static int count = 0;
-    	private GridOpticsServer server;
-
     	private volatile Session session;
     	private transient MessageProducer producer;
     	private Destination destination;
     	private boolean sendTick = true;
     	
+    	/**
+    	 * Creates the topic and creates the producer to publish data to
+    	 * the to the message bus.
+    	 * 
+    	 * @param server
+    	 */
     	public ClockTick(GridOpticsServer server){
-    		this.server = server;
-    		session = server.getSession();
+      		session = server.getSession();
     		// Create a MessageProducer from the Session to the Topic or Queue
             try {
             	destination = session.createTopic(server.gossClockTickTopic);
@@ -365,6 +371,12 @@ public class GridOpticsServer implements ServerControl {
             
     	}
     	
+    	/**
+    	 * Called during a task execution.  The producer sends a count through the
+    	 * message bus.  The count will increase up to 10,000,000 and then start
+    	 * over again at 0.  Yes this is an arbitrary amount.  Note the count will
+    	 * also start at 0 when the goss server is restarted. 
+    	 */
 		@Override
 		public void run() {
 			if (sendTick) {
@@ -374,7 +386,13 @@ public class GridOpticsServer implements ServerControl {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				count += 1;
+				
+				if (count >= 10000000){
+					count = 0;
+				}
+				else{
+					count += 1;
+				}
 			}	
 		}
     }
