@@ -49,6 +49,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
@@ -350,6 +353,7 @@ public class GridOpticsServer implements ServerControl {
     	private transient MessageProducer producer;
     	private Destination destination;
     	private boolean sendTick = true;
+    	private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
     	
     	/**
     	 * Creates the topic and creates the producer to publish data to
@@ -357,7 +361,7 @@ public class GridOpticsServer implements ServerControl {
     	 * 
     	 * @param server
     	 */
-    	public ClockTick(GridOpticsServer server){
+    	public ClockTick(GridOpticsServer server){ 		
       		session = server.getSession();
     		// Create a MessageProducer from the Session to the Topic or Queue
             try {
@@ -372,16 +376,15 @@ public class GridOpticsServer implements ServerControl {
     	}
     	
     	/**
-    	 * Called during a task execution.  The producer sends a count through the
-    	 * message bus.  The count will increase up to 10,000,000 and then start
-    	 * over again at 0.  Yes this is an arbitrary amount.  Note the count will
-    	 * also start at 0 when the goss server is restarted. 
+    	 * Called during a task execution.  The producer will send a date time string
+    	 * through the message bus. 
     	 */
 		@Override
 		public void run() {
 			if (sendTick) {
+				LocalDateTime dt = LocalDateTime.now();
 				try {
-					producer.send(session.createTextMessage(Integer.toString(count)));
+					producer.send(session.createTextMessage(dt.format(sdf)));
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
