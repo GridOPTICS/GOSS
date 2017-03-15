@@ -1,4 +1,4 @@
-Bundle-Version: 2.0.4.${tstamp}
+Bundle-Version: 2.0.5.${tstamp}
 -buildpath: \
 	org.apache.felix.dependencymanager.annotation,\
 	org.apache.felix.dependencymanager,\
@@ -12,9 +12,9 @@ Bundle-Version: 2.0.4.${tstamp}
 	slf4j.simple,\
 	slf4j.api,\
 	com.springsource.javax.jms;version=1.1.0,\
-	pnnl.goss.core.core-api;version=4.0,\
-	pnnl.goss.core.goss-core-security;version=2.1,\
-	pnnl.goss.core.goss-core-server-api;version=2.0,\
+	pnnl.goss.core.core-api;version=latest,\
+	pnnl.goss.core.goss-core-security;version=latest,\
+	pnnl.goss.core.goss-core-server-api;version=latest,\
 	pnnl.goss.core.goss-core-server;version=latest
 
 -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
