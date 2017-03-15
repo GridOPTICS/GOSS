@@ -52,11 +52,16 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -79,13 +84,13 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.northconcepts.exception.ConnectionCode;
+import com.northconcepts.exception.SystemException;
+
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossRealm;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
-
-import com.northconcepts.exception.ConnectionCode;
-import com.northconcepts.exception.SystemException;
 
 
 @Component
@@ -115,7 +120,7 @@ public class GridOpticsServer implements ServerControl {
     
     private static final String PROP_SYSTEM_MANAGER = "goss.system.manager";
     private static final String PROP_SYSTEM_MANAGER_PASSWORD = "goss.system.manager.password";
-            
+    		
     private BrokerService broker;
     private Connection connection;
     private Session session;
@@ -152,6 +157,8 @@ public class GridOpticsServer implements ServerControl {
     private String sslServerTrustStore = null;
     private String sslServerTrustStorePassword = null;
     
+    private String gossClockTickTopic = null;
+    
     // A list of consumers all listening to the requestQueue
     private final List<ServerConsumer> consumers = new ArrayList<>(); 
      
@@ -166,6 +173,9 @@ public class GridOpticsServer implements ServerControl {
     
     @ServiceDependency
     private volatile GossRealm permissionAdapter;
+    
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    
     
     /**
      * Return a default value if the passed string is null or empty,
@@ -218,6 +228,9 @@ public class GridOpticsServer implements ServerControl {
 	    	
 	    	requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE)
 	    			,"Request");
+	    	
+	    	gossClockTickTopic = getProperty((String) properties.get(GossCoreContants.PROP_TICK_TOPIC)
+	    			, "goss/system/tick");
 	    	
 	    	// SSL IS DISABLED BY DEFAULT.
 	    	sslEnabled = Boolean.parseBoolean(
@@ -326,6 +339,45 @@ public class GridOpticsServer implements ServerControl {
 			//System.err.println(e.getMessage());;
 		}
     }
+    
+    private static class ClockTick implements Runnable{
+    	
+    	private static int count = 0;
+    	private GridOpticsServer server;
+
+    	private volatile Session session;
+    	private transient MessageProducer producer;
+    	private Destination destination;
+    	private boolean sendTick = true;
+    	
+    	public ClockTick(GridOpticsServer server){
+    		this.server = server;
+    		session = server.getSession();
+    		// Create a MessageProducer from the Session to the Topic or Queue
+            try {
+            	destination = session.createTopic(server.gossClockTickTopic);
+				producer = session.createProducer(destination);
+				producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			} catch (JMSException e) {
+				e.printStackTrace();
+				sendTick = false;
+			}
+            
+    	}
+    	
+		@Override
+		public void run() {
+			if (sendTick) {
+				try {
+					producer.send(session.createTextMessage(Integer.toString(count)));
+				} catch (JMSException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				count += 1;
+			}	
+		}
+    }
         
     @Override
     @Start
@@ -390,6 +442,8 @@ public class GridOpticsServer implements ServerControl {
     	} catch (JMSException e) {
 			throw SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
 		}
+    	
+    	scheduler.scheduleAtFixedRate(new ClockTick(this), 1, 1, TimeUnit.SECONDS);
 	}
     
     private void createAuthenticatedConnectionFactory(String username, String password) throws JMSException {
@@ -492,114 +546,4 @@ public class GridOpticsServer implements ServerControl {
         in.close();
         return out.toByteArray();
     }
-    
-    
-    
-
-//    public GridOpticsServer(GossRequestHandlerRegistrationService handlerService,
-//        Dictionary<String, Object> coreConfiguration, boolean startBroker) throws Exception{
-//
-//        Dictionary<String, Object> config = coreConfiguration;
-//        String brokerURI = (String)config.get(PROP_OPENWIRE_URI);
-//        URI uri = URI.create(brokerURI);
-//        String user = (String)config.get(GossCoreContants.PROP_SYSTEM_USER);
-//        String pw = (String)config.get(GossCoreContants.PROP_SYSTEM_PASSWORD);
-//
-//        log.debug("Creating gridoptics server\n\tbrokerURI:"+
-//                brokerURI+"\n\tsystem user: "+user);
-//
-//
-//
-//        //Needed for standalone server instance
-//        if(startBroker){
-//            startBroker(config);
-//        }
-//
-//        makeActiveMqConnection(uri, user, pw);
-//
-//        consumer = new ServerConsumer(coreConfiguration, handlerService);
-//    }
-//
-//
-//    private void startBroker(Dictionary<String, Object> config) throws Exception {
-//
-//        if (config.get(PROP_ACTIVEMQ_CONFIG) != null){
-//            String brokerConfig = "xbean:" + (String) config.get(PROP_ACTIVEMQ_CONFIG);
-//            log.debug("Starting broker using config: " + brokerConfig);
-//
-//            System.setProperty("activemq.base", System.getProperty("user.dir"));
-//            log.debug("ActiveMQ base directory set as: "+System.getProperty("activemq.base"));
-//            broker = BrokerFactory.createBroker(brokerConfig, true);
-//            broker.setDataDirectory(System.getProperty("activemq.base")+"/data");
-//        }
-//        else{
-//            log.debug("Broker started not using xbean "+ (String)config.get(PROP_OPENWIRE_URI));
-//            broker = new BrokerService();
-//            broker.addConnector((String)config.get(PROP_OPENWIRE_URI));
-//            log.warn("Persistent storage is off");
-//            String datadir = System.getProperty("java.io.tmpdir") + File.separatorChar
-//                    + "gossdata";
-//            broker.setDataDirectory(datadir);
-//            broker.start();
-//        }
-//        broker.waitUntilStarted();
-//
-//    }
-//
-//    private void makeActiveMqConnection(URI brokerUri, String systemUser, String systemPW) throws JMSException{
-//        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
-//        factory.setUseAsyncSend(true);
-//        //Use system login account
-//        if(systemUser!=null){
-//            factory.setUserName(systemUser);
-//        }
-//        if(systemPW!=null){
-//            factory.setPassword(systemPW);
-//        }
-//
-//        log.debug("Creating connection to: "+brokerUri +" using account: "+ systemUser);
-//        connection = (ActiveMQConnection)factory.createConnection();
-//        connection.start();
-//    }
-
-//    public static Connection getConnection() throws NullPointerException{
-//        if(connection==null)
-//            throw new NullPointerException("Cannot connect to server. Create GridOPTICSServer instance first.");
-//
-//        return connection;
-//    }
-//
-//    public void close() throws JMSException {
-//    	
-//        if (connection != null) {
-//            connection.close();
-//        }
-//        if (consumer != null){
-//            consumer = null;
-//        }
-//        if (broker != null){
-//            try {
-//                broker.stop();
-//                broker.waitUntilStopped();
-//            } catch (Exception e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
-//        log.debug("Closing connection");
-//        broker = null;
-//        connection = null;
-//    }
-//
-//    @Override
-//    protected void finalize() throws Throwable {
-//        //Make really sure that the connection gets closed
-//        //close();
-//        super.finalize();
-//    }
-
-
-
-	
-
 }
