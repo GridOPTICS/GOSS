@@ -1,3 +1,3 @@
 Export-Package:  \
 	pnnl.goss.core.server
-Bundle-Version: 2.0.12.${tstamp}
+Bundle-Version: 2.0.13.${tstamp}
