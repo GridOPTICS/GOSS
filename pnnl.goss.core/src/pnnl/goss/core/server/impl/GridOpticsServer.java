@@ -49,7 +49,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -353,7 +352,7 @@ public class GridOpticsServer implements ServerControl {
     	private transient MessageProducer producer;
     	private Destination destination;
     	private boolean sendTick = true;
-    	private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+    	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     	
     	/**
     	 * Creates the topic and creates the producer to publish data to
@@ -384,7 +383,8 @@ public class GridOpticsServer implements ServerControl {
 			if (sendTick) {
 				LocalDateTime dt = LocalDateTime.now();
 				try {
-					producer.send(session.createTextMessage(dt.format(sdf)));
+					LocalDateTime localDateTime = LocalDateTime.now();
+					producer.send(session.createTextMessage(localDateTime.format(formatter)));
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
