@@ -49,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -383,8 +384,11 @@ public class GridOpticsServer implements ServerControl {
 			if (sendTick) {
 				LocalDateTime dt = LocalDateTime.now();
 				try {
-					LocalDateTime localDateTime = LocalDateTime.now();
-					producer.send(session.createTextMessage(localDateTime.format(formatter)));
+					// current time in UTC time zone
+					LocalDateTime localDateTimeUTC = LocalDateTime.now(Clock.systemUTC());
+
+					//log.debug(localDateTimeUTC.format(formatter));
+					producer.send(session.createTextMessage(localDateTimeUTC.format(formatter)));
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
