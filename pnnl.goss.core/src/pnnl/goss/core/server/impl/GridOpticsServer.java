@@ -49,6 +49,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
@@ -340,19 +342,26 @@ public class GridOpticsServer implements ServerControl {
 		}
     }
     
+    /**
+     * ClockTick runnable that will be called once a second.     *
+     */
     private static class ClockTick implements Runnable{
     	
     	private static int count = 0;
-    	private GridOpticsServer server;
-
     	private volatile Session session;
     	private transient MessageProducer producer;
     	private Destination destination;
     	private boolean sendTick = true;
+    	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     	
-    	public ClockTick(GridOpticsServer server){
-    		this.server = server;
-    		session = server.getSession();
+    	/**
+    	 * Creates the topic and creates the producer to publish data to
+    	 * the to the message bus.
+    	 * 
+    	 * @param server
+    	 */
+    	public ClockTick(GridOpticsServer server){ 		
+      		session = server.getSession();
     		// Create a MessageProducer from the Session to the Topic or Queue
             try {
             	destination = session.createTopic(server.gossClockTickTopic);
@@ -365,16 +374,28 @@ public class GridOpticsServer implements ServerControl {
             
     	}
     	
+    	/**
+    	 * Called during a task execution.  The producer will send a date time string
+    	 * through the message bus. 
+    	 */
 		@Override
 		public void run() {
 			if (sendTick) {
+				LocalDateTime dt = LocalDateTime.now();
 				try {
-					producer.send(session.createTextMessage(Integer.toString(count)));
+					LocalDateTime localDateTime = LocalDateTime.now();
+					producer.send(session.createTextMessage(localDateTime.format(formatter)));
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				count += 1;
+				
+				if (count >= 10000000){
+					count = 0;
+				}
+				else{
+					count += 1;
+				}
 			}	
 		}
     }
