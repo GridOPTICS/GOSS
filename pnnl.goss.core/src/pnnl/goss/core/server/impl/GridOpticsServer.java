@@ -233,7 +233,7 @@ public class GridOpticsServer implements ServerControl {
 	    			,"Request");
 	    	
 	    	gossClockTickTopic = getProperty((String) properties.get(GossCoreContants.PROP_TICK_TOPIC)
-	    			, "GOSS/SYSTEM/TICK");
+	    			, "goss/system/tick");
 	    	
 	    	// SSL IS DISABLED BY DEFAULT.
 	    	sslEnabled = Boolean.parseBoolean(
