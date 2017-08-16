@@ -1,3 +1,28 @@
-#
-# This file is left open for you to define your macros
-#
+# Configure Repositories
+-plugin.1.Jpm: \
+	aQute.bnd.deployer.repository.wrapper.Plugin; \
+		location = "${build}/cache/wrapper"; \
+		reindex = true, \
+	aQute.bnd.jpm.Repository; \
+		includeStaged = true; \
+		name = Jpm; \
+		location = ~/.bnd/shacache; \
+		index = ${build}/central.json
+
+-plugin.2.Local: \
+	aQute.bnd.deployer.repository.LocalIndexedRepo; \
+		name = Local; \
+		pretty = true; \
+		local = ${build}/local
+
+-plugin.3.Templates: \
+	aQute.bnd.deployer.repository.LocalIndexedRepo; \
+		name = Templates; \
+		pretty = true; \
+		local = ${build}/templates
+
+-plugin.4.Release: \
+	aQute.bnd.deployer.repository.LocalIndexedRepo; \
+		name = Release; \
+		pretty = true; \
+		local = ${build}/release

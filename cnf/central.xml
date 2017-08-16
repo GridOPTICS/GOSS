@@ -9,6 +9,26 @@
 	<packaging>pom</packaging>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.framework -->
+		<dependency>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>org.apache.felix.framework</artifactId>
+		    <version>5.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.servicemix.bundles/org.apache.servicemix.bundles.gson -->
+		<dependency>
+		    <groupId>org.apache.servicemix.bundles</groupId>
+		    <artifactId>org.apache.servicemix.bundles.gson</artifactId>
+		    <version>2.1_1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient-osgi -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient-osgi</artifactId>
+		    <version>4.5.3</version>
+		</dependency>
+				
+				
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.shell</artifactId>
