@@ -1,4 +1,4 @@
-package com.northconcepts.exception;
+package gov.pnnl.goss.exception;
 
 import java.io.Serializable;
 

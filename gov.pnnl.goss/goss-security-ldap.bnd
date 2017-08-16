@@ -1,5 +1,5 @@
 Export-Package: \
-	com.northconcepts.exception,\
-	gov.pnnl.goss.security.api
+	gov.pnnl.goss.security.api,\
+	gov.pnnl.goss.exception
 Private-Package: gov.pnnl.goss.security.ldap
 Bundle-Version: 0.0.0.${tstamp}

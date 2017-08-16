@@ -88,9 +88,8 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.northconcepts.exception.ConnectionCode;
-import com.northconcepts.exception.SystemException;
-
+import gov.pnnl.goss.exception.ConnectionCode;
+import gov.pnnl.goss.exception.SystemException;
 import gov.pnnl.goss.security.api.GossRealm;
 import gov.pnnl.goss.server.api.GossServerConstants;
 import gov.pnnl.goss.server.api.RequestHandlerRegistry;

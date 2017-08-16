@@ -1,0 +1,2 @@
+Bundle-Version: 0.0.0.${tstamp}
+Export-Package: gov.pnnl.goss.exception

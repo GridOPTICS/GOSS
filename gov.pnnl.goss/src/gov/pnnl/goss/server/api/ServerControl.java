@@ -1,6 +1,6 @@
 package gov.pnnl.goss.server.api;
 
-import com.northconcepts.exception.SystemException;
+import gov.pnnl.goss.exception.SystemException;
 
 @SuppressWarnings("restriction")
 public interface ServerControl {

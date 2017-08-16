@@ -6,9 +6,7 @@ import java.io.Serializable;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 
-import com.northconcepts.exception.SystemException;
-
-import gov.pnnl.goss.client.api.ResponseFormat;
+import gov.pnnl.goss.exception.SystemException;
 
 //import org.apache.activemq.ConfigurationException;
 

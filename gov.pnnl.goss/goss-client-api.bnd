@@ -5,4 +5,4 @@ Service-Component: *
 Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 Export-Package: \
 	gov.pnnl.goss.client.api,\
-	com.northconcepts.exception
+	gov.pnnl.goss.exception
