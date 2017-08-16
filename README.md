@@ -4,8 +4,17 @@ Current GOSS build status: ![GOSS build status](https://travis-ci.org/GridOPTICS
 
 ### Pre-Requisite
  1. JAVA 8 SDK
-
+ 
 ### Installing GOSS
+User can chose to run pre-build GOSS jars or build from source code.
+
+#### Running pre-build GOSS
+
+ 1. Clone the repository: `git clone https://github.com/GridOPTICS/GOSS-Release.git`
+ 1. Open terminal to the root of the cloned repository: `cd GOSS-Release`
+ 1. Execute `java -jar goss-core.jar`
+
+#### Building from source code
 
  1. Clone the repository: `git clone https://github.com/GridOPTICS/GOSS.git`
  1. Open terminal to the root of the cloned repository
