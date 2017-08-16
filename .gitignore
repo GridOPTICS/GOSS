@@ -1,10 +1,5 @@
-/.gradle/
-/reports/
-*/generated/
-.settings/
-.metadata/
+.gradle/
+/generated/
+enroute.zip
+.metadata
 *.class
-cnf/localrepo/.*
-pnnl.goss.core/bin/
-./.project
-*karaf*

@@ -1,7 +1,0 @@
-Private-Package:  \
-	pnnl.goss.core.security.impl
-
-Bundle-Activator: pnnl.goss.core.security.impl.Activator
-Export-Package:  \
-	pnnl.goss.core.security
-Bundle-Version: 2.1.12.${tstamp}

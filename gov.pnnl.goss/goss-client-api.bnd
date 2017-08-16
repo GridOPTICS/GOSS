@@ -1,0 +1,8 @@
+-dsannotations: *
+-metatypeannotations: *
+Bundle-Version: 0.0.0.${tstamp}
+Service-Component: *
+Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
+Export-Package: \
+	gov.pnnl.goss.client.api,\
+	com.northconcepts.exception

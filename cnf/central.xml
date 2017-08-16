@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>local</groupId>
+	<artifactId>central</artifactId>
+	<version>0.0.0</version>
+
+	<packaging>pom</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.shell</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-osgi -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-osgi</artifactId>
+			<version>5.11.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-shiro -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-shiro</artifactId>
+			<version>5.11.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-all -->
+		<dependency>
+		    <groupId>org.apache.shiro</groupId>
+		    <artifactId>shiro-all</artifactId>
+		    <version>1.4.0</version>
+		    <type>pom</type>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.dependencymanager -->
+		<dependency>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>org.apache.felix.dependencymanager</artifactId>
+		    <version>3.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.dependencymanager.annotation -->
+		<dependency>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>org.apache.felix.dependencymanager.annotation</artifactId>
+		    <version>3.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.dependencymanager.runtime -->
+		<dependency>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>org.apache.felix.dependencymanager.runtime</artifactId>
+		    <version>3.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.dependencymanager.shell -->
+		<dependency>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>org.apache.felix.dependencymanager.shell</artifactId>
+		    <version>3.2.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-all</artifactId>
+		    <version>1.10.19</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.8.0</version>
+		</dependency>
+								
+	</dependencies>
+
+</project>

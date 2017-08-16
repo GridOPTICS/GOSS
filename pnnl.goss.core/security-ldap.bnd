@@ -1,3 +1,0 @@
-Private-Package:  \
-	pnnl.goss.core.security.ldap
-Bundle-Version: 1.0.6.${tstamp}
