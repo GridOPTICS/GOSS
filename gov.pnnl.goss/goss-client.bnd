@@ -2,3 +2,4 @@ Export-Package: \
 	com.northconcepts.exception,\
 	gov.pnnl.goss.client.api,\
 	gov.pnnl.goss.client
+Bundle-Version: 0.0.0.${tstamp}

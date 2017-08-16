@@ -1,3 +1,4 @@
 Export-Package: \
 	com.northconcepts.exception,\
 	gov.pnnl.goss.security.api
+Bundle-Version: 0.0.0.${tstamp}

@@ -1,1 +1,3 @@
 Export-Package: gov.pnnl.goss.server.api
+Bundle-Version: 0.0.0.${tstamp}
+Private-Package: gov.pnnl.goss.server
