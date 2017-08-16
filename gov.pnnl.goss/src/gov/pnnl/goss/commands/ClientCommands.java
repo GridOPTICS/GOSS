@@ -8,9 +8,10 @@ import org.apache.felix.dm.annotation.api.Property;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.service.command.CommandProcessor;
 
-import pnnl.goss.core.Client;
-import pnnl.goss.core.Client.PROTOCOL;
-import pnnl.goss.core.ClientFactory;
+import gov.pnnl.goss.client.api.Client;
+import gov.pnnl.goss.client.api.ClientFactory;
+import gov.pnnl.goss.client.api.GossProtocol;
+
 
 @Component(properties={
 		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gc"),
@@ -25,7 +26,7 @@ public class ClientCommands {
 	public void makeOpenwire(){
 		try{
 			System.out.println("Making openwire client");
-			Client client = factory.create(PROTOCOL.OPENWIRE, null);
+			Client client = factory.create(GossProtocol.OPENWIRE, null);
 			System.out.println("Client is null? "+ (client == null));
 			client.close();
 		}catch(Exception e){
@@ -36,7 +37,7 @@ public class ClientCommands {
 	public void makeStomp(){
 		try{
 			System.out.println("Making stomp client");
-			Client client = factory.create(PROTOCOL.STOMP, null);
+			Client client = factory.create(GossProtocol.STOMP, null);
 			System.out.println("Client is null? "+ (client == null));
 			client.close();
 		}catch(Exception e){
@@ -45,7 +46,7 @@ public class ClientCommands {
 	}
 	
 	public void list(){
-		Map<String, PROTOCOL> clientMap = factory.list();
+		Map<String, GossProtocol> clientMap = factory.list();
 		for(Iterator<String> it=clientMap.keySet().iterator(); it.hasNext();){
 			String key = it.next();
 			System.out.println("ClientId: "+ key+"; protocol: "+ clientMap.get(key).toString());			
