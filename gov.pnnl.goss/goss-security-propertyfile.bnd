@@ -1,0 +1,5 @@
+Bundle-Version: 0.0.0.${tstamp}
+Export-Package: \
+	gov.pnnl.goss.security.api,\
+	com.northconcepts.exception
+Private-Package: gov.pnnl.goss.security.propertyfile

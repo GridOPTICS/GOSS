@@ -1,0 +1,2 @@
+Private-Package: gov.pnnl.goss.server.registry
+Bundle-Version: 0.0.0.${tstamp}
