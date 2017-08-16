@@ -1,5 +1,5 @@
 Export-Package: \
-	com.northconcepts.exception,\
 	gov.pnnl.goss.client.api,\
-	gov.pnnl.goss.client
+	gov.pnnl.goss.client,\
+	gov.pnnl.goss.exception
 Bundle-Version: 0.0.0.${tstamp}

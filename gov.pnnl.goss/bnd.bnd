@@ -15,7 +15,6 @@
 	osgi.core;version=6.0,\
 	osgi.cmpn;version=6.0,\
 	org.apache.activemq:activemq-all;version=5.11,\
-	com.northconcepts.exception;version=latest,\
 	org.apache.felix:org.apache.felix.dependencymanager.annotation;version=3.2,\
 	org.apache.shiro.core,\
 	org.apache.activemq.shiro;version=5.11,\

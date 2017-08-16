@@ -1,7 +1,7 @@
 package gov.pnnl.goss.client.api;
 
 
-import com.northconcepts.exception.ErrorCode;
+import gov.pnnl.goss.exception.ErrorCode;
 
 @SuppressWarnings("restriction")
 public enum ClientErrorCode implements ErrorCode{

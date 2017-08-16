@@ -3,12 +3,10 @@ package gov.pnnl.goss.server.api;
 import java.io.Serializable;
 import java.util.List;
 
-import com.northconcepts.exception.SystemException;
-//import gov.pnnl.goss.core.security.AuthorizationRoleMapper;
-
 import gov.pnnl.goss.client.api.Request;
 import gov.pnnl.goss.client.api.RequestAsync;
 import gov.pnnl.goss.client.api.Response;
+import gov.pnnl.goss.exception.SystemException;
 
 @SuppressWarnings("restriction")
 public interface RequestHandlerRegistry {

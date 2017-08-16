@@ -14,12 +14,11 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.northconcepts.exception.SystemException;
-
 import gov.pnnl.goss.client.GossUploadRequest;
 import gov.pnnl.goss.client.api.Request;
 import gov.pnnl.goss.client.api.RequestAsync;
 import gov.pnnl.goss.client.api.Response;
+import gov.pnnl.goss.exception.SystemException;
 import gov.pnnl.goss.security.api.AuthorizationHandler;
 import gov.pnnl.goss.security.api.PermissionAdapter;
 import gov.pnnl.goss.server.api.HandlerNotFoundException;

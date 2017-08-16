@@ -1,4 +1,4 @@
 Export-Package: \
-	com.northconcepts.exception,\
-	gov.pnnl.goss.server.api
+	gov.pnnl.goss.server.api,\
+	gov.pnnl.goss.exception
 Bundle-Version: 0.0.0.${tstamp}

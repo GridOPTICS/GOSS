@@ -17,8 +17,7 @@ import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
 import org.apache.shiro.realm.ldap.JndiLdapRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import com.northconcepts.exception.SystemException;
-
+import gov.pnnl.goss.exception.SystemException;
 import gov.pnnl.goss.security.api.GossPermissionResolver;
 import gov.pnnl.goss.security.api.GossRealm;
 

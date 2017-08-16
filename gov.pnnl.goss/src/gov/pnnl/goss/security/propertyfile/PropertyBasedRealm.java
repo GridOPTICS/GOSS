@@ -23,8 +23,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.northconcepts.exception.SystemException;
-
+import gov.pnnl.goss.exception.SystemException;
 import gov.pnnl.goss.security.api.GossPermissionResolver;
 import gov.pnnl.goss.security.api.GossRealm;
 

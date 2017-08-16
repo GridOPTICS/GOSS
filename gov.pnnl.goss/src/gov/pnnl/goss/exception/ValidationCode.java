@@ -1,4 +1,4 @@
-package com.northconcepts.exception;
+package gov.pnnl.goss.exception;
 
 public enum ValidationCode implements ErrorCode {
 	
