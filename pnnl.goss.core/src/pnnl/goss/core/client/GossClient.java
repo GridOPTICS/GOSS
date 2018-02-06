@@ -81,6 +81,7 @@ import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
 
@@ -326,11 +327,23 @@ public class GossClient implements Client {
 											.substring(
 													buffer.toString().indexOf(
 															":") + 1);
-									DataResponse dataResponse = new DataResponse(message);
-									dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-									if(msg.getJMSReplyTo() != null)
-										dataResponse.setReplyDestination(msg.getJMSReplyTo());
-									event.onMessage(dataResponse);
+									Gson gson = new Gson();
+									DataResponse dataResponse;
+									try{
+										dataResponse = gson.fromJson(message, DataResponse.class);
+										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
+										if(msg.getJMSReplyTo() != null)
+											dataResponse.setReplyDestination(msg.getJMSReplyTo());
+										event.onMessage(message);
+									}
+									catch(JsonSyntaxException e){
+										dataResponse = new DataResponse(message);
+										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
+										if(msg.getJMSReplyTo() != null)
+											dataResponse.setReplyDestination(msg.getJMSReplyTo());
+										event.onMessage(message);
+									}
+									
 								}
 							} catch (JMSException ex) {
 								// Happens when a timeout occurs.
