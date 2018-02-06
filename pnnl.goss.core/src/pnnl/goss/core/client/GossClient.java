@@ -341,7 +341,7 @@ public class GossClient implements Client {
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
 										if(msg.getJMSReplyTo() != null)
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
-										event.onMessage(message);
+										event.onMessage(dataResponse);
 									}
 									
 								}
