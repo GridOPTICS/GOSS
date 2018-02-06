@@ -330,7 +330,7 @@ public class GossClient implements Client {
 									Gson gson = new Gson();
 									DataResponse dataResponse;
 									try{
-										dataResponse = gson.fromJson(message, DataResponse.class);
+										dataResponse = DataResponse.parse(message);
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
 										if(msg.getJMSReplyTo() != null)
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
