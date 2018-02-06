@@ -41,77 +41,103 @@
     PACIFIC NORTHWEST NATIONAL LABORATORY
     operated by BATTELLE for the UNITED STATES DEPARTMENT OF ENERGY
     under Contract DE-AC05-76RL01830
-*/
+ */
+
 package pnnl.goss.core;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 
 import javax.jms.Destination;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
+import pnnl.goss.core.DataError;
+import pnnl.goss.core.Response;
+
 public class DataResponse extends Response implements Serializable {
 
-    private static final long serialVersionUID = 3555288982317165831L;
-    Serializable data;
+	private static final long serialVersionUID = 3555288982317165831L;
+	Serializable data;
 
-    boolean responseComplete;
-    
-    String destination;
-    
-    Destination replyDestination;
-    
-    public DataResponse(){
+	Error error;
 
-    }
+	boolean responseComplete;
 
-    public DataResponse(Serializable data){
-        setData(data);
-    }
+	String destination;
 
-    public boolean wasDataError(){
-        return isError();
-    }
+	Destination replyDestination;
 
-    public boolean isError(){
-        return data.getClass().equals(DataError.class);
-    }
-    
-    public Error toError(){
-    	return (Error) data;
-    }
-    
-    public Serializable getData() {
-        return data;
-    }
+	public DataResponse() {
 
-    public void setData(Serializable data) {
-        this.data = data;
-    }
+	}
 
-    /**
-     * To check if response is complete in case of request with recurring responses.
-     * @return True if this is the last response for the query, false otherwise.
-     */
-    public boolean isResponseComplete() {
-        return responseComplete;
-    }
+	public DataResponse(Serializable data) {
+		setData(data);
+	}
 
-    /**
-     * To set if response is complete in case of request with recurring responses.
-     * @param responseComplete: True if this is the last response for the query, false otherwise.
-     */
-    public void setResponseComplete(boolean responseComplete) {
-        this.responseComplete = responseComplete;
-    }
-    
-    public String getDestination() {
+	public boolean wasDataError() {
+		return isError();
+	}
+
+	public boolean isError() {
+		return data.getClass().equals(DataError.class);
+	}
+
+	public void setError(Error error) {
+		this.error = error;
+	}
+
+	public Error getError() {
+		return error;
+	}
+
+	public Serializable getData() {
+		return data;
+	}
+
+	public void setData(Serializable data) {
+		this.data = data;
+	}
+
+	/**
+	 * To check if response is complete in case of request with recurring
+	 * responses.
+	 * 
+	 * @return True if this is the last response for the query, false otherwise.
+	 */
+	public boolean isResponseComplete() {
+		return responseComplete;
+	}
+
+	/**
+	 * To set if response is complete in case of request with recurring
+	 * responses.
+	 * 
+	 * @param responseComplete
+	 *            : True if this is the last response for the query, false
+	 *            otherwise.
+	 */
+	public void setResponseComplete(boolean responseComplete) {
+		this.responseComplete = responseComplete;
+	}
+
+	public String getDestination() {
 		return destination;
 	}
 
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
-	
-	
 
 	public Destination getReplyDestination() {
 		return replyDestination;
@@ -122,8 +148,70 @@ public class DataResponse extends Response implements Serializable {
 	}
 
 	@Override
-    public String toString() {
-        return (this.data != null)? this.data.toString(): super.toString();
-    }
+	public String toString() {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
+		Gson gson = builder.create();
+		return gson.toJson(this);
+	}
+
+	public static DataResponse parse(String jsonString) {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
+		Gson gson = builder.create();
+		DataResponse obj = gson.fromJson(jsonString, DataResponse.class);
+		// if(obj.data==null)
+		// throw new RuntimeException("Expected attribute data not found");
+		return obj;
+
+	}
+
+	private static class InterfaceAdapter implements
+			JsonSerializer<Serializable>, JsonDeserializer<Serializable> {
+
+		private static final String CLASSNAME = "CLASSNAME";
+		private static final String DATA = "DATA";
+
+		public Serializable deserialize(JsonElement jsonElement, Type type,
+				JsonDeserializationContext jsonDeserializationContext)
+				throws JsonParseException {
+
+			if (jsonElement instanceof JsonPrimitive) {
+				return jsonElement.getAsString();
+			} else {
+				JsonObject jsonObject = jsonElement.getAsJsonObject();
+				JsonPrimitive prim = (JsonPrimitive) jsonObject.get(CLASSNAME);
+				String className = prim.getAsString();
+
+				if ("java.lang.String".equals(className)) {
+					return jsonObject.get(DATA).getAsString();
+				} else {
+					Class klass = getObjectClass(className);
+					return jsonDeserializationContext.deserialize(
+							jsonObject.get(DATA), klass);
+				}
+			}
+		}
+
+		/****** Helper method to get the className of the object to be deserialized *****/
+		public Class getObjectClass(String className) {
+			try {
+				return Class.forName(className);
+			} catch (ClassNotFoundException e) {
+				// e.printStackTrace();
+				throw new JsonParseException(e.getMessage());
+			}
+		}
+
+		@Override
+		public JsonElement serialize(Serializable jsonElement, Type type,
+				JsonSerializationContext jsonSerializationContext) {
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty(CLASSNAME, jsonElement.getClass().getName());
+			jsonObject.add(DATA,
+					jsonSerializationContext.serialize(jsonElement));
+			return jsonObject;
+		}
+	}
 
 }
