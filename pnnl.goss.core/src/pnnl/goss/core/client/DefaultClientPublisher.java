@@ -104,7 +104,7 @@ public class DefaultClientPublisher implements ClientPublishser {
     	
     	if(message instanceof String)
     		messageObj = session.createTextMessage(message.toString());
-    	else if(message instanceof Request)
+    	else
     		messageObj = session.createObjectMessage(message);
     	//TODO: throw error in else
     		
