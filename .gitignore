@@ -8,3 +8,4 @@ cnf/localrepo/.*
 pnnl.goss.core/bin/
 ./.project
 *karaf*
+.recommenders/
