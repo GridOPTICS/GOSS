@@ -1,4 +1,4 @@
--buildpath:  \
+-buildpath: \
 	org.apache.felix.dependencymanager.annotation,\
 	javax.ws.rs.jsr311-api,\
 	${dm-buildpath},\
@@ -41,7 +41,14 @@
 	org.apache.commons.pool,\
 	org.apache.servicemix.bundles.commons-dbcp,\
 	org.apache.commons.io;version=2.4,\
-	${jackson-buildpath}
+	${jackson-buildpath},\
+	org.apache.felix.dependencymanager;version=4.3,\
+	com.fasterxml.jackson.core.jackson-annotations,\
+	com.fasterxml.jackson.core.jackson-core,\
+	com.fasterxml.jackson.core.jackson-databind,\
+	com.fasterxml.jackson.jaxrs.jackson-jaxrs-base,\
+	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
+	org.apache.felix.http.servlet-api
 
 -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
 -sub:  \
