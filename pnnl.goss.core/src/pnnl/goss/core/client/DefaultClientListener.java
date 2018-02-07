@@ -34,11 +34,15 @@ public class DefaultClientListener implements ClientListener {
                 } else {
                     DataResponse response = new DataResponse(
                             objectMessage.getObject());
+                    if(response.getDestination() ==null)
+                    	response.setDestination(message.getJMSDestination().toString());
                     responseEvent.onMessage(response);
                 }
             } else if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
                 DataResponse response = new DataResponse(textMessage.getText());
+                if(response.getDestination() ==null)
+                	response.setDestination(message.getJMSDestination().toString());
                 responseEvent.onMessage(response);
             } 
             // TODO Look at implementing these?
