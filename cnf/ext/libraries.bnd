@@ -81,21 +81,6 @@ configadmin: ${repo;org.apache.felix.configadmin;[1.8.0,1.8.1);HIGHEST}
 configadmin-buildpath: ${configadmin};version=file
 configadmin-runpath: ${configadmin};version=file
 
-# Amdatu Components
-amdatu-config-api: ${repo;org.amdatu.configurator.api;[1.0.1,1.0.2);HIGHEST}
-amdatu-config-autoconf:	${repo;org.amdatu.configurator.autoconf;[1.0.1,1.0.2);HIGHEST}
-amdatu-config-props: ${repo;org.amdatu.configurator.properties;[1.0.1,1.0.2);HIGHEST}
-amdatu-config-shell: ${repo;org.amdatu.configurator.shell;[1.0.1,1.0.2);HIGHEST}
-amdatu-config-runpath: ${configadmin-buildpath},\
-  ${amdatu-config-api};version=file,\
-  ${amdatu-config-autoconf};version=file,\
-  ${amdatu-config-props};version=file,\
-  ${amdatu-config-shell};version=file
-
-amdatu-jta: ${repo;org.amdatu.jta;[2.0.0,2.0.1);HIGHEST}
-amdatu-jta-api: ${repo;org.amdatu.jta.api;[1.0.0,1.0.1);HIGHEST}
-amdatu-jta-runpath: ${amdatu-jta};version=file,\
-  ${amdatu-jta-api};version=file
 
 # Gogo Shell
 #
@@ -135,13 +120,7 @@ servlet: ${repo;org.apache.felix.http.servlet-api;[1.0.0, 1.1);HIGHEST}
 servlet-buildpath: ${servlet};version=file
 servlet-runpath: ${servlet};version=file
 
-httpservice: ${repo;org.apache.felix.http.jetty;[2.2.2,2.3);HIGHEST}
-httpservice-whiteboard: ${repo;org.apache.felix.http.whiteboard;[2.2.2,2.3);HIGHEST}
-httpservice-buildpath: ${httpservice};version=file,\
-  ${servlet-buildpath}
-httpservice-runpath: ${httpservice};version=file, \
-  ${httpservice-whiteboard};version=file, \
-  ${servlet-buildpath}
+
 
 # Jackson json/xml parser
 # Allows easy conversion from object to json.
@@ -150,30 +129,15 @@ jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.6.
 jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.6.3,2.7);HIGHEST}
 jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.6.3,2.7);HIGHEST}
 jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.6.3,2.7);HIGHEST}
-jaxrs: ${repo;org.amdatu.web.rest.jaxrs;[1.0.5,1.1);HIGHEST}
-jaxrs-wink: ${repo;org.amdatu.web.rest.wink;[2.0.0,2.1);HIGHEST}
+
 jackson-buildpath: \
   ${jackson};version=file, \
   ${jackson-annotations};version=file, \
   ${jackson-databind};version=file, \
   ${jackson-base};version=file, \
   ${jackson-json-provider};version=file
-jaxrs-buildpath: ${jaxrs};version=file, \
-  ${jaxrs-wink};version=file
-jaxrs-runpath: \
-  ${jaxrs-buildpath}, \
-  ${jackson-buildpath}
 
-# Swagger gives web api help for web services.
-swagger: ${repo;org.amdatu.web.rest.doc;[1.2.2,1.3);HIGHEST}
-swagger-doc: ${repo;org.amdatu.web.rest.doc.swagger;[1.0.9,1.1);HIGHEST}
-swagger-ui: ${repo;org.amdatu.web.rest.doc.swagger.ui;[1.0.7,1.1);HIGHEST}
-swagger-buildpath: \
-  ${swagger};version=file,\
-  ${swagger-doc};version=file
-swagger-runpath: \
-  ${swagger-buildpath},\
-  ${swagger-ui};version=file
+
 
 
 # All javax elements should go here.
