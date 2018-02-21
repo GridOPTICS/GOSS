@@ -13,10 +13,6 @@
 -runbundles: \
 	${activemq-runpath},\
 	${javax-runpath},\
-	${httpservice-runpath},\
-	${amdatu-config-runpath},\
-	${jaxrs-runpath},\
-	org.eclipse.jetty.aggregate.jetty-all-server;version='[7.6,7.7)',\
 	com.springsource.com.thoughtworks.xstream;version='[1.3.1,1.3.2)',\
 	com.springsource.org.xmlpull;version='[1.1.4,1.1.5)',\
 	javax.annotation;version='[1.1.0,1.1.1)',\
