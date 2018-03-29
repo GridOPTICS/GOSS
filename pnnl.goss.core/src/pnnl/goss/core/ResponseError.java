@@ -6,6 +6,10 @@ public class ResponseError extends Response implements Error {
 	
 	private String message;
 	
+	
+	public ResponseError(){
+	}
+	
 	public ResponseError(String message) {
 		this.message = message;
 	}

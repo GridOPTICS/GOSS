@@ -55,6 +55,10 @@ public class DataError implements Error {
 
     private String message;
 
+    
+    public DataError(){
+    }
+
     public DataError(String message){
         this.setMessage(message);
     }

@@ -70,7 +70,7 @@ public class DataResponse extends Response implements Serializable {
 	private static final long serialVersionUID = 3555288982317165831L;
 	Serializable data;
 
-	Error error;
+	DataError error;
 
 	boolean responseComplete;
 
@@ -94,11 +94,11 @@ public class DataResponse extends Response implements Serializable {
 		return data.getClass().equals(DataError.class);
 	}
 
-	public void setError(Error error) {
+	public void setError(DataError error) {
 		this.error = error;
 	}
 
-	public Error getError() {
+	public DataError getError() {
 		return error;
 	}
 
