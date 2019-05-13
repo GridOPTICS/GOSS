@@ -107,13 +107,9 @@ public class DefaultClientPublisher implements ClientPublishser {
     	else
     		messageObj = session.createObjectMessage(message);
     	//TODO: throw error in else
-    		
-				
-    	
     	messageObj.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
-        if (username != null){
+        if (username != null)
         	messageObj.setStringProperty(SecurityConstants.SUBJECT_HEADER, username);
-        }
         messageObj.setJMSReplyTo(replyDestination);
         String correlationId = this.createRandomString();
         messageObj.setJMSCorrelationID(correlationId);
@@ -131,6 +127,11 @@ public class DefaultClientPublisher implements ClientPublishser {
     		 message = session.createTextMessage(data.toString());
     	else
     		message = session.createObjectMessage(data);
+    	
+    	if(message!=null)
+    		message.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
+		if(username != null)
+        	message.setStringProperty(SecurityConstants.SUBJECT_HEADER, username);
         log.debug("Publishing: "+ data.getClass()+ " on destination: " + destination);
         producer.send(destination, message);
     }
@@ -138,6 +139,9 @@ public class DefaultClientPublisher implements ClientPublishser {
     public void publishBlobMessage(Destination destination, File file) throws JMSException {
     	ActiveMQSession activeMQSession = (ActiveMQSession) session;
     	BlobMessage message  = activeMQSession.createBlobMessage(file);
+    	message.setBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER, username != null);
+		if (username != null)
+			message.setStringProperty(SecurityConstants.SUBJECT_HEADER, username);
         log.debug("Publishing on destination: " + destination);
         producer.send(destination, message);
     }

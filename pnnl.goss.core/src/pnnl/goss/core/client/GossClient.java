@@ -77,6 +77,7 @@ import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.security.SecurityConstants;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 
@@ -315,6 +316,8 @@ public class GossClient implements Client {
 									dataResponse.setDestination(msg.getJMSDestination().toString());
 									if(msg.getJMSReplyTo() != null)
 										dataResponse.setReplyDestination(msg.getJMSReplyTo());
+									if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
+										dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
 									event.onMessage(dataResponse);
 								}
 								if (msg instanceof StompJmsTextMessage) {
@@ -334,6 +337,8 @@ public class GossClient implements Client {
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
 										if(msg.getJMSReplyTo() != null)
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
+										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
+											dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
 										event.onMessage(dataResponse);
 									}
 									catch(JsonSyntaxException e){
@@ -341,6 +346,8 @@ public class GossClient implements Client {
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
 										if(msg.getJMSReplyTo() != null)
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
+										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
+											dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
 										event.onMessage(dataResponse);
 									}
 									
