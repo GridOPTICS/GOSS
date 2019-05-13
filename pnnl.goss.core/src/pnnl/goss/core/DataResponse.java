@@ -77,6 +77,8 @@ public class DataResponse extends Response implements Serializable {
 	String destination;
 
 	Destination replyDestination;
+	
+	String username;
 
 	public DataResponse() {
 
@@ -148,6 +150,14 @@ public class DataResponse extends Response implements Serializable {
 
 	public void setReplyDestination(Destination replyDestination) {
 		this.replyDestination = replyDestination;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Override
