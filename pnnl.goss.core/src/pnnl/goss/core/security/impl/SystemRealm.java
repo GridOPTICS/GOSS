@@ -26,7 +26,7 @@ public class SystemRealm extends AuthorizingRealm implements Realm {
 		}
 		SimpleAccount accnt = new SimpleAccount(systemUserName, systemPassword, getName());
 		accnt.addStringPermission("*");
-		accntMap.put("system", accnt);		
+		accntMap.put(systemUserName, accnt);		
 	}
 	
 	@Override

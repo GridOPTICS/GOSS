@@ -1,43 +1,45 @@
 package pnnl.goss.core.security.impl;
 
-import java.util.HashSet;
-import java.util.Set;
 
-import org.apache.activemq.shiro.mgt.DefaultActiveMqSecurityManager;
 import org.apache.felix.dm.DependencyActivatorBase;
 import org.apache.felix.dm.DependencyManager;
-import org.apache.shiro.SecurityUtils;
+import org.apache.felix.dm.annotation.api.Component;
+import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.realm.Realm;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import pnnl.goss.core.security.SecurityConfig;
+
+
+
+@Component
 public class Activator extends DependencyActivatorBase {
 
+	
+  @ServiceDependency
+  private DependencyManager manager;
+  private static final Logger log = LoggerFactory.getLogger(Activator.class);
+
+  private static final String CONFIG_PID = "pnnl.goss.security.config";
+
+  
 	@Override
 	public void init(BundleContext context, DependencyManager manager)
 			throws Exception {
-
-		//Factory<SecurityManager> factory = new DefaultSecurityManager();
-		//Secu new IniSecurityManagerFactory(
-		//		"conf/shiro.ini");
-
-		Realm defaultRealm = new SystemRealm("system", "manager");
-		Set<Realm> realms = new HashSet<>();
-		realms.add(defaultRealm);
-		DefaultActiveMqSecurityManager securityManager = new DefaultActiveMqSecurityManager();
 		
-		securityManager.setRealms(realms);
-		//CurrentAuthorizedPrincipals principleHandler = new CurrentAuthorizedPrincipals();
+		manager.add(createComponent()
+	        .setInterface(
+	        		SecurityConfig.class.getName(), null)
+	        .setImplementation(SecurityConfigImpl.class)            
+	        .add(createConfigurationDependency().setPid(CONFIG_PID)));
+		manager.add(createComponent()
+		          .setInterface(
+		  				SecurityManager.class.getName(), null)
+		          .setImplementation(SecurityManagerImpl.class)            
+		          .add(createConfigurationDependency().setPid(CONFIG_PID)));
 		
-		
-		//gt((AbstractAuthenticator)securityManager.getAuthenticator()).getAuthenticationListeners().add(principleHandler);
-		
-		SecurityUtils.setSecurityManager(securityManager);
-				
-
-		manager.add(createComponent().setInterface(
-				SecurityManager.class.getName(), null).setImplementation(
-						securityManager));
 	}
 
 	@Override
@@ -45,4 +47,9 @@ public class Activator extends DependencyActivatorBase {
 			throws Exception {
 		// 
 	}
+	
+
+	
+	
+	
 }

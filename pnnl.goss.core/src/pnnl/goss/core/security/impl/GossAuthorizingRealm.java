@@ -1,6 +1,7 @@
 package pnnl.goss.core.security.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,13 +18,21 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import pnnl.goss.core.security.SecurityConfig;
+
 @Component
 public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
+	
+	public static final String DEFAULT_SYSTEM_USER = "system";
 	
 	// Depend on this so that the security manager service is loaded before
 	// this package.
 	@ServiceDependency
 	private volatile SecurityManager securityManager;
+	@ServiceDependency
+	private volatile SecurityConfig securityConfig;
+	private HashMap<String, SimpleAccount> accountCache = new HashMap<String, SimpleAccount>();
+	
 	
 	private Collection<String> getPermissionsByRole(String role){
 		Set<String> permissions = new HashSet<>();
@@ -45,25 +54,23 @@ public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 		return permissions;
 	}
 	
-    protected SimpleAccount getAccount(String username) {
+    protected SimpleAccount getAccount(String username, String password) {
+    	String systemUserName = DEFAULT_SYSTEM_USER;
+    	if(securityConfig!=null){
+    		systemUserName = securityConfig.getManagerUser();
+    	}
+    	
+    	
     	
     	SimpleAccount account = null;
     	Set<String> defaultRoles = new HashSet<String>();
     	defaultRoles.add("users");
     	defaultRoles.add("advisory");
     	
-        // Populate a dummy instance based upon the username's access privileges.
-    	switch(username){
-    	case "darkhelmet":
-    		account = new SimpleAccount(username, "ludicrousspeed", getName());
-    		//account.addRole("darklord");
-    		//account.addStringPermissions(getPermissionsByRole("users"));
-    		break;   	
-    	case "system":
-    		account = new SimpleAccount(username, "manager", getName());
-    		account.addRole("system");
-    		account.addStringPermissions(getPermissionsByRole("system"));
-    		break;
+    	if(username.equals(systemUserName)){
+    		account = new SimpleAccount(username, password, getName());
+    		account.addRole(systemUserName);
+    		account.addStringPermissions(getPermissionsByRole(systemUserName));
     	}
     	
     	if (account == null){
@@ -99,9 +106,9 @@ public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 		
 		 //get the principal this realm cares about:
         String username = (String) getAvailablePrincipal(principals);
-
         //call the underlying EIS for the account data:
-        return getAccount(username);
+//        return getAccount(username);
+		return accountCache.get(username);
 	}
 
 	@Override
@@ -111,6 +118,6 @@ public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 		//we can safely cast to a UsernamePasswordToken here, because this class 'supports' UsernamePasswordToken
         //objects.  See the Realm.supports() method if your application will use a different type of token.
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-        return getAccount(upToken.getUsername());
+        return getAccount(upToken.getUsername(), upToken.getPassword().toString());
 	}
 }
