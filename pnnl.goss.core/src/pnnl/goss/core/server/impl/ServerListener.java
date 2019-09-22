@@ -102,6 +102,7 @@ public class ServerListener implements MessageListener {
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 ServerPublisher serverPublisher = new ServerPublisher(session);
+            	String username = "";
                 try {
                     ObjectMessage objectMessage = (ObjectMessage) message;
 
@@ -119,7 +120,7 @@ public class ServerListener implements MessageListener {
                     	}
                     	
                     	String identifier = message.getStringProperty(SecurityConstants.SUBJECT_HEADER);
-                    	
+                    	username = identifier;
                     	boolean allowed = handlerRegistry.checkAccess(request, identifier); 
                     	
                     	if (!allowed){
@@ -150,6 +151,7 @@ public class ServerListener implements MessageListener {
 
                             if (data instanceof Event) {
                                 DataResponse dataResponse = new DataResponse();
+                                dataResponse.setUsername(username);
                                 dataResponse.setData(data);
                                 serverPublisher.sendEvent(dataResponse, data.getClass().getName().substring(data.getClass().getName().lastIndexOf(".") + 1));
                                 serverPublisher.close();
@@ -170,6 +172,7 @@ public class ServerListener implements MessageListener {
                         //AbstractRequestHandler handler = handlerService.getHandler(request);
 
                         DataResponse response = (DataResponse) handlerRegistry.handle(request);
+                        response.setUsername(username);
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null) {
@@ -198,6 +201,7 @@ public class ServerListener implements MessageListener {
 
                         //DataResponse response = (DataResponse) ServerRequestHandler.handle(request);
                         response.setResponseComplete(true);
+                        response.setUsername(username);
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null)
@@ -211,7 +215,9 @@ public class ServerListener implements MessageListener {
 
                     e.printStackTrace();
                     try {
-                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured: "+e.getMessage())) , message.getJMSReplyTo());
+                    	DataResponse response = new DataResponse(new DataError("Exception occured: "+e.getMessage()));
+                    	response.setUsername(username);
+                        serverPublisher.sendResponse(response , message.getJMSReplyTo());
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -221,7 +227,9 @@ public class ServerListener implements MessageListener {
 
                     e.printStackTrace();
                     try {
-                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
+                    	DataResponse response = new DataResponse(new DataError("Exception occured"));
+                    	response.setUsername(username);
+                        serverPublisher.sendResponse(response , message.getJMSReplyTo());
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
