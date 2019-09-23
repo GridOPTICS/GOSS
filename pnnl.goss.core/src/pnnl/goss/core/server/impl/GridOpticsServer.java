@@ -306,7 +306,6 @@ public class GridOpticsServer implements ServerControl {
     private void createBroker() throws Exception{
     	// Create shiro broker plugin
 		ShiroPlugin shiroPlugin = new ShiroPlugin();
-		
 
 		shiroPlugin.setSecurityManager(securityManager);
 		//shiroPlugin.setIniConfig("conf/shiro.ini");

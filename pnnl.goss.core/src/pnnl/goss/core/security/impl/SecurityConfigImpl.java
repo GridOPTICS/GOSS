@@ -36,7 +36,7 @@ public class SecurityConfigImpl implements SecurityConfig {
 					,null);	
 			managerPassword = getProperty(SecurityConstants.PROP_SYSTEM_MANAGER_PASSWORD
 					,null);	
-        	
+			System.out.println("SYSTEM CONFIG UPDATED "+managerUser+" "+managerPassword+" "+this);
         	
         } else {
         	log.error("No core config properties received by security activator");

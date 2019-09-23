@@ -22,7 +22,7 @@ public class Activator extends DependencyActivatorBase {
   private DependencyManager manager;
   private static final Logger log = LoggerFactory.getLogger(Activator.class);
 
-  private static final String CONFIG_PID = "pnnl.goss.security.config";
+  private static final String CONFIG_PID = "pnnl.goss.security";
 
   
 	@Override
