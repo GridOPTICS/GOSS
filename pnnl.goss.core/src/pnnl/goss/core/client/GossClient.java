@@ -304,6 +304,7 @@ public class GossClient implements Client {
 							try {
 								Message msg = consumer.getMessageConsumer()
 										.receive(10000);
+								System.out.println("CLIENT RECEIVED MESSAGE "+msg);
 								if (msg instanceof StompJmsBytesMessage) {
 									StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
 									org.fusesource.hawtbuf.Buffer buffer = stompMessage
@@ -355,6 +356,7 @@ public class GossClient implements Client {
 										}
 										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
 											String username = msg.getStringProperty(SecurityConstants.SUBJECT_HEADER);
+											System.out.println("CLIENT GOT USERNAME "+username);
 											dataResponse.setUsername(username);
 										} else {
 											log.warn("No username received in stomp message");
