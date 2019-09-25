@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<repository increment="1569268333745" name="GOSS Core" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
+<repository increment="1569438768098" name="GOSS Core" xmlns="http://www.osgi.org/xmlns/repository/v1.0.0">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.core-api"/>
@@ -730,33 +730,33 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.core-api"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="8.0.2.201909231952"/>
+      <attribute name="version" type="Version" value="8.0.2.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="c2a270c9c0a0a236e96783712e3b620a20ef7ba4b066c5aae599adf6ca1890c4"/>
+      <attribute name="osgi.content" value="466bd40146242a4c5bd423470fb9db144e91403d66805759964c742dd87f16b6"/>
       <attribute name="url" value="pnnl.goss.core.core-api/pnnl.goss.core.core-api-8.0.2.jar"/>
-      <attribute name="size" type="Long" value="58762"/>
+      <attribute name="size" type="Long" value="58763"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.core-api"/>
-      <attribute name="bundle-version" type="Version" value="8.0.2.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="8.0.2.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.core-api"/>
-      <attribute name="bundle-version" type="Version" value="8.0.2.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="8.0.2.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="com.northconcepts.exception"/>
       <attribute name="version" type="Version" value="2.1.0"/>
       <attribute name="bundle-symbolic-name" value="pnnl.goss.core.core-api"/>
-      <attribute name="bundle-version" type="Version" value="8.0.2.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="8.0.2.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="pnnl.goss.core"/>
       <attribute name="version" type="Version" value="5.0.0"/>
       <attribute name="bundle-symbolic-name" value="pnnl.goss.core.core-api"/>
-      <attribute name="bundle-version" type="Version" value="8.0.2.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="8.0.2.201909251912"/>
       <directive name="uses" value="com.northconcepts.exception,javax.jms,org.apache.http.auth"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
@@ -1518,6 +1518,576 @@
   </resource>
   <resource>
     <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.45.201909241817"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="e8c13a7b021213a7efbbf46f3c7421213b28403a2206978d69e397944dc9b11e"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.45.jar"/>
+      <attribute name="size" type="Long" value="34945"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.45.201909241817"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.45.201909241817"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.46.201909251843"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="30ff0c982c36ef79df8b922aecd3ec0199cc950cd0a159983f1c65a6b51357d1"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.46.jar"/>
+      <attribute name="size" type="Long" value="35012"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.46.201909251843"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.46.201909251843"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.47.201909251846"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="ec50dabcd80a763f51a88f2cd8f6f6a2b23ae867fc7c65295b1f7a51e132bb7f"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.47.jar"/>
+      <attribute name="size" type="Long" value="35141"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.47.201909251846"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.47.201909251846"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.48.201909251849"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="0528d67990502ed8ea4ce752be04f43b9190f0e9af9df1999f6a3ce50c0e5f1a"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.48.jar"/>
+      <attribute name="size" type="Long" value="35232"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.48.201909251849"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.48.201909251849"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.49.201909251853"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="385e86387f99d536d4f17e07fda27dc8d272e5c723112532bea1c5a6c6533312"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.49.jar"/>
+      <attribute name="size" type="Long" value="35212"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.49.201909251853"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.49.201909251853"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.50.201909251857"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="ddb97fa2c10dc36924934949b0bd45fe5856911b5bb75bf71dca205f157a06ee"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.50.jar"/>
+      <attribute name="size" type="Long" value="35461"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.50.201909251857"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.50.201909251857"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.51.201909251859"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="9cdf8568d628fb90df7a5c3bb881f940e58df7283d61add692012d18e5fda322"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.51.jar"/>
+      <attribute name="size" type="Long" value="35481"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.51.201909251859"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.51.201909251859"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.52.201909251903"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="325155f24e0ab33defb386a3ee96566b832abfd3df3b6ccbfc88b2c26a282d0c"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.52.jar"/>
+      <attribute name="size" type="Long" value="35817"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.52.201909251903"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.52.201909251903"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.53.201909251909"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="a31ed1703aacf0b162887a12d1ef43444a86ab3f898487dacb1e1283193e76f9"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.53.jar"/>
+      <attribute name="size" type="Long" value="35950"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.53.201909251909"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.53.201909251909"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="pnnl.goss.core.goss-client"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" type="Version" value="2.0.54.201909251912"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="osgi.content" value="9f7be87cab464c7dc0177b1cde603a5c9209c1cb036540351bc561b51e9c6c3d"/>
+      <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-2.0.54.jar"/>
+      <attribute name="size" type="Long" value="35102"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.54.201909251912"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
+      <attribute name="bundle-version" type="Version" value="2.0.54.201909251912"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=javax.jms)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.naming)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.activemq)(version&gt;=5.11.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.hawtbuf)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.fusesource.stomp.jms.message)"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=pnnl.goss.core)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-commands"/>
       <attribute name="type" value="osgi.bundle"/>
       <attribute name="version" type="Version" value="2.0.10.201701200421"/>
@@ -1850,21 +2420,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-commands"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="2.0.33.201909231952"/>
+      <attribute name="version" type="Version" value="2.0.33.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="8ded59b5b4196e2f79da463fd4b0c9b7cd6eb1b3b756b6295cb01fec7db7b1f0"/>
+      <attribute name="osgi.content" value="0e951558ad635aad104ee4e385a4a656820a44caf3c3a34e34cbbbd529d60426"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-commands/pnnl.goss.core.goss-core-commands-2.0.33.jar"/>
       <attribute name="size" type="Long" value="5019"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-commands"/>
-      <attribute name="bundle-version" type="Version" value="2.0.33.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.0.33.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-commands"/>
-      <attribute name="bundle-version" type="Version" value="2.0.33.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.0.33.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=org.apache.http.auth)(version&gt;=4.5.0)(!(version&gt;=5.0.0)))"/>
@@ -1880,27 +2450,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-exceptions"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="2.1.0.201909231952"/>
+      <attribute name="version" type="Version" value="2.1.0.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="34f29c33c22c0d9fffd987ab90baaa7a9d0725f3ba22e67b14978558ae452038"/>
+      <attribute name="osgi.content" value="2aaf2804c836826e00fb56f33e6012294fb5211a3a750d77c17b0b7c39db0d8d"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-exceptions/pnnl.goss.core.goss-core-exceptions-2.1.0.jar"/>
-      <attribute name="size" type="Long" value="13634"/>
+      <attribute name="size" type="Long" value="13633"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-exceptions"/>
-      <attribute name="bundle-version" type="Version" value="2.1.0.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.1.0.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-exceptions"/>
-      <attribute name="bundle-version" type="Version" value="2.1.0.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.1.0.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="com.northconcepts.exception"/>
       <attribute name="version" type="Version" value="2.1.0"/>
       <attribute name="bundle-symbolic-name" value="pnnl.goss.core.goss-core-exceptions"/>
-      <attribute name="bundle-version" type="Version" value="2.1.0.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.1.0.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
@@ -3044,27 +3614,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-security"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="2.4.8.201909231952"/>
+      <attribute name="version" type="Version" value="2.4.8.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="38eaf0be4637d00fc8e9d39c04385ed74b4af24c3f8b70aa525ea939206e5c3a"/>
+      <attribute name="osgi.content" value="b6e5e61f04d52cdfe655f27af6ab0b90aabe57d57dcaf89c5ac5b3e685700b65"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-security/pnnl.goss.core.goss-core-security-2.4.8.jar"/>
-      <attribute name="size" type="Long" value="30765"/>
+      <attribute name="size" type="Long" value="30764"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-security"/>
-      <attribute name="bundle-version" type="Version" value="2.4.8.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.4.8.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-security"/>
-      <attribute name="bundle-version" type="Version" value="2.4.8.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.4.8.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="pnnl.goss.core.security"/>
       <attribute name="version" type="Version" value="2.2.0"/>
       <attribute name="bundle-symbolic-name" value="pnnl.goss.core.goss-core-security"/>
-      <attribute name="bundle-version" type="Version" value="2.4.8.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.4.8.201909251912"/>
       <directive name="uses" value="org.apache.shiro.authz.permission,org.apache.shiro.mgt,org.apache.shiro.realm,pnnl.goss.core,pnnl.goss.core.server"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
@@ -3683,27 +4253,27 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-server-api"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="3.0.6.201909231952"/>
+      <attribute name="version" type="Version" value="3.0.6.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="f18196205173c401d0a4af3774851d09f2fa42dc08482ef0a6d6548eec799f16"/>
+      <attribute name="osgi.content" value="2a8429116d81722e588288d1df1ef7d8377eb941310c9841a3b213dd307489e9"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server-api/pnnl.goss.core.goss-core-server-api-3.0.6.jar"/>
       <attribute name="size" type="Long" value="14379"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-server-api"/>
-      <attribute name="bundle-version" type="Version" value="3.0.6.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="3.0.6.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-server-api"/>
-      <attribute name="bundle-version" type="Version" value="3.0.6.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="3.0.6.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="osgi.wiring.package" value="pnnl.goss.core.server"/>
       <attribute name="version" type="Version" value="2.0.4"/>
       <attribute name="bundle-symbolic-name" value="pnnl.goss.core.goss-core-server-api"/>
-      <attribute name="bundle-version" type="Version" value="3.0.6.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="3.0.6.201909251912"/>
       <directive name="uses" value="com.northconcepts.exception,pnnl.goss.core,pnnl.goss.core.security"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
@@ -4335,21 +4905,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-server-registry"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.0.55.201909231952"/>
+      <attribute name="version" type="Version" value="1.0.55.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="8ba2a5a0c9335db296e46a86275dd850d462d4cdb82658324e7703e549b8d019"/>
+      <attribute name="osgi.content" value="ed244ce5c3e39a3dfe50d3980609adbf3bd6228fcea155017740229a006475bc"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server-registry/pnnl.goss.core.goss-core-server-registry-1.0.55.jar"/>
       <attribute name="size" type="Long" value="20013"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-server-registry"/>
-      <attribute name="bundle-version" type="Version" value="1.0.55.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="1.0.55.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-server-registry"/>
-      <attribute name="bundle-version" type="Version" value="1.0.55.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="1.0.55.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
@@ -4917,21 +5487,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-server-web"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.1.33.201909231952"/>
+      <attribute name="version" type="Version" value="1.1.33.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="f409a8f0b4caa18cca9d4272d4094af00a8d2c1eaafd7a7cc65b8f488d8d1f19"/>
+      <attribute name="osgi.content" value="3381519651d06ecd26427c930932c0a1286245e4a10ac032159472d4acb9d012"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server-web/pnnl.goss.core.goss-core-server-web-1.1.33.jar"/>
       <attribute name="size" type="Long" value="243890"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-server-web"/>
-      <attribute name="bundle-version" type="Version" value="1.1.33.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="1.1.33.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-server-web"/>
-      <attribute name="bundle-version" type="Version" value="1.1.33.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="1.1.33.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
@@ -6657,21 +7227,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.goss-core-server"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="2.0.72.201909231952"/>
+      <attribute name="version" type="Version" value="2.0.72.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="bd074099219d5b32ceec3bd83345b2f82482e1a716240955c5eff0c6e4796faf"/>
+      <attribute name="osgi.content" value="2e36015d52a5cb0b0aa1c1cbe796b61f626d3ea00e582042dbad4794fd31099f"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server/pnnl.goss.core.goss-core-server-2.0.72.jar"/>
       <attribute name="size" type="Long" value="51832"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.goss-core-server"/>
-      <attribute name="bundle-version" type="Version" value="2.0.72.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.0.72.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-server"/>
-      <attribute name="bundle-version" type="Version" value="2.0.72.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.0.72.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.3.0)(!(version&gt;=3.0.0)))"/>
@@ -6953,21 +7523,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.security-ldap"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="1.0.11.201909231952"/>
+      <attribute name="version" type="Version" value="1.0.11.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="365f51184301c5e1af003ed70d0492a20d1ce9be34e1d0e5c8a76f167367a11b"/>
+      <attribute name="osgi.content" value="7c8f57a23e5c58f865198abd9e72e5b1e2511e349d810032a36a2f6a172532d0"/>
       <attribute name="url" value="pnnl.goss.core.security-ldap/pnnl.goss.core.security-ldap-1.0.11.jar"/>
-      <attribute name="size" type="Long" value="6984"/>
+      <attribute name="size" type="Long" value="6985"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.security-ldap"/>
-      <attribute name="bundle-version" type="Version" value="1.0.11.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="1.0.11.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.security-ldap"/>
-      <attribute name="bundle-version" type="Version" value="1.0.11.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="1.0.11.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
@@ -7091,21 +7661,21 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="pnnl.goss.core.security-propertyfile"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" type="Version" value="2.0.19.201909231952"/>
+      <attribute name="version" type="Version" value="2.0.19.201909251912"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="osgi.content" value="0b609a690d1b9e453af7a99b1695a9669b5d22222ea34011f0e78e9519969326"/>
+      <attribute name="osgi.content" value="456a964023c5743731c9c16018d01b866757e817d681027aaa73e4a6fc77bd47"/>
       <attribute name="url" value="pnnl.goss.core.security-propertyfile/pnnl.goss.core.security-propertyfile-2.0.19.jar"/>
       <attribute name="size" type="Long" value="7164"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="osgi.wiring.bundle" value="pnnl.goss.core.security-propertyfile"/>
-      <attribute name="bundle-version" type="Version" value="2.0.19.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.0.19.201909251912"/>
     </capability>
     <capability namespace="osgi.wiring.host">
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.security-propertyfile"/>
-      <attribute name="bundle-version" type="Version" value="2.0.19.201909231952"/>
+      <attribute name="bundle-version" type="Version" value="2.0.19.201909251912"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
