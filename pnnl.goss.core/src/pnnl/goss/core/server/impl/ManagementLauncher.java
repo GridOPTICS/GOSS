@@ -13,6 +13,7 @@ import pnnl.goss.core.Client.PROTOCOL;
 import pnnl.goss.core.ClientFactory;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
+import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
@@ -27,6 +28,9 @@ public class ManagementLauncher {
 
 	@ServiceDependency
 	private volatile ServerControl serverControl;
+	
+	@ServiceDependency
+	private volatile SecurityConfig securityConfig;
 
 	@ServiceDependency
 	private volatile RequestHandlerRegistry handlerRegistry;
@@ -67,8 +71,9 @@ public class ManagementLauncher {
 	@Start
 	public void start(){
 		try {
+			System.out.println("START "+securityConfig.getManagerUser()+" "+securityConfig.getManagerPassword()+" "+securityConfig);
 			Client client = clientFactory.create(PROTOCOL.STOMP,
-					new UsernamePasswordCredentials("system", "manager"));
+					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()));
 			client.subscribe("/topic/goss/management/request", new ResponseEvent(client));
 			client.subscribe("/topic/goss/management/go", new ResponseEvent(client));
 		} catch (Exception e) {

@@ -47,6 +47,7 @@ package pnnl.goss.core.client;
 //import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -312,15 +313,22 @@ public class GossClient implements Client {
 											.substring(
 													buffer.toString().indexOf(
 															":") + 1);
+									
 									DataResponse dataResponse = new DataResponse(message);
 									dataResponse.setDestination(msg.getJMSDestination().toString());
-									if(msg.getJMSReplyTo() != null)
+									if(msg.getJMSReplyTo() != null) {
 										dataResponse.setReplyDestination(msg.getJMSReplyTo());
-									if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-										dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
+									}
+
+									if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
+										String username = msg.getStringProperty(SecurityConstants.SUBJECT_HEADER);
+										dataResponse.setUsername(username);
+									} else {
+										log.warn("No username received in stomp message");
+									}
 									event.onMessage(dataResponse);
 								}
-								if (msg instanceof StompJmsTextMessage) {
+								else if (msg instanceof StompJmsTextMessage) {
 									StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
 									
 									org.fusesource.hawtbuf.Buffer buffer = stompMessage
@@ -330,18 +338,31 @@ public class GossClient implements Client {
 											.substring(
 													buffer.toString().indexOf(
 															":") + 1);
+
 									Gson gson = new Gson();
 									DataResponse dataResponse;
 									try{
-										dataResponse = DataResponse.parse(message);
+										try {
+											// don't fail if the message isn't already in data response format
+											dataResponse = DataResponse.parse(message);
+										} catch(JsonSyntaxException e){
+											dataResponse = new DataResponse();
+											dataResponse.setData(message);
+										}
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-										if(msg.getJMSReplyTo() != null)
+										if(msg.getJMSReplyTo() != null) {
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
-										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-											dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
+										}
+										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
+											String username = msg.getStringProperty(SecurityConstants.SUBJECT_HEADER);
+											dataResponse.setUsername(username);
+										} else {
+											log.warn("No username received in stomp message");
+										}
 										event.onMessage(dataResponse);
 									}
 									catch(JsonSyntaxException e){
+										e.printStackTrace();
 										dataResponse = new DataResponse(message);
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
 										if(msg.getJMSReplyTo() != null)
@@ -351,6 +372,8 @@ public class GossClient implements Client {
 										event.onMessage(dataResponse);
 									}
 									
+								} else {
+									//TODO warn of unknown message type???
 								}
 							} catch (JMSException ex) {
 								// Happens when a timeout occurs.

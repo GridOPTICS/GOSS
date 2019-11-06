@@ -77,13 +77,13 @@ import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.shiro.ShiroPlugin;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.felix.dm.annotation.api.Stop;
-import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +92,9 @@ import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossRealm;
+import pnnl.goss.core.security.GossSecurityManager;
+import pnnl.goss.core.security.SecurityConfig;
+//import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
 
@@ -169,6 +172,8 @@ public class GridOpticsServer implements ServerControl {
     
     @ServiceDependency
     private volatile SecurityManager securityManager;
+    @ServiceDependency
+    private volatile SecurityConfig securityConfig;
     
     
     @ServiceDependency
@@ -176,6 +181,9 @@ public class GridOpticsServer implements ServerControl {
     
     @ServiceDependency
     private volatile GossRealm permissionAdapter;
+    
+    
+    
     
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
@@ -206,13 +214,8 @@ public class GridOpticsServer implements ServerControl {
         
     @ConfigurationDependency(pid=CONFIG_PID)
     public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
-    	
     	if (properties != null) {
     		
-    		systemManager = getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
-    				"system");
-    		systemManagerPassword = getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
-    				"manager"); 
     		    	
     		shouldStartBroker = Boolean.parseBoolean(
     				getProperty((String) properties.get(PROP_START_BROKER), "true"));
@@ -303,7 +306,7 @@ public class GridOpticsServer implements ServerControl {
     private void createBroker() throws Exception{
     	// Create shiro broker plugin
 		ShiroPlugin shiroPlugin = new ShiroPlugin();
-				
+
 		shiroPlugin.setSecurityManager(securityManager);
 		//shiroPlugin.setIniConfig("conf/shiro.ini");
 		
@@ -407,6 +410,11 @@ public class GridOpticsServer implements ServerControl {
     @Override
     @Start
 	public void start() {
+
+    	if(securityManager!=null){
+    		systemManager = ((GossSecurityManager)securityManager).getProperty(GossSecurityManager.PROP_SYSTEM_MANAGER,null);//securityConfig.getManagerUser();
+    		systemManagerPassword = ((GossSecurityManager)securityManager).getProperty(GossSecurityManager.PROP_SYSTEM_MANAGER_PASSWORD,null);;//securityConfig.getManagerPassword();
+		}
     	
 		// If goss should have start the broker service then this will be set.
     	// this variable is mapped from goss.start.broker
@@ -433,7 +441,7 @@ public class GridOpticsServer implements ServerControl {
     			connectionFactory = new ActiveMQConnectionFactory(openwireTransport);
     		}
     		
-    		connection = connectionFactory.createConnection("system", "manager");
+    		connection = connectionFactory.createConnection(systemManager, systemManagerPassword);
     		connection.start();			
 		} catch (Exception e) {
 			log.debug("Error Connecting to ActiveMQ", e);
