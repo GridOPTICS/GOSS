@@ -357,7 +357,7 @@ public class GossClient implements Client {
 											String username = msg.getStringProperty(SecurityConstants.SUBJECT_HEADER);
 											dataResponse.setUsername(username);
 										} else {
-											log.warn("No username received in stomp message");
+											log.warn("No username received for stomp message: " + message);
 										}
 										event.onMessage(dataResponse);
 									}
