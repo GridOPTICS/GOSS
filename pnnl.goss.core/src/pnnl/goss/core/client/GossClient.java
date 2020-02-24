@@ -74,11 +74,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
+import pnnl.goss.core.ClientConsumer;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.security.GossSecurityManager;
 import pnnl.goss.core.security.SecurityConstants;
+import pnnl.goss.core.security.impl.SecurityManagerImpl;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 
@@ -104,6 +107,7 @@ public class GossClient implements Client {
 	private List<Thread> threads = new ArrayList<Thread>();
 	private PROTOCOL protocol;
 	private Credentials credentials = null;
+	private String token = null;
 
 	public GossClient(PROTOCOL protocol, Credentials credentials,
 			String openwireUri, String stompUri, String trustStorePassword,
@@ -290,7 +294,7 @@ public class GossClient implements Client {
 			Destination destination = null;
 			if (this.protocol.equals(PROTOCOL.OPENWIRE)) {
 				destination = getDestination(topicName);
-				new DefaultClientConsumer(new DefaultClientListener(event),
+				new DefaultClientConsumer(new DefaultClientListener(new ResponseEvent(this)),
 						session, destination);
 			} else if (this.protocol.equals(PROTOCOL.STOMP)) {
 				Thread thread = new Thread(new Runnable() {
@@ -552,6 +556,44 @@ public class GossClient implements Client {
 		return destination;
 	}
 
+	
+	protected String getToken(Credentials credentials) throws JMSException{
+		System.out.println("IN GET TOKEN");
+		StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+		factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
+		Connection pwConnection = null;
+		if (credentials != null) {
+			pwConnection = factory.createConnection(credentials
+					.getUserPrincipal().getName(), credentials
+					.getPassword());
+		} else {
+			pwConnection = factory.createConnection();
+		}
+		Session pwSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		Destination replyDestination = getTemporaryDestination();
+
+		Destination destination = getDestination(SecurityManagerImpl.PROP_GOSS_LOGIN_TOPIC);
+		ClientConsumer pwClientConsumer = new DefaultClientConsumer(new DefaultClientListener(new ResponseEvent(this)),
+				pwSession, destination);
+		ClientPublishser pwClientPublisher = new DefaultClientPublisher(credentials
+				.getUserPrincipal().getName(), pwSession);
+		pwClientPublisher.sendMessage("", destination, replyDestination,
+				RESPONSE_FORMAT.JSON);
+		Message responseMessage = pwClientConsumer.getMessageConsumer()
+				.receive();
+		Object response = ((TextMessage) responseMessage).getText();
+		if (responseMessage instanceof ObjectMessage) {
+			ObjectMessage objectMessage = (ObjectMessage) responseMessage;
+			if (objectMessage.getObject() instanceof Response) {
+				response = (Response) objectMessage.getObject();
+			}
+		} else if (responseMessage instanceof TextMessage) {
+			response = ((TextMessage) responseMessage).getText();
+		}
+		
+		return null;
+	}
+	
 	public Client setCredentials(Credentials credentials)
 			throws SystemException {
 
@@ -603,6 +645,35 @@ public class GossClient implements Client {
 		return uuid.toString();
 	}
 	
-	
+	class ResponseEvent implements GossResponseEvent{
+		private final Client client;
+		private Gson gson = new Gson();
+
+		public ResponseEvent(Client client){
+			this.client = client;
+		}
+
+		@Override
+		public void onMessage(Serializable response) {
+			String responseData = "{}";
+			if (response instanceof DataResponse){
+//				String request = (String)((DataResponse) response).getData();
+//				if (request.trim().equals("list_handlers")){
+//					//responseData = "Listing handlers here!";
+//					responseData = gson.toJson(handlerRegistry.list());
+//				}
+//				else if (request.trim().equals("list_datasources")){
+//					//responseData = "Listing Datasources here!";
+//					responseData = gson.toJson(datasourceRegistry.getAvailable());
+//				}
+			}
+
+
+			System.out.println("On message: "+response.toString());
+			client.publish("goss/management/response", responseData);
+		}
+
+	}
+
 
 }

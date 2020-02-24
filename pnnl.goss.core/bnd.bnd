@@ -43,7 +43,8 @@
 	com.fasterxml.jackson.jaxrs.jackson-jaxrs-base,\
 	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
 	org.apache.felix.http.servlet-api,\
-	org.apache.httpcomponents.httpclient
+	org.apache.httpcomponents.httpclient,\
+	com.nimbusds.nimbus-jose-jwt-dependencies
 
 -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
 -sub:  \

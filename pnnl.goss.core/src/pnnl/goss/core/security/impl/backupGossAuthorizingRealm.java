@@ -21,7 +21,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import pnnl.goss.core.security.SecurityConfig;
 
 @Component
-public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
+public class backupGossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 	
 	public static final String DEFAULT_SYSTEM_USER = "system";
 	

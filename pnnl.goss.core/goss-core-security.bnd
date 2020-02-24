@@ -1,7 +1,8 @@
-Private-Package:  \
-	pnnl.goss.core.security.impl
+Private-Package: \
+	pnnl.goss.core.security.impl,\
+	pnnl.goss.core.security.jwt
 
 Bundle-Activator: pnnl.goss.core.security.impl.Activator
 Export-Package:  \
 	pnnl.goss.core.security
-Bundle-Version: 2.4.10.${tstamp}
+Bundle-Version: 2.5.1.${tstamp}
