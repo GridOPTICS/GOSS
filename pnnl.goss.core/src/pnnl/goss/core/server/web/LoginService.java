@@ -33,6 +33,7 @@ public class LoginService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String authenticate(@Context HttpServletRequest request, UsernamePasswordToken params){
 		String sessionToken = null;
+		System.out.println("AUTHENTICATE FOR LOGIN SERVICE");
 		try{
 			@SuppressWarnings("unused")
 			AuthenticationInfo info = securityManager.authenticate(params);

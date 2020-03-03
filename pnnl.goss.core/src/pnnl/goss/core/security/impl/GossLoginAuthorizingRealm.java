@@ -41,7 +41,7 @@ public class GossLoginAuthorizingRealm extends AuthorizingRealm implements Realm
 	
 	
     protected SimpleAccount getAccount(String username, String password) {
-
+System.out.println("GET ACCOUNT FOR GOSSLOGINAUTHREALM");
     	//TODO verify that username/pw are correct using GOSSLoginMnager
     	SimpleAccount account = null;
     	account = new SimpleAccount(username, password, getName());

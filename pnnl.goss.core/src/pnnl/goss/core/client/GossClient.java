@@ -168,8 +168,16 @@ public class GossClient implements Client {
 
 		if (credentials != null) {
 			config.set("CREDENTIALS", credentials);
+
+			System.out.println("CLIENT GETTING TOKEN");
+			String token = getToken(credentials);
+			System.out.println("TOKEN IS "+token);
+		
+		} else {
+			System.out.println("NO CREDENTIALS");
 		}
 
+		
 		if (protocol.equals(PROTOCOL.SSL)) {
 			createSslSession();
 		}
@@ -569,7 +577,9 @@ public class GossClient implements Client {
 		} else {
 			pwConnection = factory.createConnection();
 		}
-		Session pwSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		
+		System.out.println("CONN "+pwConnection);
+		Session pwSession = pwConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		Destination replyDestination = getTemporaryDestination();
 
 		Destination destination = getDestination(SecurityManagerImpl.PROP_GOSS_LOGIN_TOPIC);
@@ -590,7 +600,8 @@ public class GossClient implements Client {
 		} else if (responseMessage instanceof TextMessage) {
 			response = ((TextMessage) responseMessage).getText();
 		}
-		
+		System.out.println("CLIENT GOT RESPONSE "+response);
+
 		return null;
 	}
 	

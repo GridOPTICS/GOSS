@@ -12,11 +12,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.jms.Connection;
+import javax.jms.Session;
+
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.felix.dm.annotation.api.Stop;
+import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -28,6 +32,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.fusesource.stomp.jms.StompJmsConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,13 +74,31 @@ public class GossLoginManagerImpl implements GossLoginManager {
 	@ServiceDependency
 	private volatile ClientFactory clientFactory;
 	
+	String stompUri = "stomp://0.0.0.0:61613";
+	
 	@Start
 	public void start(){
+		System.out.println("STARTING GOSS LOGIN MGR");
 		try {
-			Client client = clientFactory.create(PROTOCOL.STOMP,
-					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()));
+//			Client client = clientFactory.create(PROTOCOL.STOMP,
+//					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()));
+			Credentials credentials = new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword());
+			StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+			factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
+			Connection pwConnection = null;
+			if (credentials != null) {
+				pwConnection = factory.createConnection(credentials
+						.getUserPrincipal().getName(), credentials
+						.getPassword());
+			} else {
+				pwConnection = factory.createConnection();
+			}
+			
+			System.out.println("CONN "+pwConnection);
+			Session pwSession = pwConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			
 			String loginTopic = "/topic/"+GossSecurityManager.PROP_GOSS_LOGIN_TOPIC.replaceAll("\\.", "/");
-			System.out.println("CONNECTING TO TOPIC "+loginTopic);
+			System.out.println("SUBSCRIBING TO LOGIN TOPIC "+loginTopic);
 			client.subscribe(loginTopic,  new ResponseEvent(client));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -92,6 +115,7 @@ public class GossLoginManagerImpl implements GossLoginManager {
 	
 	@Override
 	public boolean login(String username, byte[] password) {
+		System.out.println("CALLING LOGIN:"+username);
 		if(userMap.containsKey(username)){
 			return userMap.get(username).equals(new String(password));
 		}
@@ -101,6 +125,8 @@ public class GossLoginManagerImpl implements GossLoginManager {
 
 	@Override
 	public String getToken(String username, byte[] password) {
+		System.out.println("CALLING GET TOKEN:"+username);
+
 		if(login(username, password)){
 			String token = userRepository.createToken(username);
 			tokens.add(token);
@@ -112,6 +138,8 @@ public class GossLoginManagerImpl implements GossLoginManager {
 	@Override
 	public boolean tokenLogin(String token) {
 		// TODO Auto-generated method stub
+		System.out.println("CALLING TOKEN LOGIN:"+token);
+
 		return false;
 	}
     
@@ -128,15 +156,17 @@ System.out.println("UPDATING PROPERTIES FOR GOSS LOGIN MANAGER");
 			while(keys.hasMoreElements()){
 				String k = keys.nextElement();
 				String v = (String)properties.get(k);
+				System.out.println("V "+v);
 				String[] credAndPermissions = v.split(",");
-				String[] userPW = credAndPermissions[0].split("=");
-//				SimpleAccount acnt = new SimpleAccount(k, credAndPermissions[0], getName() );
-//				for(int i =1; i<credAndPermissions.length; i++){
-//					acnt.addStringPermission(credAndPermissions[i]);
-//					perms.add(credAndPermissions[i]);
-//				}
+//				String[] userPW = credAndPermissions[0].split("=");
+				SimpleAccount acnt = new SimpleAccount(k, credAndPermissions[0], "gridappsd" );
+				for(int i =1; i<credAndPermissions.length; i++){
+					acnt.addStringPermission(credAndPermissions[i]);
+					perms.add(credAndPermissions[i]);
+				}
 //				userMap.put(k, acnt);
-				userMap.put(userPW[0], userPW[1]);
+//				userMap.put(userPW[0], userPW[1]);
+				userMap.put(k, credAndPermissions[0]);
 				userPermissions.put(k, perms);
 				
 			}
