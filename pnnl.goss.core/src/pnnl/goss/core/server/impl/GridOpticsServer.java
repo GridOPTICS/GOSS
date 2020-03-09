@@ -76,19 +76,20 @@ import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
+import org.apache.activemq.broker.region.policy.LastImageSubscriptionRecoveryPolicy;
+import org.apache.activemq.broker.region.policy.PolicyEntry;
+import org.apache.activemq.broker.region.policy.PolicyMap;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.activemq.shiro.ShiroPlugin;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.dm.annotation.api.Component;
 import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.felix.dm.annotation.api.Stop;
+import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.northconcepts.exception.ConnectionCode;
-import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossRealm;
@@ -97,6 +98,9 @@ import pnnl.goss.core.security.SecurityConfig;
 //import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
+
+import com.northconcepts.exception.ConnectionCode;
+import com.northconcepts.exception.SystemException;
 
 
 @Component
@@ -334,6 +338,17 @@ public class GridOpticsServer implements ServerControl {
 			broker.setPersistent(false);
 			broker.setUseJmx(false);
 			broker.setPersistenceAdapter(null);
+			
+			ActiveMQTopic topic = new ActiveMQTopic(">");
+			LastImageSubscriptionRecoveryPolicy policy = new LastImageSubscriptionRecoveryPolicy();
+			
+			PolicyEntry entry = new PolicyEntry();
+			entry.setDestination(topic);
+			entry.setSubscriptionRecoveryPolicy(policy);
+			
+			PolicyMap policyMap = new PolicyMap();
+			policyMap.put(topic,  entry);
+			broker.setDestinationPolicy(policyMap);
 			
 			//broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
