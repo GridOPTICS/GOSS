@@ -339,7 +339,7 @@ public class GridOpticsServer implements ServerControl {
 			broker.setUseJmx(false);
 			broker.setPersistenceAdapter(null);
 			
-			ActiveMQTopic topic = new ActiveMQTopic(">");
+			ActiveMQTopic topic = new ActiveMQTopic("goss.gridappsd.simulation.>");
 			LastImageSubscriptionRecoveryPolicy policy = new LastImageSubscriptionRecoveryPolicy();
 			
 			PolicyEntry entry = new PolicyEntry();
