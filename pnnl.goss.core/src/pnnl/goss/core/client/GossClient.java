@@ -47,7 +47,6 @@ package pnnl.goss.core.client;
 //import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,22 +67,17 @@ import org.fusesource.stomp.jms.StompJmsConnectionFactory;
 import org.fusesource.stomp.jms.StompJmsDestination;
 import org.fusesource.stomp.jms.StompJmsTempQueue;
 import org.fusesource.stomp.jms.StompJmsTopic;
-import org.fusesource.stomp.jms.message.StompJmsBytesMessage;
-import org.fusesource.stomp.jms.message.StompJmsTextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.ClientPublishser;
-import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
-import pnnl.goss.core.security.SecurityConstants;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
 
@@ -284,7 +278,7 @@ public class GossClient implements Client {
 	 */
 	public Client subscribe(String topicName, GossResponseEvent event)
 			throws SystemException {
-		try {
+	
 			if (event == null)
 				throw new NullPointerException("event cannot be null");
 			Destination destination = null;
@@ -293,122 +287,19 @@ public class GossClient implements Client {
 				new DefaultClientConsumer(new DefaultClientListener(event),
 						session, destination);
 			} else if (this.protocol.equals(PROTOCOL.STOMP)) {
-				Thread thread = new Thread(new Runnable() {
-					Destination destination = new StompJmsDestination(topicName);
-					DefaultClientConsumer consumer = new DefaultClientConsumer(
-							session, destination);
-
-					@Override
-					public void run() {
-						while (session != null) {
-							try {
-								Message msg = consumer.getMessageConsumer()
-										.receive(10000);
-								if (msg instanceof StompJmsBytesMessage) {
-									StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
-									org.fusesource.hawtbuf.Buffer buffer = stompMessage
-											.getContent();
-									// System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-									String message = buffer.toString()
-											.substring(
-													buffer.toString().indexOf(
-															":") + 1);
-									
-									DataResponse dataResponse = new DataResponse(message);
-									dataResponse.setDestination(msg.getJMSDestination().toString());
-									if(msg.getJMSReplyTo() != null) {
-										dataResponse.setReplyDestination(msg.getJMSReplyTo());
-									}
-
-									if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
-										String username = msg.getStringProperty(SecurityConstants.SUBJECT_HEADER);
-										dataResponse.setUsername(username);
-									} else {
-										log.warn("No username received in stomp message");
-									}
-									event.onMessage(dataResponse);
-								}
-								else if (msg instanceof StompJmsTextMessage) {
-									StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
-									
-									org.fusesource.hawtbuf.Buffer buffer = stompMessage
-											.getContent();
-									// System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-									String message = buffer.toString()
-											.substring(
-													buffer.toString().indexOf(
-															":") + 1);
-
-									Gson gson = new Gson();
-									DataResponse dataResponse;
-									try{
-										try {
-											// don't fail if the message isn't already in data response format
-											dataResponse = DataResponse.parse(message);
-										} catch(JsonSyntaxException e){
-											dataResponse = new DataResponse();
-											dataResponse.setData(message);
-										}
-										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-										if(msg.getJMSReplyTo() != null) {
-											dataResponse.setReplyDestination(msg.getJMSReplyTo());
-										}
-										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
-											String username = msg.getStringProperty(SecurityConstants.SUBJECT_HEADER);
-											dataResponse.setUsername(username);
-										} else {
-											log.warn("No username received in stomp message");
-										}
-										event.onMessage(dataResponse);
-									}
-									catch(JsonSyntaxException e){
-										e.printStackTrace();
-										dataResponse = new DataResponse(message);
-										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-										if(msg.getJMSReplyTo() != null)
-											dataResponse.setReplyDestination(msg.getJMSReplyTo());
-										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-											dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
-										event.onMessage(dataResponse);
-									}
-									
-								} else {
-									//TODO warn of unknown message type???
-								}
-							} catch (JMSException ex) {
-								// Happens when a timeout occurs.
-								// log.debug("Illegal state? "+
-								// ex.getMessage());
-								if (session != null) {
-									log.debug("Closing session");
-									try {
-										session.close();
-									} catch (JMSException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									session = null;
-								}
-							}
-						}
-					}
-				});
-
-				thread.start();
-				threads.add(thread);
+				destination = new StompJmsDestination(topicName);
+				new DefaultClientConsumer(new StompClientListener(event),
+						session, destination);
 			}
-		} finally {
-
-		}
-
-		return this;
+			
+			return this;
 	}
 
 	@Override
 	public void publish(String topic, Serializable data) throws SystemException {
 		try {
 			if (data == null)
-				throw new NullPointerException("event cannot be null");
+				throw new NullPointerException("data cannot be null");
 
 			Destination destination = getDestination(topic);
 
