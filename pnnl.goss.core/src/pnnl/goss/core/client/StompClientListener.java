@@ -1,6 +1,5 @@
 package pnnl.goss.core.client;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 
 import org.fusesource.stomp.jms.message.StompJmsBytesMessage;
@@ -37,11 +36,12 @@ public class StompClientListener implements ClientListener {
 				dataResponse = DataResponse.parse(msg.toString());
 			}
 			if (msg instanceof StompJmsBytesMessage) {
+				log.debug("Received StompJmsBytesMessage on destination: "+ msg.getJMSDestination().toString());
 
 				stompByteMessage = (StompJmsBytesMessage) msg;
 				buffer = stompByteMessage.getContent().toString();
 				message = buffer.substring(buffer.indexOf(":") + 1);
-				dataResponse = new DataResponse(message);
+				dataResponse.setData(message);
 				dataResponse.setDestination(msg.getJMSDestination().toString());
 				if (msg.getJMSReplyTo() != null)
 					dataResponse.setReplyDestination(msg.getJMSReplyTo());
@@ -49,9 +49,9 @@ public class StompClientListener implements ClientListener {
 			} else if (msg instanceof StompJmsTextMessage) {
 
 				stompTextMessage = (StompJmsTextMessage) msg;
-				buffer = stompTextMessage.getContent().toString();
+				buffer = stompTextMessage.getText();//.getContent().toString();
 				message = buffer.substring(buffer.indexOf(":") + 1);
-				dataResponse = new DataResponse(message);
+				dataResponse.setData(message);
 				dataResponse.setDestination(stompTextMessage
 						.getStompJmsDestination().toString());
 				if (msg.getJMSReplyTo() != null)
