@@ -49,8 +49,8 @@ public class StompClientListener implements ClientListener {
 			} else if (msg instanceof StompJmsTextMessage) {
 
 				stompTextMessage = (StompJmsTextMessage) msg;
-				buffer = stompTextMessage.getText();//.getContent().toString();
-				message = buffer.substring(buffer.indexOf(":") + 1);
+				message = stompTextMessage.getText();//.getContent().toString();
+				//message = buffer.substring(buffer.indexOf(":") + 1);
 				dataResponse.setData(message);
 				dataResponse.setDestination(stompTextMessage
 						.getStompJmsDestination().toString());
