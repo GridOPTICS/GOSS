@@ -188,23 +188,16 @@ public class GossClient implements Client {
 			
 			username = credentials.getUserPrincipal().getName();
 			
-			System.out.println("CLIENT GETTING TOKEN for "+credentials.getUserPrincipal());
 			//TODO only if not system
 			if(!"system".equals(credentials.getUserPrincipal().getName())){
 				token = getToken(credentials);
-				System.out.println("TOKEN IS "+token);
-			} //else {
-//				//try setting up temporary to activate the advisory topics
-//				System.out.println("GETTING TEMP");
-//				getTemporaryDestination(session);
-//			}
+			} 
 			
 		
 		} else {
-			System.out.println("NO CREDENTIALS");
+			log.info("No credentials provided");
 		}
 
-		System.out.println("PROTOCOL "+protocol);
 		if (protocol.equals(PROTOCOL.SSL)) {
 			createSslSession();
 		}
@@ -221,7 +214,6 @@ public class GossClient implements Client {
 					brokerUri);
 			
 			if(token!=null){
-				System.out.println("SETTING UP TOKEN OPENWIRE CONNECTION ");
 				factory.setUserName(token);
 				factory.setPassword("");
 			} else if (credentials != null) {
@@ -235,10 +227,7 @@ public class GossClient implements Client {
 			factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
 
 			if(token!=null){
-				System.out.println("SETTING UP TOKEN STOMP CONNECTION ");
-
 				connection = factory.createConnection(token, "");
-				System.out.println("CONNECTION CREATED");
 			} else if (credentials != null) {
 				connection = factory.createConnection(credentials
 						.getUserPrincipal().getName(), credentials
@@ -254,16 +243,13 @@ public class GossClient implements Client {
 			e.printStackTrace();
 			// TODO: handle exception
 		}
-		System.out.println("CONNECTION STARTED");
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		System.out.println("SESSION "+session+"    "+username);
 
 		if (username != null) {
 			clientPublisher = new DefaultClientPublisher(username, session);
 		} else {
 			clientPublisher = new DefaultClientPublisher(session);
 		}
-		System.out.println("GOT CLIENT PUBLISHER "+clientPublisher);
 	}
 
 	/**
@@ -472,8 +458,6 @@ public class GossClient implements Client {
 				clientPublisher.publish(destination, data);
 			else {
 				Gson gson = new Gson();
-				System.out.println("DESTINATION "+destination+" "+destination.getClass());
-				System.out.println("DATA "+data+" "+data.getClass());
 				clientPublisher.publish(destination, gson.toJson(data));
 			}
 
@@ -488,19 +472,16 @@ public class GossClient implements Client {
 	
 	@Override
 	public void publish(Destination destination, Serializable data) throws SystemException {
-		System.out.println("PUBLISHING TO "+destination+" "+data);
+		log.debug("Publishing to "+destination);
 		try {
 			if (data == null)
 				throw new NullPointerException("data cannot be null");
 
 			if (data instanceof String){
-				System.out.println("PUBLISHING String "+destination+" "+data);
 				clientPublisher.publish(destination, data);
 			}
 			else {
 				Gson gson = new Gson();
-				System.out.println("PUBLISHING GSON "+destination+" "+data);
-
 				clientPublisher.publish(destination, gson.toJson(data));
 			}
 
@@ -617,7 +598,7 @@ public class GossClient implements Client {
 
 	
 	protected String getToken(Credentials credentials) throws JMSException{
-		System.out.println("IN GET TOKEN");
+		log.info("Get token for "+credentials.getUserPrincipal().getName());
 		String response = null;
 
 		try{
@@ -638,25 +619,17 @@ public class GossClient implements Client {
 //			pwConnection = factory.createConnection();
 //		}
 		
-		System.out.println("CONN "+pwConnection);
-		System.out.println("STOMP URI. "+stompUri);
 		Session pwSession = pwConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-		System.out.println("HAS SESSION "+pwSession);
 //		Destination replyDestination = getTemporaryDestination(pwSession);
 		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName());
 //		Queue replyDestination = pwSession.createTemporaryQueue();
-		System.out.println("REPLY DEST "+replyDestination);
 		Destination destination = getDestination(GossCoreContants.PROP_TOKEN_QUEUE, pwConnection, pwSession);
-		System.out.println("DEST "+destination);
 //		ClientConsumer pwClientConsumer = new DefaultClientConsumer(new DefaultClientListener(new ResponseEvent(this)),
 //				pwSession, replyDestination);
-		System.out.println("CIENT CONSUMER SHOULD BE LISTENING ON "+replyDestination);
 		ClientPublishser pwClientPublisher = new DefaultClientPublisher(credentials
 				.getUserPrincipal().getName(), pwSession);
 		String userAuthStr = credentials.getUserPrincipal().getName()+":"+credentials.getPassword();
-		System.out.println("SENDING TOKEN MESSAGE"+userAuthStr);
 		String base64Str = new String(Base64.getEncoder().encode(userAuthStr.getBytes()));
-		System.out.println("STR "+base64Str);
 //		pwClientPublisher.sendMessage(, destination, replyDestination,
 //				RESPONSE_FORMAT.JSON);
 		
@@ -670,40 +643,27 @@ public class GossClient implements Client {
 		
 		pwClientPublisher.sendMessage(base64Str.trim(), destination, replyDestination,
 				RESPONSE_FORMAT.JSON);
-		System.out.println("SENT TOKEN MESSAGE to "+destination);
-//		try{
-//			throw new Exception("test sent");
-//			
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//			// TODO: handle exception
-//		}
 		try{
-//		Thread.sleep(2000);
-		System.out.println("CALLING RECEIVE");
-		Message responseMessage = consumer.receive();
-		
-//		Message responseMessage = pwClientConsumer.getMessageConsumer()
-//				.receive();
-		System.out.println("RECEIVED TOKEN RESP "+responseMessage);
-		
-		
-		if (responseMessage instanceof ObjectMessage) {
-			ObjectMessage objectMessage = (ObjectMessage) responseMessage;
-			if (objectMessage.getObject() instanceof Response) {
-				Response objResponse = (Response) objectMessage.getObject();
-				response = objectMessage.toString();
+			Message responseMessage = consumer.receive();
+			log.info("Received token for "+credentials.getUserPrincipal().getName());
+	
+			
+			if (responseMessage instanceof ObjectMessage) {
+				ObjectMessage objectMessage = (ObjectMessage) responseMessage;
+				if (objectMessage.getObject() instanceof Response) {
+					Response objResponse = (Response) objectMessage.getObject();
+					response = objectMessage.toString();
+				}
+			} else  {
+				response = ((TextMessage) responseMessage).getText();
 			}
-		} else  {
-			response = ((TextMessage) responseMessage).getText();
-		}
-		System.out.println("CLIENT GOT RESPONSE "+response);
 		}catch (Throwable e) {
-			System.out.println("ERROR OCCURED WHILE RECEIVING");
+			log.error("Error occured while receiveing token: "+e);
 			e.printStackTrace();
 			// TODO: handle exception
 		}
-		}catch (JMSException e) {
+		}catch (JMSException e) {			
+			log.error("Error occured while receiveing token: "+e);
 			// TODO: handle exception
 			e.printStackTrace();
 			throw e;
@@ -789,7 +749,7 @@ public class GossClient implements Client {
 			}
 
 
-			System.out.println("On message: "+response.toString());
+//			System.out.println("On message: "+response.toString());
 			client.publish("goss/management/response", responseData);
 		}
 

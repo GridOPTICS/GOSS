@@ -149,31 +149,14 @@ public class UserRepositoryImpl implements UserRepository{
         }
     }
 
-//    protected boolean validateLogin(Object userId, Object password){
-//    	System.out.println("VALIDATE USER "+userId+" "+password);
-//    	if(userMap.containsKey(userId) ){
-//    		String cred = userMap.get(userId).getCredentials().toString();
-//    		System.out.println("CREDS "+cred);
-//    	}
-//    	
-//    	
-//    	return false;
-//    }
-//    
     
     public boolean validateToken(String token) {
-    	System.out.println("IN VALIDATE TOKEN "+token);
+    	log.debug("Validate token "+token);
         try {
             SignedJWT signed = SignedJWT.parse(token);
-            System.out.println("SIGNED "+signed+" "+signed.getParsedString());
             JWSVerifier verifier = new MACVerifierExtended(getSharedKey(), signed.getJWTClaimsSet());
-//            try{
-//            	throw new Exception("In validate");
-//            }catch (Exception e) {
-//				e.printStackTrace();
-//			}
             boolean verified = signed.verify(verifier);
-            System.out.println("VERIFIED "+verified);
+            log.debug("Verified: "+verified);
             return verified;
         } catch (ParseException ex) {
             return false;
@@ -186,16 +169,12 @@ public class UserRepositoryImpl implements UserRepository{
     
     @Start
     public void start(){
-		System.out.println("USER REPOSITORY IMPL SENDING USER "+securityConfig.getManagerUser()+" AND PW "+ securityConfig.getManagerPassword());
 		try {
-			
 			Client client = clientFactory.create(PROTOCOL.STOMP,
 					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()));
-			
 			//test publish to make sure the topic exists
 			client.publish("ActiveMQ.Advisory.Connection", "");
 			String loginTopic = "/topic/"+GossCoreContants.PROP_TOKEN_QUEUE;
-			System.out.println("SUBSCRIBING TO LOGIN TOPIC "+loginTopic);
 			client.subscribe(loginTopic,  new ResponseEvent(client));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -208,7 +187,6 @@ public class UserRepositoryImpl implements UserRepository{
 
 		if (properties != null){
 			log.debug("Updating User Repository Impl");
-			System.out.println("Updating User Repository Impl");
 			userMap.clear();
 			userRoles.clear();
 			
@@ -229,18 +207,10 @@ public class UserRepositoryImpl implements UserRepository{
 				
 			}
 			
-//			while(keys.hasMoreElements()){
-//				String user = keys.nextElement();
-//				String groups = properties.get(user).toString();
-//				System.out.println("Registering user roles: "+user+" --  "+groups);
-//				List<String> groupList = new ArrayList(Arrays.asList(StringUtils.split(groups, ',')));
-//				//TODO in RIGHT HERE
-//				roles.put(user, groupList);
-//			}
 		}		
 		
 		
-		}
+    }
 		
 		
 
@@ -257,43 +227,30 @@ class ResponseEvent implements GossResponseEvent{
 
 	@Override
 	public void onMessage(Serializable response) {
-		System.out.println("IN user repo impl on message "+response);
+		log.debug("Received token request");
 		String responseData = "{}";
 		if (response instanceof DataResponse){
-			System.out.println("IN user repo is data response "+response);
-
 			String base64Auth = (String)((DataResponse) response).getData();
-			System.out.println("GOTBASE64 STR "+base64Auth);
-
 			String userAauthStr = new String(Base64.getDecoder().decode(base64Auth.trim().getBytes()));
-			System.out.println("GOT USER AUTH STR "+userAauthStr);
 			String[] authArr = userAauthStr.split(":");
 			String userId = authArr[0];
-			System.out.println(userId+"  "+userMap.containsKey(userId));
-			System.out.println(authArr[1]+"  "+userMap.get(userId).getCredentials());
+			//validate submitted username and password before generating token
 			if(userMap.containsKey(userId) && authArr[1].equals(userMap.get(userId).getCredentials())){
 				//Create token
 				String token = createToken(authArr[0]);
-				System.out.println("CREATED TOKEN "+token);
+				log.debug("Created token for "+userId);
 				responseData = token;
-//				System.out.println("PERMISSIONS "+userPermissions.get(userId));
+				
 			} else {
+				log.debug("Authentication failed for "+userId);
+
 				//Send authentication failed message
 				responseData = "authentication failed";
 			}
 			
-//			if (request.trim().equals("list_handlers")){
-//				//responseData = "Listing handlers here!";
-////				responseData = gson.toJson(handlerRegistry.list());
-//			}
-//			else if (request.trim().equals("list_datasources")){
-//				//responseData = "Listing Datasources here!";
-//				responseData = gson.toJson(datasourceRegistry.getAvailable());
-//			}
-			System.out.println("SENDING TOKEN TO "+((DataResponse) response).getReplyDestination()+" "+responseData);
 			client.publish(((DataResponse) response).getReplyDestination(), responseData);
 		} else {
-			System.out.println("On message: "+response.toString());
+//			System.out.println("On message: "+response.toString());
 			client.publish("goss/management/response", responseData);
 		}
 	}

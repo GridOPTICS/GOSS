@@ -40,9 +40,6 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	
 	@Override
 	public Set<String> getPermissions(String identifier) {
-		// TODO Auto-generated method stub
-		System.out.println("LDAP GET PERMISSIONS "+identifier);
-		//TODO get roles for identifier
 		
 		//look up permissions based on roles
 		
@@ -53,7 +50,6 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	@Override
 	public boolean hasIdentifier(String identifier) {
 		// TODO Auto-generated method stub
-		System.out.println("HAS IDENTIFIER "+identifier);
 		return false;
 	}
 
@@ -61,12 +57,7 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
 		// TODO Auto-generated method stub
-		System.out.println("DO GET AUTH INFO");
-		for(Object p: principals.asList()){
-			System.out.println("    principal: "+p+"   "+p.getClass());
-		}
 		AuthorizationInfo info =  super.doGetAuthorizationInfo(principals);
-		System.out.println("info "+info);
 		
 		if(info==null){
 //			try {
@@ -104,18 +95,14 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 			AuthenticationToken token) throws AuthenticationException {
 		
 		// TODO Auto-generated method stub
-		System.out.println("GET AUTH TOKEN "+token); 
 		AuthenticationInfo info = super.doGetAuthenticationInfo(token);
-		System.out.println("GOT INFO "+info);
 		return info;
 	}
 	
 	@Override
 	public boolean supports(AuthenticationToken token) {
-		System.out.println("SUPPORTS "+token);
 		// TODO Auto-generated method stub
 		boolean supports = super.supports(token);
-		System.out.println("SUPPORTS "+supports);
 		return supports;
 	}
 	

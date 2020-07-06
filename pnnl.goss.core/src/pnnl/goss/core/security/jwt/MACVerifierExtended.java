@@ -26,16 +26,12 @@ public class MACVerifierExtended extends MACVerifier {
     public boolean verify(final JWSHeader header, final byte[] signingInput, final Base64URL signature) throws JOSEException {
         boolean value = super.verify(header, signingInput, signature);
 //        long time = System.currentTimeMillis();
+        
         long time = new Date().getTime();
-        System.out.println("TIME IS "+time);
-        long nbtTime = claimsSet.getNotBeforeTime().getTime();
-        System.out.println("NBT IS "+nbtTime);
         time=time*1000;
         
         boolean notBeforeTime = claimsSet.getNotBeforeTime().getTime() <= time;
-        System.out.println("NBT: "+notBeforeTime+" "+claimsSet.getNotBeforeTime().getTime() +"<="+ time);
         boolean beforeExpiration = time < claimsSet.getExpirationTime().getTime();
-        System.out.println("BE: "+time+" < "+claimsSet.getExpirationTime().getTime());
         
         
         return value && notBeforeTime && beforeExpiration;

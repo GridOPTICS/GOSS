@@ -108,25 +108,8 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 	
 	@Start
 	public void start(){
-		System.out.println("IN START FOR UNAUTH AUTH REALM");
 	}
 	
-//	@Override
-//	protected void onInit() {
-//			super.onInit();
-//			Set<String> perms = new HashSet<>();
-//
-//			System.out.println("UNATH MANAGER IN SYSTEM REALM "+securityConfig);
-////			SimpleAccount acnt = new SimpleAccount(securityConfig.getManagerUser(), securityConfig.getManagerPassword(), getName() );
-//			SimpleAccount acnt = new SimpleAccount("token", "token", getName() );
-//			acnt.addStringPermission("queue:*");
-//			acnt.addStringPermission("topic:*");
-//			acnt.addStringPermission("temp-queue:*");
-//			acnt.addStringPermission("fusion:*:read");
-//			acnt.addStringPermission("fusion:*:write");
-//			userMap.put("token", acnt);
-//			userPermissions.put("token", perms);
-//		}
 	
 	
 	@Override
@@ -135,16 +118,6 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 		//get the principal this realm cares about:
         String username = (String) getAvailablePrincipal(principals);
         AuthorizationInfo accnt = tokenMap.get(username);
-        if(!username.equals("system")){
-        	System.out.println("UNAUTH GET AUTHZ "+username+"  "+accnt);
-//        	try{
-//        		throw new Exception("in authz");
-//        	} catch (Exception e) {
-//        		e.printStackTrace();
-//				// TODO: handle exception
-//			}
-        	
-        }
         
         return accnt;
 	}
@@ -152,51 +125,41 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(
 			AuthenticationToken token) throws AuthenticationException {
-//		try {
-//			throw new Exception("in get authn");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			// TODO: handle exception
-//		}
 		//we can safely cast to a UsernamePasswordToken here, because this class 'supports' UsernamePasswordToken
         //objects.  See the Realm.supports() method if your application will use a different type of token.
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 //        upToken.setRememberMe(true);
         SimpleAccount acnt = null;
         String username = upToken.getUsername();
-		System.out.println("DO GET AUTH INFO UNAUTH "+token+" user "+username);
+		log.debug("Get authentication info for "+username);
 
         char[] pw = upToken.getPassword();
         //If it receives a token
         if (username!=null && username.length()>250 && pw.length==0) {
         	//Validate token
-        	System.out.println("HAS TOKEN, VERIFYING");
         	boolean verified = userRepository.validateToken(username);
-        	System.out.println("IS VERIFIED "+verified); 
         	if(verified){
         	//TODO get username from token, get permissions for username
+        		log.debug("User verifed, generating token for "+username);
         		SignedJWT signed;
 				try {
 					signed = SignedJWT.parse(username);
-					System.out.println("SIGNED "+signed+" "+signed.getParsedString());
 					Payload payload = signed.getPayload();
 					String jsonToken = payload.toJSONObject().toJSONString();
-					System.out.println("GOT TOKEN PAYLOAD "+jsonToken);
 					//TODO look up permissions based on roles and add them
 					Set<String> permissions = new HashSet<String>();
 					JWTAuthenticationToken tokenObj = JWTAuthenticationToken.parse(jsonToken);
 					if(roleManager!=null){
 						permissions = roleManager.getRolePermissions(tokenObj.getRoles());
-						System.out.println("PERMISSIONS FOR TOKEN "+permissions);
+						log.debug("Permissions for user "+username+": "+permissions);
 					}else {
-						System.out.println("ROLE MGR IS NULL!!!");
+						log.warn("Role manager is null");
 					}
 					acnt = new SimpleAccount(username, "", getName() );
 					for(String perm: permissions){
 						acnt.addStringPermission(perm);
 					}
 					tokenMap.put(username, acnt);
-//					tokenPermissions.put(username, permissions);
 
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
@@ -210,27 +173,16 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
             
              
         } else {
-        	//Only let it past if it is coming from the "token" account
-//	        if(!"token".equals(upToken.getUsername()) && !"token".equals(upToken.getPassword())){
-//	        	System.out.println("NOT TOKEN USER "+upToken.getUsername()+" "+upToken.getPassword());
-//	        	return null;
-//	        }
+        	//System user should be approved by the system realm
         	if("system".equals(upToken.getUsername()) ){
         		return null;
         	}
         	
         	
-//	        if("token".equals(upToken.getUsername()) && "token".equals(upToken.getPassword().toString())){
-//	        if("token".equals(upToken.getUsername()) ){
-//	        	String pwStr = upToken.getPassword().toString();
         	String userName = upToken.getUsername();
         	//todo check usenamr and pw against user repository
         	String loginTopic = "/topic/"+GossCoreContants.PROP_TOKEN_QUEUE;
-//	        		Set<String> permissions = new HashSet<String>();
         	acnt = new SimpleAccount(upToken.getUsername(), upToken.getPassword(), getName() );
-//				acnt.addStringPermission("queue:*");
-//				acnt.addStringPermission("topic:"+loginTopic);
-//				acnt.addStringPermission("topic:"+"ActiveMQ.Advisory.Connection");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Connection:create");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Queue:create");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Consumer.Queue.temp.token_resp."+userName);
@@ -238,16 +190,8 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         	acnt.addStringPermission("topic:"+GossCoreContants.PROP_TOKEN_QUEUE+":create");
         	acnt.addStringPermission("queue:temp.token_resp."+userName);
 
-//				permissions.add("topic:"+loginTopic);
-//				acnt.addStringPermission("temp-queue:*");
-//				acnt.addStringPermission("fusion:*:read");
-//				acnt.addStringPermission("fusion:*:write");
 
         	tokenMap.put(username, acnt);
-//				tokenPermissions.put(username, permissions);
-				
-//        	return acnt;
-//	        }
         }
 		return acnt;
 	}
@@ -255,19 +199,7 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 
 	@Override
 	public Set<String> getPermissions(String identifier) {
-		if(!identifier.equals("system")){
-        	System.out.println("GET PERMS "+identifier+"  ");
-//		try{
-//			throw new Exception("here");
-//		}catch (Exception e) {
-//			// TODO: handle exception
-//			e.printStackTrace();
-//		}
-		}
-//		if (hasIdentifier(identifier)){
-//			System.out.println(tokenPermissions.get(identifier));
-//			return tokenPermissions.get(identifier);
-//		}
+		//I don't believe this is used
 		return new HashSet<>();
 	}
 
