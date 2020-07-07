@@ -75,12 +75,10 @@ public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
 	
 	@Start
 	public void start(){
-		System.out.println("IN START FOR SYSTEM AUTH REALM");
 	}
 	
 	@ConfigurationDependency(pid=CONFIG_PID)
 	public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
-		System.out.println("UPDATING SYSTEM REALM");
 	}
 	
 	@Override
@@ -96,41 +94,13 @@ public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(
 			AuthenticationToken token) throws AuthenticationException {
-		System.out.println("IN SYSTEM REALM");
 		//we can safely cast to a UsernamePasswordToken here, because this class 'supports' UsernamePasswordToken
         //objects.  See the Realm.supports() method if your application will use a different type of token.
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         upToken.setRememberMe(true);
-//        System.out.println("SYSTEM GET AUTHN "+upToken);
         return userMap.get(upToken.getUsername());
 	}
 	
-//	@ConfigurationDependency(pid=CONFIG_PID)
-//	public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
-//
-//		if (properties != null){
-//			log.debug("Updating PropertyBasedRealm");
-//			userMap.clear();
-//			userPermissions.clear();
-//			
-//			Enumeration<String> keys = properties.keys();
-//			Set<String> perms = new HashSet<>();
-//			while(keys.hasMoreElements()){
-//				String k = keys.nextElement();
-//				String v = (String)properties.get(k);
-//				String[] credAndPermissions = v.split(",");
-//				
-//				SimpleAccount acnt = new SimpleAccount(k, credAndPermissions[0], getName() );
-//				for(int i =1; i<credAndPermissions.length; i++){
-//					acnt.addStringPermission(credAndPermissions[i]);
-//					perms.add(credAndPermissions[i]);
-//				}
-//				userMap.put(k, acnt);
-//				userPermissions.put(k, perms);
-//				
-//			}
-//		}		
-//	}
 
 	@Override
 	public Set<String> getPermissions(String identifier) {
