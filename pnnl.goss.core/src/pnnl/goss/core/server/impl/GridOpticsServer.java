@@ -275,7 +275,17 @@ public class GridOpticsServer implements ServerControl {
 		try{
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		}catch (JMSException e) {
-			e.printStackTrace();
+			//attempt to recreate the connection as well
+			try{
+				connection.close();
+			}catch (JMSException e2) {}
+			try{
+				connection = connectionFactory.createConnection(systemManager, systemManagerPassword);
+	    		connection.start();	
+	    		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			}catch(JMSException e2){
+				e2.printStackTrace();
+			}
 		}
 		
 		return session;
@@ -405,13 +415,20 @@ public class GridOpticsServer implements ServerControl {
 				// current time in UTC time zone
 				LocalDateTime localDateTimeUTC = LocalDateTime.now(Clock.systemUTC());
 				try {
+					
+					
 					//log.debug(localDateTimeUTC.format(formatter));
 					producer.send(session.createTextMessage(localDateTimeUTC.format(formatter)));
 				
-				}catch (IllegalStateException e) {
+				}catch (javax.jms.IllegalStateException e) {
+					System.out.println("Session closed, attempting to refresh");
+					log.warn("Session closed, attempting to refresh");
 					// typically happens because the session has timed out, attempt to re-create the session
 					session = server.refreshSession();
+					
 					try{
+						producer = session.createProducer(destination);
+						producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 						//attempt to resent
 						producer.send(session.createTextMessage(localDateTimeUTC.format(formatter)));
 					} catch (JMSException e2) {
@@ -430,7 +447,8 @@ public class GridOpticsServer implements ServerControl {
 			}	
 		}
     }
-        
+    
+    
     @Override
     @Start
 	public void start() {
