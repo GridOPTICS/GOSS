@@ -118,7 +118,9 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 		//get the principal this realm cares about:
         String username = (String) getAvailablePrincipal(principals);
         AuthorizationInfo accnt = tokenMap.get(username);
-        
+        if(accnt==null){
+        	log.debug("No authrorization info found for "+username);
+        }
         return accnt;
 	}
 
@@ -131,30 +133,35 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 //        upToken.setRememberMe(true);
         SimpleAccount acnt = null;
         String username = upToken.getUsername();
-		log.debug("Get authentication info for "+username);
+		log.info("Get authentication info for "+username);
 
         char[] pw = upToken.getPassword();
         //If it receives a token
         if (username!=null && username.length()>250 && pw.length==0) {
         	//Validate token
         	boolean verified = userRepository.validateToken(username);
+        	log.info("Recieved token: "+username+"  verified: "+verified);
         	if(verified){
         	//TODO get username from token, get permissions for username
-        		log.debug("User verifed, generating token for "+username);
+        		
         		SignedJWT signed;
 				try {
 					signed = SignedJWT.parse(username);
 					Payload payload = signed.getPayload();
 					String jsonToken = payload.toJSONObject().toJSONString();
-					//TODO look up permissions based on roles and add them
+					
+					// look up permissions based on roles and add them
 					Set<String> permissions = new HashSet<String>();
 					JWTAuthenticationToken tokenObj = JWTAuthenticationToken.parse(jsonToken);
+		        	log.info("Has token roles: "+tokenObj.getRoles());
+
 					if(roleManager!=null){
 						permissions = roleManager.getRolePermissions(tokenObj.getRoles());
 						log.debug("Permissions for user "+username+": "+permissions);
 					}else {
 						log.warn("Role manager is null");
 					}
+					log.info("Has role permissions: "+permissions);
 					acnt = new SimpleAccount(username, "", getName() );
 					for(String perm: permissions){
 						acnt.addStringPermission(perm);
@@ -162,10 +169,8 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 					tokenMap.put(username, acnt);
 
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -173,6 +178,7 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
             
              
         } else {
+        	
         	//System user should be approved by the system realm
         	if("system".equals(upToken.getUsername()) ){
         		return null;
