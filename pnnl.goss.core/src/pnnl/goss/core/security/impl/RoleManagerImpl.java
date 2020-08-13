@@ -65,7 +65,7 @@ public class RoleManagerImpl implements RoleManager {
 				String v = (String)properties.get(k);
 				String[] credAndPermissions = v.split(",");
 				
-				for(int i =1; i<credAndPermissions.length; i++){
+				for(int i =0; i<credAndPermissions.length; i++){
 					perms.add(credAndPermissions[i]);
 				}
 				rolePermissions.put(k, perms);
