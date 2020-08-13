@@ -113,7 +113,7 @@ public class UserRepositoryImpl implements UserRepository{
 //    }
 
     public String createToken(Object userId) {
-    	
+    	log.info("Creating token for user "+userId);
         try {
         	//TODO, should also include roles(permissions)
         	
@@ -247,7 +247,8 @@ class ResponseEvent implements GossResponseEvent{
 				//Send authentication failed message
 				responseData = "authentication failed";
 			}
-			
+	    	log.info("Returning token for user "+userId+" on destination "+((DataResponse) response).getReplyDestination());
+
 			client.publish(((DataResponse) response).getReplyDestination(), responseData);
 		} else {
 //			System.out.println("On message: "+response.toString());

@@ -646,7 +646,6 @@ public class GossClient implements Client {
 		try{
 			Message responseMessage = consumer.receive();
 			log.info("Received token for "+credentials.getUserPrincipal().getName());
-	
 			
 			if (responseMessage instanceof ObjectMessage) {
 				ObjectMessage objectMessage = (ObjectMessage) responseMessage;
@@ -657,6 +656,8 @@ public class GossClient implements Client {
 			} else  {
 				response = ((TextMessage) responseMessage).getText();
 			}
+			log.info("GossClient received token:"+response+" for user "+credentials.getUserPrincipal().getName());
+
 		}catch (Throwable e) {
 			log.error("Error occured while receiveing token: "+e);
 			e.printStackTrace();
