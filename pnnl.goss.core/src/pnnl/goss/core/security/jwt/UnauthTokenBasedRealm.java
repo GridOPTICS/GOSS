@@ -149,7 +149,7 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 					signed = SignedJWT.parse(username);
 					Payload payload = signed.getPayload();
 					String jsonToken = payload.toJSONObject().toJSONString();
-					log.debug("Json token: "+jsonToken);
+					log.info("Json token: "+jsonToken);
 					// look up permissions based on roles and add them
 					Set<String> permissions = new HashSet<String>();
 					JWTAuthenticationToken tokenObj = JWTAuthenticationToken.parse(jsonToken);

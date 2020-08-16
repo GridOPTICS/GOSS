@@ -191,12 +191,12 @@ public class UserRepositoryImpl implements UserRepository{
 			userRoles.clear();
 			
 			Enumeration<String> keys = properties.keys();
-			Set<String> perms = new HashSet<>();
+			
 			while(keys.hasMoreElements()){
 				String k = keys.nextElement();
 				String v = (String)properties.get(k);
 				String[] credAndPermissions = v.split(",");
-				
+				Set<String> perms = new HashSet<>();
 				SimpleAccount acnt = new SimpleAccount(k, credAndPermissions[0], realmName);
 				for(int i =1; i<credAndPermissions.length; i++){
 					acnt.addStringPermission(credAndPermissions[i]);
