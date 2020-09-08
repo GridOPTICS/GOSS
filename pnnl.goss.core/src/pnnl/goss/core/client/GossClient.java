@@ -102,7 +102,8 @@ import com.northconcepts.exception.SystemException;
 public class GossClient implements Client {
 
 	private static final Logger log = LoggerFactory.getLogger(GossClient.class);
-
+	//TODO should probably be configurable
+	private static final String SYSTEM_USERNAME = "system";
 	private UUID uuid = null;
 	private String brokerUri = null;
 	private String stompUri = null;
@@ -117,7 +118,20 @@ public class GossClient implements Client {
 	private PROTOCOL protocol;
 	private Credentials credentials = null;
 	private String token = null;
+	private boolean useToken = false;
 
+	public GossClient(PROTOCOL protocol, Credentials credentials,
+			String openwireUri, String stompUri, String trustStorePassword,
+			String trustStore, boolean useToken) {
+		this.uuid = UUID.randomUUID();
+		this.protocol = protocol;
+		this.credentials = credentials;
+		this.brokerUri = openwireUri;
+		this.stompUri = stompUri;
+		this.trustStorePassword = trustStorePassword;
+		this.trustStore = trustStore;
+		this.useToken = useToken;
+	}
 	public GossClient(PROTOCOL protocol, Credentials credentials,
 			String openwireUri, String stompUri, String trustStorePassword,
 			String trustStore) {
@@ -137,8 +151,17 @@ public class GossClient implements Client {
 		this.credentials = credentials;
 		this.brokerUri = openwireUri;
 		this.stompUri = stompUri;
+		this.useToken = false;
 	}
-
+	public GossClient(PROTOCOL protocol, Credentials credentials,
+			String openwireUri, String stompUri, boolean useToken) {
+		this.uuid = UUID.randomUUID();
+		this.protocol = protocol;
+		this.credentials = credentials;
+		this.brokerUri = openwireUri;
+		this.stompUri = stompUri;
+		this.useToken = useToken;
+	}
 
 	private void createSslSession() throws Exception {
 		ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(
@@ -188,8 +211,8 @@ public class GossClient implements Client {
 			
 			username = credentials.getUserPrincipal().getName();
 			
-			//TODO only if not system
-			if(!"system".equals(credentials.getUserPrincipal().getName())){
+			//Request token only if not the system user, and the usetoken option is true
+			if(useToken && !SYSTEM_USERNAME.equals(credentials.getUserPrincipal().getName())){
 				token = getToken(credentials);
 			} 
 			
@@ -605,42 +628,20 @@ public class GossClient implements Client {
 		StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
 		factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
 		Connection pwConnection = null;
-		//TODO
-//		pwConnection = factory.createConnection("token","token");
 		pwConnection = factory.createConnection(credentials
 				.getUserPrincipal().getName(), credentials
 				.getPassword());
 		pwConnection.start();
-//		if (credentials != null) {
-//			pwConnection = factory.createConnection(credentials
-//					.getUserPrincipal().getName(), credentials
-//					.getPassword());
-//		} else {
-//			pwConnection = factory.createConnection();
-//		}
 		
 		Session pwSession = pwConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-//		Destination replyDestination = getTemporaryDestination(pwSession);
 		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName());
-//		Queue replyDestination = pwSession.createTemporaryQueue();
 		Destination destination = getDestination(GossCoreContants.PROP_TOKEN_QUEUE, pwConnection, pwSession);
-//		ClientConsumer pwClientConsumer = new DefaultClientConsumer(new DefaultClientListener(new ResponseEvent(this)),
-//				pwSession, replyDestination);
 		ClientPublishser pwClientPublisher = new DefaultClientPublisher(credentials
 				.getUserPrincipal().getName(), pwSession);
 		String userAuthStr = credentials.getUserPrincipal().getName()+":"+credentials.getPassword();
 		String base64Str = new String(Base64.getEncoder().encode(userAuthStr.getBytes()));
-//		pwClientPublisher.sendMessage(, destination, replyDestination,
-//				RESPONSE_FORMAT.JSON);
 		
 		MessageConsumer consumer = pwSession.createConsumer(replyDestination);
-//		DefaultClientConsumer pwClientConsumer = new DefaultClientConsumer(
-//				pwSession, replyDestination);
-//			clientPublisher.sendMessage(message, destination, replyDestination,
-//					responseFormat);
-//			Message responseMessage = clientConsumer.getMessageConsumer()
-//					.receive();
-		
 		pwClientPublisher.sendMessage(base64Str.trim(), destination, replyDestination,
 				RESPONSE_FORMAT.JSON);
 		try{

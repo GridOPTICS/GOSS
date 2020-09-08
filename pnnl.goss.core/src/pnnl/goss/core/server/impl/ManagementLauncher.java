@@ -73,7 +73,7 @@ public class ManagementLauncher {
 		try {
 			System.out.println("START "+securityConfig.getManagerUser()+" "+securityConfig.getManagerPassword()+" "+securityConfig);
 			Client client = clientFactory.create(PROTOCOL.STOMP,
-					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()));
+					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()), false);
 			client.subscribe("/topic/goss/management/request", new ResponseEvent(client));
 			client.subscribe("/topic/goss/management/go", new ResponseEvent(client));
 		} catch (Exception e) {

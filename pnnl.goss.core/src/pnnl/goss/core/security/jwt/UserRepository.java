@@ -6,7 +6,7 @@ public interface UserRepository {
 
     public UserDefault findById(Object id);
 
-    public byte[] generateSharedKey();
+//    public byte[] generateSharedKey();
 
     public long getExpirationDate() ;
 

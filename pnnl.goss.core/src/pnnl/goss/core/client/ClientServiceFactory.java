@@ -91,6 +91,11 @@ public class ClientServiceFactory implements ClientFactory {
 
     @Override
     public synchronized Client create(PROTOCOL protocol, Credentials credentials) throws Exception {
+    	return create(protocol, credentials, false);
+    }
+    
+    @Override
+    public synchronized Client create(PROTOCOL protocol, Credentials credentials, boolean useToken) throws Exception {
     	
     	Properties configProperties = new Properties();
 		try {
@@ -130,11 +135,11 @@ public class ClientServiceFactory implements ClientFactory {
         		String trustStorePassword = (String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD);
         		String trustStore = (String)properties.get(GossCoreContants.PROP_SSL_CLIENT_TRUSTSTORE);
         		
-        		client = new GossClient(protocol, credentials, openwireUri, stompUri, trustStorePassword, trustStore);
+        		client = new GossClient(protocol, credentials, openwireUri, stompUri, trustStorePassword, trustStore, useToken);
         		
         	}
         	else{
-        		client = new GossClient(protocol, credentials, openwireUri, stompUri);
+        		client = new GossClient(protocol, credentials, openwireUri, stompUri, useToken);
 	            
 	        }
         	

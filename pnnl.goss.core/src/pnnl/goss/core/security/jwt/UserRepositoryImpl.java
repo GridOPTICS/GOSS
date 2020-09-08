@@ -1,6 +1,5 @@
 package pnnl.goss.core.security.jwt;
 
-//import com.google.gson.Gson;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -24,25 +23,15 @@ import pnnl.goss.core.security.SecurityConfig;
 
 import java.io.Serializable;
 
-//import pnnl.goss.core.Client;
-//import pnnl.goss.core.Client.PROTOCOL;
-//import pnnl.goss.core.ClientFactory;
-//import pnnl.goss.core.GossCoreContants;
-//import pnnl.goss.core.GossResponseEvent;
-//import pnnl.goss.core.security.SecurityConfig;
-//import pnnl.goss.core.security.UserRepository;
-
 //import java.io.Serializable;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -53,12 +42,7 @@ import org.apache.felix.dm.annotation.api.ConfigurationDependency;
 import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.felix.dm.annotation.api.Start;
 import org.apache.http.auth.UsernamePasswordCredentials;
-//import org.apache.felix.dm.annotation.api.ServiceDependency;
-//import org.apache.http.auth.Credentials;
-//import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.shiro.authc.SimpleAccount;
-import org.apache.shiro.util.StringUtils;
-//import org.fusesource.stomp.jms.StompJmsConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,8 +61,8 @@ public class UserRepositoryImpl implements UserRepository{
 	
 	//These should probably come from config
 	private static final String ISSUED_BY = "GridOPTICS Software System";
+//	private byte[] sharedKey = securityConfig.getTokenSecret();  
 	private byte[] sharedKey = generateSharedKey();
-	
 	
 	private static final String CONFIG_PID = "pnnl.goss.core.security.userfile";
 	private static final Logger log = LoggerFactory.getLogger(UserRepositoryImpl.class);
@@ -92,12 +76,7 @@ public class UserRepositoryImpl implements UserRepository{
 
     public UserDefault findById(Object id){return null;}
 
-    public byte[] generateSharedKey() {
-        SecureRandom random = new SecureRandom();
-        byte[] sharedKey = new byte[32];
-        random.nextBytes(sharedKey);
-        return sharedKey;
-    }
+
 
     public long getExpirationDate() {
         return 1000 * 60 * 60 * 24 * 5;
@@ -171,7 +150,7 @@ public class UserRepositoryImpl implements UserRepository{
     public void start(){
 		try {
 			Client client = clientFactory.create(PROTOCOL.STOMP,
-					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()));
+					new UsernamePasswordCredentials(securityConfig.getManagerUser(), securityConfig.getManagerPassword()), false);
 			//test publish to make sure the topic exists
 			client.publish("ActiveMQ.Advisory.Connection", "");
 			String loginTopic = "/topic/"+GossCoreContants.PROP_TOKEN_QUEUE;
@@ -256,6 +235,11 @@ class ResponseEvent implements GossResponseEvent{
 		}
 	}
 
-}
-
+	}
+	private byte[] generateSharedKey() {
+	    SecureRandom random = new SecureRandom();
+	    byte[] sharedKey = new byte[32];
+	    random.nextBytes(sharedKey);
+	    return sharedKey;
+	}
 }
