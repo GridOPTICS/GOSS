@@ -6,6 +6,7 @@ import javax.servlet.Filter;
 
 import org.apache.felix.dm.DependencyActivatorBase;
 import org.apache.felix.dm.DependencyManager;
+import org.apache.felix.dm.annotation.api.ServiceDependency;
 import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -17,6 +18,9 @@ import pnnl.goss.core.server.TokenIdentifierMap;
 public class Activator extends DependencyActivatorBase {
 
 	private static String WEB_CONFIG_PID = "pnnl.goss.core.server.web";
+	
+//	@ServiceDependency 
+//	private volatile HttpService httpService;
 	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })

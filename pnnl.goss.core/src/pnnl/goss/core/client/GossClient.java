@@ -47,6 +47,7 @@ package pnnl.goss.core.client;
 //import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
@@ -55,14 +56,20 @@ import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageConsumer;
 import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.jms.QueueBrowser;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
+import org.apache.activemq.shiro.authc.AuthenticationTokenFactory;
+import org.apache.activemq.shiro.subject.SubjectConnectionReference;
 import org.apache.http.auth.Credentials;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.fusesource.stomp.jms.StompJmsConnection;
 import org.fusesource.stomp.jms.StompJmsConnectionFactory;
 import org.fusesource.stomp.jms.StompJmsDestination;
@@ -74,11 +81,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
+import pnnl.goss.core.ClientConsumer;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
+import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.security.GossSecurityManager;
 import pnnl.goss.core.security.SecurityConstants;
+import pnnl.goss.core.security.impl.SecurityManagerImpl;
+import pnnl.goss.core.security.jwt.JWTAuthenticationToken;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 
@@ -90,7 +102,8 @@ import com.northconcepts.exception.SystemException;
 public class GossClient implements Client {
 
 	private static final Logger log = LoggerFactory.getLogger(GossClient.class);
-
+	//TODO should probably be configurable
+	private static final String SYSTEM_USERNAME = "system";
 	private UUID uuid = null;
 	private String brokerUri = null;
 	private String stompUri = null;
@@ -104,7 +117,21 @@ public class GossClient implements Client {
 	private List<Thread> threads = new ArrayList<Thread>();
 	private PROTOCOL protocol;
 	private Credentials credentials = null;
+	private String token = null;
+	private boolean useToken = false;
 
+	public GossClient(PROTOCOL protocol, Credentials credentials,
+			String openwireUri, String stompUri, String trustStorePassword,
+			String trustStore, boolean useToken) {
+		this.uuid = UUID.randomUUID();
+		this.protocol = protocol;
+		this.credentials = credentials;
+		this.brokerUri = openwireUri;
+		this.stompUri = stompUri;
+		this.trustStorePassword = trustStorePassword;
+		this.trustStore = trustStore;
+		this.useToken = useToken;
+	}
 	public GossClient(PROTOCOL protocol, Credentials credentials,
 			String openwireUri, String stompUri, String trustStorePassword,
 			String trustStore) {
@@ -124,8 +151,17 @@ public class GossClient implements Client {
 		this.credentials = credentials;
 		this.brokerUri = openwireUri;
 		this.stompUri = stompUri;
+		this.useToken = false;
 	}
-
+	public GossClient(PROTOCOL protocol, Credentials credentials,
+			String openwireUri, String stompUri, boolean useToken) {
+		this.uuid = UUID.randomUUID();
+		this.protocol = protocol;
+		this.credentials = credentials;
+		this.brokerUri = openwireUri;
+		this.stompUri = stompUri;
+		this.useToken = useToken;
+	}
 
 	private void createSslSession() throws Exception {
 		ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(
@@ -134,7 +170,12 @@ public class GossClient implements Client {
 		cf.setTrustStore(trustStore);
 		cf.setTrustStorePassword(trustStorePassword);
 
-		if (credentials != null) {
+		
+		if (token !=null ){
+			cf.setUserName(token);
+			cf.setPassword("");
+		} else if (credentials != null) {
+			//todo get token
 			cf.setUserName(credentials.getUserPrincipal().getName());
 			cf.setPassword(credentials.getPassword());
 		}
@@ -161,9 +202,23 @@ public class GossClient implements Client {
 	public void createSession() throws Exception {
 
 		config = new ClientConfiguration().set("TCP_BROKER", brokerUri);
-
-		if (credentials != null) {
+		String username = null;
+		if (token!=null){
+			//todo
+			username = "tmp";
+		} else if (credentials != null ) {
 			config.set("CREDENTIALS", credentials);
+			
+			username = credentials.getUserPrincipal().getName();
+			
+			//Request token only if not the system user, and the usetoken option is true
+			if(useToken && !SYSTEM_USERNAME.equals(credentials.getUserPrincipal().getName())){
+				token = getToken(credentials);
+			} 
+			
+		
+		} else {
+			log.info("No credentials provided");
 		}
 
 		if (protocol.equals(PROTOCOL.SSL)) {
@@ -181,7 +236,10 @@ public class GossClient implements Client {
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
 					brokerUri);
 			
-			if (credentials != null) {
+			if(token!=null){
+				factory.setUserName(token);
+				factory.setPassword("");
+			} else if (credentials != null) {
 				factory.setUserName(credentials.getUserPrincipal().getName());
 				factory.setPassword(credentials.getPassword());
 			}
@@ -191,7 +249,9 @@ public class GossClient implements Client {
 			StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
 			factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
 
-			if (credentials != null) {
+			if(token!=null){
+				connection = factory.createConnection(token, "");
+			} else if (credentials != null) {
 				connection = factory.createConnection(credentials
 						.getUserPrincipal().getName(), credentials
 						.getPassword());
@@ -200,11 +260,16 @@ public class GossClient implements Client {
 			}
 		}
 
+		try{
 		connection.start();
+		}catch (Throwable e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		if (credentials != null) {
-			clientPublisher = new DefaultClientPublisher(credentials
-					.getUserPrincipal().getName(), session);
+
+		if (username != null) {
+			clientPublisher = new DefaultClientPublisher(username, session);
 		} else {
 			clientPublisher = new DefaultClientPublisher(session);
 		}
@@ -240,7 +305,7 @@ public class GossClient implements Client {
 		}
 
 		Serializable response = null;
-		Destination replyDestination = getTemporaryDestination();
+		Destination replyDestination = getTemporaryDestination(getSession());
 		Destination destination = session.createQueue(topic);
 		
 		log.debug("Creating consumer for destination "+replyDestination);
@@ -289,8 +354,8 @@ public class GossClient implements Client {
 				throw new NullPointerException("event cannot be null");
 			Destination destination = null;
 			if (this.protocol.equals(PROTOCOL.OPENWIRE)) {
-				destination = getDestination(topicName);
-				new DefaultClientConsumer(new DefaultClientListener(event),
+				destination = getDestination(topicName, connection, getSession());
+				new DefaultClientConsumer(new DefaultClientListener(new ResponseEvent(this)),
 						session, destination);
 			} else if (this.protocol.equals(PROTOCOL.STOMP)) {
 				Thread thread = new Thread(new Runnable() {
@@ -410,7 +475,7 @@ public class GossClient implements Client {
 			if (data == null)
 				throw new NullPointerException("event cannot be null");
 
-			Destination destination = getDestination(topic);
+			Destination destination = getDestination(topic, connection, getSession());
 
 			if (data instanceof String)
 				clientPublisher.publish(destination, data);
@@ -430,12 +495,14 @@ public class GossClient implements Client {
 	
 	@Override
 	public void publish(Destination destination, Serializable data) throws SystemException {
+		log.debug("Publishing to "+destination);
 		try {
 			if (data == null)
 				throw new NullPointerException("data cannot be null");
 
-			if (data instanceof String)
+			if (data instanceof String){
 				clientPublisher.publish(destination, data);
+			}
 			else {
 				Gson gson = new Gson();
 				clientPublisher.publish(destination, gson.toJson(data));
@@ -498,19 +565,19 @@ public class GossClient implements Client {
 		return session;
 	}
 
-	private Destination getTemporaryDestination() throws SystemException {
+	private Destination getTemporaryDestination(Session session) throws SystemException {
 		Destination destination = null;
 
 		try {
 			if (protocol.equals(PROTOCOL.SSL)) {
-				destination = getSession().createTemporaryQueue();
+				destination = session.createTemporaryQueue();
 				if (destination == null) {
 					throw new SystemException(ConnectionCode.DESTINATION_ERROR);
 				}
 			} else {
 				if (protocol.equals(PROTOCOL.OPENWIRE)) {
 
-					destination = getSession().createTemporaryQueue();
+					destination = session.createTemporaryQueue();
 					if (destination == null) {
 						throw new SystemException(
 								ConnectionCode.DESTINATION_ERROR);
@@ -526,24 +593,24 @@ public class GossClient implements Client {
 		return destination;
 	}
 
-	private Destination getDestination(String topicName) throws SystemException {
+	private Destination getDestination(String topicName, Connection destinationConnection, Session session) throws SystemException {
 		Destination destination = null;
 
 		try {
 			if (protocol.equals(PROTOCOL.OPENWIRE)) {
 
-				destination = getSession().createTopic(topicName);
+				destination = session.createTopic(topicName);
 
 				if (destination == null) {
 					throw new SystemException(ConnectionCode.DESTINATION_ERROR);
 				}
 			} else if (protocol.equals(PROTOCOL.STOMP)) {
-				if (connection == null) {
+				if (destinationConnection == null) {
 					throw new SystemException(ConnectionCode.CONNECTION_ERROR)
 							.set("topicName", topicName);
 				}
 				destination = new StompJmsTopic(
-						(StompJmsConnection) connection, topicName);
+						(StompJmsConnection) destinationConnection, topicName);
 			}
 		} catch (JMSException e) {
 			throw SystemException.wrap(e).set("destination", "null");
@@ -552,6 +619,63 @@ public class GossClient implements Client {
 		return destination;
 	}
 
+	
+	protected String getToken(Credentials credentials) throws JMSException{
+		log.info("Get token for "+credentials.getUserPrincipal().getName());
+		String response = null;
+
+		try{
+		StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
+		factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
+		Connection pwConnection = null;
+		pwConnection = factory.createConnection(credentials
+				.getUserPrincipal().getName(), credentials
+				.getPassword());
+		pwConnection.start();
+		
+		Session pwSession = pwConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName());
+		Destination destination = getDestination(GossCoreContants.PROP_TOKEN_QUEUE, pwConnection, pwSession);
+		ClientPublishser pwClientPublisher = new DefaultClientPublisher(credentials
+				.getUserPrincipal().getName(), pwSession);
+		String userAuthStr = credentials.getUserPrincipal().getName()+":"+credentials.getPassword();
+		String base64Str = new String(Base64.getEncoder().encode(userAuthStr.getBytes()));
+		
+		MessageConsumer consumer = pwSession.createConsumer(replyDestination);
+		pwClientPublisher.sendMessage(base64Str.trim(), destination, replyDestination,
+				RESPONSE_FORMAT.JSON);
+		try{
+			Message responseMessage = consumer.receive();
+			log.info("Received token for "+credentials.getUserPrincipal().getName());
+			
+			if (responseMessage instanceof ObjectMessage) {
+				ObjectMessage objectMessage = (ObjectMessage) responseMessage;
+				if (objectMessage.getObject() instanceof Response) {
+					Response objResponse = (Response) objectMessage.getObject();
+					response = objectMessage.toString();
+				}
+			} else  {
+				response = ((TextMessage) responseMessage).getText();
+			}
+			log.info("GossClient received token:"+response+" for user "+credentials.getUserPrincipal().getName());
+
+		}catch (Throwable e) {
+			log.error("Error occured while receiveing token: "+e);
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		}catch (JMSException e) {			
+			log.error("Error occured while receiveing token: "+e);
+			// TODO: handle exception
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return response;
+	}
+	
 	public Client setCredentials(Credentials credentials)
 			throws SystemException {
 
@@ -603,6 +727,35 @@ public class GossClient implements Client {
 		return uuid.toString();
 	}
 	
-	
+	class ResponseEvent implements GossResponseEvent{
+		private final Client client;
+		private Gson gson = new Gson();
+
+		public ResponseEvent(Client client){
+			this.client = client;
+		}
+
+		@Override
+		public void onMessage(Serializable response) {
+			String responseData = "{}";
+			if (response instanceof DataResponse){
+//				String request = (String)((DataResponse) response).getData();
+//				if (request.trim().equals("list_handlers")){
+//					//responseData = "Listing handlers here!";
+//					responseData = gson.toJson(handlerRegistry.list());
+//				}
+//				else if (request.trim().equals("list_datasources")){
+//					//responseData = "Listing Datasources here!";
+//					responseData = gson.toJson(datasourceRegistry.getAvailable());
+//				}
+			}
+
+
+//			System.out.println("On message: "+response.toString());
+			client.publish("goss/management/response", responseData);
+		}
+
+	}
+
 
 }

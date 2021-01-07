@@ -36,4 +36,7 @@ public class GossCoreContants {
 	public static final String PROP_REQUEST_QUEUE = "pnnl.goss.request.topic";
 	
 	public static final String PROP_TICK_TOPIC = "pnnl.goss.tick.topic";
+	
+	// Topic that requests for tokens will be sent from the client to the server on
+	public static final String PROP_TOKEN_QUEUE = "pnnl.goss.token.topic";
 }

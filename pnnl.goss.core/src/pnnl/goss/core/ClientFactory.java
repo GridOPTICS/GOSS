@@ -19,6 +19,15 @@ public interface ClientFactory {
      * @return
      */
     Client create(PROTOCOL protocol, Credentials credentials) throws Exception ;
+    
+
+    /**
+     * Creates a client instance that can be used to connect to goss.
+     *
+     * @param protocol
+     * @return
+     */
+    Client create(PROTOCOL protocol, Credentials credentials, boolean useToken) throws Exception ;
 
     /**
      * Retrieve a client instance from a uuid.  If not available then returns

@@ -25,7 +25,7 @@ public class ClientCommands {
 	public void makeOpenwire(){
 		try{
 			System.out.println("Making openwire client");
-			Client client = factory.create(PROTOCOL.OPENWIRE, null);
+			Client client = factory.create(PROTOCOL.OPENWIRE, null, false);
 			System.out.println("Client is null? "+ (client == null));
 			client.close();
 		}catch(Exception e){
@@ -36,7 +36,7 @@ public class ClientCommands {
 	public void makeStomp(){
 		try{
 			System.out.println("Making stomp client");
-			Client client = factory.create(PROTOCOL.STOMP, null);
+			Client client = factory.create(PROTOCOL.STOMP, null, false);
 			System.out.println("Client is null? "+ (client == null));
 			client.close();
 		}catch(Exception e){

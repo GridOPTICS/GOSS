@@ -1,5 +1,6 @@
 package pnnl.goss.core.security.impl;
 
+import java.security.SecureRandom;
 import java.util.Dictionary;
 
 import org.apache.felix.dm.annotation.api.Component;
@@ -17,6 +18,8 @@ public class SecurityConfigImpl implements SecurityConfig {
 
 	private String managerUser;
 	private String managerPassword;
+	private boolean useToken = false;
+	private byte[] tokenSecret = generateSharedKey();
 	
 	private Dictionary<String, Object> properties;
 	private static final Logger log = LoggerFactory.getLogger(SecurityConfigImpl.class);
@@ -36,6 +39,22 @@ public class SecurityConfigImpl implements SecurityConfig {
 					,null);	
 			managerPassword = getProperty(SecurityConstants.PROP_SYSTEM_MANAGER_PASSWORD
 					,null);	
+			
+			String secret = getProperty(SecurityConstants.PROP_SYSTEM_TOKEN_SECRET, null);
+			if(secret!=null && secret.trim().length()>0){
+				this.tokenSecret = secret.getBytes();
+			}
+			
+			String useTokenString = getProperty(SecurityConstants.PROP_SYSTEM_USE_TOKEN
+					,null);	
+			if(secret!=null && secret.trim().length()>0){
+				try{
+					this.useToken = new Boolean(useTokenString);
+				}catch (Exception e) {
+					log.error("Could not parse use token parameter as boolean in security config: '"+useTokenString+"'");
+				}
+			}
+			
 			System.out.println("SYSTEM CONFIG UPDATED "+managerUser+" "+managerPassword+" "+this);
         	
         } else {
@@ -71,8 +90,28 @@ public class SecurityConfigImpl implements SecurityConfig {
 	public String getManagerPassword() {
 		return managerPassword;
 	}
+
+
+
+	@Override
+	public boolean getUseToken() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public byte[] getTokenSecret() {
+		return tokenSecret;
+	}
 	
 	
-	
+    private byte[] generateSharedKey() {
+        SecureRandom random = new SecureRandom();
+        byte[] sharedKey = new byte[32];
+        random.nextBytes(sharedKey);
+        return sharedKey;
+    }
 
 }
