@@ -70,9 +70,6 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 	@ServiceDependency
     private volatile SecurityConfig securityConfig;
 	
-	@ServiceDependency 
-	private volatile UserRepository userRepository;
-	
 	@ServiceDependency
 	private volatile RoleManager roleManager;
 	
@@ -119,7 +116,7 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         String username = (String) getAvailablePrincipal(principals);
         AuthorizationInfo accnt = tokenMap.get(username);
         if(accnt==null){
-        	log.debug("No authrorization info found for "+username);
+        	log.debug("No authorization info found for "+username);
         }
         return accnt;
 	}
@@ -139,20 +136,15 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         //If it receives a token
         if (username!=null && username.length()>250 && pw.length==0) {
         	//Validate token
-        	boolean verified = userRepository.validateToken(username);
+        	boolean verified = securityConfig.validateToken(username);
         	log.info("Recieved token: "+username+"  verified: "+verified);
         	if(verified){
         	//TODO get username from token, get permissions for username
         		
-        		SignedJWT signed;
 				try {
-					signed = SignedJWT.parse(username);
-					Payload payload = signed.getPayload();
-					String jsonToken = payload.toJSONObject().toJSONString();
-					log.info("Json token: "+jsonToken);
 					// look up permissions based on roles and add them
 					Set<String> permissions = new HashSet<String>();
-					JWTAuthenticationToken tokenObj = JWTAuthenticationToken.parse(jsonToken);
+					JWTAuthenticationToken tokenObj = securityConfig.parseToken(username);
 		        	log.info("Has token roles: "+tokenObj.getRoles());
 
 					if(roleManager!=null){
