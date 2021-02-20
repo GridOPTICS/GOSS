@@ -38,6 +38,7 @@ import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
 import pnnl.goss.core.security.RoleManager;
 import pnnl.goss.core.security.SecurityConfig;
+import pnnl.goss.core.security.impl.JWTAuthenticationToken;
 
 
 /**

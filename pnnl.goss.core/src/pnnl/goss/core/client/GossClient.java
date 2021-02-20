@@ -89,8 +89,8 @@ import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.security.GossSecurityManager;
 import pnnl.goss.core.security.SecurityConstants;
+import pnnl.goss.core.security.impl.JWTAuthenticationToken;
 import pnnl.goss.core.security.impl.SecurityManagerImpl;
-import pnnl.goss.core.security.jwt.JWTAuthenticationToken;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 

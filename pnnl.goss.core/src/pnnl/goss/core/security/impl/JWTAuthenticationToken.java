@@ -1,4 +1,4 @@
-package pnnl.goss.core.security.jwt;
+package pnnl.goss.core.security.impl;
 
 import java.util.List;
 

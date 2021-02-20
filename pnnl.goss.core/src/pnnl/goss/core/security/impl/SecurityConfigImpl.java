@@ -26,8 +26,6 @@ import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.security.SecurityConstants;
-import pnnl.goss.core.security.jwt.JWTAuthenticationToken;
-import pnnl.goss.core.security.jwt.MACVerifierExtended;
 
 
 @Component
