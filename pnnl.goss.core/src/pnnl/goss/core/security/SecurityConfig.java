@@ -2,8 +2,6 @@ package pnnl.goss.core.security;
 
 import java.util.Set;
 
-import pnnl.goss.core.security.impl.JWTAuthenticationToken;
-
 public interface SecurityConfig {
 	public String getManagerUser();
 	public String getManagerPassword();

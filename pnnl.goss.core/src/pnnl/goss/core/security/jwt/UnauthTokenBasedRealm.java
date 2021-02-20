@@ -1,12 +1,8 @@
 package pnnl.goss.core.security.jwt;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,21 +20,17 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.Payload;
-import com.nimbusds.jwt.SignedJWT;
 import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
+import pnnl.goss.core.security.JWTAuthenticationToken;
 import pnnl.goss.core.security.RoleManager;
 import pnnl.goss.core.security.SecurityConfig;
-import pnnl.goss.core.security.impl.JWTAuthenticationToken;
 
 
 /**
