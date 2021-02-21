@@ -4,4 +4,4 @@ Private-Package:  \
 Bundle-Activator: pnnl.goss.core.security.impl.Activator
 Export-Package:  \
 	pnnl.goss.core.security
-Bundle-Version: 9.0.0.${tstamp}
+Bundle-Version: 9.0.1.${tstamp}

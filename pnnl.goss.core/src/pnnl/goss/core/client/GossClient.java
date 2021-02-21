@@ -48,6 +48,7 @@ package pnnl.goss.core.client;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
@@ -634,7 +635,8 @@ public class GossClient implements Client {
 		pwConnection.start();
 		
 		Session pwSession = pwConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName());
+		String dt = ""+new Date().getTime();
+		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName()+"-"+dt);
 		Destination destination = getDestination(GossCoreContants.PROP_TOKEN_QUEUE, pwConnection, pwSession);
 		ClientPublishser pwClientPublisher = new DefaultClientPublisher(credentials
 				.getUserPrincipal().getName(), pwSession);

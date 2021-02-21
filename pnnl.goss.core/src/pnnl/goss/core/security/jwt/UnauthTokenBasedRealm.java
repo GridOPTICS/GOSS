@@ -177,9 +177,11 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Connection:create");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Queue:create");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Consumer.Queue.temp.token_resp."+userName);
+        	acnt.addStringPermission("topic:ActiveMQ.Advisory.Consumer.Queue.temp.token_resp."+userName+"-*");
         	acnt.addStringPermission("topic:"+GossCoreContants.PROP_TOKEN_QUEUE+":write");
         	acnt.addStringPermission("topic:"+GossCoreContants.PROP_TOKEN_QUEUE+":create");
         	acnt.addStringPermission("queue:temp.token_resp."+userName);
+        	acnt.addStringPermission("queue:temp.token_resp."+userName+"-*");
 
 
         	tokenMap.put(username, acnt);
