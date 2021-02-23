@@ -48,6 +48,7 @@ package pnnl.goss.core.client;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
@@ -88,9 +89,9 @@ import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 import pnnl.goss.core.security.GossSecurityManager;
+import pnnl.goss.core.security.JWTAuthenticationToken;
 import pnnl.goss.core.security.SecurityConstants;
 import pnnl.goss.core.security.impl.SecurityManagerImpl;
-import pnnl.goss.core.security.jwt.JWTAuthenticationToken;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 
@@ -634,7 +635,8 @@ public class GossClient implements Client {
 		pwConnection.start();
 		
 		Session pwSession = pwConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName());
+		String dt = ""+new Date().getTime();
+		Destination replyDestination = pwSession.createQueue("temp.token_resp."+credentials.getUserPrincipal().getName()+"-"+dt);
 		Destination destination = getDestination(GossCoreContants.PROP_TOKEN_QUEUE, pwConnection, pwSession);
 		ClientPublishser pwClientPublisher = new DefaultClientPublisher(credentials
 				.getUserPrincipal().getName(), pwSession);

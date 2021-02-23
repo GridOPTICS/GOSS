@@ -1,12 +1,8 @@
 package pnnl.goss.core.security.jwt;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,18 +20,15 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.Payload;
-import com.nimbusds.jwt.SignedJWT;
 import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
+import pnnl.goss.core.security.JWTAuthenticationToken;
 import pnnl.goss.core.security.RoleManager;
 import pnnl.goss.core.security.SecurityConfig;
 
@@ -69,9 +62,6 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 	
 	@ServiceDependency
     private volatile SecurityConfig securityConfig;
-	
-	@ServiceDependency 
-	private volatile UserRepository userRepository;
 	
 	@ServiceDependency
 	private volatile RoleManager roleManager;
@@ -119,7 +109,7 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         String username = (String) getAvailablePrincipal(principals);
         AuthorizationInfo accnt = tokenMap.get(username);
         if(accnt==null){
-        	log.debug("No authrorization info found for "+username);
+        	log.debug("No authorization info found for "+username);
         }
         return accnt;
 	}
@@ -139,20 +129,15 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         //If it receives a token
         if (username!=null && username.length()>250 && pw.length==0) {
         	//Validate token
-        	boolean verified = userRepository.validateToken(username);
+        	boolean verified = securityConfig.validateToken(username);
         	log.info("Recieved token: "+username+"  verified: "+verified);
         	if(verified){
         	//TODO get username from token, get permissions for username
         		
-        		SignedJWT signed;
 				try {
-					signed = SignedJWT.parse(username);
-					Payload payload = signed.getPayload();
-					String jsonToken = payload.toJSONObject().toJSONString();
-					log.info("Json token: "+jsonToken);
 					// look up permissions based on roles and add them
 					Set<String> permissions = new HashSet<String>();
-					JWTAuthenticationToken tokenObj = JWTAuthenticationToken.parse(jsonToken);
+					JWTAuthenticationToken tokenObj = securityConfig.parseToken(username);
 		        	log.info("Has token roles: "+tokenObj.getRoles());
 
 					if(roleManager!=null){
@@ -192,9 +177,11 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Connection:create");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Queue:create");
         	acnt.addStringPermission("topic:ActiveMQ.Advisory.Consumer.Queue.temp.token_resp."+userName);
+        	acnt.addStringPermission("topic:ActiveMQ.Advisory.Consumer.Queue.temp.token_resp."+userName+"-*");
         	acnt.addStringPermission("topic:"+GossCoreContants.PROP_TOKEN_QUEUE+":write");
         	acnt.addStringPermission("topic:"+GossCoreContants.PROP_TOKEN_QUEUE+":create");
         	acnt.addStringPermission("queue:temp.token_resp."+userName);
+        	acnt.addStringPermission("queue:temp.token_resp."+userName+"-*");
 
 
         	tokenMap.put(username, acnt);

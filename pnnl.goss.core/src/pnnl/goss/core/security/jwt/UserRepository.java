@@ -8,14 +8,14 @@ public interface UserRepository {
 
 //    public byte[] generateSharedKey();
 
-    public long getExpirationDate() ;
-
-    public String getIssuer();
+//    public long getExpirationDate() ;
+//
+//    public String getIssuer();
 
 
 //    public TokenResponse createToken(UserDefault user) ;
 
-    public String createToken(Object userId) ;
+//    public String createToken(Object userId) ;
 
-    public boolean validateToken(String token);
+//    public boolean validateToken(String token);
 }

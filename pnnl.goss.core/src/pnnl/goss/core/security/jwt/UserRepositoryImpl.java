@@ -60,9 +60,9 @@ public class UserRepositoryImpl implements UserRepository{
 	
 	
 	//These should probably come from config
-	private static final String ISSUED_BY = "GridOPTICS Software System";
+//	private static final String ISSUED_BY = "GridOPTICS Software System";
 //	private byte[] sharedKey = securityConfig.getTokenSecret();  
-	private byte[] sharedKey = generateSharedKey();
+//	private byte[] sharedKey = generateSharedKey();
 	
 	private static final String CONFIG_PID = "pnnl.goss.core.security.userfile";
 	private static final Logger log = LoggerFactory.getLogger(UserRepositoryImpl.class);
@@ -70,7 +70,8 @@ public class UserRepositoryImpl implements UserRepository{
 	private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
 //	private final Map<String, Set<String>> userPermissions = new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> userRoles = new ConcurrentHashMap<>();
-	
+	private final Map<String, String> tokenMap = new ConcurrentHashMap<>();
+
 
     public UserDefault findByUserId(Object userId){return null;}
 
@@ -78,72 +79,18 @@ public class UserRepositoryImpl implements UserRepository{
 
 
 
-    public long getExpirationDate() {
-        return 1000 * 60 * 60 * 24 * 5;
-    }
-
-    public String getIssuer(){return ISSUED_BY;}
-
-    private byte[] getSharedKey(){return sharedKey;}
+    
+//    private byte[] getSharedKey(){return sharedKey;}
 
 //    public TokenResponse createToken(UserDefault user) {
 //        TokenResponse response = new TokenResponse(user, createToken(user.getPrincipal()));
 //        return response;
 //    }
 
-    public String createToken(Object userId) {
-    	log.info("Creating token for user "+userId);
-        try {
-        	//TODO, should also include roles(permissions)
-        	
-            JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
-            builder.issuer(getIssuer());
-            builder.subject(userId.toString());
-            builder.issueTime(new Date());
-            builder.notBeforeTime(new Date());
-            builder.expirationTime(new Date(new Date().getTime() + getExpirationDate()));
-            builder.jwtID(UUID.randomUUID().toString());
-            
-            JWTAuthenticationToken tokenObj = new JWTAuthenticationToken();
-            tokenObj.setIss(getIssuer());
-            tokenObj.setSub(userId.toString());
-            tokenObj.setIat(new Date().getTime());
-            tokenObj.setNbf(new Date().getTime());
-            tokenObj.setExp(new Date(new Date().getTime() + getExpirationDate()).getTime());
-            tokenObj.setJti(UUID.randomUUID().toString());
-            //TODO GET ROLES
-            Set<String> roles = userRoles.get(userId.toString());
-            tokenObj.setRoles(new ArrayList<String>(roles));
-            Payload payload = new Payload(tokenObj.toString());
-
-//            JWTClaimsSet claimsSet = builder.build();
-            JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
-            JWSObject jwsObject = new JWSObject(header, payload);
-
-            JWSSigner signer = new MACSigner(getSharedKey());
-            jwsObject.sign(signer);
-            return jwsObject.serialize();
-        } catch (JOSEException ex) {
-            return null;
-        }
-    }
+   
 
     
-    public boolean validateToken(String token) {
-    	log.debug("Validate token "+token);
-        try {
-            SignedJWT signed = SignedJWT.parse(token);
-            JWSVerifier verifier = new MACVerifierExtended(getSharedKey(), signed.getJWTClaimsSet());
-            boolean verified = signed.verify(verifier);
-            log.debug("Verified: "+verified);
-            return verified;
-        } catch (ParseException ex) {
-            return false;
-        } catch (JOSEException ex) {
-            return false;
-        }
-
-    }
+   
     
     
     @Start
@@ -215,9 +162,19 @@ class ResponseEvent implements GossResponseEvent{
 			String userId = authArr[0];
 			//validate submitted username and password before generating token
 			if(userMap.containsKey(userId) && authArr[1].equals(userMap.get(userId).getCredentials())){
+				System.out.println("USER MATCHES FOR "+userId);
 				//Create token
-				String token = createToken(authArr[0]);
-				log.debug("Created token for "+userId);
+				String token = null;
+				if(tokenMap.containsKey(userId)){
+					token=tokenMap.get(userId);
+					System.out.println("TOKEN ALREADY EXISTS FOR "+userId+"   "+token);
+	        		log.debug("Token already exists for "+userId);
+	        	} else {
+	        		token = securityConfig.createToken(authArr[0], userRoles.get(userId.toString()));
+	        		System.out.println("GENERATED TOKEN FOR "+userId+"    "+token);
+	        		log.debug("Created token for "+userId);
+	        		tokenMap.put(userId, token);
+	        	}
 				responseData = token;
 				
 			} else {
@@ -236,10 +193,10 @@ class ResponseEvent implements GossResponseEvent{
 	}
 
 	}
-	private byte[] generateSharedKey() {
-	    SecureRandom random = new SecureRandom();
-	    byte[] sharedKey = new byte[32];
-	    random.nextBytes(sharedKey);
-	    return sharedKey;
-	}
+//	private byte[] generateSharedKey() {
+//	    SecureRandom random = new SecureRandom();
+//	    byte[] sharedKey = new byte[32];
+//	    random.nextBytes(sharedKey);
+//	    return sharedKey;
+//	}
 }
