@@ -30,7 +30,6 @@ public class SecurityManagerImpl extends DefaultActiveMqSecurityManager implemen
 			String systemManagerPassword = getProperty(PROP_SYSTEM_MANAGER_PASSWORD
 					,null);	
         	
-			System.out.println("SYSTEM MANAGER UPDATED "+systemManager);
         	Realm defaultRealm;
 			try {
 				defaultRealm = new SystemRealm(systemManager, systemManagerPassword);

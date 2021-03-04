@@ -162,16 +162,13 @@ class ResponseEvent implements GossResponseEvent{
 			String userId = authArr[0];
 			//validate submitted username and password before generating token
 			if(userMap.containsKey(userId) && authArr[1].equals(userMap.get(userId).getCredentials())){
-				System.out.println("USER MATCHES FOR "+userId);
 				//Create token
 				String token = null;
 				if(tokenMap.containsKey(userId)){
 					token=tokenMap.get(userId);
-					System.out.println("TOKEN ALREADY EXISTS FOR "+userId+"   "+token);
 	        		log.debug("Token already exists for "+userId);
 	        	} else {
 	        		token = securityConfig.createToken(authArr[0], userRoles.get(userId.toString()));
-	        		System.out.println("GENERATED TOKEN FOR "+userId+"    "+token);
 	        		log.debug("Created token for "+userId);
 	        		tokenMap.put(userId, token);
 	        	}
@@ -187,7 +184,6 @@ class ResponseEvent implements GossResponseEvent{
 
 			client.publish(((DataResponse) response).getReplyDestination(), responseData);
 		} else {
-//			System.out.println("On message: "+response.toString());
 			client.publish("goss/management/response", responseData);
 		}
 	}

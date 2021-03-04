@@ -1,2 +1,2 @@
 Private-Package: pnnl.goss.core.security.jwt
-Bundle-Version: 1.0.147.${tstamp}
+Bundle-Version: 1.0.148.${tstamp}

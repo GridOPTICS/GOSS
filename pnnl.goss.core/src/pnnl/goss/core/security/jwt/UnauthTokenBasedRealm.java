@@ -81,19 +81,6 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
 //			}
 		}
 		
-		
-		System.out.println("UPDATING UNAUTH REALM");
-//		Set<String> perms = new HashSet<>();
-//		System.out.println("UNATH MANAGER IN SYSTEM REALM "+securityConfig);
-////		SimpleAccount acnt = new SimpleAccount(securityConfig.getManagerUser(), securityConfig.getManagerPassword(), getName() );
-//		SimpleAccount acnt = new SimpleAccount("token", "token", getName() );
-//		acnt.addStringPermission("queue:*");
-//		acnt.addStringPermission("topic:*");
-//		acnt.addStringPermission("temp-queue:*");
-//		acnt.addStringPermission("fusion:*:read");
-//		acnt.addStringPermission("fusion:*:write");
-//		tokenMap.put("token", acnt);
-//		tokenPermissions.put("token", perms);
 	}
 	
 	@Start
