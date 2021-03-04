@@ -64,7 +64,6 @@ public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
 			super.onInit();
 			Set<String> perms = new HashSet<>();
 
-			System.out.println("SECURITY MANAGER IN SYSTEM REALM "+securityConfig);
 			SimpleAccount acnt = new SimpleAccount(securityConfig.getManagerUser(), securityConfig.getManagerPassword(), getName() );
 			acnt.addStringPermission("queue:*,topic:*,temp-queue:*,fusion:*:read,fusion:*:write");
 			perms.add("queue:*,topic:*,temp-queue:*,fusion:*:read,fusion:*:write");
@@ -87,7 +86,6 @@ public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
 		
 		//get the principal this realm cares about:
         String username = (String) getAvailablePrincipal(principals);
-//        System.out.println("SYSTEM GET AUTHZ "+username);
         return userMap.get(username);
 	}
 
