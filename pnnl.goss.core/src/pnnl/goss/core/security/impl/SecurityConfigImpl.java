@@ -195,7 +195,7 @@ public class SecurityConfigImpl implements SecurityConfig {
 	    	SignedJWT signed = SignedJWT.parse(token);
 			Payload payload = signed.getPayload();
 			String jsonToken = payload.toJSONObject().toJSONString();
-			log.info("Json token: "+jsonToken);
+			log.debug("Json token: "+jsonToken);
 			// look up permissions based on roles and add them
 			JWTAuthenticationToken tokenObj = JWTAuthenticationToken.parse(jsonToken);
 			return tokenObj;
