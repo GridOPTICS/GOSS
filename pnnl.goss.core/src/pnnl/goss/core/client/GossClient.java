@@ -317,7 +317,6 @@ public class GossClient implements Client {
 					responseFormat);
 			Message responseMessage = clientConsumer.getMessageConsumer()
 					.receive();
-			response = ((TextMessage) responseMessage).getText();
 			if (responseMessage instanceof ObjectMessage) {
 				ObjectMessage objectMessage = (ObjectMessage) responseMessage;
 				if (objectMessage.getObject() instanceof Response) {
@@ -325,6 +324,10 @@ public class GossClient implements Client {
 				}
 			} else if (responseMessage instanceof TextMessage) {
 				response = ((TextMessage) responseMessage).getText();
+			}else if (responseMessage instanceof StompJmsBytesMessage) {
+				StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) responseMessage;
+				org.fusesource.hawtbuf.Buffer buffer = stompMessage.getContent();
+				response = buffer.toString().substring(buffer.toString().indexOf(":") + 1);
 			}
 
 		} catch (JMSException e) {
