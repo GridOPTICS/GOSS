@@ -490,10 +490,46 @@ public class GossClient implements Client {
 
 		} catch (JMSException e) {
 			log.error("publish error", e);
+			
+			try{
+				//Ran into error publishing, reset the session and try again
+				log.info("Renewing session");
+				session = null;
+				getSession();
+				Destination destination = getDestination(topic, connection, getSession());
+
+				if (data instanceof String){
+					clientPublisher.publish(destination, data);
+				}
+				else {
+					Gson gson = new Gson();
+					clientPublisher.publish(destination, gson.toJson(data));
+				}
+			} catch (Exception e2) {
+				log.error("Failed second attempt to publish ",e2);
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw SystemException.wrap(e);
+			try{
+				//Ran into error publishing, reset the session and try again
+				log.info("Renewing session");
+				session = null;
+				getSession();
+				Destination destination = getDestination(topic, connection, getSession());
+
+				if (data instanceof String){
+					clientPublisher.publish(destination, data);
+				}
+				else {
+					Gson gson = new Gson();
+					clientPublisher.publish(destination, gson.toJson(data));
+				}
+			} catch (Exception e2) {
+				log.error("Failed second attempt to publish ",e2);
+				e.printStackTrace();
+				throw SystemException.wrap(e);
+			}
 		}
 	}
 	
@@ -504,6 +540,7 @@ public class GossClient implements Client {
 			if (data == null)
 				throw new NullPointerException("data cannot be null");
 
+		
 			if (data instanceof String){
 				clientPublisher.publish(destination, data);
 			}
@@ -514,10 +551,45 @@ public class GossClient implements Client {
 
 		} catch (JMSException e) {
 			log.error("publish error", e);
+			
+			try{
+				//Ran into error publishing, reset the session and try again
+				log.info("Renewing session");
+				session = null;
+				getSession();
+				if (data instanceof String){
+					clientPublisher.publish(destination, data);
+				}
+				else {
+					Gson gson = new Gson();
+					clientPublisher.publish(destination, gson.toJson(data));
+				}
+			} catch (Exception e2) {
+				log.error("Failed second attempt to publish ",e2);
+				e.printStackTrace();
+			}
+			
+			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw SystemException.wrap(e);
+			try{
+				//Ran into error publishing, reset the session and try again
+				log.info("Renewing session");
+				getSession();
+				session = null;
+				if (data instanceof String){
+					clientPublisher.publish(destination, data);
+				}
+				else {
+					Gson gson = new Gson();
+					clientPublisher.publish(destination, gson.toJson(data));
+				}
+			} catch (Exception e2) {
+				log.error("Failed second attempt to publish ",e2);
+				e.printStackTrace();
+				throw SystemException.wrap(e);
+			}
+			
 		}
 	}
 
