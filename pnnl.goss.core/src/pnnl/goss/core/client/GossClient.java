@@ -353,6 +353,7 @@ public class GossClient implements Client {
 	 */
 	public Client subscribe(String topicName, GossResponseEvent event)
 			throws SystemException {
+		log.info("Processing " + event.toString());
 		try {
 			if (event == null)
 				throw new NullPointerException("event cannot be null");
@@ -364,15 +365,17 @@ public class GossClient implements Client {
 			} else if (this.protocol.equals(PROTOCOL.STOMP)) {
 				Thread thread = new Thread(new Runnable() {
 					Destination destination = new StompJmsDestination(topicName);
-					DefaultClientConsumer consumer = new DefaultClientConsumer(
-							session, destination);
+					DefaultClientConsumer consumer = new DefaultClientConsumer(session, destination);
 
 					@Override
 					public void run() {
 						while (session != null) {
 							try {
-								Message msg = consumer.getMessageConsumer()
-										.receive(10000);
+								if (consumer.getMessageConsumer() == null){
+									continue;
+								}
+								Message msg = consumer.getMessageConsumer().receive(10000);
+								
 								if (msg instanceof StompJmsBytesMessage) {
 									StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
 									org.fusesource.hawtbuf.Buffer buffer = stompMessage
