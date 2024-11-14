@@ -97,6 +97,7 @@ import pnnl.goss.core.security.SecurityConfig;
 //import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
+import pnnl.goss.core.server.plugins.ConnectionMonitoringPlugin;
 
 
 @Component
@@ -359,8 +360,11 @@ public class GridOpticsServer implements ServerControl {
 			broker.setUseJmx(false);
 			broker.setPersistenceAdapter(null);
 			
+			// Adding the custom connection monitoring plugin and shiro plugin
+	        ConnectionMonitoringPlugin monitoringPlugin = new ConnectionMonitoringPlugin();
+	        
 			//broker.addConnector(stompTransport);
-			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
+			broker.setPlugins(new BrokerPlugin[]{shiroPlugin, monitoringPlugin});
 			
     		broker.start();
 		} catch (Exception e) {
@@ -379,7 +383,8 @@ public class GridOpticsServer implements ServerControl {
     	private volatile Session session;
     	private transient MessageProducer producer;
     	private Destination destination;
-    	private boolean sendTick = true;
+    	// TODO: We should have a configuration for this.
+    	private boolean sendTick = false;
     	private GridOpticsServer server;
     	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     	
