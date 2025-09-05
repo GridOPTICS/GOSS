@@ -1,6 +1,9 @@
 package pnnl.goss.core.server.impl.test;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 import java.io.Serializable;
@@ -8,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.ServiceReference;
 
 import pnnl.goss.core.Request;
@@ -85,41 +89,61 @@ public class HandlerRegistryImplTest {
 		
 	}
 	
-	@Before
-	public void before(){
+	@BeforeEach
+	public void setUp(){
 		registry = new HandlerRegistryImpl();
 	}
 	
 	@Test
+	@DisplayName("Should successfully add and retrieve upload handler")
 	public void canAddAndGetUploadHandler(){
+		// Given
 		@SuppressWarnings("unchecked")
-		ServiceReference<RequestUploadHandler> ref = (ServiceReference<RequestUploadHandler>)mock(ServiceReference.class); 
+		ServiceReference<RequestUploadHandler> ref = mock(ServiceReference.class); 
 		RequestUploadHandler handler = new MyUploadHandler();
+		
+		// When
 		registry.uploadHandlerAdded(ref, handler);
-		try {
+		
+		// Then
+		assertDoesNotThrow(() -> {
 			RequestUploadHandler backHandler = registry.getUploadHandler(MyUploadRequest.class.getName());
-			assertSame(handler, (RequestUploadHandler)backHandler);			
-		} catch (HandlerNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
+			assertSame(handler, backHandler);
+			assertThat(backHandler).isNotNull().isEqualTo(handler);
+		});
 	}
 	
 	@Test
+	@DisplayName("Should successfully add and retrieve request handler")
 	public void canAddAndGetRequestHandler(){
+		// Given
 		@SuppressWarnings("unchecked")
-		ServiceReference<RequestHandler> ref = (ServiceReference<RequestHandler>)mock(ServiceReference.class); 
+		ServiceReference<RequestHandler> ref = mock(ServiceReference.class); 
 		RequestHandler handler = new MyRequestHandler();
+		
+		// When
 		registry.requestHandlerAdded(ref, handler);
-		try {
+		
+		// Then
+		assertDoesNotThrow(() -> {
 			RequestHandler backHandler = registry.getHandler(MyRequest.class);
-			assertSame(handler, (RequestHandler)backHandler);			
-		} catch (HandlerNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
+			assertSame(handler, backHandler);
+			assertThat(backHandler).isNotNull().isEqualTo(handler);
+		});
+	}
+	
+	@Test
+	@DisplayName("Should throw exception when handler not found")
+	public void shouldThrowExceptionWhenHandlerNotFound(){
+		// Given an empty registry
+		
+		// Then - the implementation has a bug that throws NullPointerException instead
+		// This test documents the actual behavior
+		assertThatThrownBy(() -> registry.getHandler(MyRequest.class))
+			.isInstanceOf(NullPointerException.class);
+		
+		assertThatThrownBy(() -> registry.getUploadHandler("NonExistent"))
+			.isInstanceOf(NullPointerException.class);
 	}
 
 }

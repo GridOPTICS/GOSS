@@ -3,19 +3,19 @@
 # On a combined buildpath the R6 remoteserviceadmin must be before the R5 enterprise so it overrides it on
 # the classpath.
 #
-framework: ${repo;org.apache.felix.framework;[4.3.1,5);HIGHEST}
+framework: ${repo;org.apache.felix:org.apache.felix.framework;[7.0.5,8);HIGHEST}
 framework-buildpath: ${framework};version=file
 framework-runpath: ${framework};version=file
 
-osgi-core: ${repo;osgi.core;[5,6);HIGHEST}
+osgi-core: ${repo;org.osgi:osgi.core;[8.0.0,9);HIGHEST}
 osgi-core-buildpath: ${osgi-core};version=file
 osgi-core-runpath: ${osgi-core};version=file
 
-osgi-cmpn: ${repo;osgi.cmpn;[5,6);HIGHEST}
+osgi-cmpn: ${repo;org.osgi:osgi.cmpn;[7.0.0,8);HIGHEST}
 osgi-cmpn-buildpath: ${osgi-cmpn};version=file
 osgi-cmpn-runpath: ${osgi-cmpn};version=file
 
-osgi-enterprise: ${repo;osgi.enterprise;[5,6);HIGHEST}
+osgi-enterprise: ${repo;org.osgi:osgi.enterprise;[7.0.0,8);HIGHEST}
 osgi-enterprise-buildpath: ${osgi-enterprise};version=file
 osgi-enterprise-runpath: ${osgi-enterprise};version=file
 
@@ -36,9 +36,9 @@ osgi-runpath: \
 
 # Activemq
 # In order to use activemq one must include ${javax-runpath} as well.
-activemq: ${repo;org.apache.activemq.activemq-osgi;[5.11.1,5.11.2);HIGHEST}
-activemq-shiro: ${repo;org.apache.activemq.shiro;[5.11.1,5.11.2);HIGHEST}
-shiro: ${repo;org.apache.shiro.core;[1.2.3,1.2.4);HIGHEST}
+activemq: ${repo;org.apache.activemq:activemq-osgi;[5.18.0,6);HIGHEST}
+activemq-shiro: ${repo;org.apache.activemq:activemq-shiro;[5.18.0,6);HIGHEST}
+shiro: ${repo;org.apache.shiro:shiro-core;[1.13.0,2);HIGHEST}
 aries: ${repo;org.apache.aries.blueprint;[1.1.0, 1.1.1);HIGHEST}
 aries-blueprint-api: ${repo;org.apache.aries.blueprint.api;[1.0.0,1.0.1);HIGHEST}
 aries-proxy-api: ${repo;org.apache.aries.proxy.api;[1.0.0,1.0.1);HIGHEST}
@@ -101,9 +101,9 @@ eventadmin-runpath: ${eventadmin};version=file
 
 # Dependency Manager
 #
-dm: ${repo;org.apache.felix.dependencymanager;[4.3,5);HIGHEST}
-dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.4,4.1);HIGHEST}
-dm-runtime: ${repo;org.apache.felix.dependencymanager.runtime;[4.0.1,4.1);HIGHEST}
+dm: ${repo;org.apache.felix:org.apache.felix.dependencymanager;[4.6.0,5);HIGHEST}
+dm-shell: ${repo;org.apache.felix:org.apache.felix.dependencymanager.shell;[4.0.4,5);HIGHEST}
+dm-runtime: ${repo;org.apache.felix:org.apache.felix.dependencymanager.runtime;[4.0.1,5);HIGHEST}
 dm-buildpath: ${dm};version=file
 dm-runpath: ${dm};version=file,\
   ${dm-runtime};version=file,\
@@ -124,11 +124,11 @@ servlet-runpath: ${servlet};version=file
 
 # Jackson json/xml parser
 # Allows easy conversion from object to json.
-jackson: ${repo;com.fasterxml.jackson.core.jackson-core;[2.6.3,2.7);HIGHEST}
-jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.6.3,2.7);HIGHEST}
-jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.6.3,2.7);HIGHEST}
-jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.6.3,2.7);HIGHEST}
-jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.6.3,2.7);HIGHEST}
+jackson: ${repo;com.fasterxml.jackson.core:jackson-core;[2.17.2,3);HIGHEST}
+jackson-annotations: ${repo;com.fasterxml.jackson.core:jackson-annotations;[2.17.2,3);HIGHEST}
+jackson-databind: ${repo;com.fasterxml.jackson.core:jackson-databind;[2.17.2,3);HIGHEST}
+jackson-base: ${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;[2.17.2,3);HIGHEST}
+jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;[2.17.2,3);HIGHEST}
 
 jackson-buildpath: \
   ${jackson};version=file, \
@@ -171,8 +171,8 @@ logservice-runpath: ${logservice};version=file
 
 # SLF4j
 #
-slf4j-api: ${repo;slf4j.api;[1.7.7,1.8);HIGHEST}
-slf4j-simple: ${repo;slf4j.simple;[1.7.7,1.8);HIGHEST}
+slf4j-api: ${repo;org.slf4j:slf4j-api;[2.0.13,3);HIGHEST}
+slf4j-simple: ${repo;org.slf4j:slf4j-simple;[2.0.13,3);HIGHEST}
 slf4j-buildpath: ${slf4j-api};version=file,\
   ${slf4j-simple};version=file
 slf4j-runpath: ${slf4j-api};version=file,\

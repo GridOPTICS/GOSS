@@ -1,52 +1,35 @@
 -buildpath: \
-	org.apache.felix.dependencymanager.annotation,\
-	javax.ws.rs.jsr311-api,\
 	${dm-buildpath},\
 	${osgi-buildpath},\
 	${activemq-buildpath},\
 	${slf4j-buildpath},\
-	org.fusesource.stompjms.stompjms-client;version=1.19,\
-	com.springsource.com.thoughtworks.xstream;version=1.3,\
-	com.springsource.javax.jms;version=1.1,\
-	org.apache.felix.gogo.command;version=0.12,\
-	org.apache.felix.gogo.runtime;version=0.10,\
-	com.springsource.javax.activation;version=1.1,\
-	com.springsource.javax.ejb;version=3.0,\
-	com.springsource.javax.management.j2ee;version=1.0,\
-	com.springsource.javax.resource;version=1.5,\
-	com.springsource.javax.xml.bind;version=2.2,\
-	com.springsource.javax.xml.crypto;version=1.4,\
-	com.springsource.javax.xml.rpc;version=1.1,\
-	com.springsource.javax.xml.soap;version=1.3,\
-	com.springsource.javax.xml.ws;version=2.1,\
-	com.springsource.net.sf.cglib;version=2.2,\
-	com.springsource.org.xmlpull;version=1.1,\
-	org.apache.xbean.spring;version=4.1,\
-	org.springframework.beans;version=3.2,\
-	org.springframework.context;version=3.2,\
-	org.springframework.core;version=3.2,\
-	biz.aQute.junit;version=1.3,\
-	org.apache.activemq.activemq-osgi;version=5.11.1,\
-	org.apache.activemq.shiro;version=5.11.1,\
-	com.google.gson;version=2.3,\
-	org.mockito.mockito-all;version=1.9,\
-	org.apache.shiro.core;version=1.2,\
-	org.apache.shiro.web;version=1.2,\
-	org.apache.commons.pool,\
-	org.apache.servicemix.bundles.commons-dbcp,\
-	org.apache.commons.io;version=2.4,\
 	${jackson-buildpath},\
-	org.apache.felix.dependencymanager;version=4.3,\
-	com.fasterxml.jackson.core.jackson-annotations,\
-	com.fasterxml.jackson.core.jackson-core,\
-	com.fasterxml.jackson.core.jackson-databind,\
-	com.fasterxml.jackson.jaxrs.jackson-jaxrs-base,\
-	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
-	org.apache.felix.http.servlet-api,\
-	org.apache.httpcomponents.httpclient
+	org.apache.felix:org.apache.felix.dependencymanager.annotation;version=4.2.1,\
+	jakarta.ws.rs:jakarta.ws.rs-api;version=4.0.0,\
+	org.apache.activemq:activemq-client;version=5.18.6,\
+	org.apache.activemq:activemq-shiro;version=5.18.6,\
+	javax.jms:javax.jms-api;version=2.0.1,\
+	com.google.code.gson:gson;version=2.11.0,\
+	org.apache.shiro:shiro-core;version=1.13.0,\
+	org.apache.shiro:shiro-web;version=1.13.0,\
+	org.apache.shiro:shiro-cache;version=1.13.0,\
+	org.apache.shiro:shiro-event;version=1.13.0,\
+	commons-io:commons-io;version=2.16.1,\
+	org.apache.commons:commons-pool2;version=2.12.0,\
+	commons-dbcp:commons-dbcp;version=1.4,\
+	org.apache.httpcomponents:httpclient;version=4.5.14,\
+	org.apache.httpcomponents.client5:httpclient5;version=5.4,\
+	org.apache.felix:org.apache.felix.http.servlet-api;version=3.0.0,\
+	org.apache.felix:org.apache.felix.gogo.runtime;version=1.1.6,\
+	org.fusesource.stompjms:stompjms-client;version=1.19,\
+	org.springframework:spring-beans;version=6.1.13,\
+	org.springframework:spring-context;version=6.1.13,\
+	org.springframework:spring-core;version=6.1.13,\
+	javax.annotation:javax.annotation-api;version=1.3.2,\
+	com.thoughtworks.xstream:xstream;version=1.4.20
 
--plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
+# -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
 -sub:  \
 	*.bnd
 
--baseline: *
+#-baseline: *

@@ -32,8 +32,8 @@
 ## Java Compiler Options
 #java:                  java
 #javac:                 javac
-javac.source:          1.8
-javac.target:          1.8
+javac.source:          22
+javac.target:          22
 #javac.debug:           on
 
 ## Bnd Options

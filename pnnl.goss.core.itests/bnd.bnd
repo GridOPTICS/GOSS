@@ -1,31 +1,34 @@
-Bundle-Version: 2.0.1.${tstamp}
+Bundle-Version: 2.0.2-SNAPSHOT
 -buildpath: \
 	org.amdatu.testing.configurator;version=latest,\
 	${osgi-buildpath},\
 	biz.aQute.junit;version=1.3,\
 	${dm-buildpath},\
-	slf4j.api;version='[1.7.7,1.7.8)',\
-	slf4j.simple;version='[1.7.7,1.7.8)',\
-	org.apache.shiro.core,\
-	org.apache.httpcomponents.httpclient;version=4.2,\
+	${slf4j-buildpath},\
+	${activemq-buildpath},\
+	org.apache.shiro:shiro-core;version=1.13.0,\
+	org.apache.httpcomponents:httpclient;version=4.5,\
 	pnnl.goss.core.runner;version=latest,\
-	org.apache.activemq.activemq-osgi,\
-	com.springsource.javax.jms,\
+	javax.jms:javax.jms-api;version=2.0.1,\
 	pnnl.goss.core.core-api,\
 	pnnl.goss.core.goss-client,\
 	pnnl.goss.core.goss-core-server,\
 	pnnl.goss.core.goss-core-server-api,\
 	pnnl.goss.core.testutil;version=latest,\
-	org.apache.felix.dependencymanager.annotation;version=4.0
+	org.apache.felix:org.apache.felix.dependencymanager.annotation;version=4.2
 	
--plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
+# -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
 
--runfw: org.apache.felix.framework;version='[4.2.1,5)'
--runee: JavaSE-1.8
+-runfw: org.apache.felix.framework;version='[7.0.5,8)'
+-runee: JavaSE-22
 Test-Cases: ${classes;ANNOTATION;org.junit.Test}
 -include: ${workspace}/pnnl.goss.core.itests/core-itests.bndrun
 Private-Package:  \
 	pnnl.goss.core.itests,\
 	pnnl.goss.activemq.testing
-	
--baselining: *
+
+# Disable baselining for integration tests	
+#-baselining: *
+
+# Modern launcher configuration
+-runpath: biz.aQute.launcher;version='[6.4.0,7)'

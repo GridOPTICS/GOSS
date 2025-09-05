@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<ruleset name="GOSS PMD Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>PMD Rules for GOSS Project</description>
+
+    <!-- Best Practices -->
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="GuardLogStatement"/>
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+    </rule>
+
+    <!-- Code Style -->
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CallSuperInConstructor"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="DefaultPackage"/>
+        <exclude name="LongVariable"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="UselessParentheses"/>
+        <exclude name="AvoidFinalLocalVariable"/>
+    </rule>
+
+    <!-- Design -->
+    <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/>
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="UseUtilityClass"/>
+        <exclude name="TooManyMethods"/>
+    </rule>
+
+    <!-- Error Prone -->
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="UseLocaleWithCaseConversions"/>
+    </rule>
+
+    <!-- Multithreading -->
+    <rule ref="category/java/multithreading.xml"/>
+
+    <!-- Performance -->
+    <rule ref="category/java/performance.xml"/>
+
+    <!-- Security -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Custom Rules for GOSS -->
+    <rule name="AvoidPrintStackTrace"
+          language="java"
+          message="Avoid printStackTrace(), use proper logging"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>
+            printStackTrace() should not be used. Use proper logging framework instead.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+//PrimaryExpression[PrimaryPrefix/Name[@Image='printStackTrace']]
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <rule name="AvoidSystemOut"
+          language="java"
+          message="Avoid System.out/err, use proper logging"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>
+            System.out and System.err should not be used. Use proper logging framework instead.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+//PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image, 'System.out') or starts-with(@Image, 'System.err')]]
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Configure specific rules -->
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="classPattern" value="[A-Z][a-zA-Z0-9]*"/>
+            <property name="abstractClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+            <property name="interfacePattern" value="[A-Z][a-zA-Z0-9]*"/>
+            <property name="enumPattern" value="[A-Z][a-zA-Z0-9]*"/>
+            <property name="annotationPattern" value="[A-Z][a-zA-Z0-9]*"/>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml/CyclomaticComplexity">
+        <properties>
+            <property name="classReportLevel" value="80"/>
+            <property name="methodReportLevel" value="10"/>
+        </properties>
+    </rule>
+
+</ruleset>

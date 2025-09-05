@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.amdatu.testing.configurator.TestConfiguration;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.shiro.mgt.SecurityManager;
+// import org.apache.shiro.mgt.SecurityManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -47,7 +47,7 @@ public class SslClientTests {
 		testConfig = configure(this)
 						.add(CoreConfigSteps.configureSSLServerAndClientPropertiesConfig())
 						.add(createServiceDependency().setService(Logger.class))
-						.add(createServiceDependency().setService(SecurityManager.class))
+						// .add(createServiceDependency().setService(SecurityManager.class))
 						.add(createServiceDependency().setService(ServerControl.class))
 						.add(createServiceDependency().setService(ClientFactory.class));
 		testConfig.apply();

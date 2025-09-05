@@ -1,0 +1,20 @@
+// BND handles build dependencies, but we need to add test dependencies for Gradle
+
+dependencies {
+    // JUnit 5
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.11.0'
+    implementation 'org.junit.jupiter:junit-jupiter-params:5.11.0'
+    runtimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.0'
+    
+    // JUnit 4 compatibility
+    implementation 'junit:junit:4.13.2'
+    
+    // Mockito
+    implementation 'org.mockito:mockito-core:5.13.0'
+    
+    // AssertJ
+    implementation 'org.assertj:assertj-core:3.26.3'
+    
+    // Dependencies
+    implementation project(':pnnl.goss.core')
+}

@@ -1,7 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="bin" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="src" output="bin_test" path="test">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="bin" path="src">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="bin_test" path="generated/generated/sources/annotationProcessor/java/test">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="bin" path="generated/generated/sources/annotationProcessor/java/main">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-22">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/BND Hub/org.apache.felix.gogo.command-0.12.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/BND Hub/osgi.enterprise-4.2.0.201003190513.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/pnnl.goss.core/generated/pnnl.goss.core.core-api.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/BND Hub/slf4j.simple-1.7.7.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.shiro.core-1.2.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.felix.dependencymanager-4.3.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.httpcomponents.httpclient-4.5.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/BND Hub/slf4j.api-1.6.2.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-core-server.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.h2-1.4.180.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/buildrepo/org.apache.felix.dependencymanager.annotation/org.apache.felix.dependencymanager.annotation-4.0.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/GOSS Dependencies/com.springsource.javax.jms-1.1.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-core-security.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/BND Hub/org.apache.felix.gogo.runtime-0.10.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.activemq.shiro-5.10.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/os2204/repos/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-core-server-api.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

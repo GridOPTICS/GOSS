@@ -1,0 +1,5 @@
+// BND handles build dependencies
+
+dependencies {
+    implementation project(':pnnl.goss.core')
+}

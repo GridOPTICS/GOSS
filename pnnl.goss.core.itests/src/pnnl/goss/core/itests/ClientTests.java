@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.amdatu.testing.configurator.TestConfiguration;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.shiro.mgt.SecurityManager;
+// import org.apache.shiro.mgt.SecurityManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -51,7 +51,7 @@ public class ClientTests {
 						.add(CoreConfigSteps.configureServerAndClientPropertiesConfig())
 						.add(createServiceDependency().setService(ClientFactory.class))
 						.add(createServiceDependency().setService(Logger.class))
-						.add(createServiceDependency().setService(SecurityManager.class))
+						// .add(createServiceDependency().setService(SecurityManager.class))
 						.add(createServiceDependency().setService(ServerControl.class));
 		testConfig.apply();
 		
