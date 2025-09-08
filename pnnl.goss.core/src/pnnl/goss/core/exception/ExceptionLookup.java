@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.Start;
-import org.apache.felix.dm.annotation.api.Stop;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.ErrorCode;
 import com.northconcepts.exception.ErrorText;
 
-@Component
+@Component(service = ErrorText.class)
 public class ExceptionLookup implements ErrorText{
 	
 	private Map<String, String> lookupMap;
@@ -27,12 +27,12 @@ public class ExceptionLookup implements ErrorText{
 		
 	}
 	
-	@Start
+	@Activate
 	public void start(){
 		initialize();
 	}
 	
-	@Stop
+	@Deactivate
 	public void stop() {
 		lookupMap.clear();
 		lookupMap = null;

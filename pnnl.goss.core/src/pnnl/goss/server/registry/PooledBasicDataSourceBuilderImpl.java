@@ -7,8 +7,8 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSourceFactory;
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +27,10 @@ import pnnl.goss.core.server.DataSourceType;
  * @author Craig Allwardt
  *
  */
-@Component
+@Component(service = DataSourceBuilder.class)
 public class PooledBasicDataSourceBuilderImpl implements DataSourceBuilder {
 	
-	@ServiceDependency
+	@Reference
 	private DataSourceRegistry registry;
 	
 	private static final Logger log = LoggerFactory.getLogger(PooledBasicDataSourceBuilderImpl.class);

@@ -1,20 +1,32 @@
 package pnnl.goss.core.security.impl;
 
+/*
+ * TODO: Convert to OSGi DS Component
+ * This activator needs to be rewritten to use OSGi DS instead of Felix DM
+ */
+
+/*
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.activemq.shiro.mgt.DefaultActiveMqSecurityManager;
-import org.apache.felix.dm.DependencyActivatorBase;
-import org.apache.felix.dm.DependencyManager;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.osgi.framework.BundleContext;
 
-public class Activator extends DependencyActivatorBase {
+public class Activator { // extends DependencyActivatorBase {
 
 	@Override
-	public void init(BundleContext context, DependencyManager manager)
+*/
+
+// Disabled - needs conversion to OSGi DS
+public class Activator {
+	// TODO: Rewrite using OSGi DS Component
+}
+
+/*
+	// public void init(BundleContext context, DependencyManager manager)
 			throws Exception {
 
 		//Factory<SecurityManager> factory = new DefaultSecurityManager();
@@ -41,8 +53,9 @@ public class Activator extends DependencyActivatorBase {
 	}
 
 	@Override
-	public void destroy(BundleContext context, DependencyManager manager)
+	// public void destroy(BundleContext context, DependencyManager manager)
 			throws Exception {
 		// 
 	}
 }
+*/

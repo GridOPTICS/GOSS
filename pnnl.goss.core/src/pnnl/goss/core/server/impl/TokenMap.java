@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.felix.dm.annotation.api.Component;
+import org.osgi.service.component.annotations.Component;
 
 import pnnl.goss.core.server.TokenIdentifierMap;
 
-@Component
+@Component(service = TokenIdentifierMap.class)
 public class TokenMap implements TokenIdentifierMap{
 	
 	private static final long ONE_MINUTE_IN_MILLIS=60000;

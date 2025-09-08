@@ -7,16 +7,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.Start;
-import org.apache.felix.dm.annotation.api.Stop;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 
 @Component
 public class Default extends HttpServlet{
 	
 	private static final long serialVersionUID = -543706852564073624L;
 
-	@Start
+	@Activate
 	public void starting(){
 		System.out.println("Startting");
 	}
@@ -28,7 +28,7 @@ public class Default extends HttpServlet{
 		super.doGet(req, resp);
 	}
 
-	@Stop
+	@Deactivate
 	public void stopping() {
 		System.out.println("Stopping");
 	}

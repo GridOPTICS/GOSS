@@ -1,11 +1,11 @@
 package pnnl.goss.core.security.ldap;
-import java.util.Dictionary;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ConfigurationDependency;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Modified;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -21,11 +21,11 @@ import pnnl.goss.core.security.GossRealm;
 
 import com.northconcepts.exception.SystemException;
 
-@Component
+@Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.ldap")
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 	 private static final String CONFIG_PID = "pnnl.goss.core.security.ldap";
 	
-	 @ServiceDependency
+	 @Reference
 	 GossPermissionResolver gossPermissionResolver;
 	 
 	public GossLDAPRealm(){
@@ -119,8 +119,8 @@ public class GossLDAPRealm extends JndiLdapRealm implements GossRealm{
 		return supports;
 	}
 	
-	 @ConfigurationDependency(pid=CONFIG_PID)
-	 public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
+	 @Modified
+	 public synchronized void updated(Map<String, Object> properties) throws SystemException {
 	    	
 	    	if (properties != null) {
 	    		   //TODO 	

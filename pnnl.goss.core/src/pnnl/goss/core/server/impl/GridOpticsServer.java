@@ -53,7 +53,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.Map;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -78,11 +78,11 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.shiro.ShiroPlugin;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ConfigurationDependency;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
-import org.apache.felix.dm.annotation.api.Start;
-import org.apache.felix.dm.annotation.api.Stop;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +96,7 @@ import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
 
 
-@Component
+@Component(service = ServerControl.class, configurationPid = "pnnl.goss.core.server")
 public class GridOpticsServer implements ServerControl {
 
     private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
@@ -167,14 +167,14 @@ public class GridOpticsServer implements ServerControl {
      
     private ConnectionFactory connectionFactory = null;
     
-    @ServiceDependency
+    @Reference
     private volatile SecurityManager securityManager;
     
     
-    @ServiceDependency
+    @Reference
     private volatile RequestHandlerRegistry handlerRegistry;
     
-    @ServiceDependency
+    @Reference
     private volatile GossRealm permissionAdapter;
     
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -204,8 +204,8 @@ public class GridOpticsServer implements ServerControl {
     }
         
         
-    @ConfigurationDependency(pid=CONFIG_PID)
-    public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
+    @Modified
+    public synchronized void updated(Map<String, Object> properties) throws SystemException {
     	
     	if (properties != null) {
     		
@@ -405,7 +405,7 @@ public class GridOpticsServer implements ServerControl {
     }
         
     @Override
-    @Start
+    @Activate
 	public void start() {
     	
 		// If goss should have start the broker service then this will be set.
@@ -485,7 +485,7 @@ public class GridOpticsServer implements ServerControl {
 
 
 	@Override
-	@Stop
+	@Deactivate
 	public void stop() throws SystemException {
 		
 		try {

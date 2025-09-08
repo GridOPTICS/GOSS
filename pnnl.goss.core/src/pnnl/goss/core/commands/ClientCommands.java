@@ -3,23 +3,23 @@ package pnnl.goss.core.commands;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.Property;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.apache.felix.service.command.CommandProcessor;
 
 import pnnl.goss.core.Client;
 import pnnl.goss.core.Client.PROTOCOL;
 import pnnl.goss.core.ClientFactory;
 
-@Component(properties={
-		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gc"),
-		@Property(name=CommandProcessor.COMMAND_FUNCTION, 
-			value= {"makeOpenwire", "makeStomp", "list"})},
-		provides=Object.class)
+@Component(property = {
+		"osgi.command.scope=gc",
+		"osgi.command.function=makeOpenwire",
+		"osgi.command.function=makeStomp",
+		"osgi.command.function=list"
+})
 public class ClientCommands {
 	
-	@ServiceDependency
+	@Reference
 	private volatile ClientFactory factory;
 		
 	public void makeOpenwire(){

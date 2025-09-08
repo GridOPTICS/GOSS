@@ -1,15 +1,13 @@
 package pnnl.goss.core.security.propertyfile;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ConfigurationDependency;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Modified;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -42,7 +40,7 @@ import com.northconcepts.exception.SystemException;
  * @author Craig Allwardt
  *
  */
-@Component
+@Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.propertyfile")
 public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	
 	private static final String CONFIG_PID = "pnnl.goss.core.security.propertyfile";
@@ -51,7 +49,7 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> userPermissions = new ConcurrentHashMap<>();
 	
-	@ServiceDependency
+	@Reference
 	GossPermissionResolver gossPermissionResolver;
 	
 	@Override
@@ -73,18 +71,16 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
         return userMap.get(upToken.getUsername());
 	}
 	
-	@ConfigurationDependency(pid=CONFIG_PID)
-	public synchronized void updated(Dictionary<String, ?> properties) throws SystemException {
+	@Modified
+	public synchronized void updated(Map<String, Object> properties) throws SystemException {
 
 		if (properties != null){
 			log.debug("Updating PropertyBasedRealm");
 			userMap.clear();
 			userPermissions.clear();
 			
-			Enumeration<String> keys = properties.keys();
 			Set<String> perms = new HashSet<>();
-			while(keys.hasMoreElements()){
-				String k = keys.nextElement();
+			for (String k : properties.keySet()) {
 				String v = (String)properties.get(k);
 				String[] credAndPermissions = v.split(",");
 				

@@ -9,5 +9,5 @@ rootProject.name = 'goss'
 // Add the main modules
 include 'pnnl.goss.core'
 include 'pnnl.goss.core.runner'
-include 'pnnl.goss.core.itests'  
+include 'pnnl.goss.core.itests'  // Note: needs Felix DM migration for full export support  
 include 'pnnl.goss.core.testutil'

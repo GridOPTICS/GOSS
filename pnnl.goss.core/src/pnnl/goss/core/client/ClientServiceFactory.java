@@ -15,8 +15,8 @@ import java.util.Properties;
 
 import javax.naming.ConfigurationException;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ConfigurationDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.apache.http.auth.Credentials;
 
 import pnnl.goss.core.Client;
@@ -24,7 +24,7 @@ import pnnl.goss.core.Client.PROTOCOL;
 import pnnl.goss.core.ClientFactory;
 import pnnl.goss.core.GossCoreContants;
 
-@Component(provides={ClientFactory.class})
+@Component(service = ClientFactory.class, configurationPid = "pnnl.goss.core.client")
 public class ClientServiceFactory implements ClientFactory {
 
     private volatile List<GossClient> clientInstances = new ArrayList<>();
@@ -39,14 +39,12 @@ public class ClientServiceFactory implements ClientFactory {
     	return !(value == null || value.isEmpty());
     }
     
-    @ConfigurationDependency(pid=CONFIG_PID)
-    public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
+    @Modified
+    public void updated(Map<String, Object> properties) throws ConfigurationException {
     	System.out.println("Updating configuration properties");
     	if (properties != null) {
 	        synchronized (this.properties) {
-	            Enumeration<String> keyEnum = properties.keys();
-	            while(keyEnum.hasMoreElements()){
-	                String k = keyEnum.nextElement();
+	            for (String k : properties.keySet()) {
 	                this.properties.put(k, properties.get(k));
 	            }
 	        }
@@ -97,10 +95,10 @@ public class ClientServiceFactory implements ClientFactory {
 			if(this.properties.isEmpty()){
 				System.out.println("Reading configuration properties");
 				configProperties.load(new FileInputStream("conf"+File.separatorChar+"pnnl.goss.core.client.cfg"));
-				Dictionary<String, String> dictionary = new Hashtable<String, String>();
-				dictionary.put(GossCoreContants.PROP_OPENWIRE_URI, configProperties.getProperty("goss.openwire.uri"));
-				dictionary.put(GossCoreContants.PROP_STOMP_URI, configProperties.getProperty("goss.stomp.uri"));
-				this.updated(dictionary);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put(GossCoreContants.PROP_OPENWIRE_URI, configProperties.getProperty("goss.openwire.uri"));
+				map.put(GossCoreContants.PROP_STOMP_URI, configProperties.getProperty("goss.stomp.uri"));
+				this.updated(map);
 			}
 	    } catch (FileNotFoundException e) {
 			e.printStackTrace();

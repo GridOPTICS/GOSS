@@ -2,11 +2,11 @@ package pnnl.goss.core.security;
 
 import java.util.Set;
 
-import org.apache.felix.dm.annotation.api.Component;
+import org.osgi.service.component.annotations.Component;
 
 import pnnl.goss.core.Request;
 
-@Component
+@Component(service = AuthorizationHandler.class)
 public class AuthorizeAll implements AuthorizationHandler {
 
 	@Override

@@ -2,10 +2,10 @@ package pnnl.goss.core.server.impl;
 
 import java.io.Serializable;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
-import org.apache.felix.dm.annotation.api.Start;
-import org.apache.felix.dm.annotation.api.Stop;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 import org.apache.http.auth.UsernamePasswordCredentials;
 
 import pnnl.goss.core.Client;
@@ -22,16 +22,16 @@ import com.google.gson.Gson;
 @Component
 public class ManagementLauncher {
 
-	@ServiceDependency
+	@Reference
 	private volatile ClientFactory clientFactory;
 
-	@ServiceDependency
+	@Reference
 	private volatile ServerControl serverControl;
 
-	@ServiceDependency
+	@Reference
 	private volatile RequestHandlerRegistry handlerRegistry;
 
-	@ServiceDependency
+	@Reference
 	private volatile DataSourceRegistry datasourceRegistry;
 
 	class ResponseEvent implements GossResponseEvent{
@@ -64,7 +64,7 @@ public class ManagementLauncher {
 
 	}
 
-	@Start
+	@Activate
 	public void start(){
 		try {
 			Client client = clientFactory.create(PROTOCOL.STOMP,
@@ -78,7 +78,7 @@ public class ManagementLauncher {
 
 	}
 
-	@Stop
+	@Deactivate
 	public void stop(){
 		System.out.println("Stopping ManagementLauncher");
 	}

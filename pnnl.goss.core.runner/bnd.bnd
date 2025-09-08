@@ -1,7 +1,5 @@
 Bundle-Version: 2.0.6-SNAPSHOT
 -buildpath: \
-	org.apache.felix.dependencymanager.annotation,\
-	org.apache.felix.dependencymanager,\
 	org.apache.felix.gogo.command,\
 	org.apache.felix.gogo.runtime,\
 	org.apache.activemq.shiro,\

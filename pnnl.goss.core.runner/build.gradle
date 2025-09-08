@@ -1,5 +1,178 @@
 // BND handles build dependencies
-
 dependencies {
     implementation project(':pnnl.goss.core')
+    
+    // For simple runner
+    implementation 'org.apache.activemq:activemq-broker:5.15.16'
+    implementation 'org.apache.shiro:shiro-core:1.13.0'
 }
+
+// Simple executable JAR - no OSGi complexity
+task createSimpleRunner(type: Jar) {
+    archiveBaseName = 'goss-simple-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    manifest {
+        attributes(
+            'Main-Class': 'pnnl.goss.core.runner.GossSimpleRunner'
+        )
+    }
+    
+    // Include everything - make it work
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    from sourceSets.main.output
+    from project(':pnnl.goss.core').sourceSets.main.output
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+task createSSLRunner(type: Jar) {
+    archiveBaseName = 'goss-ssl-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    manifest {
+        attributes(
+            'Main-Class': 'pnnl.goss.core.runner.GossSSLRunner'
+        )
+    }
+    
+    // Include everything for SSL runner
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    from sourceSets.main.output
+    from project(':pnnl.goss.core').sourceSets.main.output
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Create executable JAR with embedded Felix framework
+configurations {
+    felixRuntime
+    gossRuntime
+}
+
+dependencies {
+    // Felix Framework
+    felixRuntime 'org.apache.felix:org.apache.felix.framework:7.0.5'
+    felixRuntime 'org.apache.felix:org.apache.felix.main:7.0.5'
+    
+    // Core OSGi services - using versions that actually exist
+    gossRuntime 'org.apache.felix:org.apache.felix.scr:2.1.30'
+    gossRuntime 'org.apache.felix:org.apache.felix.configadmin:1.9.24'
+    gossRuntime 'org.apache.felix:org.apache.felix.gogo.runtime:1.1.4'
+    gossRuntime 'org.apache.felix:org.apache.felix.gogo.shell:1.1.4'
+    gossRuntime 'org.apache.felix:org.apache.felix.gogo.command:1.1.0'
+    
+    // Logging - simple approach
+    gossRuntime 'org.slf4j:slf4j-api:2.0.13'
+    gossRuntime 'org.slf4j:slf4j-simple:2.0.13'
+    
+    // ActiveMQ - use compatible versions
+    gossRuntime 'org.apache.activemq:activemq-osgi:5.15.16'
+    gossRuntime 'org.apache.shiro:shiro-core:1.13.0'
+    
+    // Basic dependencies - non-OSGi versions that work
+    gossRuntime 'org.apache.httpcomponents:httpclient:4.5.14'
+    gossRuntime 'org.apache.httpcomponents:httpcore:4.4.16'
+    gossRuntime 'commons-io:commons-io:2.11.0'
+    gossRuntime 'org.apache.commons:commons-pool2:2.11.1'
+    gossRuntime 'com.thoughtworks.xstream:xstream:1.4.19'
+    gossRuntime 'com.google.code.gson:gson:2.11.0'
+    gossRuntime 'com.h2database:h2:2.1.214'
+    
+    // Java EE APIs for JDK 22
+    gossRuntime 'javax.annotation:javax.annotation-api:1.3.2'
+    gossRuntime 'javax.jms:javax.jms-api:2.0.1'
+}
+
+task createGossRunner(type: Jar) {
+    archiveBaseName = 'goss-core-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    // Main class that starts Felix
+    manifest {
+        attributes(
+            'Main-Class': 'org.apache.felix.main.Main',
+            'Bundle-SymbolicName': 'goss.core.runner',
+            'Bundle-Version': '1.0.0'
+        )
+    }
+    
+    // Include ONLY Felix framework classes - no OSGi bundles embedded
+    from {
+        configurations.felixRuntime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    // Include our GOSS bundles as separate JAR files
+    into('bundle') {
+        from fileTree(dir: '../pnnl.goss.core/generated', include: '*.jar')
+        from fileTree(dir: 'generated', include: '*.jar')
+    }
+    
+    // Include runtime dependencies as OSGi bundles
+    into('bundle') {
+        from configurations.gossRuntime
+    }
+    
+    // Include configuration
+    into('conf') {
+        from fileTree(dir: 'conf', include: '**/*')
+    }
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+task createGossSSLRunner(type: Jar) {
+    archiveBaseName = 'goss-core-ssl-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    // Main class that starts Felix
+    manifest {
+        attributes(
+            'Main-Class': 'org.apache.felix.main.Main',
+            'Bundle-SymbolicName': 'goss.core.ssl.runner',
+            'Bundle-Version': '1.0.0'
+        )
+    }
+    
+    // Include ONLY Felix framework classes - no OSGi bundles embedded
+    from {
+        configurations.felixRuntime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    // Include our GOSS bundles as separate JAR files
+    into('bundle') {
+        from fileTree(dir: '../pnnl.goss.core/generated', include: '*.jar')
+        from fileTree(dir: 'generated', include: '*.jar')
+    }
+    
+    // Include runtime dependencies as OSGi bundles
+    into('bundle') {
+        from configurations.gossRuntime
+    }
+    
+    // Include SSL configuration
+    into('conf') {
+        from fileTree(dir: 'conf', include: '**/*')
+        from fileTree(dir: 'keystores', include: '**/*')
+    }
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Make sure GOSS bundles are built first
+createGossRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createGossSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createSimpleRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+
+build.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner

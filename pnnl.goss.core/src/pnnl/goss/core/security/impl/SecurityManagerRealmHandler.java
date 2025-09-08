@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -15,14 +17,14 @@ import org.osgi.framework.ServiceReference;
 import pnnl.goss.core.security.GossRealm;
 import pnnl.goss.core.security.PermissionAdapter;
 
-@Component
+@Component(service = PermissionAdapter.class)
 public class SecurityManagerRealmHandler implements PermissionAdapter {
 	
-	@ServiceDependency
+	@Reference
 	private volatile SecurityManager securityManager;
 	private final Map<ServiceReference<GossRealm>, GossRealm> realmMap = new ConcurrentHashMap<>();
 	
-	@ServiceDependency(removed="realmRemoved", required=false)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "realmRemoved")
 	public void realmAdded(ServiceReference<GossRealm> ref, GossRealm handler){
 		
 		DefaultSecurityManager defaultInstance = (DefaultSecurityManager)securityManager;

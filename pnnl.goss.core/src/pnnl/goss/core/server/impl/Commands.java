@@ -2,9 +2,8 @@ package pnnl.goss.core.server.impl;
 
 import java.util.Map.Entry;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.Property;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.apache.felix.service.command.CommandProcessor;
 
 import pnnl.goss.core.Client.PROTOCOL;
@@ -17,19 +16,20 @@ import pnnl.goss.core.server.RequestHandlerRegistry;
 //import pnnl.goss.core.server.tester.requests.EchoRequest;
 import pnnl.goss.core.server.RequestUploadHandler;
 
-@Component(properties = {
-		@Property(name=CommandProcessor.COMMAND_SCOPE, value="gs"),
-		@Property(name=CommandProcessor.COMMAND_FUNCTION, value={"listHandlers", 
-				"listDataSources", "showClientConnections", "help"})},
-		provides=Object.class
-)
+@Component(property = {
+		"osgi.command.scope=gs",
+		"osgi.command.function=listHandlers",
+		"osgi.command.function=listDataSources",
+		"osgi.command.function=showClientConnections",
+		"osgi.command.function=help"
+})
 public class Commands {
 	
-	@ServiceDependency
+	@Reference
 	private volatile RequestHandlerRegistry registry;
-	@ServiceDependency
+	@Reference
 	private volatile DataSourceRegistry dsRegistry;
-	@ServiceDependency
+	@Reference
 	private volatile ClientFactory clientFactory;
 	
 	public void help(){

@@ -1,10 +1,8 @@
 -buildpath: \
-	${dm-buildpath},\
 	${osgi-buildpath},\
 	${activemq-buildpath},\
 	${slf4j-buildpath},\
 	${jackson-buildpath},\
-	org.apache.felix:org.apache.felix.dependencymanager.annotation;version=4.2.1,\
 	jakarta.ws.rs:jakarta.ws.rs-api;version=4.0.0,\
 	org.apache.activemq:activemq-client;version=5.18.6,\
 	org.apache.activemq:activemq-shiro;version=5.18.6,\
@@ -26,7 +24,8 @@
 	org.springframework:spring-context;version=6.1.13,\
 	org.springframework:spring-core;version=6.1.13,\
 	javax.annotation:javax.annotation-api;version=1.3.2,\
-	com.thoughtworks.xstream:xstream;version=1.4.20
+	com.thoughtworks.xstream:xstream;version=1.4.20,\
+	junit:junit;version=4.13
 
 # -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
 -sub:  \

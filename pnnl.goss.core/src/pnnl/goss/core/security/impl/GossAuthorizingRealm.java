@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -17,12 +17,12 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-@Component
+@Component(service = Realm.class)
 public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
 	
 	// Depend on this so that the security manager service is loaded before
 	// this package.
-	@ServiceDependency
+	@Reference
 	private volatile SecurityManager securityManager;
 	
 	private Collection<String> getPermissionsByRole(String role){

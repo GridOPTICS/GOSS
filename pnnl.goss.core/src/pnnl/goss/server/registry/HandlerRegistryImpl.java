@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -28,7 +30,7 @@ import pnnl.goss.core.server.RequestUploadHandler;
 
 import com.northconcepts.exception.SystemException;
 
-@Component
+@Component(service = RequestHandlerRegistry.class)
 public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	private static final Logger log = LoggerFactory.getLogger(HandlerRegistryImpl.class);
 	
@@ -37,10 +39,10 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	private final Map<ServiceReference<AuthorizationHandler>, AuthorizationHandler> authorizationHandlers = new ConcurrentHashMap<>();
 	private final Map<ServiceReference<RequestUploadHandler>, RequestUploadHandler> registeredUploadHandlers = new ConcurrentHashMap<>();
 	
-	@ServiceDependency
+	@Reference
 	private volatile SecurityManager securityManager;
 	
-	@ServiceDependency
+	@Reference
 	private volatile PermissionAdapter permissionAdapter;
 		
 	// Map
@@ -113,7 +115,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	}
 	
 	
-	@ServiceDependency(removed="authorizationHandlerRemoved", required=false)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "authorizationHandlerRemoved")
 	public void authorizationHandlerAdded(ServiceReference<AuthorizationHandler> ref, AuthorizationHandler handler){
 		System.out.println("Registering Authorization Handler: "+handler.getClass().getName());
 		authorizationHandlers.put(ref, handler);
@@ -127,7 +129,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 		authorizationInstanceMap.remove(handler.getClass().getName());
 	}
 			
-	@ServiceDependency(removed="requestHandlerRemoved", required=false)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "requestHandlerRemoved")
 	public void requestHandlerAdded(ServiceReference<RequestHandler> ref, RequestHandler handler){
 		System.out.println("Registering Request Handler: "+handler.getClass().getName());
 		registeredHandlers.put(ref, handler);
@@ -150,7 +152,7 @@ public class HandlerRegistryImpl implements RequestHandlerRegistry {
 	}
 	
 	
-	@ServiceDependency(removed="uploadHandlerRemoved", required=false)
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "uploadHandlerRemoved")
 	public void uploadHandlerAdded(ServiceReference<RequestUploadHandler> ref, RequestUploadHandler uploadHandler){
 		System.out.println("Registering Upload Handler: "+uploadHandler.getClass().getName());
 		registeredUploadHandlers.put(ref, uploadHandler);
