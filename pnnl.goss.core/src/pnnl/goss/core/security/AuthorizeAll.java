@@ -9,8 +9,8 @@ import pnnl.goss.core.Request;
 @Component(service = AuthorizationHandler.class)
 public class AuthorizeAll implements AuthorizationHandler {
 
-	@Override
-	public boolean isAuthorized(Request request, Set<String> permissions) {
-		return true;
-	}
+    @Override
+    public boolean isAuthorized(Request request, Set<String> permissions) {
+        return true;
+    }
 }

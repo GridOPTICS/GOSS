@@ -50,20 +50,20 @@ import java.util.List;
 
 public class EventsList implements Serializable {
 
-	private static final long serialVersionUID = -2783212735188372776L;
+    private static final long serialVersionUID = -2783212735188372776L;
 
-	List<Event> eventsList = new ArrayList<Event>();
+    List<Event> eventsList = new ArrayList<Event>();
 
-	public List<Event> getEventsList() {
-		return eventsList;
-	}
+    public List<Event> getEventsList() {
+        return eventsList;
+    }
 
-	public void setEventsList(List<Event> eventsList) {
-		this.eventsList = eventsList;
-	}
+    public void setEventsList(List<Event> eventsList) {
+        this.eventsList = eventsList;
+    }
 
-	public void addEvent(Event event) {
-		this.eventsList.add(event);
-	}
+    public void addEvent(Event event) {
+        this.eventsList.add(event);
+    }
 
 }

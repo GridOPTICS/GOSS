@@ -54,39 +54,39 @@ import pnnl.goss.core.ClientListener;
 
 public class DefaultClientConsumer implements ClientConsumer {
 
-	MessageConsumer messageConsumer;
+    MessageConsumer messageConsumer;
 
-	public DefaultClientConsumer(ClientListener clientListener, Session session, Destination destination) {
-		try {
-			setMessageConsumer(session.createConsumer(destination));
-			getMessageConsumer().setMessageListener(clientListener);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public DefaultClientConsumer(ClientListener clientListener, Session session, Destination destination) {
+        try {
+            setMessageConsumer(session.createConsumer(destination));
+            getMessageConsumer().setMessageListener(clientListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public DefaultClientConsumer(Session session, Destination destination) {
-		try {
-			setMessageConsumer(session.createConsumer(destination));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public DefaultClientConsumer(Session session, Destination destination) {
+        try {
+            setMessageConsumer(session.createConsumer(destination));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void close() {
-		try {
-			getMessageConsumer().close();
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-	}
+    public void close() {
+        try {
+            getMessageConsumer().close();
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public MessageConsumer getMessageConsumer() {
-		return messageConsumer;
-	}
+    public MessageConsumer getMessageConsumer() {
+        return messageConsumer;
+    }
 
-	public void setMessageConsumer(MessageConsumer messageConsumer) {
-		this.messageConsumer = messageConsumer;
-	}
+    public void setMessageConsumer(MessageConsumer messageConsumer) {
+        this.messageConsumer = messageConsumer;
+    }
 
 }

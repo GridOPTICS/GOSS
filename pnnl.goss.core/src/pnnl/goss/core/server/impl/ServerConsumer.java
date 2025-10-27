@@ -61,38 +61,38 @@ import com.northconcepts.exception.SystemException;
 
 public class ServerConsumer {
 
-	private static final Logger log = LoggerFactory.getLogger(ServerConsumer.class);
+    private static final Logger log = LoggerFactory.getLogger(ServerConsumer.class);
 
-	private Session session;
-	private Destination destination;
-	private RequestHandlerRegistry handlerRegistry;
+    private Session session;
+    private Destination destination;
+    private RequestHandlerRegistry handlerRegistry;
 
-	public ServerConsumer setDestination(Destination destination) {
-		this.destination = Optional.of(destination).get();
-		return this;
-	}
+    public ServerConsumer setDestination(Destination destination) {
+        this.destination = Optional.of(destination).get();
+        return this;
+    }
 
-	public ServerConsumer setSession(Session session) {
-		this.session = Optional.of(session).get();
-		return this;
-	}
+    public ServerConsumer setSession(Session session) {
+        this.session = Optional.of(session).get();
+        return this;
+    }
 
-	public ServerConsumer setRegistryHandler(RequestHandlerRegistry registry) {
-		this.handlerRegistry = registry;
-		return this;
-	}
+    public ServerConsumer setRegistryHandler(RequestHandlerRegistry registry) {
+        this.handlerRegistry = registry;
+        return this;
+    }
 
-	public ServerConsumer consume() throws SystemException {
-		log.debug("consume");
-		try {
-			MessageConsumer consumer = session.createConsumer(destination);
-			consumer.setMessageListener(new ServerListener()
-					.setSession(session)
-					.setRegistryHandler(handlerRegistry));
-		} catch (JMSException e) {
-			SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
-		}
-		log.debug("end consume");
-		return this;
-	}
+    public ServerConsumer consume() throws SystemException {
+        log.debug("consume");
+        try {
+            MessageConsumer consumer = session.createConsumer(destination);
+            consumer.setMessageListener(new ServerListener()
+                    .setSession(session)
+                    .setRegistryHandler(handlerRegistry));
+        } catch (JMSException e) {
+            SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
+        }
+        log.debug("end consume");
+        return this;
+    }
 }

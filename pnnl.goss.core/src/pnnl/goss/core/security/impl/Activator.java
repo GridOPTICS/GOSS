@@ -22,7 +22,7 @@ public class Activator { // extends DependencyActivatorBase {
 
 // Disabled - needs conversion to OSGi DS
 public class Activator {
-	// TODO: Rewrite using OSGi DS Component
+    // TODO: Rewrite using OSGi DS Component
 }
 
 /*

@@ -46,16 +46,16 @@ package pnnl.goss.core;
 
 public class RequestAsync extends Request {
 
-	private static final long serialVersionUID = -7613047700580927505L;
+    private static final long serialVersionUID = -7613047700580927505L;
 
-	protected int frequency = 0;
+    protected int frequency = 0;
 
-	public int getFrequency() {
-		return frequency;
-	}
+    public int getFrequency() {
+        return frequency;
+    }
 
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
 
 }

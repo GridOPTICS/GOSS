@@ -63,80 +63,80 @@ import com.thoughtworks.xstream.XStream;
 
 public class ServerPublisher {
 
-	private final Session session;
+    private final Session session;
 
-	private static final Logger log = LoggerFactory.getLogger(ServerPublisher.class);
+    private static final Logger log = LoggerFactory.getLogger(ServerPublisher.class);
 
-	public ServerPublisher(Session session) {
-		this.session = session;
-	}
+    public ServerPublisher(Session session) {
+        this.session = session;
+    }
 
-	public void sendErrror(String errorString, Destination destination) throws JMSException {
-		DataResponse errResp = new DataResponse(new DataError(errorString));
-		errResp.setResponseComplete(true);
-		sendResponse(errResp, destination);
-	}
+    public void sendErrror(String errorString, Destination destination) throws JMSException {
+        DataResponse errResp = new DataResponse(new DataError(errorString));
+        errResp.setResponseComplete(true);
+        sendResponse(errResp, destination);
+    }
 
-	public void sendResponse(Response response, Destination destination)
-			throws JMSException {
+    public void sendResponse(Response response, Destination destination)
+            throws JMSException {
 
-		ObjectMessage message = session.createObjectMessage(response);
-		// System.out.println("Sending response for QueryId: " + response.getId() + " on
-		// destination: " + destination);
-		log.debug("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
-		session.createProducer(destination).send(message); // producer.send(destination, message);
+        ObjectMessage message = session.createObjectMessage(response);
+        // System.out.println("Sending response for QueryId: " + response.getId() + " on
+        // destination: " + destination);
+        log.debug("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
+        session.createProducer(destination).send(message); // producer.send(destination, message);
 
-	}
+    }
 
-	public void sendResponse(Response response, Destination destination,
-			RESPONSE_FORMAT responseFormat) throws JMSException {
+    public void sendResponse(Response response, Destination destination,
+            RESPONSE_FORMAT responseFormat) throws JMSException {
 
-		Message message = null;
+        Message message = null;
 
-		if (responseFormat == null)
-			message = session.createObjectMessage(response);
-		else if (responseFormat == RESPONSE_FORMAT.XML) {
-			XStream xStream = new XStream();
-			String xml = xStream.toXML(((DataResponse) response).getData());
-			message = session.createTextMessage(xml);
-		}
+        if (responseFormat == null)
+            message = session.createObjectMessage(response);
+        else if (responseFormat == RESPONSE_FORMAT.XML) {
+            XStream xStream = new XStream();
+            String xml = xStream.toXML(((DataResponse) response).getData());
+            message = session.createTextMessage(xml);
+        }
 
-		// System.out.println("Sending response for QueryId: " + response.getId() + " on
-		// destination: " + destination);
-		log.debug("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
-		// producer.send(destination, message);
-		session.createProducer(destination).send(message);
+        // System.out.println("Sending response for QueryId: " + response.getId() + " on
+        // destination: " + destination);
+        log.debug("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
+        // producer.send(destination, message);
+        session.createProducer(destination).send(message);
 
-	}
+    }
 
-	public void sendEvent(Response response, String destinationName)
-			throws JMSException {
-		Destination destination = session.createTopic(destinationName);
-		ObjectMessage message = session.createObjectMessage(response);
-		// System.out.println("Sending response for QueryId: on destination: "+
-		// destination);
-		log.debug("Sending response for QueryId: on destination: " + destination);
-		// producer.send(destination, message);
-		session.createProducer(destination).send(message);
-	}
+    public void sendEvent(Response response, String destinationName)
+            throws JMSException {
+        Destination destination = session.createTopic(destinationName);
+        ObjectMessage message = session.createObjectMessage(response);
+        // System.out.println("Sending response for QueryId: on destination: "+
+        // destination);
+        log.debug("Sending response for QueryId: on destination: " + destination);
+        // producer.send(destination, message);
+        session.createProducer(destination).send(message);
+    }
 
-	public void sendEvent(String message, String destinationName)
-			throws JMSException {
-		Destination destination = session.createTopic(destinationName);
-		TextMessage response = session.createTextMessage(message);
+    public void sendEvent(String message, String destinationName)
+            throws JMSException {
+        Destination destination = session.createTopic(destinationName);
+        TextMessage response = session.createTextMessage(message);
 
-		// System.out.println("Sending response for QueryId: on destination: "+
-		// destination);
-		// producer.send(destination, response);
-		session.createProducer(destination).send(response);
-	}
+        // System.out.println("Sending response for QueryId: on destination: "+
+        // destination);
+        // producer.send(destination, response);
+        session.createProducer(destination).send(response);
+    }
 
-	public void close() {
-		// try {
-		// session.close();
-		// } catch (JMSException e) {
-		// e.printStackTrace();
-		// }
-	}
+    public void close() {
+        // try {
+        // session.close();
+        // } catch (JMSException e) {
+        // e.printStackTrace();
+        // }
+    }
 
 }

@@ -48,28 +48,28 @@ import java.io.Serializable;
 
 public class UploadResponse extends Response implements Serializable {
 
-	private static final long serialVersionUID = -4188134664531136278L;
-	boolean success;
-	String message;
+    private static final long serialVersionUID = -4188134664531136278L;
+    boolean success;
+    String message;
 
-	public UploadResponse(boolean success) {
-		this.success = success;
-	}
+    public UploadResponse(boolean success) {
+        this.success = success;
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public boolean isSuccess() {
+        return success;
+    }
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
 }

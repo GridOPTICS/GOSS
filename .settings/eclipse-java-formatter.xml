@@ -10,8 +10,9 @@
 <setting id="org.eclipse.jdt.core.formatter.insert_space_before_comma_in_type_arguments" value="do not insert"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_before_comma_in_type_parameters" value="do not insert"/>
 <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="120"/>
-<setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="tab"/>
+<setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space"/>
 <setting id="org.eclipse.jdt.core.formatter.tabulation.size" value="4"/>
+<setting id="org.eclipse.jdt.core.formatter.indentation.size" value="4"/>
 <setting id="org.eclipse.jdt.core.formatter.use_tabs_only_for_leading_indentations" value="false"/>
 <setting id="org.eclipse.jdt.core.formatter.brace_position_for_annotation_type_declaration" value="end_of_line"/>
 <setting id="org.eclipse.jdt.core.formatter.brace_position_for_anonymous_type_declaration" value="end_of_line"/>

@@ -12,81 +12,81 @@ import java.net.URI;
  */
 public class GossSimpleRunner {
 
-	private BrokerService brokerService;
+    private BrokerService brokerService;
 
-	public static void main(String[] args) {
-		System.out.println("Starting GOSS Simple Runner...");
+    public static void main(String[] args) {
+        System.out.println("Starting GOSS Simple Runner...");
 
-		GossSimpleRunner runner = new GossSimpleRunner();
+        GossSimpleRunner runner = new GossSimpleRunner();
 
-		// Add shutdown hook
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			System.out.println("Shutting down GOSS...");
-			runner.stop();
-		}));
+        // Add shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down GOSS...");
+            runner.stop();
+        }));
 
-		try {
-			runner.start();
-			System.out.println("GOSS Simple Runner started successfully!");
-			System.out.println("Press Ctrl+C to stop");
+        try {
+            runner.start();
+            System.out.println("GOSS Simple Runner started successfully!");
+            System.out.println("Press Ctrl+C to stop");
 
-			// Keep running
-			Thread.currentThread().join();
+            // Keep running
+            Thread.currentThread().join();
 
-		} catch (Exception e) {
-			System.err.println("Failed to start GOSS: " + e.getMessage());
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
+        } catch (Exception e) {
+            System.err.println("Failed to start GOSS: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
-	public void start() throws Exception {
-		System.out.println("Starting ActiveMQ Broker...");
-		startBroker();
+    public void start() throws Exception {
+        System.out.println("Starting ActiveMQ Broker...");
+        startBroker();
 
-		System.out.println("Security: Using default (no authentication)");
+        System.out.println("Security: Using default (no authentication)");
 
-		System.out.println("GOSS Core services are running");
-		System.out.println("ActiveMQ Broker: tcp://0.0.0.0:61617");
-		System.out.println("STOMP: tcp://0.0.0.0:61618");
-		System.out.println("WebSocket: disabled (to avoid Jetty dependencies)");
-	}
+        System.out.println("GOSS Core services are running");
+        System.out.println("ActiveMQ Broker: tcp://0.0.0.0:61617");
+        System.out.println("STOMP: tcp://0.0.0.0:61618");
+        System.out.println("WebSocket: disabled (to avoid Jetty dependencies)");
+    }
 
-	public void stop() {
-		try {
-			if (brokerService != null) {
-				brokerService.stop();
-			}
-			// No security manager to clean up
-		} catch (Exception e) {
-			System.err.println("Error stopping GOSS: " + e.getMessage());
-		}
-	}
+    public void stop() {
+        try {
+            if (brokerService != null) {
+                brokerService.stop();
+            }
+            // No security manager to clean up
+        } catch (Exception e) {
+            System.err.println("Error stopping GOSS: " + e.getMessage());
+        }
+    }
 
-	private void startBroker() throws Exception {
-		brokerService = new BrokerService();
-		brokerService.setBrokerName("goss-broker");
-		brokerService.setDataDirectory("data");
+    private void startBroker() throws Exception {
+        brokerService = new BrokerService();
+        brokerService.setBrokerName("goss-broker");
+        brokerService.setDataDirectory("data");
 
-		// Configure system usage
-		SystemUsage systemUsage = brokerService.getSystemUsage();
-		systemUsage.getMemoryUsage().setLimit(64 * 1024 * 1024); // 64MB
-		systemUsage.getStoreUsage().setLimit(1024 * 1024 * 1024); // 1GB
+        // Configure system usage
+        SystemUsage systemUsage = brokerService.getSystemUsage();
+        systemUsage.getMemoryUsage().setLimit(64 * 1024 * 1024); // 64MB
+        systemUsage.getStoreUsage().setLimit(1024 * 1024 * 1024); // 1GB
 
-		// Add connectors with different ports
-		TransportConnector openwireConnector = new TransportConnector();
-		openwireConnector.setUri(new URI("tcp://0.0.0.0:61617"));
-		openwireConnector.setName("openwire");
-		brokerService.addConnector(openwireConnector);
+        // Add connectors with different ports
+        TransportConnector openwireConnector = new TransportConnector();
+        openwireConnector.setUri(new URI("tcp://0.0.0.0:61617"));
+        openwireConnector.setName("openwire");
+        brokerService.addConnector(openwireConnector);
 
-		TransportConnector stompConnector = new TransportConnector();
-		stompConnector.setUri(new URI("stomp://0.0.0.0:61618"));
-		stompConnector.setName("stomp");
-		brokerService.addConnector(stompConnector);
+        TransportConnector stompConnector = new TransportConnector();
+        stompConnector.setUri(new URI("stomp://0.0.0.0:61618"));
+        stompConnector.setName("stomp");
+        brokerService.addConnector(stompConnector);
 
-		// WebSocket connector removed - requires Jetty dependencies
+        // WebSocket connector removed - requires Jetty dependencies
 
-		brokerService.start();
-	}
+        brokerService.start();
+    }
 
 }

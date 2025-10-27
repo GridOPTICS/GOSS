@@ -49,51 +49,51 @@ import java.util.UUID;
 
 public class Request implements Serializable {
 
-	private static final long serialVersionUID = 7480441703135671635L;
+    private static final long serialVersionUID = 7480441703135671635L;
 
-	protected String id = UUID.randomUUID().toString();
+    protected String id = UUID.randomUUID().toString();
 
-	/**
-	 * Allows the request to be specified by a url.
-	 */
-	protected String url = null;
+    /**
+     * Allows the request to be specified by a url.
+     */
+    protected String url = null;
 
-	public enum RESPONSE_FORMAT {
-		XML, JSON
-	};
+    public enum RESPONSE_FORMAT {
+        XML, JSON
+    };
 
-	/**
-	 * Default to xml responses
-	 */
-	private RESPONSE_FORMAT reponseFormat = RESPONSE_FORMAT.XML;
+    /**
+     * Default to xml responses
+     */
+    private RESPONSE_FORMAT reponseFormat = RESPONSE_FORMAT.XML;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * A requested url
-	 *
-	 * @return string url for a resource
-	 */
-	public String getUrl() {
-		return this.url;
-	}
+    /**
+     * A requested url
+     *
+     * @return string url for a resource
+     */
+    public String getUrl() {
+        return this.url;
+    }
 
-	/**
-	 * Sets a resource url.
-	 *
-	 * @param url
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    /**
+     * Sets a resource url.
+     *
+     * @param url
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public RESPONSE_FORMAT getResponseFormat() {
-		return reponseFormat;
-	}
+    public RESPONSE_FORMAT getResponseFormat() {
+        return reponseFormat;
+    }
 
-	public void setResponseFormat(RESPONSE_FORMAT reponseFormat) {
-		this.reponseFormat = reponseFormat;
-	}
+    public void setResponseFormat(RESPONSE_FORMAT reponseFormat) {
+        this.reponseFormat = reponseFormat;
+    }
 }

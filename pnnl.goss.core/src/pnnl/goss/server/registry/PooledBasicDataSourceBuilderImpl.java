@@ -31,55 +31,55 @@ import pnnl.goss.core.server.DataSourceType;
 @Component(service = DataSourceBuilder.class)
 public class PooledBasicDataSourceBuilderImpl implements DataSourceBuilder {
 
-	@Reference
-	private DataSourceRegistry registry;
+    @Reference
+    private DataSourceRegistry registry;
 
-	private static final Logger log = LoggerFactory.getLogger(PooledBasicDataSourceBuilderImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(PooledBasicDataSourceBuilderImpl.class);
 
-	public void createMysql(String dsName, String url, String username, String password) throws Exception {
-		create(dsName, url, username, password, "com.mysql.jdbc.Driver");
-	}
+    public void createMysql(String dsName, String url, String username, String password) throws Exception {
+        create(dsName, url, username, password, "com.mysql.jdbc.Driver");
+    }
 
-	@Override
-	public void create(String dsName, String url, String username, String password,
-			String driver) throws Exception {
+    @Override
+    public void create(String dsName, String url, String username, String password,
+            String driver) throws Exception {
 
-		Properties propertiesForDataSource = new Properties();
-		propertiesForDataSource.setProperty("username", username);
-		propertiesForDataSource.setProperty("password", password);
-		propertiesForDataSource.setProperty("url", url);
-		propertiesForDataSource.setProperty("driverClassName", driver);
+        Properties propertiesForDataSource = new Properties();
+        propertiesForDataSource.setProperty("username", username);
+        propertiesForDataSource.setProperty("password", password);
+        propertiesForDataSource.setProperty("url", url);
+        propertiesForDataSource.setProperty("driverClassName", driver);
 
-		create(dsName, propertiesForDataSource);
-	}
+        create(dsName, propertiesForDataSource);
+    }
 
-	@Override
-	public void create(String dsName, Properties properties) throws Exception {
+    @Override
+    public void create(String dsName, Properties properties) throws Exception {
 
-		List<String> checkItems = Arrays.asList(new String[]{"username", "password", "url", "driverClassName"});
+        List<String> checkItems = Arrays.asList(new String[]{"username", "password", "url", "driverClassName"});
 
-		for (String item : checkItems) {
-			if (properties.containsKey(item)) {
-				String value = properties.getProperty(item);
-				if (value == null || value.isEmpty()) {
-					throw new IllegalArgumentException(item + " was specified incorrectly!");
-				}
-			} else {
-				throw new IllegalArgumentException(item + " must be specified!");
-			}
-		}
+        for (String item : checkItems) {
+            if (properties.containsKey(item)) {
+                String value = properties.getProperty(item);
+                if (value == null || value.isEmpty()) {
+                    throw new IllegalArgumentException(item + " was specified incorrectly!");
+                }
+            } else {
+                throw new IllegalArgumentException(item + " must be specified!");
+            }
+        }
 
-		if (!properties.containsKey("maxOpenPreparedStatements")) {
-			properties.setProperty("maxOpenPreparedStatements", "10");
-		}
+        if (!properties.containsKey("maxOpenPreparedStatements")) {
+            properties.setProperty("maxOpenPreparedStatements", "10");
+        }
 
-		log.debug("Creating BasicDataSource\n\tURI:" + properties.getProperty("url") + "\n\tUser:\n\t"
-				+ properties.getProperty("username"));
+        log.debug("Creating BasicDataSource\n\tURI:" + properties.getProperty("url") + "\n\tUser:\n\t"
+                + properties.getProperty("username"));
 
-		Class.forName(properties.getProperty("driverClassName"));
+        Class.forName(properties.getProperty("driverClassName"));
 
-		DataSource ds = BasicDataSourceFactory.createDataSource(properties);
+        DataSource ds = BasicDataSourceFactory.createDataSource(properties);
 
-		registry.add(dsName, new DataSourceObjectImpl(dsName, DataSourceType.DS_TYPE_JDBC, ds));
-	}
+        registry.add(dsName, new DataSourceObjectImpl(dsName, DataSourceType.DS_TYPE_JDBC, ds));
+    }
 }

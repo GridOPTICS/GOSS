@@ -18,31 +18,31 @@ import pnnl.goss.core.server.TokenIdentifierMap;
 @Path("/login")
 public class LoginService {
 
-	// Injected from Activator
-	private volatile SecurityManager securityManager;
+    // Injected from Activator
+    private volatile SecurityManager securityManager;
 
-	// Injected from Activator.
-	private volatile TokenIdentifierMap tokenMap;
+    // Injected from Activator.
+    private volatile TokenIdentifierMap tokenMap;
 
-	public void start() {
-		// System.out.println("I AM STARTING!");
-	}
+    public void start() {
+        // System.out.println("I AM STARTING!");
+    }
 
-	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
-	@Produces(MediaType.APPLICATION_JSON)
-	public String authenticate(@Context HttpServletRequest request, UsernamePasswordToken params) {
-		String sessionToken = null;
-		try {
-			@SuppressWarnings("unused")
-			AuthenticationInfo info = securityManager.authenticate(params);
-			sessionToken = tokenMap.registerIdentifier(request.getRemoteAddr(), params.getUsername());
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public String authenticate(@Context HttpServletRequest request, UsernamePasswordToken params) {
+        String sessionToken = null;
+        try {
+            @SuppressWarnings("unused")
+            AuthenticationInfo info = securityManager.authenticate(params);
+            sessionToken = tokenMap.registerIdentifier(request.getRemoteAddr(), params.getUsername());
 
-		} catch (AuthenticationException e) {
-			return "{\"error\": \"Invalid Login\"}";
-		}
+        } catch (AuthenticationException e) {
+            return "{\"error\": \"Invalid Login\"}";
+        }
 
-		return "{\"token\": \"" + sessionToken + "\"}";
-	}
+        return "{\"token\": \"" + sessionToken + "\"}";
+    }
 
 }

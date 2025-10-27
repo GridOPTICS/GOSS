@@ -9,10 +9,10 @@ package pnnl.goss.core.server;
  */
 public interface TokenIdentifierMap {
 
-	String registerIdentifier(String ip, String identifier);
+    String registerIdentifier(String ip, String identifier);
 
-	void registerIdentifier(String ip, String token, String identifier);
+    void registerIdentifier(String ip, String token, String identifier);
 
-	String getIdentifier(String ip, String token);
+    String getIdentifier(String ip, String token);
 
 }

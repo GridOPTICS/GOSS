@@ -52,24 +52,24 @@ import org.slf4j.LoggerFactory;
 
 public class ClientConfiguration {
 
-	private static Logger log = LoggerFactory.getLogger(ClientConfiguration.class);
+    private static Logger log = LoggerFactory.getLogger(ClientConfiguration.class);
 
-	private final Map<String, Object> config = new HashMap<>();
+    private final Map<String, Object> config = new HashMap<>();
 
-	public ClientConfiguration() {
+    public ClientConfiguration() {
 
-	}
+    }
 
-	public ClientConfiguration set(String key, Object value) {
-		config.put(key, value);
-		return this;
-	}
+    public ClientConfiguration set(String key, Object value) {
+        config.put(key, value);
+        return this;
+    }
 
-	public Object get(String key) {
-		return config.get(key);
-	}
+    public Object get(String key) {
+        return config.get(key);
+    }
 
-	public String getAsString(String key) {
-		return (String) get(key);
-	}
+    public String getAsString(String key) {
+        return (String) get(key);
+    }
 }

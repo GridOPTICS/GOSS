@@ -4,7 +4,7 @@ This project uses consistent code formatting across Eclipse and VSCode editors, 
 
 ## Formatting Rules
 
-- **Indentation**: Tabs (size 4)
+- **Indentation**: 4 spaces (not tabs)
 - **Line length**: 120 characters
 - **Braces**: End of line (K&R style)
 - **File endings**: Unix line endings (LF), files end with newline

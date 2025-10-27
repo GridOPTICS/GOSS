@@ -48,33 +48,33 @@ import java.io.Serializable;
 
 public class UploadRequest extends Request implements Serializable {
 
-	private static final long serialVersionUID = -2734493164985227464L;
-	Serializable data;
-	String dataType;
+    private static final long serialVersionUID = -2734493164985227464L;
+    Serializable data;
+    String dataType;
 
-	public UploadRequest(Serializable data, String dataType) {
-		this.data = data;
-		this.dataType = dataType;
-	}
+    public UploadRequest(Serializable data, String dataType) {
+        this.data = data;
+        this.dataType = dataType;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public Serializable getData() {
-		return data;
-	}
+    public Serializable getData() {
+        return data;
+    }
 
-	public void setData(Serializable data) {
-		this.data = data;
-	}
+    public void setData(Serializable data) {
+        this.data = data;
+    }
 
-	public String getDataType() {
-		return dataType;
-	}
+    public String getDataType() {
+        return dataType;
+    }
 
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
 
 }

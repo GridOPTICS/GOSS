@@ -47,5 +47,5 @@ package pnnl.goss.core;
 import java.io.Serializable;
 
 public interface GossResponseEvent {
-	public void onMessage(Serializable response);
+    public void onMessage(Serializable response);
 }

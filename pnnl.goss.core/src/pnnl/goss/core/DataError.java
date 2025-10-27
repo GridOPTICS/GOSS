@@ -46,31 +46,31 @@ package pnnl.goss.core;
 
 public class DataError implements Error {
 
-	/**
-	 * Serialized object data
-	 */
-	private static final long serialVersionUID = 8779199763024982724L;
+    /**
+     * Serialized object data
+     */
+    private static final long serialVersionUID = 8779199763024982724L;
 
-	private String message;
+    private String message;
 
-	public DataError() {
-	}
+    public DataError() {
+    }
 
-	public DataError(String message) {
-		this.setMessage(message);
-	}
+    public DataError(String message) {
+        this.setMessage(message);
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	@Override
-	public String toString() {
-		return (message != null) ? message : super.toString();
-	}
+    @Override
+    public String toString() {
+        return (message != null) ? message : super.toString();
+    }
 
 }

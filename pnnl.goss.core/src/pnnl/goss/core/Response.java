@@ -52,27 +52,27 @@ import java.util.UUID;
 
 public class Response implements Serializable {
 
-	private static final long serialVersionUID = 8541810525300877513L;
-	String id = UUID.randomUUID().toString();
+    private static final long serialVersionUID = 8541810525300877513L;
+    String id = UUID.randomUUID().toString();
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public int sizeof() throws IOException {
+    public int sizeof() throws IOException {
 
-		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
 
-		objectOutputStream.writeObject(this);
-		objectOutputStream.flush();
-		objectOutputStream.close();
+        objectOutputStream.writeObject(this);
+        objectOutputStream.flush();
+        objectOutputStream.close();
 
-		return byteOutputStream.toByteArray().length;
-	}
+        return byteOutputStream.toByteArray().length;
+    }
 
 }

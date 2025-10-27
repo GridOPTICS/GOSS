@@ -15,19 +15,19 @@ import org.osgi.service.component.annotations.Deactivate;
 @Component(service = Servlet.class, property = {"osgi.http.whiteboard.servlet.pattern=/hello"})
 public class Hello extends HttpServlet {
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.getWriter().write("Hello World");
-	}
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        resp.getWriter().write("Hello World");
+    }
 
-	@Activate
-	public void starting() {
-		System.out.println("Starting servlet");
-	}
+    @Activate
+    public void starting() {
+        System.out.println("Starting servlet");
+    }
 
-	@Deactivate
-	public void stopping() {
-		System.out.println("Stopping servlet");
-	}
+    @Deactivate
+    public void stopping() {
+        System.out.println("Stopping servlet");
+    }
 }

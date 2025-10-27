@@ -48,5 +48,5 @@ import java.sql.ResultSet;
 
 public interface DatabaseResult<T> {
 
-	void populateFromResult(ResultSet result);
+    void populateFromResult(ResultSet result);
 }
