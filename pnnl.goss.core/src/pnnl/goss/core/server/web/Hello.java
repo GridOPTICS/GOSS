@@ -28,6 +28,6 @@ public class Hello extends HttpServlet {
 	
 	@Deactivate
 	public void stopping(){
-		System.out.println("Stopping servilt");
+		System.out.println("Stopping servlet");
 	}
 }
