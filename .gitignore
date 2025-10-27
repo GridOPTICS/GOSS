@@ -37,8 +37,10 @@ generated.index
 out/
 
 # Eclipse
-.project
-.classpath
+# Note: .project and .classpath are tracked to ensure both Eclipse and VSCode
+# use Gradle's build directory (build/) instead of Eclipse's default (bin/)
+# .project
+# .classpath
 .settings/
 .metadata/
 *.launch

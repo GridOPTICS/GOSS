@@ -19,9 +19,11 @@
 #-verbose:              false
 #project:               ${basedir}
 #src:                   src
-#bin:                   bin
+# NOTE: Changed from 'bin' to 'build/classes/java/main' to match Gradle output
+bin:                   build/classes/java/main
 #testsrc:               test
-#testbin:               bin_test
+# NOTE: Changed from 'bin_test' to 'build/classes/java/test' to match Gradle output
+testbin:               build/classes/java/test
 #target-dir:            generated
 #target:                ${project}/${target-dir}
 #build:                 ${workspace}/cnf
