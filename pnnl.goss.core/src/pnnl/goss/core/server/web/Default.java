@@ -18,7 +18,7 @@ public class Default extends HttpServlet{
 
 	@Activate
 	public void starting(){
-		System.out.println("Startting");
+		System.out.println("Starting");
 	}
 	
 	@Override
