@@ -19,7 +19,7 @@ public interface Client {
 
 	/**
 	 * Makes synchronous call to the server
-	 * 
+	 *
 	 * @param request
 	 * @param topic
 	 * @param responseFormat
@@ -32,19 +32,19 @@ public interface Client {
 	/**
 	 * Lets the client subscribe to a Topic of the given name for event based
 	 * communication.
-	 * 
+	 *
 	 * @param topicName
-	 *            throws IllegalStateException if GossCLient is not initialized
-	 *            with an GossResponseEvent. Cannot asynchronously receive a
-	 *            message when a MessageListener is not set. throws JMSException
+	 *            throws IllegalStateException if GossCLient is not initialized with
+	 *            an GossResponseEvent. Cannot asynchronously receive a message when
+	 *            a MessageListener is not set. throws JMSException
 	 */
 	public Client subscribe(String topic, GossResponseEvent event)
 			throws SystemException;
 
 	public void publish(String topicName, Serializable message)
 			throws SystemException;
-	
-	public void publish(Destination destination, Serializable data) 
+
+	public void publish(Destination destination, Serializable data)
 			throws SystemException;
 
 	/**

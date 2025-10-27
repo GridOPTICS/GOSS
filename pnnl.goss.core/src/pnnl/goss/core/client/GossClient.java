@@ -115,7 +115,7 @@ public class GossClient implements Client {
 		this.trustStorePassword = trustStorePassword;
 		this.trustStore = trustStore;
 	}
-	
+
 	public GossClient(PROTOCOL protocol, Credentials credentials,
 			String openwireUri, String stompUri) {
 		this.uuid = UUID.randomUUID();
@@ -124,7 +124,6 @@ public class GossClient implements Client {
 		this.brokerUri = openwireUri;
 		this.stompUri = stompUri;
 	}
-
 
 	private void createSslSession() throws Exception {
 		ActiveMQSslConnectionFactory cf = new ActiveMQSslConnectionFactory(
@@ -179,7 +178,7 @@ public class GossClient implements Client {
 
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
 					brokerUri);
-			
+
 			if (credentials != null) {
 				factory.setUserName(credentials.getUserPrincipal().getName());
 				factory.setPassword(credentials.getPassword());
@@ -192,8 +191,9 @@ public class GossClient implements Client {
 
 			if (credentials != null) {
 				connection = factory.createConnection(credentials
-						.getUserPrincipal().getName(), credentials
-						.getPassword());
+						.getUserPrincipal().getName(),
+						credentials
+								.getPassword());
 			} else {
 				connection = factory.createConnection();
 			}
@@ -217,9 +217,8 @@ public class GossClient implements Client {
 	 * @return return an Object which could be a pnnl.goss.core.DataResponse,
 	 *         pnnl.goss.core.UploadResponse or pnnl.goss.core.DataError.
 	 * @throws IllegalStateException
-	 *             when GossCLient is initialized with an GossResponseEvent.
-	 *             Cannot synchronously receive a message when a MessageListener
-	 *             is set.
+	 *             when GossCLient is initialized with an GossResponseEvent. Cannot
+	 *             synchronously receive a message when a MessageListener is set.
 	 * @throws JMSException
 	 */
 	@Override
@@ -241,8 +240,8 @@ public class GossClient implements Client {
 		Serializable response = null;
 		Destination replyDestination = getTemporaryDestination();
 		Destination destination = session.createQueue(topic);
-		
-		log.debug("Creating consumer for destination "+replyDestination);
+
+		log.debug("Creating consumer for destination " + replyDestination);
 		DefaultClientConsumer clientConsumer = new DefaultClientConsumer(
 				session, replyDestination);
 		try {
@@ -277,9 +276,9 @@ public class GossClient implements Client {
 	 * communication.
 	 *
 	 * @param topicName
-	 *            throws IllegalStateException if GossCLient is not initialized
-	 *            with an GossResponseEvent. Cannot asynchronously receive a
-	 *            message when a MessageListener is not set. throws JMSException
+	 *            throws IllegalStateException if GossCLient is not initialized with
+	 *            an GossResponseEvent. Cannot asynchronously receive a message when
+	 *            a MessageListener is not set. throws JMSException
 	 */
 	public Client subscribe(String topicName, GossResponseEvent event)
 			throws SystemException {
@@ -314,15 +313,16 @@ public class GossClient implements Client {
 															":") + 1);
 									DataResponse dataResponse = new DataResponse(message);
 									dataResponse.setDestination(msg.getJMSDestination().toString());
-									if(msg.getJMSReplyTo() != null)
+									if (msg.getJMSReplyTo() != null)
 										dataResponse.setReplyDestination(msg.getJMSReplyTo());
-									if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-										dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
+									if (msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
+										dataResponse
+												.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
 									event.onMessage(dataResponse);
 								}
 								if (msg instanceof StompJmsTextMessage) {
 									StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
-									
+
 									org.fusesource.hawtbuf.Buffer buffer = stompMessage
 											.getContent();
 									// System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
@@ -332,25 +332,26 @@ public class GossClient implements Client {
 															":") + 1);
 									Gson gson = new Gson();
 									DataResponse dataResponse;
-									try{
+									try {
 										dataResponse = DataResponse.parse(message);
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-										if(msg.getJMSReplyTo() != null)
+										if (msg.getJMSReplyTo() != null)
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
-										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-											dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
+										if (msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
+											dataResponse.setUsername(
+													msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
 										event.onMessage(dataResponse);
-									}
-									catch(JsonSyntaxException e){
+									} catch (JsonSyntaxException e) {
 										dataResponse = new DataResponse(message);
 										dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-										if(msg.getJMSReplyTo() != null)
+										if (msg.getJMSReplyTo() != null)
 											dataResponse.setReplyDestination(msg.getJMSReplyTo());
-										if(msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-											dataResponse.setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
+										if (msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
+											dataResponse.setUsername(
+													msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
 										event.onMessage(dataResponse);
 									}
-									
+
 								}
 							} catch (JMSException ex) {
 								// Happens when a timeout occurs.
@@ -404,7 +405,7 @@ public class GossClient implements Client {
 			throw SystemException.wrap(e);
 		}
 	}
-	
+
 	@Override
 	public void publish(Destination destination, Serializable data) throws SystemException {
 		try {
@@ -429,8 +430,8 @@ public class GossClient implements Client {
 
 	/*
 	 * private void publishTo(Destination destination, Serializable data) throws
-	 * SystemException { try { clientPublisher.publishTo(destination, data); }
-	 * catch (JMSException e) { SystemException.wrap(e).set("destination",
+	 * SystemException { try { clientPublisher.publishTo(destination, data); } catch
+	 * (JMSException e) { SystemException.wrap(e).set("destination",
 	 * destination).set("data", data); } }
 	 */
 
@@ -542,18 +543,18 @@ public class GossClient implements Client {
 	}
 
 	/**
-	 * Reset the client to an initial un-connected state. If the client
-	 * currently has a session, then the session should be closed. If
-	 * credentials are set then they will be unset after this call. The protocol
-	 * of the client will not be changed.
+	 * Reset the client to an initial un-connected state. If the client currently
+	 * has a session, then the session should be closed. If credentials are set then
+	 * they will be unset after this call. The protocol of the client will not be
+	 * changed.
 	 */
 	public void reset() {
 
 	}
 
 	/**
-	 * Returns whether the current instances is being used or if it can be used
-	 * by another process.
+	 * Returns whether the current instances is being used or if it can be used by
+	 * another process.
 	 *
 	 * @return
 	 */
@@ -579,7 +580,5 @@ public class GossClient implements Client {
 	public String getClientId() {
 		return uuid.toString();
 	}
-	
-	
 
 }

@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -44,7 +44,6 @@
 */
 package pnnl.goss.core.server.impl;
 
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -65,26 +64,27 @@ import com.thoughtworks.xstream.XStream;
 public class ServerPublisher {
 
 	private final Session session;
-		
+
 	private static final Logger log = LoggerFactory.getLogger(ServerPublisher.class);
 
 	public ServerPublisher(Session session) {
 		this.session = session;
 	}
-	
-	public void sendErrror(String errorString, Destination destination) throws JMSException{
+
+	public void sendErrror(String errorString, Destination destination) throws JMSException {
 		DataResponse errResp = new DataResponse(new DataError(errorString));
 		errResp.setResponseComplete(true);
-		sendResponse(errResp, destination);		
+		sendResponse(errResp, destination);
 	}
 
 	public void sendResponse(Response response, Destination destination)
 			throws JMSException {
 
 		ObjectMessage message = session.createObjectMessage(response);
-		//System.out.println("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
+		// System.out.println("Sending response for QueryId: " + response.getId() + " on
+		// destination: " + destination);
 		log.debug("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
-		session.createProducer(destination).send(message); //producer.send(destination, message);
+		session.createProducer(destination).send(message); // producer.send(destination, message);
 
 	}
 
@@ -101,9 +101,10 @@ public class ServerPublisher {
 			message = session.createTextMessage(xml);
 		}
 
-		//System.out.println("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
+		// System.out.println("Sending response for QueryId: " + response.getId() + " on
+		// destination: " + destination);
 		log.debug("Sending response for QueryId: " + response.getId() + " on destination: " + destination);
-		//producer.send(destination, message);
+		// producer.send(destination, message);
 		session.createProducer(destination).send(message);
 
 	}
@@ -112,28 +113,30 @@ public class ServerPublisher {
 			throws JMSException {
 		Destination destination = session.createTopic(destinationName);
 		ObjectMessage message = session.createObjectMessage(response);
-		//System.out.println("Sending response for QueryId: on destination: "+ destination);
-		log.debug("Sending response for QueryId: on destination: "+ destination);
-		//producer.send(destination, message);
+		// System.out.println("Sending response for QueryId: on destination: "+
+		// destination);
+		log.debug("Sending response for QueryId: on destination: " + destination);
+		// producer.send(destination, message);
 		session.createProducer(destination).send(message);
 	}
-	
+
 	public void sendEvent(String message, String destinationName)
 			throws JMSException {
 		Destination destination = session.createTopic(destinationName);
 		TextMessage response = session.createTextMessage(message);
-		
-		//System.out.println("Sending response for QueryId: on destination: "+ destination);
-		//producer.send(destination, response);
+
+		// System.out.println("Sending response for QueryId: on destination: "+
+		// destination);
+		// producer.send(destination, response);
 		session.createProducer(destination).send(response);
 	}
 
 	public void close() {
-//		try {
-//			session.close();
-//		} catch (JMSException e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// session.close();
+		// } catch (JMSException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 }

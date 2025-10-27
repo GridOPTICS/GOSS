@@ -26,13 +26,13 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 	private final Map<ServiceReference<DataSourceObject>, DataSourceObject> serviceRefMap = new ConcurrentHashMap<>();
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "datasourceRemoved")
-	public void datasourceAdded(ServiceReference<DataSourceObject> ref, DataSourceObject obj){
+	public void datasourceAdded(ServiceReference<DataSourceObject> ref, DataSourceObject obj) {
 		log.debug("Datasource registered: " + obj.getName());
 		dataSourceMap.put(obj.getName(), obj);
 		serviceRefMap.put(ref, obj);
 	}
 
-	public void datasourceRemoved(ServiceReference<DataSourceObject> ref){
+	public void datasourceRemoved(ServiceReference<DataSourceObject> ref) {
 		log.debug("Removing datasource: " + serviceRefMap.get(ref).getName());
 		DataSourceObject toRemove = serviceRefMap.remove(ref);
 		dataSourceMap.remove(toRemove);
@@ -49,7 +49,7 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 	public Map<String, DataSourceType> getAvailable() {
 		Map<String, DataSourceType> map = new HashMap<>();
 
-		for(DataSourceObject o: dataSourceMap.values()){
+		for (DataSourceObject o : dataSourceMap.values()) {
 			map.put(o.getName(), o.getDataSourceType());
 		}
 
@@ -65,6 +65,5 @@ public class DataSourceRegistryImpl implements DataSourceRegistry {
 	public void remove(String key) {
 		dataSourceMap.remove(key);
 	}
-
 
 }

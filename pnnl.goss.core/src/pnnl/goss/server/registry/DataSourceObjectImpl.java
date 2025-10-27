@@ -12,23 +12,24 @@ import pnnl.goss.core.server.DataSourcePooledJdbc;
 import pnnl.goss.core.server.DataSourceType;
 
 /**
- * An internal (non-service) implementation of DataSourcePooledJdbc interface.  This
- * allows the use of the PooledBasicDataSourceBuilderImpl to make use of this class
- * when registering it with the DataSourceRegistry.
- * 
+ * An internal (non-service) implementation of DataSourcePooledJdbc interface.
+ * This allows the use of the PooledBasicDataSourceBuilderImpl to make use of
+ * this class when registering it with the DataSourceRegistry.
+ *
  * @author Craig Allwardt
  *
  */
 public class DataSourceObjectImpl implements DataSourcePooledJdbc {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(DataSourceObjectImpl.class);
 	private String name;
 	private DataSourceType datsourceType;
 	private DataSource datasource;
-	
+
 	/**
-	 * Construct a new DataSourceObject with the specified name(key), datasourceType and datasource
-	 * 
+	 * Construct a new DataSourceObject with the specified name(key), datasourceType
+	 * and datasource
+	 *
 	 * @param name
 	 * @param dataSourceType
 	 * @param ds
@@ -37,7 +38,7 @@ public class DataSourceObjectImpl implements DataSourcePooledJdbc {
 		this.name = name;
 		this.datsourceType = dataSourceType;
 		this.datasource = ds;
-		log.debug("Created "+DataSourceObjectImpl.class.getName()+ " for ds: "+name);
+		log.debug("Created " + DataSourceObjectImpl.class.getName() + " for ds: " + name);
 	}
 
 	@Override
@@ -55,7 +56,5 @@ public class DataSourceObjectImpl implements DataSourcePooledJdbc {
 	public Connection getConnection() throws SQLException {
 		return datasource.getConnection();
 	}
-	
-
 
 }

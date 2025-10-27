@@ -25,36 +25,36 @@ import pnnl.goss.core.server.RequestHandler;
 import pnnl.goss.core.server.RequestUploadHandler;
 import pnnl.goss.server.registry.HandlerRegistryImpl;
 
-
 public class HandlerRegistryImplTest {
-	
+
 	private HandlerRegistryImpl registry;
-	
-	private class MyRequest extends Request{
-		
+
+	private class MyRequest extends Request {
+
 		private static final long serialVersionUID = 402798455538154736L;
-		
+
 	}
-	
-	private class MyUploadRequest extends UploadRequest{
-		
+
+	private class MyUploadRequest extends UploadRequest {
+
 		private static final long serialVersionUID = 4027984612538154736L;
-		
+
 		public MyUploadRequest(Serializable data, String dataType) {
 			super(data, dataType);
 		}
-		
+
 	}
-	
-	private class MyAuthorizationHandler implements AuthorizationHandler{
+
+	private class MyAuthorizationHandler implements AuthorizationHandler {
 
 		@Override
 		public boolean isAuthorized(Request request, Set<String> userRoles) {
 			return false;
 		}
-		
+
 	}
-	private class MyUploadHandler implements RequestUploadHandler{
+
+	private class MyUploadHandler implements RequestUploadHandler {
 
 		@Override
 		public Map<String, Class<? extends AuthorizationHandler>> getHandlerDataTypes() {
@@ -68,10 +68,10 @@ public class HandlerRegistryImplTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
-	
-	private class MyRequestHandler implements RequestHandler{
+
+	private class MyRequestHandler implements RequestHandler {
 
 		@Override
 		public Map<Class<? extends Request>, Class<? extends AuthorizationHandler>> getHandles() {
@@ -86,25 +86,25 @@ public class HandlerRegistryImplTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
-	
+
 	@BeforeEach
-	public void setUp(){
+	public void setUp() {
 		registry = new HandlerRegistryImpl();
 	}
-	
+
 	@Test
 	@DisplayName("Should successfully add and retrieve upload handler")
-	public void canAddAndGetUploadHandler(){
+	public void canAddAndGetUploadHandler() {
 		// Given
 		@SuppressWarnings("unchecked")
-		ServiceReference<RequestUploadHandler> ref = mock(ServiceReference.class); 
+		ServiceReference<RequestUploadHandler> ref = mock(ServiceReference.class);
 		RequestUploadHandler handler = new MyUploadHandler();
-		
+
 		// When
 		registry.uploadHandlerAdded(ref, handler);
-		
+
 		// Then
 		assertDoesNotThrow(() -> {
 			RequestUploadHandler backHandler = registry.getUploadHandler(MyUploadRequest.class.getName());
@@ -112,18 +112,18 @@ public class HandlerRegistryImplTest {
 			assertThat(backHandler).isNotNull().isEqualTo(handler);
 		});
 	}
-	
+
 	@Test
 	@DisplayName("Should successfully add and retrieve request handler")
-	public void canAddAndGetRequestHandler(){
+	public void canAddAndGetRequestHandler() {
 		// Given
 		@SuppressWarnings("unchecked")
-		ServiceReference<RequestHandler> ref = mock(ServiceReference.class); 
+		ServiceReference<RequestHandler> ref = mock(ServiceReference.class);
 		RequestHandler handler = new MyRequestHandler();
-		
+
 		// When
 		registry.requestHandlerAdded(ref, handler);
-		
+
 		// Then
 		assertDoesNotThrow(() -> {
 			RequestHandler backHandler = registry.getHandler(MyRequest.class);
@@ -131,19 +131,19 @@ public class HandlerRegistryImplTest {
 			assertThat(backHandler).isNotNull().isEqualTo(handler);
 		});
 	}
-	
+
 	@Test
 	@DisplayName("Should throw exception when handler not found")
-	public void shouldThrowExceptionWhenHandlerNotFound(){
+	public void shouldThrowExceptionWhenHandlerNotFound() {
 		// Given an empty registry
-		
+
 		// Then - the implementation has a bug that throws NullPointerException instead
 		// This test documents the actual behavior
 		assertThatThrownBy(() -> registry.getHandler(MyRequest.class))
-			.isInstanceOf(NullPointerException.class);
-		
+				.isInstanceOf(NullPointerException.class);
+
 		assertThatThrownBy(() -> registry.getUploadHandler("NonExistent"))
-			.isInstanceOf(NullPointerException.class);
+				.isInstanceOf(NullPointerException.class);
 	}
 
 }

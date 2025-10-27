@@ -29,8 +29,8 @@ public class PooledSqlServiceImpl implements DataSourceObject, DataSourcePooledJ
 	private final Map<String, String> customizations;
 	private DataSource dataSource;
 
-
-	public PooledSqlServiceImpl(String datasource_name, String url, String username, String password, String driver, Map<String, String> otherProperties) {
+	public PooledSqlServiceImpl(String datasource_name, String url, String username, String password, String driver,
+			Map<String, String> otherProperties) {
 		this.name = datasource_name;
 		this.url = url;
 		this.password = password;
@@ -40,7 +40,7 @@ public class PooledSqlServiceImpl implements DataSourceObject, DataSourcePooledJ
 		this.createDataSource();
 	}
 
-	private void createDataSource(){
+	private void createDataSource() {
 		Properties propertiesForDataSource = new Properties();
 		propertiesForDataSource.setProperty("username", username);
 		propertiesForDataSource.setProperty("password", password);
@@ -49,8 +49,7 @@ public class PooledSqlServiceImpl implements DataSourceObject, DataSourcePooledJ
 
 		propertiesForDataSource.putAll(customizations);
 
-
-		if (!propertiesForDataSource.containsKey("maxOpenPreparedStatements")){
+		if (!propertiesForDataSource.containsKey("maxOpenPreparedStatements")) {
 			propertiesForDataSource.setProperty("maxOpenPreparedStatements", "10");
 		}
 
@@ -81,7 +80,7 @@ public class PooledSqlServiceImpl implements DataSourceObject, DataSourcePooledJ
 	@Override
 	public Connection getConnection() throws SQLException {
 
-		if (dataSource == null){
+		if (dataSource == null) {
 			throw new SQLException("Invalid datasource.");
 		}
 

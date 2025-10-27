@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -51,8 +51,8 @@ public class UploadRequest extends Request implements Serializable {
 	private static final long serialVersionUID = -2734493164985227464L;
 	Serializable data;
 	String dataType;
-	
-	public UploadRequest(Serializable data, String dataType){
+
+	public UploadRequest(Serializable data, String dataType) {
 		this.data = data;
 		this.dataType = dataType;
 	}
@@ -77,6 +77,4 @@ public class UploadRequest extends Request implements Serializable {
 		this.dataType = dataType;
 	}
 
-	
-	
 }

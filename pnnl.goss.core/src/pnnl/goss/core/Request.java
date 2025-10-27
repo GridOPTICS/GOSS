@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -50,38 +50,42 @@ import java.util.UUID;
 public class Request implements Serializable {
 
 	private static final long serialVersionUID = 7480441703135671635L;
-	
+
 	protected String id = UUID.randomUUID().toString();
-	
+
 	/**
 	 * Allows the request to be specified by a url.
 	 */
 	protected String url = null;
-	
-	public enum RESPONSE_FORMAT {XML, JSON};
-	
+
+	public enum RESPONSE_FORMAT {
+		XML, JSON
+	};
+
 	/**
-	 * Default to xml responses 
+	 * Default to xml responses
 	 */
 	private RESPONSE_FORMAT reponseFormat = RESPONSE_FORMAT.XML;
-		
+
 	public String getId() {
 		return id;
 	}
-	
+
 	/**
 	 * A requested url
+	 *
 	 * @return string url for a resource
 	 */
-	public String getUrl(){
+	public String getUrl() {
 		return this.url;
 	}
-	
+
 	/**
 	 * Sets a resource url.
+	 *
 	 * @param url
 	 */
-	public void setUrl(String url){
+	public void setUrl(String url) {
 		this.url = url;
 	}
 

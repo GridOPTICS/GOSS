@@ -19,44 +19,43 @@ import pnnl.goss.core.security.PermissionAdapter;
 
 @Component(service = PermissionAdapter.class)
 public class SecurityManagerRealmHandler implements PermissionAdapter {
-	
+
 	@Reference
 	private volatile SecurityManager securityManager;
 	private final Map<ServiceReference<GossRealm>, GossRealm> realmMap = new ConcurrentHashMap<>();
-	
+
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "realmRemoved")
-	public void realmAdded(ServiceReference<GossRealm> ref, GossRealm handler){
-		
-		DefaultSecurityManager defaultInstance = (DefaultSecurityManager)securityManager;
-		realmMap.put(ref,  handler);
-		
-		if (defaultInstance.getRealms() == null){
+	public void realmAdded(ServiceReference<GossRealm> ref, GossRealm handler) {
+
+		DefaultSecurityManager defaultInstance = (DefaultSecurityManager) securityManager;
+		realmMap.put(ref, handler);
+
+		if (defaultInstance.getRealms() == null) {
 			defaultInstance.setRealms(new HashSet<Realm>());
 			Set<Realm> realms = new HashSet<>();
-			for(GossRealm r: realmMap.values()){
+			for (GossRealm r : realmMap.values()) {
 				realms.add((Realm) r);
 			}
 			defaultInstance.setRealms(realms);
-		}
-		else{
+		} else {
 			defaultInstance.getRealms().add(handler);
-		}	
-			
+		}
+
 	}
-	
-	public void realmRemoved(ServiceReference<GossRealm> ref){
-		DefaultSecurityManager defaultInstance = (DefaultSecurityManager)securityManager;
+
+	public void realmRemoved(ServiceReference<GossRealm> ref) {
+		DefaultSecurityManager defaultInstance = (DefaultSecurityManager) securityManager;
 		defaultInstance.getRealms().remove(realmMap.get(ref));
 	}
 
 	@Override
 	public Set<String> getPermissions(String identifier) {
-		
+
 		Set<String> perms = new HashSet<>();
-		for(GossRealm r: realmMap.values()){
+		for (GossRealm r : realmMap.values()) {
 			perms.addAll(r.getPermissions(identifier));
 		}
-		
+
 		return perms;
 	}
 

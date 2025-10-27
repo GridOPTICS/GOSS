@@ -15,41 +15,39 @@ import com.google.gson.JsonObject;
 
 @Path("/api")
 public class LoginTestService {
-	
-	@Context 
+
+	@Context
 	private HttpServletRequest request;
-		
+
 	@POST
 	@Path("/echo")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response runTest(String body){
-		
+	public Response runTest(String body) {
+
 		Gson gson = new Gson();
 		JsonObject bodyObj = null;
 		JsonObject obj = new JsonObject();
-		
-		try{
+
+		try {
 			bodyObj = gson.fromJson(body, JsonObject.class);
 			obj.add("data", bodyObj);
+		} catch (Exception ex) {
+			obj.addProperty("data", "Non JSON :" + body);
 		}
-		catch(Exception ex){
-			obj.addProperty("data", "Non JSON :"+body);
-		}
-		
+
 		obj.addProperty("Status", "Success");
-		
-		
+
 		return Response.status(Status.OK).entity(obj.toString()).build();
 	}
-	
+
 	@POST
 	@Path("/loginTest")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
 	@Produces(MediaType.APPLICATION_JSON)
-	public String authenticate(@Context HttpServletRequest request){
-		
+	public String authenticate(@Context HttpServletRequest request) {
+
 		return "{\"status\": \"Success\"}";
 	}
-	
+
 }

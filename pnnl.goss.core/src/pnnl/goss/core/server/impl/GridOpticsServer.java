@@ -95,232 +95,218 @@ import pnnl.goss.core.security.GossRealm;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
 
-
 @Component(service = ServerControl.class, configurationPid = "pnnl.goss.core.server")
 public class GridOpticsServer implements ServerControl {
 
-    private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
-    private static final String CONFIG_PID = "pnnl.goss.core.server";
-    
-    private static final String PROP_USE_AUTH = "goss.use.authorization";
-    private static final String PROP_START_BROKER = "goss.start.broker";
-    private static final String PROP_CONNECTION_URI = "goss.broker.uri";
-    private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
-    private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
-    private static final String PROP_WS_TRANSPORT = "goss.ws.uri";
-    private static final String PROP_SSL_TRANSPORT = "goss.ssl.uri";
-    
-    private static final String PROP_SSL_ENABLED = "ssl.enabled";
-    private static final String PROP_SSL_CLIENT_KEYSTORE = "client.keystore";
-    private static final String PROP_SSL_CLIENT_KEYSTORE_PASSWORD = "client.keystore.password";
-    private static final String PROP_SSL_CLIENT_TRUSTSTORE = "client.truststore";
-    private static final String PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD = "client.truststore.password";
-    
-    private static final String PROP_SSL_SERVER_KEYSTORE = "server.keystore";
-    private static final String PROP_SSL_SERVER_KEYSTORE_PASSWORD = "server.keystore.password";
-    private static final String PROP_SSL_SERVER_TRUSTSTORE = "server.truststore";
-    private static final String PROP_SSL_SERVER_TRUSTSTORE_PASSWORD = "server.truststore.password";
-    
-    private static final String PROP_SYSTEM_MANAGER = "goss.system.manager";
-    private static final String PROP_SYSTEM_MANAGER_PASSWORD = "goss.system.manager.password";
-    		
-    private BrokerService broker;
-    private Connection connection;
-    private Session session;
-    private Destination destination;
-    
-    // System manager username/password (required * privleges on the message bus)
-    private String systemManager = null;
-    private String systemManagerPassword = null;
-    
-    // Should we automatically start the broker?
-    private boolean shouldStartBroker = false;
-    // The connectionUri to create if shouldStartBroker is set to true.
-    private String connectionUri = null;
-    // The tcp transport for openwire
-    private String openwireTransport = null;
-    // The ssl transport for connections to the server
-    private String sslTransport = null;
-    // The tcp transport for stomp
-    private String stompTransport = null;
-    // The  transport for stomp
-    private String wsTransport = null;
-    // Topic to listen on for receiving requests
-    private String requestQueue = null;
-    
-    // SSL Parameters
-    private boolean sslEnabled = false;
-    private String sslClientKeyStore = null;
-    private String sslClientKeyStorePassword = null;
-    private String sslClientTrustStore = null;
-    private String sslClientTrustStorePassword = null;
-    
-    private String sslServerKeyStore = null;
-    private String sslServerKeyStorePassword = null;
-    private String sslServerTrustStore = null;
-    private String sslServerTrustStorePassword = null;
-    
-    private String gossClockTickTopic = null;
-    
-    // A list of consumers all listening to the requestQueue
-    private final List<ServerConsumer> consumers = new ArrayList<>(); 
-     
-    private ConnectionFactory connectionFactory = null;
-    
-    @Reference
-    private volatile SecurityManager securityManager;
-    
-    
-    @Reference
-    private volatile RequestHandlerRegistry handlerRegistry;
-    
-    @Reference
-    private volatile GossRealm permissionAdapter;
-    
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    
-    
-    /**
-     * Return a default value if the passed string is null or empty,
-     * or if the value starts with a ${ (assumes that a property
-     * wasn't set in a properties file.).
-     * 
-     * @param value			The value to interrogate.
-     * @param defaultValue  A default value to return if our checks weren't valid
-     * @return				The value or defaultValue
-     */
-    private String getProperty(String value, String defaultValue){
-    	String retValue = defaultValue;
-    	
-    	if (value != null && !value.isEmpty()){
-    		// Let the value pass through because it doesn't
-    		// start with ${
-    		if (!value.startsWith("${")){
-    			retValue = value;
-    		}
-    	}
-    	
-    	return retValue;
-    }
-        
-        
-    @Modified
-    public synchronized void updated(Map<String, Object> properties) throws SystemException {
-    	
-    	if (properties != null) {
-    		
-    		systemManager = getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
-    				"system");
-    		systemManagerPassword = getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
-    				"manager"); 
-    		    	
-    		shouldStartBroker = Boolean.parseBoolean(
-    				getProperty((String) properties.get(PROP_START_BROKER), "true"));
-    		
-    		connectionUri = getProperty((String)properties.get(PROP_CONNECTION_URI),
-    				"tcp://localhost:61616");
-    		
-	    	openwireTransport = getProperty((String) properties.get(PROP_OPENWIRE_TRANSPORT),
-	    			"tcp://localhost:61616");
-	    	
-	    	stompTransport = getProperty((String) properties.get(PROP_STOMP_TRANSPORT),
-	    			"stomp://localhost:61613");
-	    	
-	    	wsTransport = getProperty((String) properties.get(PROP_WS_TRANSPORT),
-	    			"ws://localhost:61614");
-	    	
-	    	requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE)
-	    			,"Request");
-	    	
-	    	gossClockTickTopic = getProperty((String) properties.get(GossCoreContants.PROP_TICK_TOPIC)
-	    			, "goss/system/tick");
-	    	
-	    	// SSL IS DISABLED BY DEFAULT.
-	    	sslEnabled = Boolean.parseBoolean(
-	    			getProperty((String) properties.get(PROP_SSL_ENABLED)
-	    			,"false"));
-	    	
-	    	sslTransport = getProperty((String) properties.get(PROP_SSL_TRANSPORT)
-	    			,"tcp://localhost:61443");
-	    	
-	    	sslClientKeyStore = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE)
-	    			,null);
-	    	sslClientKeyStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD)
-	    			,null);
-	    	sslClientTrustStore = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE)
-	    			,null);
-	    	sslClientTrustStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD)
-	    			,null);
-	    	sslServerKeyStore = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE)
-	    			,null);
-	    	sslServerKeyStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE_PASSWORD)
-	    			,null);
-	    	sslServerTrustStore = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE)
-	    			,null);
-	    	sslServerTrustStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD)
-	    			,null);
-	    	
-	    	
-    	}
-        
-    }
-    
-    public Session getSession(){
+	private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
+	private static final String CONFIG_PID = "pnnl.goss.core.server";
+
+	private static final String PROP_USE_AUTH = "goss.use.authorization";
+	private static final String PROP_START_BROKER = "goss.start.broker";
+	private static final String PROP_CONNECTION_URI = "goss.broker.uri";
+	private static final String PROP_OPENWIRE_TRANSPORT = "goss.openwire.uri";
+	private static final String PROP_STOMP_TRANSPORT = "goss.stomp.uri";
+	private static final String PROP_WS_TRANSPORT = "goss.ws.uri";
+	private static final String PROP_SSL_TRANSPORT = "goss.ssl.uri";
+
+	private static final String PROP_SSL_ENABLED = "ssl.enabled";
+	private static final String PROP_SSL_CLIENT_KEYSTORE = "client.keystore";
+	private static final String PROP_SSL_CLIENT_KEYSTORE_PASSWORD = "client.keystore.password";
+	private static final String PROP_SSL_CLIENT_TRUSTSTORE = "client.truststore";
+	private static final String PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD = "client.truststore.password";
+
+	private static final String PROP_SSL_SERVER_KEYSTORE = "server.keystore";
+	private static final String PROP_SSL_SERVER_KEYSTORE_PASSWORD = "server.keystore.password";
+	private static final String PROP_SSL_SERVER_TRUSTSTORE = "server.truststore";
+	private static final String PROP_SSL_SERVER_TRUSTSTORE_PASSWORD = "server.truststore.password";
+
+	private static final String PROP_SYSTEM_MANAGER = "goss.system.manager";
+	private static final String PROP_SYSTEM_MANAGER_PASSWORD = "goss.system.manager.password";
+
+	private BrokerService broker;
+	private Connection connection;
+	private Session session;
+	private Destination destination;
+
+	// System manager username/password (required * privleges on the message bus)
+	private String systemManager = null;
+	private String systemManagerPassword = null;
+
+	// Should we automatically start the broker?
+	private boolean shouldStartBroker = false;
+	// The connectionUri to create if shouldStartBroker is set to true.
+	private String connectionUri = null;
+	// The tcp transport for openwire
+	private String openwireTransport = null;
+	// The ssl transport for connections to the server
+	private String sslTransport = null;
+	// The tcp transport for stomp
+	private String stompTransport = null;
+	// The transport for stomp
+	private String wsTransport = null;
+	// Topic to listen on for receiving requests
+	private String requestQueue = null;
+
+	// SSL Parameters
+	private boolean sslEnabled = false;
+	private String sslClientKeyStore = null;
+	private String sslClientKeyStorePassword = null;
+	private String sslClientTrustStore = null;
+	private String sslClientTrustStorePassword = null;
+
+	private String sslServerKeyStore = null;
+	private String sslServerKeyStorePassword = null;
+	private String sslServerTrustStore = null;
+	private String sslServerTrustStorePassword = null;
+
+	private String gossClockTickTopic = null;
+
+	// A list of consumers all listening to the requestQueue
+	private final List<ServerConsumer> consumers = new ArrayList<>();
+
+	private ConnectionFactory connectionFactory = null;
+
+	@Reference
+	private volatile SecurityManager securityManager;
+
+	@Reference
+	private volatile RequestHandlerRegistry handlerRegistry;
+
+	@Reference
+	private volatile GossRealm permissionAdapter;
+
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+	/**
+	 * Return a default value if the passed string is null or empty, or if the value
+	 * starts with a ${ (assumes that a property wasn't set in a properties file.).
+	 *
+	 * @param value
+	 *            The value to interrogate.
+	 * @param defaultValue
+	 *            A default value to return if our checks weren't valid
+	 * @return The value or defaultValue
+	 */
+	private String getProperty(String value, String defaultValue) {
+		String retValue = defaultValue;
+
+		if (value != null && !value.isEmpty()) {
+			// Let the value pass through because it doesn't
+			// start with ${
+			if (!value.startsWith("${")) {
+				retValue = value;
+			}
+		}
+
+		return retValue;
+	}
+
+	@Modified
+	public synchronized void updated(Map<String, Object> properties) throws SystemException {
+
+		if (properties != null) {
+
+			systemManager = getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
+					"system");
+			systemManagerPassword = getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
+					"manager");
+
+			shouldStartBroker = Boolean.parseBoolean(
+					getProperty((String) properties.get(PROP_START_BROKER), "true"));
+
+			connectionUri = getProperty((String) properties.get(PROP_CONNECTION_URI),
+					"tcp://localhost:61616");
+
+			openwireTransport = getProperty((String) properties.get(PROP_OPENWIRE_TRANSPORT),
+					"tcp://localhost:61616");
+
+			stompTransport = getProperty((String) properties.get(PROP_STOMP_TRANSPORT),
+					"stomp://localhost:61613");
+
+			wsTransport = getProperty((String) properties.get(PROP_WS_TRANSPORT),
+					"ws://localhost:61614");
+
+			requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE), "Request");
+
+			gossClockTickTopic = getProperty((String) properties.get(GossCoreContants.PROP_TICK_TOPIC),
+					"goss/system/tick");
+
+			// SSL IS DISABLED BY DEFAULT.
+			sslEnabled = Boolean.parseBoolean(
+					getProperty((String) properties.get(PROP_SSL_ENABLED), "false"));
+
+			sslTransport = getProperty((String) properties.get(PROP_SSL_TRANSPORT), "tcp://localhost:61443");
+
+			sslClientKeyStore = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE), null);
+			sslClientKeyStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD), null);
+			sslClientTrustStore = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE), null);
+			sslClientTrustStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD),
+					null);
+			sslServerKeyStore = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE), null);
+			sslServerKeyStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE_PASSWORD), null);
+			sslServerTrustStore = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE), null);
+			sslServerTrustStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD),
+					null);
+
+		}
+
+	}
+
+	public Session getSession() {
 		return session;
 	}
-    
-    /**
-     * Consults the variables created in the update method for whether
-     * there is enough information to create ssl broker and that the
-     * ssl.enable property is set to true.
-     * 
-     * @return true if the server supports ssl and ssl.enabled is true.
-     */
-    private boolean shouldUsSsl(){
-    	// Do we want ssl from the config file?
-    	boolean useSsl = sslEnabled;
-    	
-    	if (useSsl) {
-    		
-    		// FileNameUtils.getName will return an empty string if the file
-    		// does not exist.
-    		if (FilenameUtils.getName(sslClientKeyStore).isEmpty() ||
-    				FilenameUtils.getName(sslClientTrustStore).isEmpty())
-    		{
-    			useSsl = false;
-    		}
-    	}
-    	
-    	return useSsl;
-    	
-    }
-    
-    /**
-     * Creates a broker with shiro security plugin installed.
-     * 
-     * After this function the broker variable 
-     */
-    private void createBroker() throws Exception{
-    	// Create shiro broker plugin
+
+	/**
+	 * Consults the variables created in the update method for whether there is
+	 * enough information to create ssl broker and that the ssl.enable property is
+	 * set to true.
+	 *
+	 * @return true if the server supports ssl and ssl.enabled is true.
+	 */
+	private boolean shouldUsSsl() {
+		// Do we want ssl from the config file?
+		boolean useSsl = sslEnabled;
+
+		if (useSsl) {
+
+			// FileNameUtils.getName will return an empty string if the file
+			// does not exist.
+			if (FilenameUtils.getName(sslClientKeyStore).isEmpty() ||
+					FilenameUtils.getName(sslClientTrustStore).isEmpty()) {
+				useSsl = false;
+			}
+		}
+
+		return useSsl;
+
+	}
+
+	/**
+	 * Creates a broker with shiro security plugin installed.
+	 *
+	 * After this function the broker variable
+	 */
+	private void createBroker() throws Exception {
+		// Create shiro broker plugin
 		ShiroPlugin shiroPlugin = new ShiroPlugin();
-				
+
 		shiroPlugin.setSecurityManager(securityManager);
-		//shiroPlugin.setIniConfig("conf/shiro.ini");
-		
-		//shiroPlugin.setIni(new IniEnvironment("conf/shiro.ini"));
-		//shiroPlugin.getSubjectFilter().setConnectionSubjectFactory(subjectConnectionFactory);
-		    		
+		// shiroPlugin.setIniConfig("conf/shiro.ini");
+
+		// shiroPlugin.setIni(new IniEnvironment("conf/shiro.ini"));
+		// shiroPlugin.getSubjectFilter().setConnectionSubjectFactory(subjectConnectionFactory);
+
 		// Configure how we are going to use it.
-		//shiroPlugin.setIniConfig(iniConfig);
-		
+		// shiroPlugin.setIniConfig(iniConfig);
+
 		try {
-			if (shouldUsSsl()){
+			if (shouldUsSsl()) {
 				broker = new SslBrokerService();
-								
+
 				KeyManager[] km = getKeyManager(sslServerKeyStore, sslServerKeyStorePassword);
-		        TrustManager[] tm = getTrustManager(sslClientTrustStore);
-		        ((SslBrokerService) broker).addSslConnector(sslTransport, km, tm, null);
-		        log.debug("Starting broker with ssl connector: " + sslTransport);
+				TrustManager[] tm = getTrustManager(sslClientTrustStore);
+				((SslBrokerService) broker).addSslConnector(sslTransport, km, tm, null);
+				log.debug("Starting broker with ssl connector: " + sslTransport);
 
 			} else {
 				broker = new BrokerService();
@@ -331,54 +317,54 @@ public class GridOpticsServer implements ServerControl {
 			broker.setPersistent(false);
 			broker.setUseJmx(false);
 			broker.setPersistenceAdapter(null);
-			
-			//broker.addConnector(stompTransport);
+
+			// broker.addConnector(stompTransport);
 			broker.setPlugins(new BrokerPlugin[]{shiroPlugin});
-			
-    		broker.start();
+
+			broker.start();
 		} catch (Exception e) {
 			log.error("Error Starting Broker", e);
-			
-			//System.err.println(e.getMessage());;
+
+			// System.err.println(e.getMessage());;
 		}
-    }
-    
-    /**
-     * ClockTick runnable that will be called once a second.     *
-     */
-    private static class ClockTick implements Runnable{
-    	
-    	private static int count = 0;
-    	private volatile Session session;
-    	private transient MessageProducer producer;
-    	private Destination destination;
-    	private boolean sendTick = true;
-    	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    	
-    	/**
-    	 * Creates the topic and creates the producer to publish data to
-    	 * the to the message bus.
-    	 * 
-    	 * @param server
-    	 */
-    	public ClockTick(GridOpticsServer server){ 		
-      		session = server.getSession();
-    		// Create a MessageProducer from the Session to the Topic or Queue
-            try {
-            	destination = session.createTopic(server.gossClockTickTopic);
+	}
+
+	/**
+	 * ClockTick runnable that will be called once a second. *
+	 */
+	private static class ClockTick implements Runnable {
+
+		private static int count = 0;
+		private volatile Session session;
+		private transient MessageProducer producer;
+		private Destination destination;
+		private boolean sendTick = true;
+		private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+		/**
+		 * Creates the topic and creates the producer to publish data to the to the
+		 * message bus.
+		 *
+		 * @param server
+		 */
+		public ClockTick(GridOpticsServer server) {
+			session = server.getSession();
+			// Create a MessageProducer from the Session to the Topic or Queue
+			try {
+				destination = session.createTopic(server.gossClockTickTopic);
 				producer = session.createProducer(destination);
 				producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			} catch (JMSException e) {
 				e.printStackTrace();
 				sendTick = false;
 			}
-            
-    	}
-    	
-    	/**
-    	 * Called during a task execution.  The producer will send a date time string
-    	 * through the message bus. 
-    	 */
+
+		}
+
+		/**
+		 * Called during a task execution. The producer will send a date time string
+		 * through the message bus.
+		 */
 		@Override
 		public void run() {
 			if (sendTick) {
@@ -387,31 +373,30 @@ public class GridOpticsServer implements ServerControl {
 					// current time in UTC time zone
 					LocalDateTime localDateTimeUTC = LocalDateTime.now(Clock.systemUTC());
 
-					//log.debug(localDateTimeUTC.format(formatter));
+					// log.debug(localDateTimeUTC.format(formatter));
 					producer.send(session.createTextMessage(localDateTimeUTC.format(formatter)));
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				if (count >= 10000000){
+
+				if (count >= 10000000) {
 					count = 0;
-				}
-				else{
+				} else {
 					count += 1;
 				}
-			}	
+			}
 		}
-    }
-        
-    @Override
-    @Activate
+	}
+
+	@Override
+	@Activate
 	public void start() {
-    	
+
 		// If goss should have start the broker service then this will be set.
-    	// this variable is mapped from goss.start.broker
-    	if (shouldStartBroker) {
-    		try {
+		// this variable is mapped from goss.start.broker
+		if (shouldStartBroker) {
+			try {
 				createBroker();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -419,86 +404,83 @@ public class GridOpticsServer implements ServerControl {
 				log.error("Error starting broker: ", e);
 				throw SystemException.wrap(e);
 			}
-    	}
-    	
-    	try {
-    		if (shouldUsSsl()){
-    			connectionFactory = new ActiveMQSslConnectionFactory(sslTransport);
-    			
-    			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStore(sslClientTrustStore); //sslClientTrustStore);
-    			((ActiveMQSslConnectionFactory) connectionFactory).setTrustStorePassword(sslClientTrustStorePassword); //sslClientTrustStorePassword);
-  	        
-    		}
-    		else{
-    			connectionFactory = new ActiveMQConnectionFactory(openwireTransport);
-    		}
-    		
-    		connection = connectionFactory.createConnection("system", "manager");
-    		connection.start();			
+		}
+
+		try {
+			if (shouldUsSsl()) {
+				connectionFactory = new ActiveMQSslConnectionFactory(sslTransport);
+
+				((ActiveMQSslConnectionFactory) connectionFactory).setTrustStore(sslClientTrustStore); // sslClientTrustStore);
+				((ActiveMQSslConnectionFactory) connectionFactory).setTrustStorePassword(sslClientTrustStorePassword); // sslClientTrustStorePassword);
+
+			} else {
+				connectionFactory = new ActiveMQConnectionFactory(openwireTransport);
+			}
+
+			connection = connectionFactory.createConnection("system", "manager");
+			connection.start();
 		} catch (Exception e) {
 			log.debug("Error Connecting to ActiveMQ", e);
-			if (shouldStartBroker){
+			if (shouldStartBroker) {
 				try {
-					if (broker != null){
+					if (broker != null) {
 						broker.stop();
-						broker.waitUntilStopped();	
-					}					
+						broker.waitUntilStopped();
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				
+
 			}
 			throw SystemException.wrap(e, ConnectionCode.CONNECTION_ERROR);
 		}
-    	
-    	
-    	try {
-	    	session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-	    	destination = session.createQueue(requestQueue);
-	    	
-	    	for(int i=0; i<1; i++){
-	    		System.out.println("Creating consumer: "+i);
-	    		consumers.add(new ServerConsumer()
-	    				.setDestination(destination)
-	    				.setSession(session)
-	    				.setRegistryHandler(handlerRegistry)
-	    				.consume());
-	    	}
-    	} catch (JMSException e) {
+
+		try {
+			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			destination = session.createQueue(requestQueue);
+
+			for (int i = 0; i < 1; i++) {
+				System.out.println("Creating consumer: " + i);
+				consumers.add(new ServerConsumer()
+						.setDestination(destination)
+						.setSession(session)
+						.setRegistryHandler(handlerRegistry)
+						.consume());
+			}
+		} catch (JMSException e) {
 			throw SystemException.wrap(e, ConnectionCode.CONSUMER_ERROR);
 		}
-    	
-    	scheduler.scheduleAtFixedRate(new ClockTick(this), 1, 1, TimeUnit.SECONDS);
+
+		scheduler.scheduleAtFixedRate(new ClockTick(this), 1, 1, TimeUnit.SECONDS);
 	}
-    
-    private void createAuthenticatedConnectionFactory(String username, String password) throws JMSException {
-		
+
+	private void createAuthenticatedConnectionFactory(String username, String password) throws JMSException {
+
 		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionUri);
-		
+
 		// Todo find out how we get password from user via config file?
-		
+
 		factory.setUserName(username);
 		factory.setPassword(password);
 		connectionFactory = factory;
-		
-	}
 
+	}
 
 	@Override
 	@Deactivate
 	public void stop() throws SystemException {
-		
+
 		try {
 			consumers.clear();
-			
-			if(session != null) {
+
+			if (session != null) {
 				session.close();
 			}
-			if (connection != null){
+			if (connection != null) {
 				connection.close();
 			}
-			if (shouldStartBroker){
-				if(broker != null) {
+			if (shouldStartBroker) {
+				if (broker != null) {
 					broker.stop();
 					broker.waitUntilStopped();
 				}
@@ -506,9 +488,8 @@ public class GridOpticsServer implements ServerControl {
 		} catch (Exception e) {
 			e.printStackTrace();
 			SystemException.wrap(e, ConnectionCode.CLOSING_ERROR);
-		}		
-		finally{
-			session= null;
+		} finally {
+			session = null;
 			connection = null;
 			destination = null;
 			broker = null;
@@ -516,59 +497,55 @@ public class GridOpticsServer implements ServerControl {
 		}
 	}
 
-
-
 	@Override
 	public boolean isRunning() {
-		if (broker == null) return false;
-		
+		if (broker == null)
+			return false;
+
 		return broker.isStarted();
 	}
-	
+
 	public static TrustManager[] getTrustManager(String clientTrustStore) throws Exception {
-        TrustManager[] trustStoreManagers = null;
-        KeyStore trustedCertStore = KeyStore.getInstance("jks"); //ActiveMQSslConnectionFactoryTest.KEYSTORE_TYPE);
-        
-        trustedCertStore.load(new FileInputStream(clientTrustStore), null);
-        TrustManagerFactory tmf  = 
-            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-  
-        tmf.init(trustedCertStore);
-        trustStoreManagers = tmf.getTrustManagers();
-        return trustStoreManagers; 
-    }
+		TrustManager[] trustStoreManagers = null;
+		KeyStore trustedCertStore = KeyStore.getInstance("jks"); // ActiveMQSslConnectionFactoryTest.KEYSTORE_TYPE);
 
-    public static KeyManager[] getKeyManager(String serverKeyStore, String serverKeyStorePassword) throws Exception {
-        KeyManagerFactory kmf = 
-            KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());  
-        KeyStore ks = KeyStore.getInstance("jks"); //ActiveMQSslConnectionFactoryTest.KEYSTORE_TYPE);
-        KeyManager[] keystoreManagers = null;
-        
-        byte[] sslCert = loadClientCredential(serverKeyStore);
-        
-       
-        if (sslCert != null && sslCert.length > 0) {
-            ByteArrayInputStream bin = new ByteArrayInputStream(sslCert);
-            ks.load(bin, serverKeyStorePassword.toCharArray());
-            kmf.init(ks, serverKeyStorePassword.toCharArray());
-            keystoreManagers = kmf.getKeyManagers();
-        }
-        return keystoreManagers;          
-    }
+		trustedCertStore.load(new FileInputStream(clientTrustStore), null);
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
-    private static byte[] loadClientCredential(String fileName) throws IOException {
-        if (fileName == null) {
-            return null;
-        }
-        FileInputStream in = new FileInputStream(fileName);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buf = new byte[512];
-        int i = in.read(buf);
-        while (i  > 0) {
-            out.write(buf, 0, i);
-            i = in.read(buf);
-        }
-        in.close();
-        return out.toByteArray();
-    }
+		tmf.init(trustedCertStore);
+		trustStoreManagers = tmf.getTrustManagers();
+		return trustStoreManagers;
+	}
+
+	public static KeyManager[] getKeyManager(String serverKeyStore, String serverKeyStorePassword) throws Exception {
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+		KeyStore ks = KeyStore.getInstance("jks"); // ActiveMQSslConnectionFactoryTest.KEYSTORE_TYPE);
+		KeyManager[] keystoreManagers = null;
+
+		byte[] sslCert = loadClientCredential(serverKeyStore);
+
+		if (sslCert != null && sslCert.length > 0) {
+			ByteArrayInputStream bin = new ByteArrayInputStream(sslCert);
+			ks.load(bin, serverKeyStorePassword.toCharArray());
+			kmf.init(ks, serverKeyStorePassword.toCharArray());
+			keystoreManagers = kmf.getKeyManagers();
+		}
+		return keystoreManagers;
+	}
+
+	private static byte[] loadClientCredential(String fileName) throws IOException {
+		if (fileName == null) {
+			return null;
+		}
+		FileInputStream in = new FileInputStream(fileName);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		byte[] buf = new byte[512];
+		int i = in.read(buf);
+		while (i > 0) {
+			out.write(buf, 0, i);
+			i = in.read(buf);
+		}
+		in.close();
+		return out.toByteArray();
+	}
 }

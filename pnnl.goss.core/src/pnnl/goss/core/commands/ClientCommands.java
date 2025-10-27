@@ -18,37 +18,37 @@ import pnnl.goss.core.ClientFactory;
 		"osgi.command.function=list"
 })
 public class ClientCommands {
-	
+
 	@Reference
 	private volatile ClientFactory factory;
-		
-	public void makeOpenwire(){
-		try{
+
+	public void makeOpenwire() {
+		try {
 			System.out.println("Making openwire client");
 			Client client = factory.create(PROTOCOL.OPENWIRE, null);
-			System.out.println("Client is null? "+ (client == null));
+			System.out.println("Client is null? " + (client == null));
 			client.close();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void makeStomp(){
-		try{
+
+	public void makeStomp() {
+		try {
 			System.out.println("Making stomp client");
 			Client client = factory.create(PROTOCOL.STOMP, null);
-			System.out.println("Client is null? "+ (client == null));
+			System.out.println("Client is null? " + (client == null));
 			client.close();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void list(){
+
+	public void list() {
 		Map<String, PROTOCOL> clientMap = factory.list();
-		for(Iterator<String> it=clientMap.keySet().iterator(); it.hasNext();){
+		for (Iterator<String> it = clientMap.keySet().iterator(); it.hasNext();) {
 			String key = it.next();
-			System.out.println("ClientId: "+ key+"; protocol: "+ clientMap.get(key).toString());			
+			System.out.println("ClientId: " + key + "; protocol: " + clientMap.get(key).toString());
 		}
 	}
 

@@ -38,11 +38,17 @@ The framework should be started now.  Default commands that goss uses are:
    
 ## Documentation
 
-- **[Quick Start Guide](QUICK-START.md)** - Get up and running with GOSS in 5 minutes
-- **[Developer Setup](DEVELOPER-SETUP.md)** - Complete development environment setup for Eclipse and VS Code
-- **[Production Deployment](PRODUCTION-DEPLOYMENT.md)** - Production deployment guide with systemd, SSL, and monitoring
+### Getting Started
+- **[Quick Start Guide](docs/QUICK-START.md)** - Get up and running with GOSS in 5 minutes
+- **[Developer Setup](docs/DEVELOPER-SETUP.md)** - Complete development environment setup for Eclipse and VS Code
+- **[Production Deployment](docs/PRODUCTION-DEPLOYMENT.md)** - Production deployment guide with systemd, SSL, and monitoring
 
-For additional information, see the [wiki](https://github.com/GridOPTICS/GOSS/wiki).
+### Development
+- **[Code Formatting Guide](docs/FORMATTING.md)** - Code style and formatting configuration for consistent code across IDEs
+
+### Additional Resources
+- [Documentation Index](docs/README.md) - Complete documentation hub
+- [Issue Tracker](https://github.com/GridOPTICS/GOSS/issues) - Report bugs or request features
 
 ## JDK 22 Upgrade
 

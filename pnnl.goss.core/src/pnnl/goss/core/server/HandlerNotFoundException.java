@@ -3,19 +3,19 @@ package pnnl.goss.core.server;
 import pnnl.goss.core.Request;
 
 public class HandlerNotFoundException extends Exception {
-	
+
 	private static final long serialVersionUID = 5582363974612539305L;
-	
-	public HandlerNotFoundException(){
+
+	public HandlerNotFoundException() {
 		super();
 	}
 
-	public HandlerNotFoundException(Class<? extends Request> request){
+	public HandlerNotFoundException(Class<? extends Request> request) {
 		this(String.format("Handler for %s request was not found!", request.getClass().getName()));
-		
+
 	}
-	
-	public HandlerNotFoundException(String message){
+
+	public HandlerNotFoundException(String message) {
 		super(message);
 	}
 }

@@ -39,9 +39,12 @@ out/
 # Eclipse
 # Note: .project and .classpath are tracked to ensure both Eclipse and VSCode
 # use Gradle's build directory (build/) instead of Eclipse's default (bin/)
+# Note: .settings/ formatter configs are tracked for consistent formatting
 # .project
 # .classpath
-.settings/
+.settings/*
+!.settings/eclipse-java-formatter.xml
+!.settings/org.eclipse.jdt.core.prefs
 .metadata/
 *.launch
 .recommenders/

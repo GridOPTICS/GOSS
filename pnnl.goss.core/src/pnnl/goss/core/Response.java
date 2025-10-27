@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -62,17 +62,17 @@ public class Response implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public int sizeof() throws IOException {
 
-	    ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-	    ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
 
-	    objectOutputStream.writeObject(this);
-	    objectOutputStream.flush();
-	    objectOutputStream.close();
+		objectOutputStream.writeObject(this);
+		objectOutputStream.flush();
+		objectOutputStream.close();
 
-	    return byteOutputStream.toByteArray().length;
+		return byteOutputStream.toByteArray().length;
 	}
 
 }

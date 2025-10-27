@@ -26,79 +26,82 @@ import pnnl.goss.core.security.GossRealm;
 import com.northconcepts.exception.SystemException;
 
 /**
- * This class handles property based authentication/authorization.  It will only be
- * started as a component if a pnnl.goss.core.security.properties.cfg file exists
- * within the configuration directory.
- * 
- * The format of each property should be username=password,permission1,permission2 ... where
- * permission1 and permission2 are of the format domain:object:action.  There can be multiple
- * levels of domain object and action.  An example permission string format is printers:lp2def:create
- * or topic:request:subscribe.
- * 
+ * This class handles property based authentication/authorization. It will only
+ * be started as a component if a pnnl.goss.core.security.properties.cfg file
+ * exists within the configuration directory.
+ *
+ * The format of each property should be
+ * username=password,permission1,permission2 ... where permission1 and
+ * permission2 are of the format domain:object:action. There can be multiple
+ * levels of domain object and action. An example permission string format is
+ * printers:lp2def:create or topic:request:subscribe.
+ *
  * NOTE: This class assumes uniqueness of username in the properties file.
- * 
+ *
  * @author Craig Allwardt
  *
  */
 @Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.propertyfile")
 public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
-	
+
 	private static final String CONFIG_PID = "pnnl.goss.core.security.propertyfile";
 	private static final Logger log = LoggerFactory.getLogger(PropertyBasedRealm.class);
-	
+
 	private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
 	private final Map<String, Set<String>> userPermissions = new ConcurrentHashMap<>();
-	
+
 	@Reference
 	GossPermissionResolver gossPermissionResolver;
-	
+
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
-		
-		//get the principal this realm cares about:
-        String username = (String) getAvailablePrincipal(principals);
-        return userMap.get(username);
+
+		// get the principal this realm cares about:
+		String username = (String) getAvailablePrincipal(principals);
+		return userMap.get(username);
 	}
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(
 			AuthenticationToken token) throws AuthenticationException {
-		
-		//we can safely cast to a UsernamePasswordToken here, because this class 'supports' UsernamePasswordToken
-        //objects.  See the Realm.supports() method if your application will use a different type of token.
-        UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-        return userMap.get(upToken.getUsername());
+
+		// we can safely cast to a UsernamePasswordToken here, because this class
+		// 'supports' UsernamePasswordToken
+		// objects. See the Realm.supports() method if your application will use a
+		// different type of token.
+		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
+		return userMap.get(upToken.getUsername());
 	}
-	
+
 	@Modified
 	public synchronized void updated(Map<String, Object> properties) throws SystemException {
 
-		if (properties != null){
+		if (properties != null) {
 			log.debug("Updating PropertyBasedRealm");
 			userMap.clear();
 			userPermissions.clear();
-			
+
 			Set<String> perms = new HashSet<>();
 			for (String k : properties.keySet()) {
-				String v = (String)properties.get(k);
+				String v = (String) properties.get(k);
 				String[] credAndPermissions = v.split(",");
-				
-				SimpleAccount acnt = new SimpleAccount(k, credAndPermissions[0], getName() );
-				for(int i =1; i<credAndPermissions.length; i++){
+
+				SimpleAccount acnt = new SimpleAccount(k, credAndPermissions[0], getName());
+				for (int i = 1; i < credAndPermissions.length; i++) {
 					acnt.addStringPermission(credAndPermissions[i]);
 					perms.add(credAndPermissions[i]);
 				}
 				userMap.put(k, acnt);
 				userPermissions.put(k, perms);
-				
+
 			}
-		}		
+		}
 	}
 
 	@Override
 	public Set<String> getPermissions(String identifier) {
-		if (hasIdentifier(identifier)){
+		if (hasIdentifier(identifier)) {
 			return userPermissions.get(identifier);
 		}
 		return new HashSet<>();
@@ -108,12 +111,12 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 	public boolean hasIdentifier(String identifier) {
 		return userMap.containsKey(identifier);
 	}
-	
-	 @Override
+
+	@Override
 	public PermissionResolver getPermissionResolver() {
-		 if(gossPermissionResolver!=null)
-			 return gossPermissionResolver;
-		 else 
-			 return super.getPermissionResolver();
+		if (gossPermissionResolver != null)
+			return gossPermissionResolver;
+		else
+			return super.getPermissionResolver();
 	}
 }

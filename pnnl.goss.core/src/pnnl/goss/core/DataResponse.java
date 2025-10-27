@@ -77,7 +77,7 @@ public class DataResponse extends Response implements Serializable {
 	String destination;
 
 	Destination replyDestination;
-	
+
 	String username;
 
 	public DataResponse() {
@@ -113,9 +113,8 @@ public class DataResponse extends Response implements Serializable {
 	}
 
 	/**
-	 * To check if response is complete in case of request with recurring
-	 * responses.
-	 * 
+	 * To check if response is complete in case of request with recurring responses.
+	 *
 	 * @return True if this is the last response for the query, false otherwise.
 	 */
 	public boolean isResponseComplete() {
@@ -123,9 +122,8 @@ public class DataResponse extends Response implements Serializable {
 	}
 
 	/**
-	 * To set if response is complete in case of request with recurring
-	 * responses.
-	 * 
+	 * To set if response is complete in case of request with recurring responses.
+	 *
 	 * @param responseComplete
 	 *            : True if this is the last response for the query, false
 	 *            otherwise.
@@ -141,8 +139,6 @@ public class DataResponse extends Response implements Serializable {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
-	
-	
 
 	public Destination getReplyDestination() {
 		return replyDestination;
@@ -151,7 +147,7 @@ public class DataResponse extends Response implements Serializable {
 	public void setReplyDestination(Destination replyDestination) {
 		this.replyDestination = replyDestination;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -173,14 +169,16 @@ public class DataResponse extends Response implements Serializable {
 		builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
 		Gson gson = builder.create();
 		DataResponse obj = gson.fromJson(jsonString, DataResponse.class);
-		 if(obj.id==null || (obj.data==null && obj.error==null))
-			 throw new JsonSyntaxException("Expected attribute id and data/error not found");
+		if (obj.id == null || (obj.data == null && obj.error == null))
+			throw new JsonSyntaxException("Expected attribute id and data/error not found");
 		return obj;
 
 	}
 
-	private static class InterfaceAdapter implements
-			JsonSerializer<Serializable>, JsonDeserializer<Serializable> {
+	private static class InterfaceAdapter
+			implements
+				JsonSerializer<Serializable>,
+				JsonDeserializer<Serializable> {
 
 		private static final String CLASSNAME = "CLASSNAME";
 		private static final String DATA = "DATA";
@@ -206,7 +204,9 @@ public class DataResponse extends Response implements Serializable {
 			}
 		}
 
-		/****** Helper method to get the className of the object to be deserialized *****/
+		/******
+		 * Helper method to get the className of the object to be deserialized
+		 *****/
 		public Class getObjectClass(String className) {
 			try {
 				return Class.forName(className);
