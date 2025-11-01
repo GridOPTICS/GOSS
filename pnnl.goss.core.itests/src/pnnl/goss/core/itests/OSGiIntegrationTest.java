@@ -1,11 +1,11 @@
 package pnnl.goss.core.itests;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -68,7 +68,7 @@ public class OSGiIntegrationTest {
         BundleContext context = getBundleContext();
         if (context != null) {
             System.out.println("Running in OSGi environment");
-            assertNotNull("Bundle context should be available", context);
+            assertNotNull(context, "Bundle context should be available");
         } else {
             System.out.println("Not running in OSGi environment - skipping OSGi-specific tests");
         }
@@ -139,12 +139,12 @@ public class OSGiIntegrationTest {
         TestService testService = new TestServiceImpl();
         ServiceRegistration<TestService> registration = context.registerService(TestService.class, testService, props);
 
-        assertNotNull("Service registration should succeed", registration);
+        assertNotNull(registration, "Service registration should succeed");
 
         // Now try to get it back
         TestService retrieved = getService(TestService.class);
-        assertNotNull("Should be able to retrieve registered service", retrieved);
-        assertEquals("Should be same instance", testService, retrieved);
+        assertNotNull(retrieved, "Should be able to retrieve registered service");
+        assertEquals(testService, retrieved, "Should be same instance");
 
         // Clean up
         registration.unregister();

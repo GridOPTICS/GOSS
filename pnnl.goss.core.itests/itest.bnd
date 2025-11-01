@@ -23,7 +23,7 @@ Bundle-Version: 2.0.2-SNAPSHOT
 # OSGi Test Configuration	
 -tester: biz.aQute.tester.junit5
 -runfw: org.apache.felix.framework;version='[7.0.5,8)'
--runee: JavaSE-22
+-runee: JavaSE-21
 
 # Test selection
 Test-Cases: ${classes;ANNOTATION;org.junit.jupiter.api.Test}

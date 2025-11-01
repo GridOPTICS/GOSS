@@ -1,12 +1,12 @@
 package pnnl.goss.core.itests;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import pnnl.goss.core.DataError;
 import pnnl.goss.core.DataResponse;
@@ -28,9 +28,9 @@ public class CoreFunctionalityTest {
         String testData = "test data";
         DataResponse response = new DataResponse(testData);
 
-        assertNotNull("Response should not be null", response);
-        assertEquals("Data should match", testData, response.getData());
-        assertTrue("Should be complete by default", response.isResponseComplete());
+        assertNotNull(response, "Response should not be null");
+        assertEquals(testData, response.getData(), "Data should match");
+        assertTrue(response.isResponseComplete(), "Should be complete by default");
     }
 
     @Test
@@ -39,9 +39,9 @@ public class CoreFunctionalityTest {
 
         DataResponse response = new DataResponse(testData);
 
-        assertNotNull("Response should not be null", response);
-        assertEquals("Data should match", testData, response.getData());
-        assertTrue("Data should be String", response.getData() instanceof String);
+        assertNotNull(response, "Response should not be null");
+        assertEquals(testData, response.getData(), "Data should match");
+        assertTrue(response.getData() instanceof String, "Data should be String");
     }
 
     @Test
@@ -49,8 +49,8 @@ public class CoreFunctionalityTest {
         String errorMessage = "Test error message";
         ResponseError error = new ResponseError(errorMessage);
 
-        assertNotNull("Error should not be null", error);
-        assertEquals("Error message should match", errorMessage, error.getMessage());
+        assertNotNull(error, "Error should not be null");
+        assertEquals(errorMessage, error.getMessage(), "Error message should match");
         // Response error completeness tested implicitly
     }
 
@@ -59,8 +59,8 @@ public class CoreFunctionalityTest {
         String errorMessage = "Data processing error";
         DataError error = new DataError(errorMessage);
 
-        assertNotNull("Error should not be null", error);
-        assertEquals("Error message should match", errorMessage, error.getMessage());
+        assertNotNull(error, "Error should not be null");
+        assertEquals(errorMessage, error.getMessage(), "Error message should match");
     }
 
     @Test
@@ -70,17 +70,17 @@ public class CoreFunctionalityTest {
 
         UploadRequest request = new UploadRequest(testData, dataType);
 
-        assertNotNull("Request should not be null", request);
-        assertEquals("Data should match", testData, request.getData());
-        assertEquals("Data type should match", dataType, request.getDataType());
+        assertNotNull(request, "Request should not be null");
+        assertEquals(testData, request.getData(), "Data should match");
+        assertEquals(dataType, request.getDataType(), "Data type should match");
     }
 
     @Test
     public void testUploadResponseSuccess() {
         UploadResponse response = new UploadResponse(true);
 
-        assertNotNull("Response should not be null", response);
-        assertTrue("Should indicate success", response.isSuccess());
+        assertNotNull(response, "Response should not be null");
+        assertTrue(response.isSuccess(), "Should indicate success");
         // Upload response completeness tested implicitly
     }
 
@@ -88,8 +88,8 @@ public class CoreFunctionalityTest {
     public void testUploadResponseFailure() {
         UploadResponse response = new UploadResponse(false);
 
-        assertNotNull("Response should not be null", response);
-        assertFalse("Should indicate failure", response.isSuccess());
+        assertNotNull(response, "Response should not be null");
+        assertFalse(response.isSuccess(), "Should indicate failure");
     }
 
     @Test
@@ -97,7 +97,7 @@ public class CoreFunctionalityTest {
         // Create a simple async request
         RequestAsync asyncRequest = new RequestAsync();
 
-        assertNotNull("Async request should not be null", asyncRequest);
+        assertNotNull(asyncRequest, "Async request should not be null");
         // RequestAsync is a wrapper class for async requests
     }
 
@@ -105,16 +105,16 @@ public class CoreFunctionalityTest {
     public void testSerializableResponses() {
         // Verify that response objects are serializable
         DataResponse dataResponse = new DataResponse("test");
-        assertTrue("DataResponse should be serializable",
-                dataResponse instanceof Serializable);
+        assertTrue(dataResponse instanceof Serializable,
+                "DataResponse should be serializable");
 
         ResponseError errorResponse = new ResponseError("error");
-        assertTrue("ResponseError should be serializable",
-                errorResponse instanceof Serializable);
+        assertTrue(errorResponse instanceof Serializable,
+                "ResponseError should be serializable");
 
         UploadResponse uploadResponse = new UploadResponse(true);
-        assertTrue("UploadResponse should be serializable",
-                uploadResponse instanceof Serializable);
+        assertTrue(uploadResponse instanceof Serializable,
+                "UploadResponse should be serializable");
     }
 
     // Simple test request implementation

@@ -2,11 +2,11 @@
 
 Current GOSS build status: ![GOSS build status](https://travis-ci.org/GridOPTICS/GOSS.svg?branch=master)
 
-**⚠️ IMPORTANT: JDK 22 UPGRADE ⚠️**
-This branch has been updated to require OpenJDK 22. See the JDK 22 Upgrade section below for installation and migration details.
+**⚠️ IMPORTANT: JDK 21 UPGRADE ⚠️**
+This branch has been updated to require OpenJDK 21. See the JDK 21 Upgrade section below for installation and migration details.
 
 ### Pre-Requisite
- 1. OpenJDK 22 (or compatible JDK 22 distribution)
+ 1. OpenJDK 21 (or compatible JDK 21 distribution)
  
 ### Installing GOSS
 User can chose to run pre-build GOSS jars or build from source code.
@@ -50,43 +50,43 @@ The framework should be started now.  Default commands that goss uses are:
 - [Documentation Index](docs/README.md) - Complete documentation hub
 - [Issue Tracker](https://github.com/GridOPTICS/GOSS/issues) - Report bugs or request features
 
-## JDK 22 Upgrade
+## JDK 21 Upgrade
 
-### Installing OpenJDK 22
+### Installing OpenJDK 21
 
 **Ubuntu/Debian:**
 ```bash
 sudo apt update
-sudo apt install openjdk-22-jdk
-export JAVA_HOME=/usr/lib/jvm/java-22-openjdk-amd64
+sudo apt install openjdk-21-jdk
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ```
 
 **CentOS/RHEL/Fedora:**
 ```bash
-sudo dnf install java-22-openjdk-devel  # Fedora
-sudo yum install java-22-openjdk-devel  # CentOS/RHEL
+sudo dnf install java-21-openjdk-devel  # Fedora
+sudo yum install java-21-openjdk-devel  # CentOS/RHEL
 ```
 
 **macOS (Homebrew):**
 ```bash
-brew install openjdk@22
-export PATH="/usr/local/opt/openjdk@22/bin:$PATH"
+brew install openjdk@21
+export PATH="/usr/local/opt/openjdk@21/bin:$PATH"
 ```
 
 **Windows:**
-Download from [Adoptium](https://adoptium.net/) or [OpenJDK](https://jdk.java.net/22/)
+Download from [Adoptium](https://adoptium.net/) or [OpenJDK](https://jdk.java.net/21/)
 
 **Using SDKMAN (recommended for development):**
 ```bash
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install java 22.0.2-tem
-sdk use java 22.0.2-tem
+sdk install java 21.0.5-tem
+sdk use java 21.0.5-tem
 ```
 
-### Major Changes in JDK 22 Version
+### Major Changes in JDK 21 Version
 
-1. **Updated Dependencies**: All major dependencies updated for JDK 22 compatibility
+1. **Updated Dependencies**: All major dependencies updated for JDK 21 compatibility
    - Spring Framework 6.x
    - Apache Shiro 1.13.x  
    - Jackson 2.17.x
@@ -100,7 +100,7 @@ sdk use java 22.0.2-tem
 
 ### Migration Notes
 
-- Ensure `JAVA_HOME` points to JDK 22
+- Ensure `JAVA_HOME` points to JDK 21
 - Some configuration files may need updates for new dependency versions
 - Review custom security configurations as Shiro APIs have changed
 - Test thoroughly as many transitive dependencies have been updated

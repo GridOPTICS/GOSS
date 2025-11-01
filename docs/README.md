@@ -5,20 +5,24 @@ Complete documentation for the GridOPTICS Software System (GOSS).
 ## Getting Started
 
 ### [Quick Start Guide](QUICK-START.md)
+
 Get up and running with GOSS in 5 minutes. Covers installation, building, and running your first GOSS server.
 
 **Topics:**
+
 - Building GOSS from source
 - Running the GOSS server
 - Testing with example clients
 - Common troubleshooting
 
 ### [Developer Setup](DEVELOPER-SETUP.md)
+
 Complete development environment setup for both Eclipse and VS Code IDEs.
 
 **Topics:**
+
 - IDE configuration (Eclipse & VS Code)
-- Java 22 setup with SDKMAN
+- Java 21 setup with SDKMAN
 - Gradle and BND build system
 - Creating custom handlers
 - Debugging GOSS applications
@@ -27,9 +31,11 @@ Complete development environment setup for both Eclipse and VS Code IDEs.
 ## Development Guides
 
 ### [Code Formatting Guide](FORMATTING.md)
+
 Code style and formatting configuration for consistent code across IDEs.
 
 **Topics:**
+
 - Eclipse and VS Code formatter setup
 - Spotless Gradle plugin usage
 - Pre-commit hooks
@@ -39,9 +45,11 @@ Code style and formatting configuration for consistent code across IDEs.
 ## Deployment
 
 ### [Production Deployment Guide](PRODUCTION-DEPLOYMENT.md)
+
 Production deployment guide with systemd, SSL, and monitoring.
 
 **Topics:**
+
 - Systemd service configuration
 - SSL/TLS setup
 - Production best practices
@@ -54,22 +62,26 @@ Production deployment guide with systemd, SSL, and monitoring.
 ### Core Components
 
 **pnnl.goss.core** - Main module containing:
+
 - Client/Server APIs
 - Request/Response framework
 - Security implementations (Shiro-based)
 - Web services (JAX-RS REST endpoints)
 
 **pnnl.goss.core.runner** - Executable runner:
+
 - Example handlers and configurations
 - Pre-configured runners (simple, SSL, full)
 - Standalone JAR generation
 
 **pnnl.goss.core.itests** - Integration tests:
+
 - Full stack testing
 - OSGi bundle testing
 - End-to-end scenarios
 
 **pnnl.goss.core.testutil** - Test utilities:
+
 - Shared test infrastructure
 - Mock implementations
 - Test helpers
@@ -77,7 +89,7 @@ Production deployment guide with systemd, SSL, and monitoring.
 ### Technology Stack
 
 - **Build**: Gradle 8.10 + BND 6.4.0
-- **Runtime**: Java 22 (OpenJDK/Temurin)
+- **Runtime**: Java 21 (OpenJDK/Temurin)
 - **Messaging**: Apache ActiveMQ 5.18.6
 - **OSGi**: R7 specifications
 - **Security**: Apache Shiro 1.13.x

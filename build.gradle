@@ -1,6 +1,6 @@
 /*
  * Master Gradle build script
- * Updated for JDK 22 compatibility
+ * Updated for JDK 21 compatibility
  */
 
 plugins {
@@ -44,19 +44,19 @@ subprojects {
         }
     }
 
-    // Explicit Java toolchain configuration for JDK 22
+    // Explicit Java toolchain configuration for JDK 21
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(22)
+            languageVersion = JavaLanguageVersion.of(21)
         }
-        sourceCompatibility = JavaVersion.VERSION_22
-        targetCompatibility = JavaVersion.VERSION_22
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     
     // Configure encoding
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
-        options.release = 22
+        options.release = 21
     }
     
     // Code quality configuration disabled for now

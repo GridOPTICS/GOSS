@@ -12,55 +12,62 @@ GOSS provides two deployment options:
 ## System Requirements
 
 ### Hardware Requirements (Minimum)
+
 - **CPU**: 2 cores, 2.0 GHz
 - **RAM**: 2 GB (4 GB recommended)
 - **Storage**: 10 GB available space
 - **Network**: 1 Gbps network interface (for high-throughput messaging)
 
 ### Hardware Requirements (Recommended)
+
 - **CPU**: 4+ cores, 3.0 GHz
 - **RAM**: 8 GB (16 GB for high load)
 - **Storage**: 50 GB SSD (for message persistence)
 - **Network**: 10 Gbps network interface
 
 ### Software Requirements
+
 - **Operating System**: Linux (Ubuntu 20.04+, RHEL 8+, CentOS 8+), Windows Server 2019+, macOS 12+
-- **Java Runtime**: OpenJDK 22 or Oracle JDK 22
+- **Java Runtime**: OpenJDK 21 or Oracle JDK 21
 - **User Account**: Non-root user with sudo privileges (recommended)
 
 ## Pre-Deployment Setup
 
-### 1. Install Java 22
+### 1. Install Java 21
 
 #### Ubuntu/Debian
+
 ```bash
 sudo apt update
-sudo apt install openjdk-22-jre-headless
+sudo apt install openjdk-21-jre-headless
 
 # Verify installation
 java -version
 ```
 
 #### RHEL/CentOS/Rocky Linux
+
 ```bash
 # Enable EPEL repository if needed
 sudo dnf install epel-release
 
-# Install Java 22
-sudo dnf install java-22-openjdk-headless
+# Install Java 21
+sudo dnf install java-21-openjdk-headless
 
 # Set JAVA_HOME
-echo 'export JAVA_HOME=/usr/lib/jvm/java-22-openjdk' >> ~/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 #### Windows Server
-1. Download OpenJDK 22 from [Eclipse Adoptium](https://adoptium.net/)
+
+1. Download OpenJDK 21 from [Eclipse Adoptium](https://adoptium.net/)
 2. Install using the MSI installer
 3. Set `JAVA_HOME` environment variable
 4. Add `%JAVA_HOME%\bin` to system PATH
 
 ### 2. Create GOSS User (Linux/macOS)
+
 ```bash
 # Create dedicated user for GOSS
 sudo useradd -r -m -s /bin/bash goss
@@ -74,6 +81,7 @@ sudo chown -R goss:goss /opt/goss
 ### 3. Firewall Configuration
 
 #### Linux (UFW)
+
 ```bash
 # Allow GOSS ports
 sudo ufw allow 61617/tcp  # ActiveMQ OpenWire
@@ -86,6 +94,7 @@ sudo ufw reload
 ```
 
 #### Linux (firewalld)
+
 ```bash
 # Add GOSS ports
 sudo firewall-cmd --permanent --add-port=61617/tcp
@@ -98,6 +107,7 @@ sudo firewall-cmd --reload
 ```
 
 #### Windows
+
 ```powershell
 # Open Windows Firewall with Advanced Security
 # Add inbound rules for ports 61617, 61618, 8080, 8443
@@ -110,6 +120,7 @@ New-NetFirewallRule -DisplayName "GOSS-STOMP" -Direction Inbound -Port 61618 -Pr
 ### 1. Deploy the JAR
 
 #### Linux/macOS
+
 ```bash
 # Switch to goss user
 sudo su - goss
@@ -122,6 +133,7 @@ chmod +x /opt/goss/bin/goss-simple-runner.jar
 ```
 
 #### Windows
+
 ```batch
 REM Copy JAR to application directory
 copy C:\path\to\goss-simple-runner.jar "C:\Program Files\GOSS\bin\"
@@ -130,6 +142,7 @@ copy C:\path\to\goss-simple-runner.jar "C:\Program Files\GOSS\bin\"
 ### 2. Create Configuration Files
 
 #### Application Configuration (`/opt/goss/conf/goss.properties`)
+
 ```properties
 # GOSS Simple Runner Configuration
 
@@ -159,6 +172,7 @@ activemq.statistics.broker=true
 ```
 
 #### Logging Configuration (`/opt/goss/conf/logging.properties`)
+
 ```properties
 # GOSS Logging Configuration
 
@@ -188,6 +202,7 @@ org.apache.activemq.broker.region.level = WARNING
 ```
 
 #### Users Configuration (if security enabled) (`/opt/goss/conf/users.properties`)
+
 ```properties
 # GOSS Users Configuration
 # Format: username=password,role1,role2
@@ -196,7 +211,7 @@ org.apache.activemq.broker.region.level = WARNING
 admin=admin_password,admin,user
 operator=operator_password,operator,user
 
-# Regular users  
+# Regular users
 user1=user1_password,user
 user2=user2_password,user
 
@@ -209,6 +224,7 @@ user2=user2_password,user
 ### 3. Create Startup Scripts
 
 #### Linux Systemd Service (`/etc/systemd/system/goss.service`)
+
 ```ini
 [Unit]
 Description=GOSS (GridOPTICS Software System) Message Broker
@@ -241,6 +257,7 @@ WantedBy=multi-user.target
 ```
 
 #### Linux SysV Init Script (`/etc/init.d/goss`)
+
 ```bash
 #!/bin/bash
 # GOSS        GOSS Message Broker
@@ -252,7 +269,7 @@ WantedBy=multi-user.target
 USER="goss"
 DAEMON="goss"
 ROOT_DIR="/opt/goss"
-JAVA_HOME="/usr/lib/jvm/java-22-openjdk"
+JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
 
 SERVER="$ROOT_DIR/bin/goss-simple-runner.jar"
 LOCK_FILE="/var/lock/subsys/goss"
@@ -310,12 +327,13 @@ exit $?
 ```
 
 #### Windows Service (using NSSM)
+
 ```batch
 REM Download and install NSSM (Non-Sucking Service Manager)
 REM https://nssm.cc/download
 
 REM Install GOSS as Windows Service
-nssm install GOSS "C:\Program Files\Java\jdk-22\bin\java.exe"
+nssm install GOSS "C:\Program Files\Java\jdk-21\bin\java.exe"
 nssm set GOSS Parameters -Xmx1g -Xms512m -Djava.util.logging.config.file="C:\Program Files\GOSS\conf\logging.properties" -jar "C:\Program Files\GOSS\bin\goss-simple-runner.jar"
 nssm set GOSS AppDirectory "C:\Program Files\GOSS"
 nssm set GOSS DisplayName "GOSS Message Broker"
@@ -329,6 +347,7 @@ net start GOSS
 ### 4. Start and Enable Service
 
 #### Systemd (Ubuntu/RHEL/CentOS)
+
 ```bash
 # Reload systemd configuration
 sudo systemctl daemon-reload
@@ -347,6 +366,7 @@ sudo journalctl -u goss -f
 ```
 
 #### SysV Init
+
 ```bash
 # Make script executable
 sudo chmod +x /etc/init.d/goss
@@ -366,6 +386,7 @@ sudo service goss status
 ### 1. Generate SSL Certificates
 
 #### Using OpenSSL (Self-Signed for Testing)
+
 ```bash
 # Create certificate directory
 mkdir -p /opt/goss/ssl
@@ -398,6 +419,7 @@ chmod 600 /opt/goss/ssl/goss-server.key
 ### 2. Configure SSL in GOSS
 
 Update `/opt/goss/conf/goss.properties`:
+
 ```properties
 # Enable SSL
 ssl.enabled=true
@@ -417,6 +439,7 @@ ssl.truststore.password=changeit
 ### 1. Health Check Scripts
 
 #### Linux Health Check (`/opt/goss/bin/health-check.sh`)
+
 ```bash
 #!/bin/bash
 
@@ -455,6 +478,7 @@ exit 0
 ```
 
 #### Windows Health Check (`health-check.bat`)
+
 ```batch
 @echo off
 set GOSS_HOST=localhost
@@ -484,7 +508,9 @@ exit /b 0
 ### 2. Log Rotation
 
 #### Linux (logrotate)
+
 Create `/etc/logrotate.d/goss`:
+
 ```
 /opt/goss/logs/*.log {
     daily
@@ -503,19 +529,21 @@ Create `/etc/logrotate.d/goss`:
 ### 3. Monitoring Integration
 
 #### Prometheus Metrics (if enabled)
+
 GOSS can expose metrics for Prometheus monitoring:
 
 ```yaml
 # prometheus.yml
 scrape_configs:
-  - job_name: 'goss'
+  - job_name: "goss"
     static_configs:
-      - targets: ['goss-server:8080']
-    metrics_path: '/metrics'
+      - targets: ["goss-server:8080"]
+    metrics_path: "/metrics"
     scrape_interval: 15s
 ```
 
 #### Nagios/Icinga Check
+
 ```bash
 #!/bin/bash
 # /usr/local/nagios/libexec/check_goss.sh
@@ -529,6 +557,7 @@ exit $?
 ### 1. JVM Tuning
 
 For high-throughput environments, update the systemd service:
+
 ```ini
 ExecStart=/usr/bin/java -Xmx4g -Xms2g \
     -XX:+UseG1GC \
@@ -542,6 +571,7 @@ ExecStart=/usr/bin/java -Xmx4g -Xms2g \
 ### 2. Operating System Tuning
 
 #### Linux
+
 ```bash
 # Increase file descriptor limits
 echo "goss soft nofile 65536" >> /etc/security/limits.conf
@@ -562,6 +592,7 @@ sysctl -p
 ### 1. Backup Strategy
 
 #### Data Directory Backup
+
 ```bash
 #!/bin/bash
 # /opt/goss/bin/backup.sh
@@ -622,6 +653,7 @@ echo "Recovery completed from $BACKUP_FILE"
 ### Common Issues
 
 #### 1. Port Already in Use
+
 ```bash
 # Check what's using the port
 sudo netstat -tlnp | grep 61617
@@ -632,6 +664,7 @@ sudo ss -tlnp | grep 61617
 ```
 
 #### 2. Out of Memory Errors
+
 ```bash
 # Check Java heap dump
 ls -la /opt/goss/logs/*.hprof
@@ -641,6 +674,7 @@ ls -la /opt/goss/logs/*.hprof
 ```
 
 #### 3. Permission Denied Errors
+
 ```bash
 # Fix permissions
 sudo chown -R goss:goss /opt/goss
@@ -649,6 +683,7 @@ sudo chmod 600 /opt/goss/ssl/*
 ```
 
 #### 4. SSL Certificate Issues
+
 ```bash
 # Verify certificate
 openssl x509 -in /opt/goss/ssl/goss-server.crt -text -noout

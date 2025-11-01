@@ -29,6 +29,7 @@ VSCode is configured to use the same Eclipse formatter for consistency.
 3. **Format selection**: Select code, then `Ctrl+K Ctrl+F`
 
 The formatter configuration is in `.vscode/settings.json`:
+
 ```json
 "java.format.settings.url": ".settings/eclipse-java-formatter.xml"
 "java.format.settings.profile": "GOSS"
@@ -45,6 +46,7 @@ Check if code is properly formatted without making changes:
 ```
 
 This will:
+
 - ✅ Pass if all code is properly formatted
 - ❌ Fail and show violations if formatting is incorrect
 
@@ -57,6 +59,7 @@ Automatically fix formatting issues:
 ```
 
 This will:
+
 - Format all Java files according to the Eclipse formatter
 - Remove trailing whitespace
 - Ensure files end with newline
@@ -88,6 +91,7 @@ A GitHub Actions workflow automatically checks formatting on all pull requests:
 ### Before Committing
 
 **Option 1: Run Spotless manually**
+
 ```bash
 ./gradlew spotlessApply
 git add .
@@ -95,6 +99,7 @@ git commit -m "Your message"
 ```
 
 **Option 2: Use IDE formatter**
+
 - Eclipse: `Ctrl+Shift+F`
 - VSCode: `Shift+Alt+F` or enable format-on-save
 
@@ -141,6 +146,7 @@ chmod +x .git/hooks/pre-commit
 ### Spotless errors after merge
 
 After merging/pulling changes:
+
 ```bash
 # Apply formatting to all files
 ./gradlew spotlessApply
@@ -152,13 +158,13 @@ git commit -m "Apply code formatting"
 
 ## Formatting Configuration Files
 
-| File | Purpose |
-|------|---------|
+| File                                   | Purpose                                     |
+| -------------------------------------- | ------------------------------------------- |
 | `.settings/eclipse-java-formatter.xml` | Eclipse formatter configuration (canonical) |
-| `.settings/org.eclipse.jdt.core.prefs` | Eclipse Java compiler settings |
-| `.vscode/settings.json` | VSCode Java formatter settings |
-| `build.gradle` | Spotless plugin configuration |
-| `.github/workflows/format-check.yml` | CI formatting check |
+| `.settings/org.eclipse.jdt.core.prefs` | Eclipse Java compiler settings              |
+| `.vscode/settings.json`                | VSCode Java formatter settings              |
+| `build.gradle`                         | Spotless plugin configuration               |
+| `.github/workflows/format-check.yml`   | CI formatting check                         |
 
 ## Best Practices
 
