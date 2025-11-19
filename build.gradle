@@ -58,9 +58,18 @@ subprojects {
         options.encoding = 'UTF-8'
         options.release = 21
     }
-    
+
+    // Configure JUnit 5 platform for tests
+    tasks.withType(Test) {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+            showStandardStreams = true
+        }
+    }
+
     // Code quality configuration disabled for now
-    
+
     // Print build info
     def javaVersion = System.getProperty('java.version')
     println "Building ${project.name} with Java ${javaVersion} (target: ${java.targetCompatibility})"

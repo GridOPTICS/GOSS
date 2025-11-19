@@ -2,8 +2,8 @@ package pnnl.goss.core;
 
 import java.io.Serializable;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
 
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
 

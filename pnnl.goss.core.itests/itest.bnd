@@ -2,8 +2,9 @@
 Bundle-Version: 2.0.2-SNAPSHOT
 
 # Use JUnit 5 and OSGi Test
+# Note: Using osgi-core-buildpath to avoid javax.jms from osgi.enterprise
 -buildpath: \
-	${osgi-buildpath},\
+	${osgi-core-buildpath},\
 	org.junit.jupiter:junit-jupiter-api;version=5.10.0,\
 	org.junit.jupiter:junit-jupiter-engine;version=5.10.0,\
 	org.osgi:org.osgi.test.junit5;version=1.3.0,\
@@ -11,9 +12,9 @@ Bundle-Version: 2.0.2-SNAPSHOT
 	org.osgi:org.osgi.service.cm;version=1.6.0,\
 	${slf4j-buildpath},\
 	${activemq-buildpath},\
-	org.apache.shiro:shiro-core;version=1.13.0,\
+	org.apache.shiro:shiro-core;version=2.0.6,\
 	org.apache.httpcomponents:httpclient;version=4.5,\
-	javax.jms:javax.jms-api;version=2.0.1,\
+	jakarta.jms:jakarta.jms-api;version=3.1.0,\
 	pnnl.goss.core.core-api,\
 	pnnl.goss.core.goss-client,\
 	pnnl.goss.core.goss-core-server,\

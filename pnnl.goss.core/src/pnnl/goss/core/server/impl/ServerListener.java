@@ -46,12 +46,12 @@ package pnnl.goss.core.server.impl;
 
 import java.io.Serializable;
 
-import javax.jms.InvalidDestinationException;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
+import jakarta.jms.InvalidDestinationException;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

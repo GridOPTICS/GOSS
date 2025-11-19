@@ -44,10 +44,10 @@
 */
 package pnnl.goss.core.client;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.Session;
 
 import pnnl.goss.core.ClientConsumer;
 import pnnl.goss.core.ClientListener;

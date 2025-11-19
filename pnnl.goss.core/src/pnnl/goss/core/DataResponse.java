@@ -48,7 +48,7 @@ package pnnl.goss.core;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

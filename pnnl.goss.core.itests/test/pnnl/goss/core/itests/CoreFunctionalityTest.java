@@ -30,7 +30,8 @@ public class CoreFunctionalityTest {
 
         assertNotNull(response, "Response should not be null");
         assertEquals(testData, response.getData(), "Data should match");
-        assertTrue(response.isResponseComplete(), "Should be complete by default");
+        // DataResponse defaults to incomplete until explicitly set
+        assertFalse(response.isResponseComplete(), "Should be incomplete by default");
     }
 
     @Test

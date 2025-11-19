@@ -50,25 +50,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.jms.Connection;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import jakarta.jms.Connection;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.http.auth.Credentials;
-import org.fusesource.stomp.jms.StompJmsConnection;
-import org.fusesource.stomp.jms.StompJmsConnectionFactory;
-import org.fusesource.stomp.jms.StompJmsDestination;
-import org.fusesource.stomp.jms.StompJmsTempQueue;
-import org.fusesource.stomp.jms.StompJmsTopic;
-import org.fusesource.stomp.jms.message.StompJmsBytesMessage;
-import org.fusesource.stomp.jms.message.StompJmsTextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,17 +179,41 @@ public class GossClient implements Client {
 
             connection = factory.createConnection();
         } else if (protocol.equals(PROTOCOL.STOMP)) {
-            StompJmsConnectionFactory factory = new StompJmsConnectionFactory();
-            factory.setBrokerURI(stompUri.replace("stomp", "tcp"));
+            // Note: The STOMP protocol in ActiveMQ is for external clients (Python,
+            // JavaScript, etc.)
+            // that speak the STOMP protocol. Java clients should use OpenWire for better
+            // performance and full JMS feature support.
+            //
+            // When STOMP protocol is selected, we use the OpenWire URI instead because:
+            // 1. ActiveMQConnectionFactory speaks OpenWire, not STOMP
+            // 2. The broker routes messages between protocols internally
+            // 3. Messages sent via OpenWire are accessible to STOMP clients and vice versa
+            //
+            // If you need true STOMP protocol support for Java, use a dedicated STOMP
+            // library.
+
+            log.warn("STOMP protocol selected - using OpenWire connection to broker. " +
+                    "STOMP is intended for external clients (Python, JS). " +
+                    "Java clients should use OPENWIRE for best performance.");
 
             if (credentials != null) {
-                connection = factory.createConnection(credentials
-                        .getUserPrincipal().getName(),
-                        credentials
-                                .getPassword());
+                log.debug("Creating session for " + credentials.getUserPrincipal() +
+                        " (STOMP requested, using OpenWire)");
             } else {
-                connection = factory.createConnection();
+                log.debug("Creating session without credentials (STOMP requested, using OpenWire)");
             }
+
+            // Use the OpenWire broker URI instead of the STOMP URI
+            // This allows Java clients to still communicate with the broker
+            // while STOMP clients can connect via the STOMP port
+            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUri);
+
+            if (credentials != null) {
+                factory.setUserName(credentials.getUserPrincipal().getName());
+                factory.setPassword(credentials.getPassword());
+            }
+
+            connection = factory.createConnection();
         }
 
         connection.start();
@@ -286,94 +303,11 @@ public class GossClient implements Client {
             if (event == null)
                 throw new NullPointerException("event cannot be null");
             Destination destination = null;
-            if (this.protocol.equals(PROTOCOL.OPENWIRE)) {
+            if (this.protocol.equals(PROTOCOL.OPENWIRE) || this.protocol.equals(PROTOCOL.STOMP)) {
+                // Both OPENWIRE and STOMP use the same JMS patterns with ActiveMQ
                 destination = getDestination(topicName);
                 new DefaultClientConsumer(new DefaultClientListener(event),
                         session, destination);
-            } else if (this.protocol.equals(PROTOCOL.STOMP)) {
-                Thread thread = new Thread(new Runnable() {
-                    Destination destination = new StompJmsDestination(topicName);
-                    DefaultClientConsumer consumer = new DefaultClientConsumer(
-                            session, destination);
-
-                    @Override
-                    public void run() {
-                        while (session != null) {
-                            try {
-                                Message msg = consumer.getMessageConsumer()
-                                        .receive(10000);
-                                if (msg instanceof StompJmsBytesMessage) {
-                                    StompJmsBytesMessage stompMessage = (StompJmsBytesMessage) msg;
-                                    org.fusesource.hawtbuf.Buffer buffer = stompMessage
-                                            .getContent();
-                                    // System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-                                    String message = buffer.toString()
-                                            .substring(
-                                                    buffer.toString().indexOf(
-                                                            ":") + 1);
-                                    DataResponse dataResponse = new DataResponse(message);
-                                    dataResponse.setDestination(msg.getJMSDestination().toString());
-                                    if (msg.getJMSReplyTo() != null)
-                                        dataResponse.setReplyDestination(msg.getJMSReplyTo());
-                                    if (msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-                                        dataResponse
-                                                .setUsername(msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
-                                    event.onMessage(dataResponse);
-                                }
-                                if (msg instanceof StompJmsTextMessage) {
-                                    StompJmsTextMessage stompMessage = (StompJmsTextMessage) msg;
-
-                                    org.fusesource.hawtbuf.Buffer buffer = stompMessage
-                                            .getContent();
-                                    // System.out.println(buffer.toString().substring(buffer.toString().indexOf(":")+1));
-                                    String message = buffer.toString()
-                                            .substring(
-                                                    buffer.toString().indexOf(
-                                                            ":") + 1);
-                                    Gson gson = new Gson();
-                                    DataResponse dataResponse;
-                                    try {
-                                        dataResponse = DataResponse.parse(message);
-                                        dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-                                        if (msg.getJMSReplyTo() != null)
-                                            dataResponse.setReplyDestination(msg.getJMSReplyTo());
-                                        if (msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-                                            dataResponse.setUsername(
-                                                    msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
-                                        event.onMessage(dataResponse);
-                                    } catch (JsonSyntaxException e) {
-                                        dataResponse = new DataResponse(message);
-                                        dataResponse.setDestination(stompMessage.getStompJmsDestination().toString());
-                                        if (msg.getJMSReplyTo() != null)
-                                            dataResponse.setReplyDestination(msg.getJMSReplyTo());
-                                        if (msg.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER))
-                                            dataResponse.setUsername(
-                                                    msg.getStringProperty(SecurityConstants.SUBJECT_HEADER));
-                                        event.onMessage(dataResponse);
-                                    }
-
-                                }
-                            } catch (JMSException ex) {
-                                // Happens when a timeout occurs.
-                                // log.debug("Illegal state? "+
-                                // ex.getMessage());
-                                if (session != null) {
-                                    log.debug("Closing session");
-                                    try {
-                                        session.close();
-                                    } catch (JMSException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                    session = null;
-                                }
-                            }
-                        }
-                    }
-                });
-
-                thread.start();
-                threads.add(thread);
             }
         } finally {
 
@@ -486,15 +420,13 @@ public class GossClient implements Client {
                     throw new SystemException(ConnectionCode.DESTINATION_ERROR);
                 }
             } else {
-                if (protocol.equals(PROTOCOL.OPENWIRE)) {
-
+                if (protocol.equals(PROTOCOL.OPENWIRE) || protocol.equals(PROTOCOL.STOMP)) {
+                    // Both OPENWIRE and STOMP use standard JMS with ActiveMQ
                     destination = getSession().createTemporaryQueue();
                     if (destination == null) {
                         throw new SystemException(
                                 ConnectionCode.DESTINATION_ERROR);
                     }
-                } else if (protocol.equals(PROTOCOL.STOMP)) {
-                    destination = new StompJmsTempQueue("/queue/", UUID.randomUUID().toString());
                 }
             }
         } catch (JMSException e) {
@@ -508,20 +440,13 @@ public class GossClient implements Client {
         Destination destination = null;
 
         try {
-            if (protocol.equals(PROTOCOL.OPENWIRE)) {
-
+            if (protocol.equals(PROTOCOL.OPENWIRE) || protocol.equals(PROTOCOL.STOMP)) {
+                // Both OPENWIRE and STOMP use standard JMS with ActiveMQ
                 destination = getSession().createTopic(topicName);
 
                 if (destination == null) {
                     throw new SystemException(ConnectionCode.DESTINATION_ERROR);
                 }
-            } else if (protocol.equals(PROTOCOL.STOMP)) {
-                if (connection == null) {
-                    throw new SystemException(ConnectionCode.CONNECTION_ERROR)
-                            .set("topicName", topicName);
-                }
-                destination = new StompJmsTopic(
-                        (StompJmsConnection) connection, topicName);
             }
         } catch (JMSException e) {
             throw SystemException.wrap(e).set("destination", "null");

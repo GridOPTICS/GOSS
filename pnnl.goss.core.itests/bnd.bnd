@@ -1,23 +1,32 @@
 Bundle-Version: 2.0.2-SNAPSHOT
 
 # Build dependencies - JUnit 5
+# Note: Using osgi-core-buildpath only (not full osgi-buildpath) to avoid javax.jms from osgi.enterprise
 -buildpath: \
-    ${osgi-buildpath},\
+    ${osgi-core-buildpath},\
+    org.osgi:org.osgi.service.cm;version='[1.6.0,2)',\
     org.junit.jupiter:junit-jupiter-api;version='[5.10.0,6)',\
     org.junit.jupiter:junit-jupiter-engine;version='[5.10.0,6)',\
+    org.junit.platform:junit-platform-commons;version='[1.10.0,2)',\
+    org.junit.platform:junit-platform-engine;version='[1.10.0,2)',\
+    org.junit.platform:junit-platform-launcher;version='[1.10.0,2)',\
+    org.opentest4j:opentest4j;version='[1.3.0,2)',\
     biz.aQute.tester.junit-platform;version='[6.4.0,7)',\
     ${slf4j-buildpath},\
     ${activemq-buildpath},\
-    org.apache.shiro:shiro-core;version=1.13.0,\
+    org.apache.shiro:shiro-core;version=2.0.6,\
+    org.apache.shiro:shiro-lang;version=2.0.6,\
     org.apache.httpcomponents:httpclient;version=4.5,\
+    org.apache.httpcomponents:httpcore;version=4.4,\
+    com.google.code.gson:gson;version=2.11.0,\
     pnnl.goss.core.runner;version=latest,\
-    javax.jms:javax.jms-api;version=2.0.1,\
-    pnnl.goss.core.core-api,\
-    pnnl.goss.core.goss-client,\
-    pnnl.goss.core.goss-core-server,\
-    pnnl.goss.core.goss-core-server-api,\
-    pnnl.goss.core.goss-core-exceptions,\
-    pnnl.goss.core.goss-core-server-registry,\
+    jakarta.jms:jakarta.jms-api;version=3.1.0,\
+    pnnl.goss.core.core-api;version=snapshot,\
+    pnnl.goss.core.goss-client;version=snapshot,\
+    pnnl.goss.core.goss-core-server;version=snapshot,\
+    pnnl.goss.core.goss-core-server-api;version=snapshot,\
+    pnnl.goss.core.goss-core-exceptions;version=snapshot,\
+    pnnl.goss.core.goss-core-server-registry;version=snapshot,\
     pnnl.goss.core.testutil;version=latest
 
 # Use JUnit 5 tester
@@ -37,7 +46,7 @@ Private-Package:  \
 
 # Make all non-JUnit5 imports optional - tests that need them won't run but basic tests will
 Import-Package: \
-    javax.jms;resolution:=optional,\
+    jakarta.jms;resolution:=optional,\
     org.apache.activemq.*;resolution:=optional,\
     org.junit;resolution:=optional,\
     org.junit.*;resolution:=optional,\
@@ -56,7 +65,7 @@ Import-Package: \
 -runpath: biz.aQute.launcher;version='[6.4.0,7)'
 
 # Runtime bundles for OSGi tests - JUnit 5
-# Minimal bundles needed for running JUnit 5 tests in OSGi container
+# Bundles needed for running JUnit 5 tests in OSGi container
 # Using exact Bundle-SymbolicNames from the JAR manifests
 -runbundles: \
     junit-platform-commons;version='[1.11.0,2)',\
@@ -64,4 +73,19 @@ Import-Package: \
     junit-platform-launcher;version='[1.11.0,2)',\
     junit-jupiter-api;version='[5.11.0,6)',\
     junit-jupiter-engine;version='[5.11.0,6)',\
-    org.opentest4j;version='[1.3.0,2)'
+    org.opentest4j;version='[1.3.0,2)',\
+    slf4j.api;version='[2.0.0,3)',\
+    slf4j.simple;version='[2.0.0,3)',\
+    org.apache.felix.scr;version='[2.2.0,3)',\
+    org.apache.felix.configadmin;version='[1.9.0,2)',\
+    org.apache.activemq.osgi;version='[6.0.0,7)',\
+    jakarta.jms-api;version='[3.0.0,4)',\
+    org.apache.shiro.core;version='[2.0.0,3)',\
+    org.apache.shiro.lang;version='[2.0.0,3)',\
+    pnnl.goss.core.core-api;version=snapshot,\
+    pnnl.goss.core.goss-client;version=snapshot,\
+    pnnl.goss.core.goss-core-server;version=snapshot,\
+    pnnl.goss.core.goss-core-server-api;version=snapshot,\
+    pnnl.goss.core.goss-core-exceptions;version=snapshot,\
+    pnnl.goss.core.goss-core-server-registry;version=snapshot,\
+    pnnl.goss.core.goss-core-security;version=snapshot

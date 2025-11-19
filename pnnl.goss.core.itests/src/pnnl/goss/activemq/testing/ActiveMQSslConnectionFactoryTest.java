@@ -124,7 +124,7 @@ public class ActiveMQSslConnectionFactoryTest {
         cf.setTrustStorePassword("wrongPassword");
         try {
             connection = (ActiveMQConnection) cf.createConnection();
-        } catch (javax.jms.JMSException ignore) {
+        } catch (jakarta.jms.JMSException ignore) {
             // Expected exception
         }
         assertNull(connection);
@@ -145,7 +145,7 @@ public class ActiveMQSslConnectionFactoryTest {
         cf.setTrustStorePassword("password");
         try {
             connection = (ActiveMQConnection) cf.createConnection();
-        } catch (javax.jms.JMSException ignore) {
+        } catch (jakarta.jms.JMSException ignore) {
             // Expected exception
             LOG.info("Expected SSLHandshakeException [" + ignore + "]");
         }

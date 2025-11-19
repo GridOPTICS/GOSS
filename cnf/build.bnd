@@ -34,8 +34,8 @@ testbin:               build/classes/java/test
 ## Java Compiler Options
 #java:                  java
 #javac:                 javac
-javac.source:          22
-javac.target:          22
+javac.source:          21
+javac.target:          21
 #javac.debug:           on
 
 ## Bnd Options

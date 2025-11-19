@@ -48,11 +48,11 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Random;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
 
 import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.BlobMessage;
