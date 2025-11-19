@@ -5,13 +5,13 @@
 #-include: goss-core.shared.bndrun
 
 -runfw: org.apache.felix.framework;version='[7.0.5,8)'
--runee: JavaSE-22
+-runee: JavaSE-21
 -runsystemcapabilities: ${native_capability}
 
 -resolve.effective: active;skip:="osgi.service"
 -runbundles: \
 	${activemq-runpath},\
-	${javax-runpath},\
+	${jakarta-runpath},\
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-client;version=latest,\
 	pnnl.goss.core.goss-core-commands;version=latest,\

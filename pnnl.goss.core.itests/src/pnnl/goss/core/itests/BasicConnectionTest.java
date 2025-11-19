@@ -2,7 +2,7 @@ package pnnl.goss.core.itests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Basic connectivity test that verifies the project can compile and basic
@@ -32,7 +32,7 @@ public class BasicConnectionTest {
     }
 
     @Test
-    @Ignore("Integration test - needs full OSGi environment")
+    @Disabled("Integration test - needs full OSGi environment")
     public void testServerStartup() {
         // This would test actual server startup
         // Ignored for now as it needs OSGi runtime

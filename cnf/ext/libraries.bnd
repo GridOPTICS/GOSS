@@ -33,14 +33,35 @@ osgi-runpath: \
 # In order to use activemq one must include ${jakarta-runpath} as well.
 activemq: ${repo;org.apache.activemq:activemq-osgi;[6.0.0,7);HIGHEST}
 activemq-shiro: ${repo;org.apache.activemq:activemq-shiro;[6.0.0,7);HIGHEST}
-# Shiro 2.x
-shiro: ${repo;org.apache.shiro:shiro-core;[2.0.0,3);HIGHEST}
-shiro-lang: ${repo;org.apache.shiro:shiro-lang;[2.0.0,3);HIGHEST}
+
+# Shiro 2.0.0 - exact version required for activemq-shiro compatibility (<=2.0.0)
+shiro: ${repo;org.apache.shiro:shiro-core;[2.0.0,2.0.1);HIGHEST}
+shiro-lang: ${repo;org.apache.shiro:shiro-lang;[2.0.0,2.0.1);HIGHEST}
+shiro-cache: ${repo;org.apache.shiro:shiro-cache;[2.0.0,2.0.1);HIGHEST}
+shiro-event: ${repo;org.apache.shiro:shiro-event;[2.0.0,2.0.1);HIGHEST}
+shiro-crypto-core: ${repo;org.apache.shiro:shiro-crypto-core;[2.0.0,2.0.1);HIGHEST}
+shiro-crypto-hash: ${repo;org.apache.shiro:shiro-crypto-hash;[2.0.0,2.0.1);HIGHEST}
+shiro-config-core: ${repo;org.apache.shiro:shiro-config-core;[2.0.0,2.0.1);HIGHEST}
+shiro-config-ogdl: ${repo;org.apache.shiro:shiro-config-ogdl;[2.0.0,2.0.1);HIGHEST}
+
 activemq-buildpath: ${activemq};version=file
+shiro-crypto-cipher: ${repo;org.apache.shiro:shiro-crypto-cipher;[2.0.0,2.0.1);HIGHEST}
+
 activemq-runpath: ${activemq-buildpath},\
+  ${activemq-shiro};version=file,\
   ${shiro};version=file,\
   ${shiro-lang};version=file,\
-  ${activemq-shiro};version=file
+  ${shiro-cache};version=file,\
+  ${shiro-event};version=file,\
+  ${shiro-crypto-core};version=file,\
+  ${shiro-crypto-hash};version=file,\
+  ${shiro-crypto-cipher};version=file,\
+  ${shiro-config-core};version=file,\
+  ${shiro-config-ogdl};version=file
+
+# XStream
+xstream: ${repo;com.thoughtworks.xstream:xstream;[1.4.0,2);HIGHEST}
+xstream-runpath: ${xstream};version=file
 
 # Config Admin - Latest
 configadmin: ${repo;org.apache.felix:org.apache.felix.configadmin;[1.9.0,2);HIGHEST}
@@ -93,8 +114,22 @@ jackson-buildpath: \
 # Jakarta JMS (for ActiveMQ 6.x)
 jakarta-jms: ${repo;jakarta.jms:jakarta.jms-api;[3.0.0,4);HIGHEST}
 jakarta-annotation: ${repo;javax.annotation:javax.annotation-api;[1.3.0,2);HIGHEST}
+jakarta-resource: ${repo;jakarta.resource:jakarta.resource-api;[2.1.0,3);HIGHEST}
+jakarta-transaction: ${repo;jakarta.transaction:jakarta.transaction-api;[2.0.0,3);HIGHEST}
+jakarta-cdi: ${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0.0,5);HIGHEST}
+jakarta-inject: ${repo;jakarta.inject:jakarta.inject-api;[2.0.0,3);HIGHEST}
+jakarta-interceptor: ${repo;jakarta.interceptor:jakarta.interceptor-api;[2.1.0,3);HIGHEST}
+jakarta-lang-model: ${repo;jakarta.enterprise:jakarta.enterprise.lang-model;[4.0.0,5);HIGHEST}
+jakarta-el: ${repo;jakarta.el:jakarta.el-api;[5.0.0,6);HIGHEST}
 jakarta-runpath: ${jakarta-jms};version=file,\
-  ${jakarta-annotation};version=file
+  ${jakarta-annotation};version=file,\
+  ${jakarta-resource};version=file,\
+  ${jakarta-transaction};version=file,\
+  ${jakarta-cdi};version=file,\
+  ${jakarta-inject};version=file,\
+  ${jakarta-interceptor};version=file,\
+  ${jakarta-lang-model};version=file,\
+  ${jakarta-el};version=file
 
 # Legacy Javax JMS (for backwards compatibility)
 javax-jms: ${repo;javax.jms:javax.jms-api;[2.0.0,3);HIGHEST}
@@ -137,3 +172,84 @@ httpclient-buildpath: ${httpclient};version=file,\
   ${httpcore};version=file
 httpclient-runpath: ${httpclient};version=file,\
   ${httpcore};version=file
+
+# Commons DBCP
+commons-dbcp: ${repo;commons-dbcp:commons-dbcp;[1.4,2);HIGHEST}
+commons-dbcp-runpath: ${commons-dbcp};version=file
+
+# Commons Logging (HttpClient 4.x requires [1.1.0, 1.3.0))
+commons-logging: ${repo;commons-logging:commons-logging;[1.2.0,1.3.0);HIGHEST}
+commons-logging-runpath: ${commons-logging};version=file
+
+# Apache Aries SPI Fly (for ServiceLoader in OSGi)
+spifly: ${repo;org.apache.aries.spifly:org.apache.aries.spifly.dynamic.framework.extension;[1.3.0,2);HIGHEST}
+spifly-bundle: ${repo;org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle;[1.3.0,2);HIGHEST}
+asm: ${repo;org.ow2.asm:asm;[9.0.0,10);HIGHEST}
+asm-commons: ${repo;org.ow2.asm:asm-commons;[9.0.0,10);HIGHEST}
+asm-util: ${repo;org.ow2.asm:asm-util;[9.0.0,10);HIGHEST}
+asm-tree: ${repo;org.ow2.asm:asm-tree;[9.0.0,10);HIGHEST}
+asm-analysis: ${repo;org.ow2.asm:asm-analysis;[9.0.0,10);HIGHEST}
+spifly-runpath: ${spifly};version=file
+spifly-bundle-runpath: ${spifly-bundle};version=file,\
+  ${asm};version=file,\
+  ${asm-commons};version=file,\
+  ${asm-util};version=file,\
+  ${asm-tree};version=file,\
+  ${asm-analysis};version=file
+
+# OSGi util.promise and function (for service.component)
+osgi-promise: ${repo;org.osgi:org.osgi.util.promise;[1.3.0,2);HIGHEST}
+osgi-function: ${repo;org.osgi:org.osgi.util.function;[1.2.0,2);HIGHEST}
+osgi-util-runpath: ${osgi-promise};version=file,\
+  ${osgi-function};version=file
+
+# Jakarta XML Bind (for ActiveMQ 6.x)
+jakarta-xml-bind: ${repo;jakarta.xml.bind:jakarta.xml.bind-api;[4.0.0,5);HIGHEST}
+jaxb-runtime: ${repo;org.glassfish.jaxb:jaxb-runtime;[4.0.0,5);HIGHEST}
+# API only (runtime requires txw2 which isn't an OSGi bundle)
+jakarta-xml-bind-api-runpath: ${jakarta-xml-bind};version=file
+# Full runtime (includes jaxb-runtime which requires txw2)
+jakarta-xml-bind-runpath: ${jakarta-xml-bind};version=file,\
+  ${jaxb-runtime};version=file
+
+# OSGi Service Component (for Felix SCR)
+osgi-service-component: ${repo;org.osgi:org.osgi.service.component;[1.5.0,2);HIGHEST}
+osgi-service-component-runpath: ${osgi-service-component};version=file
+
+# javax.transaction (for Commons DBCP) - using geronimo to avoid CDI dependency
+geronimo-jta: ${repo;org.apache.geronimo.specs:geronimo-jta_1.1_spec;[1.1.0,2);HIGHEST}
+geronimo-jta-runpath: ${geronimo-jta};version=file
+
+# Jakarta Activation (for JAXB)
+jakarta-activation: ${repo;jakarta.activation:jakarta.activation-api;[2.1.0,3);HIGHEST}
+angus-activation: ${repo;org.eclipse.angus:angus-activation;[2.0.0,3);HIGHEST}
+jakarta-activation-runpath: ${jakarta-activation};version=file,\
+  ${angus-activation};version=file
+
+# istack-commons (for JAXB runtime)
+istack-commons: ${repo;com.sun.istack:istack-commons-runtime;[4.0.0,5);HIGHEST}
+istack-commons-runpath: ${istack-commons};version=file
+
+# Commons BeanUtils (for Shiro config)
+commons-beanutils: ${repo;commons-beanutils:commons-beanutils;[1.9.0,2);HIGHEST}
+commons-collections: ${repo;commons-collections:commons-collections;[3.2.0,4);HIGHEST}
+commons-beanutils-runpath: ${commons-beanutils};version=file,\
+  ${commons-collections};version=file
+
+# Commons Pool (for DBCP)
+commons-pool: ${repo;commons-pool:commons-pool;[1.6,2);HIGHEST}
+commons-pool-runpath: ${commons-pool};version=file
+
+# Jakarta Annotation 2.1.x (for ActiveMQ 6.x)
+jakarta-annotation-api: ${repo;jakarta.annotation:jakarta.annotation-api;[2.1.0,3);HIGHEST}
+jakarta-annotation-api-runpath: ${jakarta-annotation-api};version=file
+
+# TXW2 (for JAXB runtime)
+txw2: ${repo;org.glassfish.jaxb:txw2;[4.0.0,5);HIGHEST}
+txw2-runpath: ${txw2};version=file
+
+# HttpClient OSGi bundles (proper OSGi bundles with all packages)
+httpclient-osgi: ${repo;org.apache.httpcomponents:httpclient-osgi;[4.5.0,5);HIGHEST}
+httpcore-osgi: ${repo;org.apache.httpcomponents:httpcore-osgi;[4.4.0,5);HIGHEST}
+httpclient-osgi-runpath: ${httpclient-osgi};version=file,\
+  ${httpcore-osgi};version=file

@@ -17,8 +17,8 @@ package pnnl.goss.activemq.testing;
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,7 @@ import org.apache.activemq.ActiveMQSslConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.broker.TransportConnector;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class ActiveMQSslConnectionFactoryTest {
     private ActiveMQConnection connection;
     private BrokerService broker;
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // Try our best to close any previously opend connection.
         try {
