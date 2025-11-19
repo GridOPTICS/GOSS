@@ -31,14 +31,11 @@ import pnnl.goss.core.Response;
 import pnnl.goss.core.client.GossClient;
 
 /**
- * End-to-end integration tests for GOSS client-server communication.
- * These tests run outside of OSGi for simpler CI execution.
+ * End-to-end integration tests for GOSS client-server communication. These
+ * tests run outside of OSGi for simpler CI execution.
  *
- * Tests verify:
- * - Client connection to broker
- * - Request/response patterns
- * - Pub/sub messaging
- * - Multiple protocol support
+ * Tests verify: - Client connection to broker - Request/response patterns -
+ * Pub/sub messaging - Multiple protocol support
  */
 @TestInstance(Lifecycle.PER_CLASS)
 public class GossEndToEndTest {
@@ -93,11 +90,10 @@ public class GossEndToEndTest {
     public void testGossClientConnection() throws Exception {
         // Create GossClient with OpenWire protocol
         GossClient client = new GossClient(
-            PROTOCOL.OPENWIRE,
-            null,  // no credentials for test
-            OPENWIRE_URI,
-            STOMP_URI
-        );
+                PROTOCOL.OPENWIRE,
+                null, // no credentials for test
+                OPENWIRE_URI,
+                STOMP_URI);
 
         try {
             // Create session
@@ -120,11 +116,10 @@ public class GossEndToEndTest {
 
         // Create GossClient with credentials
         GossClient client = new GossClient(
-            PROTOCOL.OPENWIRE,
-            credentials,
-            OPENWIRE_URI,
-            STOMP_URI
-        );
+                PROTOCOL.OPENWIRE,
+                credentials,
+                OPENWIRE_URI,
+                STOMP_URI);
 
         try {
             client.createSession();
@@ -142,11 +137,10 @@ public class GossEndToEndTest {
 
         // Create client
         GossClient client = new GossClient(
-            PROTOCOL.OPENWIRE,
-            null,
-            OPENWIRE_URI,
-            STOMP_URI
-        );
+                PROTOCOL.OPENWIRE,
+                null,
+                OPENWIRE_URI,
+                STOMP_URI);
 
         try {
             client.createSession();
@@ -178,7 +172,7 @@ public class GossEndToEndTest {
             assertTrue(received, "Should receive published message within timeout");
             // GossClient wraps messages in DataResponse JSON format
             assertTrue(receivedMessage.get().contains(testMessage),
-                "Received message should contain published content: " + receivedMessage.get());
+                    "Received message should contain published content: " + receivedMessage.get());
 
         } finally {
             client.close();
@@ -239,11 +233,10 @@ public class GossEndToEndTest {
         // When STOMP protocol is selected, GossClient should use OpenWire internally
         // but still work correctly
         GossClient client = new GossClient(
-            PROTOCOL.STOMP,
-            null,
-            OPENWIRE_URI,
-            STOMP_URI
-        );
+                PROTOCOL.STOMP,
+                null,
+                OPENWIRE_URI,
+                STOMP_URI);
 
         try {
             client.createSession();
@@ -286,7 +279,7 @@ public class GossEndToEndTest {
             assertTrue(gotMessage, "Should receive JSON data");
             assertNotNull(received.get(), "Received data should not be null");
             assertTrue(received.get().contains("test") || received.get().contains("42"),
-                "Received data should contain test values");
+                    "Received data should contain test values");
 
         } finally {
             client.close();
@@ -377,7 +370,12 @@ public class GossEndToEndTest {
             this.value = value;
         }
 
-        public String getName() { return name; }
-        public int getValue() { return value; }
+        public String getName() {
+            return name;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

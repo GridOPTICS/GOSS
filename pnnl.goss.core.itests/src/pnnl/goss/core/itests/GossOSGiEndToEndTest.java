@@ -28,8 +28,8 @@ import pnnl.goss.core.client.GossClient;
 import pnnl.goss.core.server.ServerControl;
 
 /**
- * OSGi-based end-to-end integration tests.
- * These tests run inside an OSGi framework and use the actual GOSS services.
+ * OSGi-based end-to-end integration tests. These tests run inside an OSGi
+ * framework and use the actual GOSS services.
  *
  * Run with: ./gradlew :pnnl.goss.core.itests:testOSGi
  */
@@ -182,11 +182,10 @@ public class GossOSGiEndToEndTest {
     @EnabledIf("isOSGiEnvironment")
     public void testGossClientConnection() throws Exception {
         GossClient client = new GossClient(
-            PROTOCOL.OPENWIRE,
-            null,
-            OPENWIRE_URI,
-            STOMP_URI
-        );
+                PROTOCOL.OPENWIRE,
+                null,
+                OPENWIRE_URI,
+                STOMP_URI);
 
         try {
             client.createSession();
@@ -204,11 +203,10 @@ public class GossOSGiEndToEndTest {
         String testMessage = "Hello from OSGi test!";
 
         GossClient client = new GossClient(
-            PROTOCOL.OPENWIRE,
-            null,
-            OPENWIRE_URI,
-            STOMP_URI
-        );
+                PROTOCOL.OPENWIRE,
+                null,
+                OPENWIRE_URI,
+                STOMP_URI);
 
         try {
             client.createSession();
@@ -234,7 +232,7 @@ public class GossOSGiEndToEndTest {
 
             assertTrue(received, "Should receive message");
             assertTrue(receivedMessage.get().contains(testMessage),
-                "Message should contain: " + testMessage);
+                    "Message should contain: " + testMessage);
 
         } finally {
             client.close();

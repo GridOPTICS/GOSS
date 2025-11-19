@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.net.URI;
 
 /**
- * Simple client-server test outside OSGi container.
- * Tests both OpenWire and STOMP protocols.
+ * Simple client-server test outside OSGi container. Tests both OpenWire and
+ * STOMP protocols.
  */
 public class ClientServerTest {
 
@@ -163,15 +163,18 @@ public class ClientServerTest {
 
     private void testStomp() throws Exception {
         // Note: The STOMP port (61618) speaks the STOMP protocol, not OpenWire.
-        // ActiveMQConnectionFactory speaks OpenWire, so it cannot connect to a STOMP port.
+        // ActiveMQConnectionFactory speaks OpenWire, so it cannot connect to a STOMP
+        // port.
         //
         // The STOMP connector is for external clients (Python, JavaScript, etc.) that
         // speak the STOMP protocol. Java clients should always use OpenWire for better
         // performance and full feature support.
         //
         // Here we just verify that STOMP messages can be exchanged via the broker
-        // by sending from OpenWire and having it available to STOMP clients (and vice versa).
-        // We'll test this by sending a message via OpenWire that would be accessible to STOMP clients.
+        // by sending from OpenWire and having it available to STOMP clients (and vice
+        // versa).
+        // We'll test this by sending a message via OpenWire that would be accessible to
+        // STOMP clients.
 
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(OPENWIRE_URI);
 
