@@ -11,84 +11,84 @@ public class SystemException extends RuntimeException {
 
     public static SystemException wrap(Throwable exception, ErrorCode errorCode) {
         if (exception instanceof SystemException) {
-            SystemException se = (SystemException)exception;
-        	if (errorCode != null && errorCode != se.getErrorCode()) {
+            SystemException se = (SystemException) exception;
+            if (errorCode != null && errorCode != se.getErrorCode()) {
                 return new SystemException(exception.getMessage(), exception, errorCode);
-			}
-			return se;
+            }
+            return se;
         } else {
             return new SystemException(exception.getMessage(), exception, errorCode);
         }
     }
-    
+
     public static SystemException wrap(Throwable exception) {
-    	return wrap(exception, null);
+        return wrap(exception, null);
     }
-    
+
     private ErrorCode errorCode;
-    private final Map<String,Object> properties = new TreeMap<String,Object>();
-    
+    private final Map<String, Object> properties = new TreeMap<String, Object>();
+
     public SystemException(ErrorCode errorCode) {
-		this.errorCode = errorCode;
-	}
+        this.errorCode = errorCode;
+    }
 
-	public SystemException(String message, ErrorCode errorCode) {
-		super(message);
-		this.errorCode = errorCode;
-	}
+    public SystemException(String message, ErrorCode errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
 
-	public SystemException(Throwable cause, ErrorCode errorCode) {
-		super(cause);
-		this.errorCode = errorCode;
-	}
+    public SystemException(Throwable cause, ErrorCode errorCode) {
+        super(cause);
+        this.errorCode = errorCode;
+    }
 
-	public SystemException(String message, Throwable cause, ErrorCode errorCode) {
-		super(message, cause);
-		this.errorCode = errorCode;
-	}
-	
-	public ErrorCode getErrorCode() {
+    public SystemException(String message, Throwable cause, ErrorCode errorCode) {
+        super(message, cause);
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
         return errorCode;
     }
-	
-	public SystemException setErrorCode(ErrorCode errorCode) {
+
+    public SystemException setErrorCode(ErrorCode errorCode) {
         this.errorCode = errorCode;
         return this;
     }
-	
-	public Map<String, Object> getProperties() {
-		return properties;
-	}
-	
-    @SuppressWarnings("unchecked")
-	public <T> T get(String name) {
-        return (T)properties.get(name);
+
+    public Map<String, Object> getProperties() {
+        return properties;
     }
-	
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String name) {
+        return (T) properties.get(name);
+    }
+
     public SystemException set(String name, Object value) {
         properties.put(name, value);
         return this;
     }
-    
+
     public void printStackTrace(PrintStream s) {
         synchronized (s) {
             printStackTrace(new PrintWriter(s));
         }
     }
 
-    public void printStackTrace(PrintWriter s) { 
+    public void printStackTrace(PrintWriter s) {
         synchronized (s) {
             s.println(this);
             s.println("\t-------------------------------");
             if (errorCode != null) {
-	        	s.println("\t" + errorCode + ":" + errorCode.getClass().getName()); 
-			}
+                s.println("\t" + errorCode + ":" + errorCode.getClass().getName());
+            }
             for (String key : properties.keySet()) {
-            	s.println("\t" + key + "=[" + properties.get(key) + "]"); 
+                s.println("\t" + key + "=[" + properties.get(key) + "]");
             }
             s.println("\t-------------------------------");
             StackTraceElement[] trace = getStackTrace();
-            for (int i=0; i < trace.length; i++)
+            for (int i = 0; i < trace.length; i++)
                 s.println("\tat " + trace[i]);
 
             Throwable ourCause = getCause();
@@ -98,5 +98,5 @@ public class SystemException extends RuntimeException {
             s.flush();
         }
     }
-    
+
 }

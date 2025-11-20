@@ -1,0 +1,85 @@
+name: CodeQL Security Analysis
+
+on:
+  push:
+    branches: [ main, master, develop, upstream_develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  schedule:
+    # Run CodeQL analysis weekly on Mondays at 3 AM UTC
+    - cron: '0 3 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up JDK 22
+      uses: actions/setup-java@v4
+      with:
+        java-version: 22
+        distribution: 'temurin'
+        cache: gradle
+    
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        config-file: ./.github/codeql/codeql-config.yml
+        queries: +security-and-quality
+    
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          cnf/cache
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+    
+    - name: Build for CodeQL analysis
+      run: |
+        # Build without tests to speed up analysis
+        ./gradlew build -x test -x check -x :pnnl.goss.core.itests:testOSGi --no-daemon
+      env:
+        GRADLE_OPTS: -Xmx3g -Dorg.gradle.daemon=false
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+        upload: true
+    
+    - name: Upload CodeQL results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: codeql-results
+        path: |
+          /home/runner/work/_temp/codeql_databases/
+        retention-days: 30

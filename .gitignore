@@ -1,11 +1,146 @@
-/.gradle/
-/reports/
-*/generated/
-.settings/
-.metadata/
+# GOSS Project .gitignore
+
+## Build Outputs ##
+/build/
+build/
+generated/
+target/
+out/
+bin/
+*.jar
+*.war
+*.ear
 *.class
+
+## Gradle ##
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+## BND/OSGi Generated Files ##
+cnf/cache/
+cnf/generated/
+cnf/releaserepo/
 cnf/localrepo/.*
-pnnl.goss.core/bin/
-./.project
-*karaf*
+*.bndrun.state
+generated.index
+*.tmp
+
+## IDE Files ##
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+# Note: .project and .classpath are tracked to ensure both Eclipse and VSCode
+# use Gradle's build directory (build/) instead of Eclipse's default (bin/)
+# Note: .settings/ formatter configs are tracked for consistent formatting
+# .project
+# .classpath
+.settings/*
+!.settings/eclipse-java-formatter.xml
+!.settings/org.eclipse.jdt.core.prefs
+.metadata/
+*.launch
 .recommenders/
+.factorypath
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+## Logs ##
+*.log
+*.log.*
+log/
+logs/
+felix.log
+karaf.log
+*karaf*
+
+## Reports ##
+/reports/
+
+## OS Files ##
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+## Testing ##
+/test-output/
+TEST-*.xml
+*.tlog
+
+## Security ##
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.truststore
+
+## Temporary Files ##
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+
+## Application Specific ##
+
+# GOSS specific
+conf/local/
+conf/*.local.cfg
+local.properties
+
+## Code Coverage ##
+jacoco*.exec
+*.lcov
+coverage/
+
+## Dependency Check ##
+dependency-check-data/
+
+## Custom Local Files ##
+*.local
+local_*
+private_*

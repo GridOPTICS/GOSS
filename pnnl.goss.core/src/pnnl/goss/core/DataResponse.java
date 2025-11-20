@@ -48,7 +48,7 @@ package pnnl.goss.core;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -67,164 +67,164 @@ import pnnl.goss.core.Response;
 
 public class DataResponse extends Response implements Serializable {
 
-	private static final long serialVersionUID = 3555288982317165831L;
-	Serializable data;
+    private static final long serialVersionUID = 3555288982317165831L;
+    Serializable data;
 
-	DataError error;
+    DataError error;
 
-	boolean responseComplete;
+    boolean responseComplete;
 
-	String destination;
+    String destination;
 
-	Destination replyDestination;
-	
-	String username;
+    Destination replyDestination;
 
-	public DataResponse() {
+    String username;
 
-	}
+    public DataResponse() {
 
-	public DataResponse(Serializable data) {
-		setData(data);
-	}
+    }
 
-	public boolean wasDataError() {
-		return isError();
-	}
+    public DataResponse(Serializable data) {
+        setData(data);
+    }
 
-	public boolean isError() {
-		return data.getClass().equals(DataError.class);
-	}
+    public boolean wasDataError() {
+        return isError();
+    }
 
-	public void setError(DataError error) {
-		this.error = error;
-	}
+    public boolean isError() {
+        return data.getClass().equals(DataError.class);
+    }
 
-	public DataError getError() {
-		return error;
-	}
+    public void setError(DataError error) {
+        this.error = error;
+    }
 
-	public Serializable getData() {
-		return data;
-	}
+    public DataError getError() {
+        return error;
+    }
 
-	public void setData(Serializable data) {
-		this.data = data;
-	}
+    public Serializable getData() {
+        return data;
+    }
 
-	/**
-	 * To check if response is complete in case of request with recurring
-	 * responses.
-	 * 
-	 * @return True if this is the last response for the query, false otherwise.
-	 */
-	public boolean isResponseComplete() {
-		return responseComplete;
-	}
+    public void setData(Serializable data) {
+        this.data = data;
+    }
 
-	/**
-	 * To set if response is complete in case of request with recurring
-	 * responses.
-	 * 
-	 * @param responseComplete
-	 *            : True if this is the last response for the query, false
-	 *            otherwise.
-	 */
-	public void setResponseComplete(boolean responseComplete) {
-		this.responseComplete = responseComplete;
-	}
+    /**
+     * To check if response is complete in case of request with recurring responses.
+     *
+     * @return True if this is the last response for the query, false otherwise.
+     */
+    public boolean isResponseComplete() {
+        return responseComplete;
+    }
 
-	public String getDestination() {
-		return destination;
-	}
+    /**
+     * To set if response is complete in case of request with recurring responses.
+     *
+     * @param responseComplete
+     *            : True if this is the last response for the query, false
+     *            otherwise.
+     */
+    public void setResponseComplete(boolean responseComplete) {
+        this.responseComplete = responseComplete;
+    }
 
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
-	
-	
+    public String getDestination() {
+        return destination;
+    }
 
-	public Destination getReplyDestination() {
-		return replyDestination;
-	}
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
 
-	public void setReplyDestination(Destination replyDestination) {
-		this.replyDestination = replyDestination;
-	}
-	
-	public String getUsername() {
-		return username;
-	}
+    public Destination getReplyDestination() {
+        return replyDestination;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setReplyDestination(Destination replyDestination) {
+        this.replyDestination = replyDestination;
+    }
 
-	@Override
-	public String toString() {
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
-		Gson gson = builder.create();
-		return gson.toJson(this);
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public static DataResponse parse(String jsonString) {
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
-		Gson gson = builder.create();
-		DataResponse obj = gson.fromJson(jsonString, DataResponse.class);
-		 if(obj.id==null || (obj.data==null && obj.error==null))
-			 throw new JsonSyntaxException("Expected attribute id and data/error not found");
-		return obj;
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	}
+    @Override
+    public String toString() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
+        Gson gson = builder.create();
+        return gson.toJson(this);
+    }
 
-	private static class InterfaceAdapter implements
-			JsonSerializer<Serializable>, JsonDeserializer<Serializable> {
+    public static DataResponse parse(String jsonString) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Serializable.class, new InterfaceAdapter());
+        Gson gson = builder.create();
+        DataResponse obj = gson.fromJson(jsonString, DataResponse.class);
+        if (obj.id == null || (obj.data == null && obj.error == null))
+            throw new JsonSyntaxException("Expected attribute id and data/error not found");
+        return obj;
 
-		private static final String CLASSNAME = "CLASSNAME";
-		private static final String DATA = "DATA";
+    }
 
-		public Serializable deserialize(JsonElement jsonElement, Type type,
-				JsonDeserializationContext jsonDeserializationContext)
-				throws JsonParseException {
+    private static class InterfaceAdapter
+            implements
+                JsonSerializer<Serializable>,
+                JsonDeserializer<Serializable> {
 
-			if (jsonElement instanceof JsonPrimitive) {
-				return jsonElement.getAsString();
-			} else {
-				JsonObject jsonObject = jsonElement.getAsJsonObject();
-				JsonPrimitive prim = (JsonPrimitive) jsonObject.get(CLASSNAME);
-				String className = prim.getAsString();
+        private static final String CLASSNAME = "CLASSNAME";
+        private static final String DATA = "DATA";
 
-				if ("java.lang.String".equals(className)) {
-					return jsonObject.get(DATA).getAsString();
-				} else {
-					Class klass = getObjectClass(className);
-					return jsonDeserializationContext.deserialize(
-							jsonObject.get(DATA), klass);
-				}
-			}
-		}
+        public Serializable deserialize(JsonElement jsonElement, Type type,
+                JsonDeserializationContext jsonDeserializationContext)
+                throws JsonParseException {
 
-		/****** Helper method to get the className of the object to be deserialized *****/
-		public Class getObjectClass(String className) {
-			try {
-				return Class.forName(className);
-			} catch (ClassNotFoundException e) {
-				// e.printStackTrace();
-				throw new JsonParseException(e.getMessage());
-			}
-		}
+            if (jsonElement instanceof JsonPrimitive) {
+                return jsonElement.getAsString();
+            } else {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                JsonPrimitive prim = (JsonPrimitive) jsonObject.get(CLASSNAME);
+                String className = prim.getAsString();
 
-		@Override
-		public JsonElement serialize(Serializable jsonElement, Type type,
-				JsonSerializationContext jsonSerializationContext) {
-			JsonObject jsonObject = new JsonObject();
-			jsonObject.addProperty(CLASSNAME, jsonElement.getClass().getName());
-			jsonObject.add(DATA,
-					jsonSerializationContext.serialize(jsonElement));
-			return jsonObject;
-		}
-	}
+                if ("java.lang.String".equals(className)) {
+                    return jsonObject.get(DATA).getAsString();
+                } else {
+                    Class klass = getObjectClass(className);
+                    return jsonDeserializationContext.deserialize(
+                            jsonObject.get(DATA), klass);
+                }
+            }
+        }
+
+        /******
+         * Helper method to get the className of the object to be deserialized
+         *****/
+        public Class getObjectClass(String className) {
+            try {
+                return Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                // e.printStackTrace();
+                throw new JsonParseException(e.getMessage());
+            }
+        }
+
+        @Override
+        public JsonElement serialize(Serializable jsonElement, Type type,
+                JsonSerializationContext jsonSerializationContext) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(CLASSNAME, jsonElement.getClass().getName());
+            jsonObject.add(DATA,
+                    jsonSerializationContext.serialize(jsonElement));
+            return jsonObject;
+        }
+    }
 
 }

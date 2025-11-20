@@ -8,29 +8,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.Property;
-import org.apache.felix.dm.annotation.api.Start;
-import org.apache.felix.dm.annotation.api.Stop;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 
-@Component(
-		provides = {Servlet.class}, 
-		properties = {@Property(name="alias", value="/hello")})
+@Component(service = Servlet.class, property = {"osgi.http.whiteboard.servlet.pattern=/hello"})
 public class Hello extends HttpServlet {
-	
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.getWriter().write("Hello World");
-	}
-	
-	@Start
-	public void starting(){
-		System.out.println("Starting servlet");
-	}
-	
-	@Stop
-	public void stopping(){
-		System.out.println("Stopping servilt");
-	}
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        resp.getWriter().write("Hello World");
+    }
+
+    @Activate
+    public void starting() {
+        System.out.println("Starting servlet");
+    }
+
+    @Deactivate
+    public void stopping() {
+        System.out.println("Stopping servlet");
+    }
 }

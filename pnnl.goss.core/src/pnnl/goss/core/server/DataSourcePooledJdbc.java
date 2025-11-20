@@ -5,6 +5,6 @@ import java.sql.SQLException;
 
 public interface DataSourcePooledJdbc extends DataSourceObject {
 
-	Connection getConnection() throws SQLException;
+    Connection getConnection() throws SQLException;
 
 }

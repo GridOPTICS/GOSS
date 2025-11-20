@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -44,39 +44,38 @@
 */
 package pnnl.goss.core;
 
-
 public class ExecuteRequest extends Request {
 
-	private static final long serialVersionUID = 3599179114722683296L;
-	
-	String jobId;
-	String machineName;
-	String remotePassword;
-	
-	public ExecuteRequest(String jobId, String machineName) {
-		this.jobId = jobId;
-		this.machineName = machineName;
-		//this.remotePassword = Utilities.getProperty(machineName);
-	}
+    private static final long serialVersionUID = 3599179114722683296L;
 
-	public String getJobId() {
-		return jobId;
-	}
+    String jobId;
+    String machineName;
+    String remotePassword;
 
-	public void setJobId(String jobId) {
-		this.jobId = jobId;
-	}
+    public ExecuteRequest(String jobId, String machineName) {
+        this.jobId = jobId;
+        this.machineName = machineName;
+        // this.remotePassword = Utilities.getProperty(machineName);
+    }
 
-	public String getMachineName() {
-		return machineName;
-	}
+    public String getJobId() {
+        return jobId;
+    }
 
-	public void setMachineName(String machineName) {
-		this.machineName = machineName;
-	}
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
 
-	public String getRemotePassword() {
-		return remotePassword;
-	}
-	
+    public String getMachineName() {
+        return machineName;
+    }
+
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
+    }
+
+    public String getRemotePassword() {
+        return remotePassword;
+    }
+
 }

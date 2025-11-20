@@ -46,12 +46,12 @@ package pnnl.goss.core.server.impl;
 
 import java.io.Serializable;
 
-import javax.jms.InvalidDestinationException;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
+import jakarta.jms.InvalidDestinationException;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,28 +76,26 @@ import pnnl.goss.core.server.RequestHandlerRegistry;
 public class ServerListener implements MessageListener {
 
     private static final Logger log = LoggerFactory.getLogger(ServerListener.class);
-   
-    
+
     private volatile RequestHandlerRegistry handlerRegistry;
-    
+
     private Session session;
     boolean useAuth = true;
 
-    
-    public ServerListener setSession(Session session){
-    	this.session = session;
-    	return this;
+    public ServerListener setSession(Session session) {
+        this.session = session;
+        return this;
     }
-    
-    public ServerListener setRegistryHandler(RequestHandlerRegistry registry){
-    	this.handlerRegistry = registry;
-    	return this;
+
+    public ServerListener setRegistryHandler(RequestHandlerRegistry registry) {
+        this.handlerRegistry = registry;
+        return this;
     }
 
     public void onMessage(Message message1) {
 
         final Message message = message1;
-        log.debug("Message of type: "+ message1.getClass() + " received");
+        log.debug("Message of type: " + message1.getClass() + " received");
 
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -105,31 +103,32 @@ public class ServerListener implements MessageListener {
                 try {
                     ObjectMessage objectMessage = (ObjectMessage) message;
 
-                    // Assume that the passed object on the wire is of type Request.  An error will be thrown
+                    // Assume that the passed object on the wire is of type Request. An error will
+                    // be thrown
                     // if that is not the case.
                     Request request = (Request) objectMessage.getObject();
                     log.debug("Handling request type: " + request.getClass());
-                    
+
                     if (useAuth) {
-                    	if (!message.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)){
-                    		log.error("Identifier not set in message header");
-                    		serverPublisher.sendErrror("Invalid subject in message!", message.getJMSReplyTo());
-                    		return;
-                    		
-                    	}
-                    	
-                    	String identifier = message.getStringProperty(SecurityConstants.SUBJECT_HEADER);
-                    	
-                    	boolean allowed = handlerRegistry.checkAccess(request, identifier); 
-                    	
-                    	if (!allowed){
-                    		log.info("Access denied to "+identifier+" for request type "+request.getClass().getName());
-                    		serverPublisher.sendErrror("Access Denied for the requested data", message.getJMSReplyTo());
-                    		return;
-                    	}
-                    	log.debug("Access allowed to the request");
+                        if (!message.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
+                            log.error("Identifier not set in message header");
+                            serverPublisher.sendErrror("Invalid subject in message!", message.getJMSReplyTo());
+                            return;
+
+                        }
+
+                        String identifier = message.getStringProperty(SecurityConstants.SUBJECT_HEADER);
+
+                        boolean allowed = handlerRegistry.checkAccess(request, identifier);
+
+                        if (!allowed) {
+                            log.info("Access denied to " + identifier + " for request type "
+                                    + request.getClass().getName());
+                            serverPublisher.sendErrror("Access Denied for the requested data", message.getJMSReplyTo());
+                            return;
+                        }
+                        log.debug("Access allowed to the request");
                     }
-                    
 
                     if (request instanceof UploadRequest) {
 
@@ -138,20 +137,23 @@ public class ServerListener implements MessageListener {
 
                             String dataType = uploadRequest.getDataType();
                             Serializable data = uploadRequest.getData();
-                            
+
                             UploadResponse response = (UploadResponse) handlerRegistry.handle(dataType, data);
                             response.setId(request.getId());
                             serverPublisher.sendResponse(response, message.getJMSReplyTo());
 
-                            //TODO: Added capability for event processing without upload. Example - FNCS
-                            /*UploadResponse response = new UploadResponse(true);
-                            response.setId(request.getId());
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo());*/
+                            // TODO: Added capability for event processing without upload. Example - FNCS
+                            /*
+                             * UploadResponse response = new UploadResponse(true);
+                             * response.setId(request.getId()); serverPublisher.sendResponse(response,
+                             * message.getJMSReplyTo());
+                             */
 
                             if (data instanceof Event) {
                                 DataResponse dataResponse = new DataResponse();
                                 dataResponse.setData(data);
-                                serverPublisher.sendEvent(dataResponse, data.getClass().getName().substring(data.getClass().getName().lastIndexOf(".") + 1));
+                                serverPublisher.sendEvent(dataResponse, data.getClass().getName()
+                                        .substring(data.getClass().getName().lastIndexOf(".") + 1));
                                 serverPublisher.close();
                             }
 
@@ -165,53 +167,55 @@ public class ServerListener implements MessageListener {
                         }
                     } else if (request instanceof RequestAsync) {
 
-                        RequestAsync requestAsync = (RequestAsync)request;
+                        RequestAsync requestAsync = (RequestAsync) request;
 
-                        //AbstractRequestHandler handler = handlerService.getHandler(request);
+                        // AbstractRequestHandler handler = handlerService.getHandler(request);
 
                         DataResponse response = (DataResponse) handlerRegistry.handle(request);
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null) {
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-                        }
-                        else {
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo(),
+                                    RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
+                        } else {
                             serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
                         }
 
-                        while(response.isResponseComplete()==false){
+                        while (response.isResponseComplete() == false) {
                             Thread.sleep(requestAsync.getFrequency());
                             response = (DataResponse) handlerRegistry.handle(request);
                             response.setId(request.getId());
 
                             if (message.getStringProperty("RESPONSE_FORMAT") != null) {
-                                serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
-                            }
-                            else {
+                                serverPublisher.sendResponse(response, message.getJMSReplyTo(),
+                                        RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
+                            } else {
                                 serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
                             }
                         }
-                    }
-                    else {
+                    } else {
 
                         DataResponse response = (DataResponse) handlerRegistry.handle(request);
 
-                        //DataResponse response = (DataResponse) ServerRequestHandler.handle(request);
+                        // DataResponse response = (DataResponse) ServerRequestHandler.handle(request);
                         response.setResponseComplete(true);
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null)
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
+                            serverPublisher.sendResponse(response, message.getJMSReplyTo(),
+                                    RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
                         else
                             serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
-                        //System.out.println(System.currentTimeMillis());
-                        }
+                        // System.out.println(System.currentTimeMillis());
+                    }
 
                 } catch (InvalidDestinationException e) {
 
                     e.printStackTrace();
                     try {
-                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured: "+e.getMessage())) , message.getJMSReplyTo());
+                        serverPublisher.sendResponse(
+                                new DataResponse(new DataError("Exception occured: " + e.getMessage())),
+                                message.getJMSReplyTo());
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -221,17 +225,16 @@ public class ServerListener implements MessageListener {
 
                     e.printStackTrace();
                     try {
-                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")) , message.getJMSReplyTo());
+                        serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")),
+                                message.getJMSReplyTo());
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                     serverPublisher.close();
-                }
-                catch(Throwable t){
+                } catch (Throwable t) {
                     t.printStackTrace();
-                }
-                finally {
+                } finally {
 
                 }
 

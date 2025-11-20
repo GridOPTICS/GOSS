@@ -44,10 +44,10 @@
 */
 package pnnl.goss.core.client;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.Session;
 
 import pnnl.goss.core.ClientConsumer;
 import pnnl.goss.core.ClientListener;
@@ -56,7 +56,7 @@ public class DefaultClientConsumer implements ClientConsumer {
 
     MessageConsumer messageConsumer;
 
-    public DefaultClientConsumer(ClientListener clientListener,Session session, Destination destination)  {
+    public DefaultClientConsumer(ClientListener clientListener, Session session, Destination destination) {
         try {
             setMessageConsumer(session.createConsumer(destination));
             getMessageConsumer().setMessageListener(clientListener);
@@ -65,7 +65,7 @@ public class DefaultClientConsumer implements ClientConsumer {
         }
     }
 
-    public DefaultClientConsumer(Session session, Destination destination)  {
+    public DefaultClientConsumer(Session session, Destination destination) {
         try {
             setMessageConsumer(session.createConsumer(destination));
         } catch (Exception e) {
@@ -74,10 +74,9 @@ public class DefaultClientConsumer implements ClientConsumer {
     }
 
     public void close() {
-        try{
+        try {
             getMessageConsumer().close();
-        }
-        catch(JMSException e){
+        } catch (JMSException e) {
             e.printStackTrace();
         }
     }

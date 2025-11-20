@@ -20,72 +20,71 @@ import pnnl.goss.core.server.DataSourcePooledJdbc;
 import pnnl.goss.core.server.DataSourceType;
 
 public class PooledSqlServiceImpl implements DataSourceObject, DataSourcePooledJdbc {
-	private static final Logger log = LoggerFactory.getLogger(PooledSqlServiceImpl.class);
-	private final String username;
-	private final String url;
-	private final String password;
-	private final String driverClass;
-	private final String name;
-	private final Map<String, String> customizations;
-	private DataSource dataSource;
+    private static final Logger log = LoggerFactory.getLogger(PooledSqlServiceImpl.class);
+    private final String username;
+    private final String url;
+    private final String password;
+    private final String driverClass;
+    private final String name;
+    private final Map<String, String> customizations;
+    private DataSource dataSource;
 
+    public PooledSqlServiceImpl(String datasource_name, String url, String username, String password, String driver,
+            Map<String, String> otherProperties) {
+        this.name = datasource_name;
+        this.url = url;
+        this.password = password;
+        this.driverClass = driver;
+        this.username = username;
+        this.customizations = otherProperties;
+        this.createDataSource();
+    }
 
-	public PooledSqlServiceImpl(String datasource_name, String url, String username, String password, String driver, Map<String, String> otherProperties) {
-		this.name = datasource_name;
-		this.url = url;
-		this.password = password;
-		this.driverClass = driver;
-		this.username = username;
-		this.customizations = otherProperties;
-		this.createDataSource();
-	}
+    private void createDataSource() {
+        Properties propertiesForDataSource = new Properties();
+        propertiesForDataSource.setProperty("username", username);
+        propertiesForDataSource.setProperty("password", password);
+        propertiesForDataSource.setProperty("url", url);
+        propertiesForDataSource.setProperty("driverClassName", driverClass);
 
-	private void createDataSource(){
-		Properties propertiesForDataSource = new Properties();
-		propertiesForDataSource.setProperty("username", username);
-		propertiesForDataSource.setProperty("password", password);
-		propertiesForDataSource.setProperty("url", url);
-		propertiesForDataSource.setProperty("driverClassName", driverClass);
+        propertiesForDataSource.putAll(customizations);
 
-		propertiesForDataSource.putAll(customizations);
+        if (!propertiesForDataSource.containsKey("maxOpenPreparedStatements")) {
+            propertiesForDataSource.setProperty("maxOpenPreparedStatements", "10");
+        }
 
+        log.debug(String.format("Creating datasource: %s, User: %s, URL: %s)", this.name, username, url));
 
-		if (!propertiesForDataSource.containsKey("maxOpenPreparedStatements")){
-			propertiesForDataSource.setProperty("maxOpenPreparedStatements", "10");
-		}
+        try {
+            Class.forName(propertiesForDataSource.getProperty("driverClassName"));
+            dataSource = BasicDataSourceFactory.createDataSource(propertiesForDataSource);
+        } catch (ClassNotFoundException e) {
+            dataSource = null;
+            e.printStackTrace();
+        } catch (Exception e) {
+            dataSource = null;
+            e.printStackTrace();
+        }
+    }
 
-		log.debug(String.format("Creating datasource: %s, User: %s, URL: %s)", this.name, username, url));
+    @Override
+    public String getName() {
+        return name;
+    }
 
-		try {
-			Class.forName(propertiesForDataSource.getProperty("driverClassName"));
-			dataSource = BasicDataSourceFactory.createDataSource(propertiesForDataSource);
-		} catch (ClassNotFoundException e) {
-			dataSource = null;
-			e.printStackTrace();
-		} catch (Exception e) {
-			dataSource = null;
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public DataSourceType getDataSourceType() {
+        return DataSourceType.DS_TYPE_JDBC;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public Connection getConnection() throws SQLException {
 
-	@Override
-	public DataSourceType getDataSourceType() {
-		return DataSourceType.DS_TYPE_JDBC;
-	}
+        if (dataSource == null) {
+            throw new SQLException("Invalid datasource.");
+        }
 
-	@Override
-	public Connection getConnection() throws SQLException {
-
-		if (dataSource == null){
-			throw new SQLException("Invalid datasource.");
-		}
-
-		return dataSource.getConnection();
-	}
+        return dataSource.getConnection();
+    }
 
 }

@@ -1,7 +1,7 @@
 package com.northconcepts.exception;
 
 public interface ErrorText {
-	
-	String getText(ErrorCode code);
-	
+
+    String getText(ErrorCode code);
+
 }

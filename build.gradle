@@ -1,20 +1,76 @@
 /*
  * Master Gradle build script
- *
- * Depends on bndWorkspace and bndURI properties set by settings.gradle.
+ * Updated for JDK 21 compatibility
  */
 
-/* Add bnd as a script dependency */
-buildscript {
-  dependencies {
-    classpath files(bndURI)
-  }
+plugins {
+    id 'biz.aQute.bnd' version '6.4.0' apply false
+    id 'com.diffplug.spotless' version '6.25.0' apply false
+    id 'org.owasp.dependencycheck' version '9.0.9' apply false
 }
 
-/* Configure the subprojects */
+allprojects {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
 subprojects {
-  def bndProject = bndWorkspace.getProject(name)
-  if (bndProject != null) {
-    plugins.apply 'biz.aQute.bnd'
-  }
+    apply plugin: 'java'
+    apply plugin: 'biz.aQute.bnd'
+    apply plugin: 'com.diffplug.spotless'
+    // apply plugin: 'checkstyle'
+    // apply plugin: 'pmd'
+    // apply plugin: 'org.owasp.dependencycheck'
+
+    // Spotless configuration for code formatting
+    spotless {
+        java {
+            // Use Eclipse formatter from .settings/eclipse-java-formatter.xml
+            eclipse().configFile(rootProject.file('.settings/eclipse-java-formatter.xml'))
+
+            // Ensure files end with a newline
+            endWithNewline()
+
+            // Remove trailing whitespace
+            trimTrailingWhitespace()
+
+            // Target all Java files
+            target 'src/**/*.java', 'test/**/*.java'
+
+            // Exclude generated files
+            targetExclude 'build/**', 'bin/**', 'generated/**'
+        }
+    }
+
+    // Explicit Java toolchain configuration for JDK 21
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+    
+    // Configure encoding
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.release = 21
+    }
+
+    // Configure JUnit 5 platform for tests
+    tasks.withType(Test) {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+            showStandardStreams = true
+        }
+    }
+
+    // Code quality configuration disabled for now
+
+    // Print build info
+    def javaVersion = System.getProperty('java.version')
+    println "Building ${project.name} with Java ${javaVersion} (target: ${java.targetCompatibility})"
 }

@@ -1,7 +1,5 @@
-Bundle-Version: 2.0.5.${tstamp}
+Bundle-Version: 2.0.6-SNAPSHOT
 -buildpath: \
-	org.apache.felix.dependencymanager.annotation,\
-	org.apache.felix.dependencymanager,\
 	org.apache.felix.gogo.command,\
 	org.apache.felix.gogo.runtime,\
 	org.apache.activemq.shiro,\
@@ -11,13 +9,20 @@ Bundle-Version: 2.0.5.${tstamp}
 	osgi.enterprise,\
 	slf4j.simple,\
 	slf4j.api,\
-	com.springsource.javax.jms;version=1.1.0,\
+	jakarta.jms:jakarta.jms-api;version=3.1.0,\
+	org.apache.activemq:activemq-osgi;version=6.2.0,\
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-core-security;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
-	pnnl.goss.core.goss-core-server;version=latest
+	pnnl.goss.core.goss-core-server;version=latest,\
+	org.junit.jupiter:junit-jupiter-api;version='[5.10.0,6)',\
+	org.junit.jupiter:junit-jupiter-engine;version='[5.10.0,6)',\
+	org.junit.platform:junit-platform-commons;version='[1.10.0,2)',\
+	org.junit.platform:junit-platform-engine;version='[1.10.0,2)',\
+	org.junit.platform:junit-platform-launcher;version='[1.10.0,2)',\
+	org.opentest4j:opentest4j;version='[1.3.0,2)'
 
--plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
+# -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug
 
 
 
