@@ -90,11 +90,11 @@ Production deployment guide with systemd, SSL, and monitoring.
 
 - **Build**: Gradle 8.10 + BND 6.4.0
 - **Runtime**: Java 21 (OpenJDK/Temurin)
-- **Messaging**: Apache ActiveMQ 5.18.6
-- **OSGi**: R7 specifications
-- **Security**: Apache Shiro 1.13.x
+- **Messaging**: Apache ActiveMQ 6.2.0 with Jakarta JMS 3.1
+- **OSGi**: R8 specifications (Apache Felix 7.0.5)
+- **Security**: Apache Shiro 2.0.0
 - **Web**: JAX-RS with Jersey
-- **Logging**: SLF4J 2.x
+- **Logging**: SLF4J 2.0.16
 
 ## Quick Reference
 
@@ -110,8 +110,13 @@ Production deployment guide with systemd, SSL, and monitoring.
 # Run integration tests only
 ./gradlew check
 
-# Create executable JARs
-./gradlew export
+# Create executable JARs (OSGi runners with updated dependencies)
+./gradlew buildRunner.goss-core
+./gradlew buildRunner.goss-core-ssl
+
+# Create simple fat JARs
+./gradlew :pnnl.goss.core.runner:createSimpleRunner
+./gradlew :pnnl.goss.core.runner:createSSLRunner
 
 # Check code formatting
 ./gradlew spotlessCheck
@@ -122,18 +127,17 @@ Production deployment guide with systemd, SSL, and monitoring.
 
 ### Running GOSS
 
+**Option A: Simple Runner (Fat JAR)**
 ```bash
-# Navigate to runner directory
 cd pnnl.goss.core.runner/generated/executable
-
-# Run simple runner (no authentication)
 java -jar goss-simple-runner.jar
+```
 
-# Run with SSL
-java -jar goss-ssl-runner.jar
-
-# Run full GOSS with all features
-java -jar goss-core-runner.jar
+**Option B: OSGi Runner (Production)**
+```bash
+cd pnnl.goss.core.runner/generated/runners
+java -jar goss-core-runner.jar        # Standard
+java -jar goss-core-ssl-runner.jar    # With SSL
 ```
 
 ### GOSS Shell Commands
