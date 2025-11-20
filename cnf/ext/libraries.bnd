@@ -253,3 +253,32 @@ httpclient-osgi: ${repo;org.apache.httpcomponents:httpclient-osgi;[4.5.0,5);HIGH
 httpcore-osgi: ${repo;org.apache.httpcomponents:httpcore-osgi;[4.4.0,5);HIGHEST}
 httpclient-osgi-runpath: ${httpclient-osgi};version=file,\
   ${httpcore-osgi};version=file
+
+# Felix SCR (Declarative Services) - already defined in core buildpath
+# Adding runpath for .bndrun files
+scr: ${repo;org.apache.felix:org.apache.felix.scr;[2.2.0,3);HIGHEST}
+scr-buildpath: ${scr};version=file
+scr-runpath: ${scr};version=file,\
+  ${osgi-util-runpath}
+
+# Pax Logging (OSGi logging framework)
+pax-logging-api: ${repo;org.ops4j.pax.logging:pax-logging-api;[2.2.0,3);HIGHEST}
+pax-logging-service: ${repo;org.ops4j.pax.logging:pax-logging-service;[2.2.0,3);HIGHEST}
+pax-logging-runpath: ${pax-logging-api};version=file,\
+  ${pax-logging-service};version=file
+
+# Felix HTTP Service
+http-servlet-api: ${repo;org.apache.felix:org.apache.felix.http.servlet-api;[3.0.0,4);HIGHEST}
+http-jetty: ${repo;org.apache.felix:org.apache.felix.http.jetty;[5.0.0,6);HIGHEST}
+http-runpath: ${http-servlet-api};version=file,\
+  ${http-jetty};version=file
+
+# H2 Database
+h2: ${repo;com.h2database:h2;[2.0.0,3);HIGHEST}
+h2-buildpath: ${h2};version=file
+h2-runpath: ${h2};version=file
+
+# Commons Pool 2 (different from commons-pool version 1.x)
+commons-pool2: ${repo;org.apache.commons:commons-pool2;[2.11.0,3);HIGHEST}
+commons-pool2-buildpath: ${commons-pool2};version=file
+commons-pool2-runpath: ${commons-pool2};version=file

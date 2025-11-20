@@ -1,7 +1,19 @@
+// Apply BndRunner plugin for generic .bndrun task support
+apply plugin: com.pnnl.goss.gradle.BndRunnerPlugin
+
+// Configure BndRunner plugin (optional - uses sensible defaults)
+bndRunner {
+    bundleDirs = [
+        file('generated'),
+        file('../pnnl.goss.core/generated')
+    ]
+    configDir = file('conf')
+}
+
 // BND handles build dependencies
 dependencies {
     implementation project(':pnnl.goss.core')
-    
+
     // For simple runner
     implementation 'org.apache.activemq:activemq-broker:5.15.16'
     implementation 'org.apache.shiro:shiro-core:1.13.0'
@@ -52,45 +64,7 @@ task createSSLRunner(type: Jar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-// Create executable JAR with embedded Felix framework
-configurations {
-    felixRuntime
-    gossRuntime
-}
-
-dependencies {
-    // Felix Framework
-    felixRuntime 'org.apache.felix:org.apache.felix.framework:7.0.5'
-    felixRuntime 'org.apache.felix:org.apache.felix.main:7.0.5'
-    
-    // Core OSGi services - using versions that actually exist
-    gossRuntime 'org.apache.felix:org.apache.felix.scr:2.1.30'
-    gossRuntime 'org.apache.felix:org.apache.felix.configadmin:1.9.24'
-    gossRuntime 'org.apache.felix:org.apache.felix.gogo.runtime:1.1.4'
-    gossRuntime 'org.apache.felix:org.apache.felix.gogo.shell:1.1.4'
-    gossRuntime 'org.apache.felix:org.apache.felix.gogo.command:1.1.0'
-    
-    // Logging - simple approach
-    gossRuntime 'org.slf4j:slf4j-api:2.0.13'
-    gossRuntime 'org.slf4j:slf4j-simple:2.0.13'
-    
-    // ActiveMQ - use compatible versions
-    gossRuntime 'org.apache.activemq:activemq-osgi:5.15.16'
-    gossRuntime 'org.apache.shiro:shiro-core:1.13.0'
-    
-    // Basic dependencies - non-OSGi versions that work
-    gossRuntime 'org.apache.httpcomponents:httpclient:4.5.14'
-    gossRuntime 'org.apache.httpcomponents:httpcore:4.4.16'
-    gossRuntime 'commons-io:commons-io:2.11.0'
-    gossRuntime 'org.apache.commons:commons-pool2:2.11.1'
-    gossRuntime 'com.thoughtworks.xstream:xstream:1.4.19'
-    gossRuntime 'com.google.code.gson:gson:2.11.0'
-    gossRuntime 'com.h2database:h2:2.1.214'
-    
-    // Java EE APIs for JDK 22
-    gossRuntime 'javax.annotation:javax.annotation-api:1.3.2'
-    gossRuntime 'javax.jms:javax.jms-api:2.0.1'
-}
+// Note: configurations and dependencies for buildRunner are now provided by BndRunnerPlugin
 
 task createGossRunner(type: Jar) {
     archiveBaseName = 'goss-core-runner'
@@ -176,3 +150,7 @@ createSimpleRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 createSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 
 build.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner
+
+// Note: Generic buildRunner.<name> tasks are now provided by BndRunnerPlugin
+// Usage: ./gradlew buildRunner.goss-core  (builds from goss-core.bndrun)
+//        ./gradlew buildRunner.goss-core-ssl  (builds from goss-core-ssl.bndrun)
