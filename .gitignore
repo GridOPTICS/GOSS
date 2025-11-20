@@ -8,6 +8,7 @@ target/
 out/
 bin/
 *.jar
+!cnf/releaserepo/**/*.jar
 *.war
 *.ear
 *.class
@@ -21,7 +22,6 @@ gradle-app.setting
 ## BND/OSGi Generated Files ##
 cnf/cache/
 cnf/generated/
-cnf/releaserepo/
 cnf/localrepo/.*
 *.bndrun.state
 generated.index

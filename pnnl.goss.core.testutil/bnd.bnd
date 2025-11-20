@@ -1,4 +1,4 @@
-Bundle-Version: 1.0.1-SNAPSHOT
+Bundle-Version: 2.0.0-SNAPSHOT
 -buildpath: \
 	${configadmin-buildpath},\
 	pnnl.goss.core.core-api,\
