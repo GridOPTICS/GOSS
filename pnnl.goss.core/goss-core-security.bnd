@@ -4,4 +4,4 @@ Private-Package:  \
 # Bundle-Activator: pnnl.goss.core.security.impl.Activator # Disabled - converted to OSGi DS
 Export-Package:  \
 	pnnl.goss.core.security
-Bundle-Version: 3.0.0-SNAPSHOT
+Bundle-Version: 11.0.0-SNAPSHOT

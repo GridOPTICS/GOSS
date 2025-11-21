@@ -136,6 +136,48 @@ cd /path/to/your/project
 ./gradlew buildRunner.my-runtime
 ``` 
    
+## Version 11.0.0 Features
+
+### JWT Token Authentication Support
+GOSS now includes optional JWT (JSON Web Token) authentication support:
+
+```java
+// Create client with token authentication
+ClientFactory factory = // ... get factory
+Client client = factory.create(PROTOCOL.OPENWIRE, credentials, true); // useToken=true
+```
+
+**New Security Classes:**
+- `JWTAuthenticationToken` - Token data structure and parsing
+- `SecurityConfig` - Token validation and creation interface
+- `GossSecurityManager` - Enhanced security management
+- `RoleManager` - Role-based permission management
+
+**Security Configuration:**
+```properties
+goss.system.use.token=true
+goss.system.token.secret=your-secret-key
+goss.system.manager=admin
+goss.system.manager.password=admin-password
+```
+
+### Session Auto-Renewal
+Clients now automatically renew their JMS session when publish operations fail, improving reliability in long-running applications.
+
+### Release Management
+Use the included `release.sh` script for version management:
+
+```bash
+# Prepare release (remove -SNAPSHOT)
+./release.sh release              # 11.0.0-SNAPSHOT → 11.0.0
+
+# Set specific version
+./release.sh release 11.1.0       # Set all to 11.1.0
+
+# Return to development
+./release.sh bump                 # 11.0.0 → 11.0.1-SNAPSHOT
+```
+
 ## Documentation
 
 ### Getting Started

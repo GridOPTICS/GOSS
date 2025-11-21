@@ -96,6 +96,21 @@ public class GossClient implements Client {
     private List<Thread> threads = new ArrayList<Thread>();
     private PROTOCOL protocol;
     private Credentials credentials = null;
+    private String token = null;
+    private boolean useToken = false;
+
+    public GossClient(PROTOCOL protocol, Credentials credentials,
+            String openwireUri, String stompUri, String trustStorePassword,
+            String trustStore, boolean useToken) {
+        this.uuid = UUID.randomUUID();
+        this.protocol = protocol;
+        this.credentials = credentials;
+        this.brokerUri = openwireUri;
+        this.stompUri = stompUri;
+        this.trustStorePassword = trustStorePassword;
+        this.trustStore = trustStore;
+        this.useToken = useToken;
+    }
 
     public GossClient(PROTOCOL protocol, Credentials credentials,
             String openwireUri, String stompUri, String trustStorePassword,
@@ -107,6 +122,16 @@ public class GossClient implements Client {
         this.stompUri = stompUri;
         this.trustStorePassword = trustStorePassword;
         this.trustStore = trustStore;
+    }
+
+    public GossClient(PROTOCOL protocol, Credentials credentials,
+            String openwireUri, String stompUri, boolean useToken) {
+        this.uuid = UUID.randomUUID();
+        this.protocol = protocol;
+        this.credentials = credentials;
+        this.brokerUri = openwireUri;
+        this.stompUri = stompUri;
+        this.useToken = useToken;
     }
 
     public GossClient(PROTOCOL protocol, Credentials credentials,
@@ -333,10 +358,44 @@ public class GossClient implements Client {
 
         } catch (JMSException e) {
             log.error("publish error", e);
+
+            try {
+                // Ran into error publishing, reset the session and try again
+                log.info("Renewing session");
+                session = null;
+                getSession();
+                Destination destination = getDestination(topic);
+
+                if (data instanceof String) {
+                    clientPublisher.publish(destination, data);
+                } else {
+                    Gson gson = new Gson();
+                    clientPublisher.publish(destination, gson.toJson(data));
+                }
+            } catch (Exception e2) {
+                log.error("Failed second attempt to publish ", e2);
+                e.printStackTrace();
+            }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-            throw SystemException.wrap(e);
+            try {
+                // Ran into error publishing, reset the session and try again
+                log.info("Renewing session");
+                session = null;
+                getSession();
+                Destination destination = getDestination(topic);
+
+                if (data instanceof String) {
+                    clientPublisher.publish(destination, data);
+                } else {
+                    Gson gson = new Gson();
+                    clientPublisher.publish(destination, gson.toJson(data));
+                }
+            } catch (Exception e2) {
+                log.error("Failed second attempt to publish ", e2);
+                e.printStackTrace();
+                throw SystemException.wrap(e);
+            }
         }
     }
 
@@ -355,10 +414,40 @@ public class GossClient implements Client {
 
         } catch (JMSException e) {
             log.error("publish error", e);
+
+            try {
+                // Ran into error publishing, reset the session and try again
+                log.info("Renewing session");
+                session = null;
+                getSession();
+                if (data instanceof String) {
+                    clientPublisher.publish(destination, data);
+                } else {
+                    Gson gson = new Gson();
+                    clientPublisher.publish(destination, gson.toJson(data));
+                }
+            } catch (Exception e2) {
+                log.error("Failed second attempt to publish ", e2);
+                e.printStackTrace();
+            }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-            throw SystemException.wrap(e);
+            try {
+                // Ran into error publishing, reset the session and try again
+                log.info("Renewing session");
+                session = null;
+                getSession();
+                if (data instanceof String) {
+                    clientPublisher.publish(destination, data);
+                } else {
+                    Gson gson = new Gson();
+                    clientPublisher.publish(destination, gson.toJson(data));
+                }
+            } catch (Exception e2) {
+                log.error("Failed second attempt to publish ", e2);
+                e.printStackTrace();
+                throw SystemException.wrap(e);
+            }
         }
     }
 
