@@ -53,19 +53,12 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.jms.Connection;
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.DeliveryMode;
-import jakarta.jms.Destination;
-import jakarta.jms.JMSException;
-import jakarta.jms.MessageProducer;
-import jakarta.jms.Session;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManager;
@@ -78,24 +71,31 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.shiro.ShiroPlugin;
 import org.apache.commons.io.FilenameUtils;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Deactivate;
 import org.apache.shiro.mgt.SecurityManager;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.northconcepts.exception.ConnectionCode;
 import com.northconcepts.exception.SystemException;
 
+import jakarta.jms.Connection;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.DeliveryMode;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossRealm;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
 
-@Component(service = ServerControl.class, configurationPid = "pnnl.goss.core.server")
+@Component(service = ServerControl.class, configurationPid = "pnnl.goss.core.server", configurationPolicy = org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE)
 public class GridOpticsServer implements ServerControl {
 
     private static final Logger log = LoggerFactory.getLogger(GridOpticsServer.class);
@@ -128,10 +128,6 @@ public class GridOpticsServer implements ServerControl {
     private Session session;
     private Destination destination;
 
-    // System manager username/password (required * privleges on the message bus)
-    private String systemManager = null;
-    private String systemManagerPassword = null;
-
     // Should we automatically start the broker?
     private boolean shouldStartBroker = false;
     // The connectionUri to create if shouldStartBroker is set to true.
@@ -150,13 +146,11 @@ public class GridOpticsServer implements ServerControl {
     // SSL Parameters
     private boolean sslEnabled = false;
     private String sslClientKeyStore = null;
-    private String sslClientKeyStorePassword = null;
     private String sslClientTrustStore = null;
     private String sslClientTrustStorePassword = null;
 
     private String sslServerKeyStore = null;
     private String sslServerKeyStorePassword = null;
-    private String sslServerTrustStore = null;
     private String sslServerTrustStorePassword = null;
 
     private String gossClockTickTopic = null;
@@ -206,9 +200,9 @@ public class GridOpticsServer implements ServerControl {
 
         if (properties != null) {
 
-            systemManager = getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
+            getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
                     "system");
-            systemManagerPassword = getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
+            getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
                     "manager");
 
             shouldStartBroker = Boolean.parseBoolean(
@@ -223,8 +217,9 @@ public class GridOpticsServer implements ServerControl {
             stompTransport = getProperty((String) properties.get(PROP_STOMP_TRANSPORT),
                     "stomp://localhost:61613");
 
-            wsTransport = getProperty((String) properties.get(PROP_WS_TRANSPORT),
-                    "ws://localhost:61614");
+            // WebSocket transport is optional - set to null by default
+            // since it requires the jetty-websocket-server bundle
+            wsTransport = getProperty((String) properties.get(PROP_WS_TRANSPORT), null);
 
             requestQueue = getProperty((String) properties.get(GossCoreContants.PROP_REQUEST_QUEUE), "Request");
 
@@ -238,13 +233,13 @@ public class GridOpticsServer implements ServerControl {
             sslTransport = getProperty((String) properties.get(PROP_SSL_TRANSPORT), "tcp://localhost:61443");
 
             sslClientKeyStore = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE), null);
-            sslClientKeyStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD), null);
+            getProperty((String) properties.get(PROP_SSL_CLIENT_KEYSTORE_PASSWORD), null);
             sslClientTrustStore = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE), null);
             sslClientTrustStorePassword = getProperty((String) properties.get(PROP_SSL_CLIENT_TRUSTSTORE_PASSWORD),
                     null);
             sslServerKeyStore = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE), null);
             sslServerKeyStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_KEYSTORE_PASSWORD), null);
-            sslServerTrustStore = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE), null);
+            getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE), null);
             sslServerTrustStorePassword = getProperty((String) properties.get(PROP_SSL_SERVER_TRUSTSTORE_PASSWORD),
                     null);
 
@@ -312,7 +307,12 @@ public class GridOpticsServer implements ServerControl {
                 broker = new BrokerService();
                 broker.addConnector(openwireTransport);
                 broker.addConnector(stompTransport);
-                broker.addConnector(wsTransport);
+                // Only add WebSocket connector if configured (requires jetty-websocket-server
+                // bundle)
+                if (wsTransport != null && !wsTransport.isEmpty()) {
+                    log.debug("Adding WebSocket connector: " + wsTransport);
+                    broker.addConnector(wsTransport);
+                }
             }
             broker.setPersistent(false);
             broker.setUseJmx(false);
@@ -390,8 +390,17 @@ public class GridOpticsServer implements ServerControl {
     }
 
     @Override
+    public void start() throws SystemException {
+        // This method satisfies the ServerControl interface
+        // The actual activation is handled by start(Map) with configuration
+        throw SystemException.wrap(new UnsupportedOperationException(
+                "Use start(Map) for DS activation with configuration"));
+    }
+
     @Activate
-    public void start() {
+    public void start(Map<String, Object> properties) {
+        // Apply configuration from ConfigAdmin before starting
+        updated(properties);
 
         // If goss should have start the broker service then this will be set.
         // this variable is mapped from goss.start.broker

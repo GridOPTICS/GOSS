@@ -1,7 +1,8 @@
 Private-Package:  \
 	pnnl.goss.core.security.impl
 
-# Bundle-Activator: pnnl.goss.core.security.impl.Activator # Disabled - converted to OSGi DS
+# Using OSGi DS Component (Activator.java) instead of Bundle-Activator
+# The Activator class provides SecurityManager via @Component annotation
 Export-Package:  \
 	pnnl.goss.core.security
 Bundle-Version: 11.0.0-SNAPSHOT

@@ -1,6 +1,8 @@
 # GridOPTICS Software System (GOSS)
 
-Current GOSS build status: ![GOSS build status](https://travis-ci.org/GridOPTICS/GOSS.svg?branch=master)
+[![Build Status](https://github.com/GridOPTICS/GOSS/actions/workflows/build.yml/badge.svg)](https://github.com/GridOPTICS/GOSS/actions)
+
+GOSS is a JMS-based messaging framework providing client/server architecture, request/response patterns, and security integration for distributed power grid applications. It serves as the foundation for [GridAPPS-D](https://github.com/GRIDAPPSD/GOSS-GridAPPS-D) and other grid simulation platforms.
 
 **⚠️ IMPORTANT: Java 21 + Jakarta EE Migration ⚠️**
 This project has been upgraded to **Java 21** with modern dependencies:
@@ -164,19 +166,40 @@ goss.system.manager.password=admin-password
 ### Session Auto-Renewal
 Clients now automatically renew their JMS session when publish operations fail, improving reliability in long-running applications.
 
-### Release Management
-Use the included `release.sh` script for version management:
+### Version Management
+
+GOSS includes a Makefile for common build and release tasks:
 
 ```bash
-# Prepare release (remove -SNAPSHOT)
-./release.sh release              # 11.0.0-SNAPSHOT → 11.0.0
+# Show versions of all bundles
+make version
 
-# Set specific version
-./release.sh release 11.1.0       # Set all to 11.1.0
+# Set release version (removes -SNAPSHOT)
+make release VERSION=11.0.0
 
-# Return to development
-./release.sh bump                 # 11.0.0 → 11.0.1-SNAPSHOT
+# Set snapshot version (adds -SNAPSHOT)
+make snapshot VERSION=11.1.0
+
+# Build all bundles
+make build
+
+# Run tests
+make test
 ```
+
+### Publishing to GOSS-Repository
+
+GOSS bundles can be published to a local [GOSS-Repository](https://github.com/GridOPTICS/GOSS-Repository) clone for OSGi resolution:
+
+```bash
+# Push snapshot JARs to ../GOSS-Repository/snapshot/
+make push-snapshot
+
+# Push release JARs to ../GOSS-Repository/release/
+make push-release
+```
+
+**Note:** The GOSS-Repository must be cloned as a sibling directory (`../GOSS-Repository`). This is the local repository used for BND workspace resolution, not a remote Maven repository.
 
 ## Documentation
 
@@ -302,3 +325,61 @@ import jakarta.annotation.PostConstruct;
 
 **Removed Java EE APIs:**
 - All `javax.jms`, `javax.annotation`, etc. → Use Jakarta equivalents
+
+## Project Structure
+
+```
+GOSS/
+├── pnnl.goss.core/                # Core bundles
+│   ├── core-api/                  # Core API interfaces
+│   ├── goss-client/               # Client implementation
+│   ├── goss-core-server/          # Server implementation
+│   ├── goss-core-server-api/      # Server API interfaces
+│   ├── goss-core-security/        # Security integration (Shiro)
+│   └── security-propertyfile/     # Property-file authentication
+├── pnnl.goss.core.runner/         # Executable runners
+│   ├── goss-core.bndrun           # OSGi runtime definition
+│   └── conf/                      # Runtime configuration
+├── buildSrc/                      # Gradle plugins (BndRunnerPlugin)
+├── cnf/                           # BND workspace configuration
+├── scripts/                       # Build and release scripts
+├── Makefile                       # Build automation
+└── push-to-local-goss-repository.py  # Repository publishing tool
+```
+
+## Users of GOSS
+
+GOSS serves as the messaging foundation for:
+
+- **[GridAPPS-D](https://github.com/GRIDAPPSD/GOSS-GridAPPS-D)** - Grid Application Platform for Planning and Simulation with Distribution. GridAPPS-D is built as an OSGi application on top of GOSS, using its messaging framework for simulation orchestration, data management, and application integration.
+
+## Technology Stack
+
+- **Java 21** with modern language features
+- **OSGi** (Apache Felix 7.0.5) for modular service architecture
+- **BND Tools 6.4.0** for OSGi bundle management
+- **Apache ActiveMQ 6.2.0** for JMS messaging (Jakarta EE compatible)
+- **Apache Shiro 2.0** for authentication and authorization
+- **Gradle 8.10** build system
+
+## Related Repositories
+
+| Repository | Description |
+|------------|-------------|
+| [GOSS-GridAPPS-D](https://github.com/GRIDAPPSD/GOSS-GridAPPS-D) | GridAPPS-D platform built on GOSS |
+| [GOSS-Repository](https://github.com/GridOPTICS/GOSS-Repository) | OSGi bundle repository for BND resolution |
+| [gridappsd-docker](https://github.com/GRIDAPPSD/gridappsd-docker) | Docker deployment for GridAPPS-D |
+| [gridappsd-python](https://github.com/GRIDAPPSD/gridappsd-python) | Python client library |
+
+## License
+
+This project is licensed under the BSD-3-Clause License. See [LICENSE](LICENSE) for details.
+
+## Contributing
+
+Contributions are welcome! Please submit pull requests to the `develop` branch.
+
+## Support
+
+- **Documentation**: See the [docs/](docs/) directory
+- **Issues**: https://github.com/GridOPTICS/GOSS/issues
