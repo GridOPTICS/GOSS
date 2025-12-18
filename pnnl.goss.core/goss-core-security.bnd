@@ -5,4 +5,4 @@ Private-Package:  \
 # The Activator class provides SecurityManager via @Component annotation
 Export-Package:  \
 	pnnl.goss.core.security
-Bundle-Version: 11.0.0-SNAPSHOT
+Bundle-Version: 11.0.0

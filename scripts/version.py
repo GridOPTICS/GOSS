@@ -3,9 +3,13 @@
 GOSS Version Management Script
 
 Commands:
-  show      - Display versions of all bundles
-  release   - Set release version (removes -SNAPSHOT)
-  snapshot  - Set snapshot version (adds -SNAPSHOT)
+  show         - Display versions of all bundles
+  release      - Set release version (removes -SNAPSHOT)
+  snapshot     - Set snapshot version (adds -SNAPSHOT)
+  bump-patch   - Bump patch version (x.y.Z) and set as snapshot
+  bump-minor   - Bump minor version (x.Y.0) and set as snapshot
+  bump-major   - Bump major version (X.0.0) and set as snapshot
+  next-snapshot - Bump patch version after a release
 """
 
 import argparse
@@ -140,6 +144,46 @@ def update_version(bnd_file: Path, new_version: str) -> bool:
     return False
 
 
+def get_current_version(root: Path) -> str | None:
+    """Get the current version from .bnd files (returns base version without -SNAPSHOT)."""
+    bnd_files = find_bnd_files(root)
+
+    versions: set[str] = set()
+    for bnd_file in bnd_files:
+        info = extract_bundle_info(bnd_file)
+        if info:
+            _, version = info
+            # Strip -SNAPSHOT suffix for comparison
+            base_version = version.replace('-SNAPSHOT', '')
+            versions.add(base_version)
+
+    if len(versions) == 0:
+        return None
+    if len(versions) > 1:
+        log_warn(f"Multiple versions found: {sorted(versions)}")
+        # Return the highest version
+        return sorted(versions, key=lambda v: [int(x) for x in v.split('.')])[-1]
+
+    return versions.pop()
+
+
+def bump_version(version: str, bump_type: str) -> str:
+    """Bump a version string by the specified type (major, minor, patch)."""
+    parts = [int(x) for x in version.split('.')]
+
+    if bump_type == 'major':
+        parts[0] += 1
+        parts[1] = 0
+        parts[2] = 0
+    elif bump_type == 'minor':
+        parts[1] += 1
+        parts[2] = 0
+    elif bump_type == 'patch':
+        parts[2] += 1
+
+    return '.'.join(str(p) for p in parts)
+
+
 def set_version(root: Path, version: str, snapshot: bool = False) -> None:
     """Set version for all bundles."""
     # Validate version format
@@ -188,6 +232,19 @@ def set_version(root: Path, version: str, snapshot: bool = False) -> None:
         print()
 
 
+def do_bump(root: Path, bump_type: str) -> int:
+    """Bump version and set as snapshot."""
+    current = get_current_version(root)
+    if not current:
+        log_error("Could not determine current version")
+        return 1
+
+    new_version = bump_version(current, bump_type)
+    log_info(f"Bumping {bump_type} version: {current} -> {new_version}-SNAPSHOT")
+    set_version(root, new_version, snapshot=True)
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description='GOSS Version Management',
@@ -197,6 +254,18 @@ Examples:
   %(prog)s show                    # Show all bundle versions
   %(prog)s release 11.0.0          # Set release version 11.0.0
   %(prog)s snapshot 11.1.0         # Set snapshot version 11.1.0-SNAPSHOT
+  %(prog)s bump-patch              # 11.0.0 -> 11.0.1-SNAPSHOT
+  %(prog)s bump-minor              # 11.0.0 -> 11.1.0-SNAPSHOT
+  %(prog)s bump-major              # 11.0.0 -> 12.0.0-SNAPSHOT
+  %(prog)s next-snapshot           # After release: bump patch to next snapshot
+
+Typical release workflow:
+  1. %(prog)s show                  # Verify current version (e.g., 11.0.0-SNAPSHOT)
+  2. %(prog)s release 11.0.0       # Remove -SNAPSHOT for release
+  3. make build && make test       # Build and test
+  4. make push-release             # Push to GOSS-Repository
+  5. git tag v11.0.0 && git push   # Tag and push
+  6. %(prog)s next-snapshot        # Bump to 11.0.1-SNAPSHOT for next development
 '''
     )
 
@@ -212,6 +281,12 @@ Examples:
     # snapshot command
     snapshot_parser = subparsers.add_parser('snapshot', help='Set snapshot version (adds -SNAPSHOT)')
     snapshot_parser.add_argument('version', help='Version number (e.g., 11.1.0)')
+
+    # bump commands
+    subparsers.add_parser('bump-patch', help='Bump patch version (x.y.Z) and set as snapshot')
+    subparsers.add_parser('bump-minor', help='Bump minor version (x.Y.0) and set as snapshot')
+    subparsers.add_parser('bump-major', help='Bump major version (X.0.0) and set as snapshot')
+    subparsers.add_parser('next-snapshot', help='Bump patch version after a release (alias for bump-patch)')
 
     args = parser.parse_args()
 
@@ -229,6 +304,12 @@ Examples:
         set_version(root, args.version, snapshot=False)
     elif args.command == 'snapshot':
         set_version(root, args.version, snapshot=True)
+    elif args.command in ('bump-patch', 'next-snapshot'):
+        return do_bump(root, 'patch')
+    elif args.command == 'bump-minor':
+        return do_bump(root, 'minor')
+    elif args.command == 'bump-major':
+        return do_bump(root, 'major')
 
     return 0
 

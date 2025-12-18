@@ -168,23 +168,89 @@ Clients now automatically renew their JMS session when publish operations fail, 
 
 ### Version Management
 
-GOSS includes a Makefile for common build and release tasks:
+GOSS uses [Semantic Versioning](https://semver.org/) with automated API change detection:
+
+| Change Type | Version Bump | Example |
+|-------------|--------------|---------|
+| **MAJOR** | X.0.0 | Interface changes, removed public methods, breaking changes |
+| **MINOR** | x.Y.0 | New public methods on classes, new classes (backward compatible) |
+| **PATCH** | x.y.Z | Implementation-only changes, bug fixes |
+
+#### Basic Commands
 
 ```bash
-# Show versions of all bundles
-make version
+make version              # Show versions of all bundles
+make build                # Build all bundles
+make test                 # Run tests
+make clean                # Clean build artifacts
+```
 
-# Set release version (removes -SNAPSHOT)
-make release VERSION=11.0.0
+#### API Change Detection
 
-# Set snapshot version (adds -SNAPSHOT)
-make snapshot VERSION=11.1.0
+Before bumping versions, analyze your changes to determine the appropriate version bump:
 
-# Build all bundles
-make build
+```bash
+make check-api            # Analyze API changes and get recommendation
+```
 
-# Run tests
-make test
+Example output:
+```
+API Change Analysis
+============================================================
+pnnl.goss.core.core-api
+  MAJOR changes detected:
+    - Interface method removed: public abstract void publish(javax.jms.Destination, ...)
+    - Interface method added: public abstract void publish(jakarta.jms.Destination, ...)
+
+pnnl.goss.core.goss-client
+  MINOR changes detected:
+    - Public method added: public void reconnect()
+
+pnnl.goss.core.goss-core-commands
+  No API changes
+============================================================
+Recommended Version Bump:
+  MAJOR - Breaking API changes detected
+  Run: make bump-major
+```
+
+#### Version Bumping Commands
+
+```bash
+# Automatic version bumping (reads current version, increments appropriately)
+make bump-major           # 11.0.0 -> 12.0.0-SNAPSHOT (breaking changes)
+make bump-minor           # 11.0.0 -> 11.1.0-SNAPSHOT (new features)
+make bump-patch           # 11.0.0 -> 11.0.1-SNAPSHOT (bug fixes)
+make next-snapshot        # Same as bump-patch (use after release)
+
+# Manual version setting
+make release VERSION=11.0.0    # Set exact release version (removes -SNAPSHOT)
+make snapshot VERSION=11.1.0   # Set exact snapshot version (adds -SNAPSHOT)
+```
+
+#### Complete Release Workflow
+
+```bash
+# 1. Analyze changes to determine version bump type
+make check-api
+
+# 2. If currently on snapshot, set release version
+make version                      # Verify: 11.0.0-SNAPSHOT
+make release VERSION=11.0.0       # Changes to: 11.0.0
+
+# 3. Build, test, and push release
+make build && make test
+make push-release                 # Push to ../GOSS-Repository/release/
+
+# 4. Tag and commit release
+git add -A && git commit -m "Release 11.0.0"
+git tag v11.0.0
+git push && git push --tags
+
+# 5. Start next development cycle
+make next-snapshot                # Bumps to: 11.0.1-SNAPSHOT
+git add -A && git commit -m "Start 11.0.1-SNAPSHOT development"
+git push
 ```
 
 ### Publishing to GOSS-Repository
@@ -200,6 +266,27 @@ make push-release
 ```
 
 **Note:** The GOSS-Repository must be cloned as a sibling directory (`../GOSS-Repository`). This is the local repository used for BND workspace resolution, not a remote Maven repository.
+
+### API Compatibility Guidelines
+
+When making changes to GOSS, follow these guidelines:
+
+**MAJOR version bump required:**
+- Adding or removing methods from an **interface** (breaks implementors)
+- Removing public methods from a class
+- Changing method signatures (parameters, return types)
+- Changing class hierarchy (superclass, implemented interfaces)
+
+**MINOR version bump required:**
+- Adding new public methods to a **class** (not interface)
+- Adding new classes
+- Adding new packages
+
+**PATCH version bump required:**
+- Bug fixes with no API changes
+- Performance improvements
+- Internal refactoring
+- Documentation updates
 
 ## Documentation
 
