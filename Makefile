@@ -2,7 +2,7 @@
 # Provides version management and release automation
 
 .PHONY: help version release snapshot build test clean push-snapshot push-release \
-        bump-patch bump-minor bump-major next-snapshot check-api
+        bump-patch bump-minor bump-major next-snapshot check-api format format-check
 
 # Default target
 help:
@@ -15,6 +15,8 @@ help:
 	@echo "  make build            Build all bundles"
 	@echo "  make test             Run tests"
 	@echo "  make clean            Clean build artifacts"
+	@echo "  make format           Format all Java files using Spotless"
+	@echo "  make format-check     Check formatting without making changes"
 	@echo ""
 	@echo "Version bumping:"
 	@echo "  make check-api        Analyze API changes and suggest version bump type"
@@ -95,3 +97,14 @@ next-snapshot:
 # API change detection
 check-api:
 	@python3 scripts/check-api.py
+
+# Code formatting targets (uses Spotless with Eclipse formatter)
+format:
+	@echo "Formatting Java files..."
+	./gradlew spotlessApply
+	@echo "Formatting complete."
+
+format-check:
+	@echo "Checking code formatting..."
+	./gradlew spotlessCheck
+	@echo "Format check complete."
