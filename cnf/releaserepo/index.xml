@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Release" increment="1767140153018">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Release" increment="1767141046105">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="https://github.com/GridOPTICS/GOSS/wiki/PNNL-License;description=&quot;PNNL Licensed&quot;;link=LICENSE"/>
@@ -260,10 +260,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.runner"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="8345" type="Long"/>
+      <attribute name="size" value="8344" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.runner/pnnl.goss.core.runner-11.0.0.jar"/>
-      <attribute name="osgi.content" value="53359D34ACAAB2BB72F9F0A0B9C24C98F4F97479408E276AFF63495CC57B43DD"/>
+      <attribute name="osgi.content" value="186EBB07BB0E73AD012C215F1C759F64BF03E3211F9D4C2CEDCD191895F79472"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=java.io)"/>
@@ -305,10 +305,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.testutil"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="5615" type="Long"/>
+      <attribute name="size" value="5613" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.testutil/pnnl.goss.core.testutil-11.0.0.jar"/>
-      <attribute name="osgi.content" value="A270F8ADB6CD3FDDBF1B3D9C7B4B6ED17F186CB216D69D2913F91EC4EB9D32D1"/>
+      <attribute name="osgi.content" value="155A630FFB266D8E5C555ACAE04994EAE888789BE44E927D36C8B75B7E6ED25A"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
@@ -857,10 +857,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.itests"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="44863" type="Long"/>
+      <attribute name="size" value="44861" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.itests/pnnl.goss.core.itests-11.0.0.jar"/>
-      <attribute name="osgi.content" value="A2B9C0AF8B73137D4B31221A0F3DD65B792AA3B21123537B4508C3ED7AE8ACCC"/>
+      <attribute name="osgi.content" value="6D81D825DC1BD40E5B8A0FF1684745AA05AC1CB65745D9BAACABD105E775AD73"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.jms)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
