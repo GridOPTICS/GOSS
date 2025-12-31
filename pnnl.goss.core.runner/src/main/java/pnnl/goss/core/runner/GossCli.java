@@ -93,7 +93,7 @@ public class GossCli {
                 @Override
                 public void onMessage(java.io.Serializable response) {
                     System.out.println("--- Message Received ---");
-                    System.out.println(response);
+                    System.out.println(formatMessage(response));
                     System.out.println("------------------------\n");
                 }
             }, destType);
@@ -150,6 +150,7 @@ public class GossCli {
 
             System.out.println("Message published successfully!");
             client.close();
+            System.exit(0);
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -247,5 +248,100 @@ public class GossCli {
             positionalCount++;
         }
         return null;
+    }
+
+    private static String formatMessage(java.io.Serializable response) {
+        if (response == null) {
+            return "<null>";
+        }
+
+        String text = response.toString();
+
+        // Check if it looks like JSON (starts with { or [)
+        String trimmed = text.trim();
+        if ((trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+                (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
+            try {
+                // Simple JSON pretty-printing without external dependencies
+                return prettyPrintJson(trimmed);
+            } catch (Exception e) {
+                // If parsing fails, return as-is
+                return text;
+            }
+        }
+
+        return text;
+    }
+
+    private static String prettyPrintJson(String json) {
+        StringBuilder result = new StringBuilder();
+        int indent = 0;
+        boolean inString = false;
+        boolean escaped = false;
+
+        for (int i = 0; i < json.length(); i++) {
+            char c = json.charAt(i);
+
+            if (escaped) {
+                result.append(c);
+                escaped = false;
+                continue;
+            }
+
+            if (c == '\\' && inString) {
+                result.append(c);
+                escaped = true;
+                continue;
+            }
+
+            if (c == '"') {
+                inString = !inString;
+                result.append(c);
+                continue;
+            }
+
+            if (inString) {
+                result.append(c);
+                continue;
+            }
+
+            switch (c) {
+                case '{' :
+                case '[' :
+                    result.append(c);
+                    indent++;
+                    result.append('\n').append(getIndent(indent));
+                    break;
+                case '}' :
+                case ']' :
+                    indent--;
+                    result.append('\n').append(getIndent(indent)).append(c);
+                    break;
+                case ',' :
+                    result.append(c).append('\n').append(getIndent(indent));
+                    break;
+                case ':' :
+                    result.append(": ");
+                    break;
+                case ' ' :
+                case '\t' :
+                case '\n' :
+                case '\r' :
+                    // Skip whitespace outside strings
+                    break;
+                default :
+                    result.append(c);
+            }
+        }
+
+        return result.toString();
+    }
+
+    private static String getIndent(int level) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            sb.append("  ");
+        }
+        return sb.toString();
     }
 }
