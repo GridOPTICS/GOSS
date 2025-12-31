@@ -140,6 +140,139 @@ cd /path/to/your/project
    
 ## Version 11.0.0 Features
 
+### Queue and Topic Destination Type Support
+
+The Java client now supports both **Queue** and **Topic** destination types, matching the Python client's behavior:
+
+```java
+import pnnl.goss.core.Client.DESTINATION_TYPE;
+
+// Subscribe to a queue (point-to-point, for request/response patterns)
+client.subscribe("goss.gridappsd.process.request", handler, DESTINATION_TYPE.QUEUE);
+
+// Subscribe to a topic (pub/sub, for broadcast events)
+client.subscribe("goss.gridappsd.simulation.output.123", handler, DESTINATION_TYPE.TOPIC);
+
+// Publish to a queue
+client.publish("goss.gridappsd.process.request", message, DESTINATION_TYPE.QUEUE);
+
+// Publish to a topic
+client.publish("goss.gridappsd.platform.log", message, DESTINATION_TYPE.TOPIC);
+
+// Send request and get response (defaults to QUEUE to match Python)
+client.getResponse(request, "goss.gridappsd.process.request", RESPONSE_FORMAT.JSON);
+
+// Send request with explicit destination type
+client.getResponse(request, "my.topic", RESPONSE_FORMAT.JSON, DESTINATION_TYPE.TOPIC);
+```
+
+**Key differences:**
+
+| Destination | Publishing Behavior | Subscribing Behavior |
+|-------------|--------------------|--------------------|
+| **QUEUE** | Message delivered to **one** consumer. If no consumers, message is **stored** until one connects. | Only one subscriber receives each message (load balancing). |
+| **TOPIC** | Message delivered to **all** active subscribers. If no subscribers, message is **lost**. | All subscribers receive a copy of each message (broadcast). |
+
+**Default behaviors:**
+- `getResponse()` defaults to **QUEUE** (matches Python client, ensures request reaches the handler)
+- `subscribe()` defaults to **TOPIC** (typical for event streaming)
+- `publish(destination, message)` defaults to **TOPIC** (for backward compatibility)
+
+### Command-Line Client (goss-cli.jar)
+
+A new CLI tool for subscribing and publishing to GOSS queues/topics:
+
+```bash
+# Build the CLI
+./gradlew :pnnl.goss.core.runner:createCli
+
+# Subscribe to a queue
+java -jar pnnl.goss.core.runner/generated/executable/goss-cli.jar subscribe --queue goss.gridappsd.process.request
+
+# Subscribe to a topic
+java -jar pnnl.goss.core.runner/generated/executable/goss-cli.jar sub --topic goss.gridappsd.simulation.output.123
+
+# Publish to a queue (default)
+java -jar pnnl.goss.core.runner/generated/executable/goss-cli.jar publish goss.gridappsd.process.request '{"type":"query"}'
+
+# Publish to a topic
+java -jar pnnl.goss.core.runner/generated/executable/goss-cli.jar pub --topic goss.gridappsd.platform.log 'Test message'
+
+# With authentication and custom broker
+java -jar pnnl.goss.core.runner/generated/executable/goss-cli.jar sub -b tcp://activemq:61616 -u admin -p admin -q my.queue
+```
+
+**Options:**
+- `-t, --topic` - Use a topic (default for subscribe)
+- `-q, --queue` - Use a queue (default for publish)
+- `-b, --broker URL` - Broker URL (default: tcp://localhost:61616)
+- `-u, --user USER` - Username for authentication
+- `-p, --password PW` - Password for authentication
+- `-h, --help` - Show help message
+
+#### Example: Topic (Broadcast to All Subscribers)
+
+```bash
+# Terminal 1 - Start first subscriber
+$ java -jar goss-cli.jar sub --topic events
+GOSS Subscriber
+===============
+Broker:      tcp://localhost:61616
+Destination: events
+Type:        TOPIC
+
+Connected! Waiting for messages... (Ctrl+C to stop)
+
+# Terminal 2 - Start second subscriber
+$ java -jar goss-cli.jar sub --topic events
+Connected! Waiting for messages... (Ctrl+C to stop)
+
+# Terminal 3 - Publish a message
+$ java -jar goss-cli.jar pub --topic events "Hello everyone!"
+Message published successfully!
+
+# Result: BOTH Terminal 1 AND Terminal 2 receive:
+--- Message Received ---
+Hello everyone!
+------------------------
+```
+
+#### Example: Queue (Load Balanced, One Consumer Per Message)
+
+```bash
+# Terminal 1 - Start first consumer
+$ java -jar goss-cli.jar sub --queue tasks
+GOSS Subscriber
+===============
+Broker:      tcp://localhost:61616
+Destination: tasks
+Type:        QUEUE
+
+Connected! Waiting for messages... (Ctrl+C to stop)
+
+# Terminal 2 - Start second consumer
+$ java -jar goss-cli.jar sub --queue tasks
+Connected! Waiting for messages... (Ctrl+C to stop)
+
+# Terminal 3 - Publish messages
+$ java -jar goss-cli.jar pub --queue tasks "Task 1"
+$ java -jar goss-cli.jar pub --queue tasks "Task 2"
+
+# Result: Terminal 1 receives "Task 1", Terminal 2 receives "Task 2" (load balanced)
+# Each message goes to only ONE consumer
+
+# Queue persistence - messages wait for consumers:
+$ java -jar goss-cli.jar pub --queue waiting "I'll wait here"
+# (no subscribers running - message is stored)
+
+# Later, start a subscriber:
+$ java -jar goss-cli.jar sub --queue waiting
+--- Message Received ---
+I'll wait here
+------------------------
+# Message was stored and delivered when consumer connected!
+```
+
 ### JWT Token Authentication Support
 GOSS now includes optional JWT (JSON Web Token) authentication support:
 

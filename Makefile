@@ -1,7 +1,7 @@
 # GOSS Makefile
 # Provides version management and release automation
 
-.PHONY: help version release snapshot build test clean push-snapshot push-release \
+.PHONY: help version release snapshot build test clean push-snapshot-local push-release-local \
         bump-patch bump-minor bump-major next-snapshot check-api format format-check
 
 # Default target
@@ -26,14 +26,15 @@ help:
 	@echo "  make bump-major       Bump major version (e.g., 11.0.0 -> 12.0.0-SNAPSHOT)"
 	@echo ""
 	@echo "Repository targets (local ../GOSS-Repository):"
-	@echo "  make push-snapshot    Push snapshot JARs to ../GOSS-Repository/snapshot/"
-	@echo "  make push-release     Push release JARs to ../GOSS-Repository/release/"
+	@echo "  make push-snapshot-local  Push snapshot JARs to ../GOSS-Repository/snapshot/"
+	@echo "  make push-release-local   Push release JARs to ../GOSS-Repository/release/"
+	@echo "  Add FORCE=1 to overwrite existing JARs (e.g., make push-release-local FORCE=1)"
 	@echo ""
 	@echo "Release workflow:"
 	@echo "  1. make version                    # Check current version"
 	@echo "  2. make release VERSION=11.0.0    # Set release version"
 	@echo "  3. make build && make test        # Build and test"
-	@echo "  4. make push-release              # Push to GOSS-Repository"
+	@echo "  4. make push-release-local        # Push to GOSS-Repository"
 	@echo "  5. git tag v11.0.0 && git push    # Tag and push"
 	@echo "  6. make next-snapshot             # Bump to next snapshot"
 	@echo ""
@@ -41,7 +42,7 @@ help:
 	@echo "  make version"
 	@echo "  make release VERSION=11.0.0"
 	@echo "  make snapshot VERSION=11.1.0"
-	@echo "  make build && make push-snapshot"
+	@echo "  make build && make push-snapshot-local"
 
 # Show all bundle versions
 version:
@@ -73,13 +74,14 @@ test:
 clean:
 	./gradlew clean
 
-# Push snapshot JARs to GOSS-Repository
-push-snapshot:
-	@python3 push-to-local-goss-repository.py --snapshot
+# Push snapshot JARs to local GOSS-Repository
+push-snapshot-local:
+	@python3 push-to-local-goss-repository.py --snapshot $(if $(FORCE),--force,)
 
-# Push release JARs to GOSS-Repository
-push-release:
-	@python3 push-to-local-goss-repository.py --release
+# Push release JARs to local GOSS-Repository (also releases to cnf/releaserepo)
+push-release-local:
+	./gradlew release
+	@python3 push-to-local-goss-repository.py --release $(if $(FORCE),--force,)
 
 # Version bumping commands
 bump-patch:

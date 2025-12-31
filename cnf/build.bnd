@@ -50,8 +50,9 @@ javac.target:          21
 
 
 ## To enable baselining, uncomment the following lines:
--baseline: *
--baselinerepo: Release
+## Baselining temporarily disabled - no previous release to compare against
+#-baseline: *
+#-baselinerepo: Release
 
 copyright = Copyrigth 2015 Pacific Northwest National Laboratory (PNNL)
 ## If you use git, you might want to uncomment the following lines:

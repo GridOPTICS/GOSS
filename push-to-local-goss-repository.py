@@ -253,7 +253,7 @@ Examples:
     print(f"  Target:             {Colors.CYAN}{target_name}/{Colors.NC}")
     print(f"  New JARs copied:    {Colors.GREEN}{copied_count}{Colors.NC}")
     print(f"  JARs updated:       {Colors.BLUE}{updated_count}{Colors.NC}")
-    print(f"  JARs skipped:       {Colors.YELLOW}{skipped_count}{Colors.NC} (already up to date)")
+    print(f"  JARs skipped:       {Colors.YELLOW}{skipped_count}{Colors.NC} (same size, use --force to overwrite)")
     if version_mismatch_count > 0:
         print(f"  Version mismatch:   {Colors.YELLOW}{version_mismatch_count}{Colors.NC} (wrong type for target)")
     print(f"{Colors.GREEN}========================================{Colors.NC}")
@@ -267,7 +267,7 @@ Examples:
 
         if sh_script.exists():
             result = subprocess.run(
-                ['bash', str(sh_script), str(dest_repo_dir)],
+                ['bash', str(sh_script), target_name],
                 cwd=goss_repo_dir
             )
             if result.returncode != 0:

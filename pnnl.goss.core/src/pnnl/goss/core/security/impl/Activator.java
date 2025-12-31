@@ -2,6 +2,7 @@ package pnnl.goss.core.security.impl;
 
 import org.apache.activemq.shiro.mgt.DefaultActiveMqSecurityManager;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -23,6 +24,13 @@ public class Activator extends DefaultActiveMqSecurityManager {
     @Activate
     public void activate() {
         log.info("Activating SecurityManager service");
+
+        // Configure cache manager for authorization caching
+        // This eliminates the "No authorizationCache instance set" warnings
+        // and improves performance by caching authorization lookups
+        setCacheManager(new MemoryConstrainedCacheManager());
+        log.debug("CacheManager configured for authorization caching");
+
         SecurityUtils.setSecurityManager(this);
         log.info("SecurityManager registered with SecurityUtils");
     }

@@ -252,7 +252,8 @@ public class GossClient implements Client {
     }
 
     /**
-     * Sends request and gets response for synchronous communication.
+     * Sends request and gets response for synchronous communication. Defaults to
+     * QUEUE destination type to match Python client behavior.
      *
      * @param request
      *            instance of pnnl.goss.core.Request or any of its subclass.
@@ -264,26 +265,50 @@ public class GossClient implements Client {
      * @throws JMSException
      */
     @Override
-    public Serializable getResponse(Serializable message, String topic,
+    public Serializable getResponse(Serializable message, String destinationName,
             RESPONSE_FORMAT responseFormat) throws SystemException, JMSException {
+        // Default to QUEUE to match Python client behavior
+        return getResponse(message, destinationName, responseFormat, DESTINATION_TYPE.QUEUE);
+    }
+
+    /**
+     * Sends request and gets response for synchronous communication with specified
+     * destination type.
+     *
+     * @param message
+     *            instance of pnnl.goss.core.Request or any of its subclass.
+     * @param destinationName
+     *            the destination name (topic or queue)
+     * @param responseFormat
+     *            the response format
+     * @param destinationType
+     *            TOPIC or QUEUE
+     * @return return an Object which could be a pnnl.goss.core.DataResponse,
+     *         pnnl.goss.core.UploadResponse or pnnl.goss.core.DataError.
+     * @throws IllegalStateException
+     *             when GossCLient is initialized with an GossResponseEvent. Cannot
+     *             synchronously receive a message when a MessageListener is set.
+     * @throws JMSException
+     */
+    @Override
+    public Serializable getResponse(Serializable message, String destinationName,
+            RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType) throws SystemException, JMSException {
         if (protocol == null) {
             protocol = PROTOCOL.OPENWIRE;
         }
 
-        if (topic == null) {
-            // TODO handle with a ErrorCode lookup!
-            return new ResponseError("topic cannot be null");
+        if (destinationName == null) {
+            return new ResponseError("destination cannot be null");
         }
         if (message == null) {
-            // TODO handle with a ErrorCode lookup!
             return new ResponseError("message cannot be null");
         }
 
         Serializable response = null;
         Destination replyDestination = getTemporaryDestination();
-        Destination destination = session.createQueue(topic);
+        Destination destination = getDestination(destinationName, destinationType);
 
-        log.debug("Creating consumer for destination " + replyDestination);
+        log.debug("Creating consumer for destination " + replyDestination + " (type: " + destinationType + ")");
         DefaultClientConsumer clientConsumer = new DefaultClientConsumer(
                 session, replyDestination);
         try {
@@ -302,7 +327,7 @@ public class GossClient implements Client {
             }
 
         } catch (JMSException e) {
-            SystemException.wrap(e).set("topic", topic).set("message", message);
+            SystemException.wrap(e).set("destination", destinationName).set("message", message);
 
         } finally {
             if (clientConsumer != null) {
@@ -331,6 +356,39 @@ public class GossClient implements Client {
             if (this.protocol.equals(PROTOCOL.OPENWIRE) || this.protocol.equals(PROTOCOL.STOMP)) {
                 // Both OPENWIRE and STOMP use the same JMS patterns with ActiveMQ
                 destination = getDestination(topicName);
+                new DefaultClientConsumer(new DefaultClientListener(event),
+                        session, destination);
+            }
+        } finally {
+
+        }
+
+        return this;
+    }
+
+    /**
+     * Lets the client subscribe to a destination with specified type for event
+     * based communication.
+     *
+     * @param destinationName
+     *            the destination name
+     * @param event
+     *            the event handler
+     * @param destinationType
+     *            TOPIC or QUEUE
+     * @return this client for chaining
+     * @throws SystemException
+     */
+    @Override
+    public Client subscribe(String destinationName, GossResponseEvent event, DESTINATION_TYPE destinationType)
+            throws SystemException {
+        try {
+            if (event == null)
+                throw new NullPointerException("event cannot be null");
+            Destination destination = null;
+            if (this.protocol.equals(PROTOCOL.OPENWIRE) || this.protocol.equals(PROTOCOL.STOMP)) {
+                // Both OPENWIRE and STOMP use the same JMS patterns with ActiveMQ
+                destination = getDestination(destinationName, destinationType);
                 new DefaultClientConsumer(new DefaultClientListener(event),
                         session, destination);
             }
@@ -384,6 +442,76 @@ public class GossClient implements Client {
                 session = null;
                 getSession();
                 Destination destination = getDestination(topic);
+
+                if (data instanceof String) {
+                    clientPublisher.publish(destination, data);
+                } else {
+                    Gson gson = new Gson();
+                    clientPublisher.publish(destination, gson.toJson(data));
+                }
+            } catch (Exception e2) {
+                log.error("Failed second attempt to publish ", e2);
+                e.printStackTrace();
+                throw SystemException.wrap(e);
+            }
+        }
+    }
+
+    /**
+     * Publish a message to a destination with specified type.
+     *
+     * @param destinationName
+     *            the destination name
+     * @param data
+     *            the message to publish
+     * @param destinationType
+     *            TOPIC or QUEUE
+     * @throws SystemException
+     */
+    @Override
+    public void publish(String destinationName, Serializable data, DESTINATION_TYPE destinationType)
+            throws SystemException {
+        try {
+            if (data == null)
+                throw new NullPointerException("data cannot be null");
+
+            Destination destination = getDestination(destinationName, destinationType);
+
+            if (data instanceof String)
+                clientPublisher.publish(destination, data);
+            else {
+                Gson gson = new Gson();
+                clientPublisher.publish(destination, gson.toJson(data));
+            }
+
+        } catch (JMSException e) {
+            log.error("publish error", e);
+
+            try {
+                // Ran into error publishing, reset the session and try again
+                log.info("Renewing session");
+                session = null;
+                getSession();
+                Destination destination = getDestination(destinationName, destinationType);
+
+                if (data instanceof String) {
+                    clientPublisher.publish(destination, data);
+                } else {
+                    Gson gson = new Gson();
+                    clientPublisher.publish(destination, gson.toJson(data));
+                }
+            } catch (Exception e2) {
+                log.error("Failed second attempt to publish ", e2);
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                // Ran into error publishing, reset the session and try again
+                log.info("Renewing session");
+                session = null;
+                getSession();
+                Destination destination = getDestination(destinationName, destinationType);
 
                 if (data instanceof String) {
                     clientPublisher.publish(destination, data);
@@ -526,12 +654,21 @@ public class GossClient implements Client {
     }
 
     private Destination getDestination(String topicName) throws SystemException {
+        return getDestination(topicName, DESTINATION_TYPE.TOPIC);
+    }
+
+    private Destination getDestination(String destinationName, DESTINATION_TYPE destinationType)
+            throws SystemException {
         Destination destination = null;
 
         try {
             if (protocol.equals(PROTOCOL.OPENWIRE) || protocol.equals(PROTOCOL.STOMP)) {
                 // Both OPENWIRE and STOMP use standard JMS with ActiveMQ
-                destination = getSession().createTopic(topicName);
+                if (destinationType == DESTINATION_TYPE.QUEUE) {
+                    destination = getSession().createQueue(destinationName);
+                } else {
+                    destination = getSession().createTopic(destinationName);
+                }
 
                 if (destination == null) {
                     throw new SystemException(ConnectionCode.DESTINATION_ERROR);

@@ -11,6 +11,7 @@ import pnnl.goss.core.ClientListener;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Response;
+import pnnl.goss.core.security.SecurityConstants;
 
 public class DefaultClientListener implements ClientListener {
     private static Logger log = LoggerFactory.getLogger(DefaultClientListener.class);
@@ -36,6 +37,11 @@ public class DefaultClientListener implements ClientListener {
                             objectMessage.getObject());
                     if (response.getDestination() == null)
                         response.setDestination(message.getJMSDestination().toString());
+                    // Set reply destination and username from JMS headers
+                    if (message.getJMSReplyTo() != null)
+                        response.setReplyDestination(message.getJMSReplyTo());
+                    if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
+                        response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                     responseEvent.onMessage(response);
                 }
             } else if (message instanceof TextMessage) {
@@ -43,6 +49,11 @@ public class DefaultClientListener implements ClientListener {
                 DataResponse response = new DataResponse(textMessage.getText());
                 if (response.getDestination() == null)
                     response.setDestination(message.getJMSDestination().toString());
+                // Set reply destination and username from JMS headers
+                if (message.getJMSReplyTo() != null)
+                    response.setReplyDestination(message.getJMSReplyTo());
+                if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
+                    response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                 responseEvent.onMessage(response);
             }
             // TODO Look at implementing these?
