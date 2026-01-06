@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Release" increment="1767141046105">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Release" increment="1767727687059">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="https://github.com/GridOPTICS/GOSS/wiki/PNNL-License;description=&quot;PNNL Licensed&quot;;link=LICENSE"/>
@@ -17,14 +17,14 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.security-ldap"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="10506" type="Long"/>
+      <attribute name="size" value="10442" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.security-ldap/pnnl.goss.core.security-ldap-11.0.0.jar"/>
-      <attribute name="osgi.content" value="EFFB1B09686F0B0F439FCC945974A01B4F0203CB84BDD59059D3960A8F70C17D"/>
+      <attribute name="osgi.content" value="6EFC98E3561827FD9CAA36C715EAC84273FCA296448D9A1A30A6E6D1465AE9F3"/>
     </capability>
     <capability namespace="osgi.service">
-      <directive name="uses" value="pnnl.goss.core.security,pnnl.goss.core.security"/>
-      <attribute name="objectClass" value="pnnl.goss.core.security.GossRealm,pnnl.goss.core.security.PermissionAdapter" type="List&lt;String&gt;"/>
+      <directive name="uses" value="pnnl.goss.core.security"/>
+      <attribute name="objectClass" value="pnnl.goss.core.security.GossRealm" type="List&lt;String&gt;"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
@@ -101,7 +101,7 @@
       <attribute name="size" value="5087" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-commands/pnnl.goss.core.goss-core-commands-11.0.0.jar"/>
-      <attribute name="osgi.content" value="618CAFF8EAC44D6E526D1C0580F9ABE80E110F94C5A54F2B13220DCEA62D2B59"/>
+      <attribute name="osgi.content" value="0B3DFFBB700CC7F5016DCDB76FAC8A862305BDCD76F975EA1DC248B31BF8F891"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=java.io)"/>
@@ -163,10 +163,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-client"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="34594" type="Long"/>
+      <attribute name="size" value="34593" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-client/pnnl.goss.core.goss-client-11.0.0.jar"/>
-      <attribute name="osgi.content" value="7B8ADA8B0754F4DC9EC45B47098D34FE3CF9204D7F291A4529E487F43A009964"/>
+      <attribute name="osgi.content" value="194786F244C83212AF3C6BCDC537E763C8A73B1E4E9E991BEB2B30E55BC54AFE"/>
     </capability>
     <capability namespace="osgi.service">
       <directive name="uses" value="pnnl.goss.core"/>
@@ -260,10 +260,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.runner"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="8344" type="Long"/>
+      <attribute name="size" value="8345" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.runner/pnnl.goss.core.runner-11.0.0.jar"/>
-      <attribute name="osgi.content" value="186EBB07BB0E73AD012C215F1C759F64BF03E3211F9D4C2CEDCD191895F79472"/>
+      <attribute name="osgi.content" value="035F5FC6191274A2366F556BD370D4316B671FE3F21040C6C841808DBA58ABA7"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=java.io)"/>
@@ -305,10 +305,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.testutil"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="5613" type="Long"/>
+      <attribute name="size" value="5614" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.testutil/pnnl.goss.core.testutil-11.0.0.jar"/>
-      <attribute name="osgi.content" value="155A630FFB266D8E5C555ACAE04994EAE888789BE44E927D36C8B75B7E6ED25A"/>
+      <attribute name="osgi.content" value="A67881216B32DD2D45855EB8F4554D0B6C40466037FE7B73C24C735E3ABAF3E2"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
@@ -347,10 +347,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-security"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="30800" type="Long"/>
+      <attribute name="size" value="30799" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-security/pnnl.goss.core.goss-core-security-11.0.0.jar"/>
-      <attribute name="osgi.content" value="72D6567DF6A74B87ECC4B357CDE6AF5EB98ADDA3059F69055893838AF76F49A9"/>
+      <attribute name="osgi.content" value="14B73CE9C3415449C94DEB733A0E0ED1F47CEC7ACC1AB981178594B42F540DC4"/>
     </capability>
     <capability namespace="osgi.service">
       <directive name="uses" value="org.apache.shiro.mgt"/>
@@ -508,7 +508,7 @@
       <attribute name="size" value="60341" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.core-api/pnnl.goss.core.core-api-11.0.0.jar"/>
-      <attribute name="osgi.content" value="5F3DECA9178598695CD1670039ECC5EBFB24716BE49C791DF225B602EBA529EB"/>
+      <attribute name="osgi.content" value="E08DE3CA2802A2000F17DEA48CF774EDA3ED1F78FA2868AB0C1849F970F5596D"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.google.gson)(version&gt;=2.11.0)(!(version&gt;=3.0.0)))"/>
@@ -574,7 +574,7 @@
       <attribute name="size" value="240767" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server-web/pnnl.goss.core.goss-core-server-web-11.0.0.jar"/>
-      <attribute name="osgi.content" value="119D9AF6DC319737F8E38CEA8D459FEBA342E22E29050EACCCD3ECACBC295B4A"/>
+      <attribute name="osgi.content" value="32FAFE9546A10238D3C08B3CF1CD9D326048B0BD1EE9C6A193400EBC4CF8010F"/>
     </capability>
     <capability namespace="osgi.service">
       <directive name="uses" value="javax.servlet"/>
@@ -663,10 +663,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-exceptions"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="14022" type="Long"/>
+      <attribute name="size" value="14021" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-exceptions/pnnl.goss.core.goss-core-exceptions-11.0.0.jar"/>
-      <attribute name="osgi.content" value="4A8803F636261373705A7355F655C81BED82538B23E7B42784C185469CAF244E"/>
+      <attribute name="osgi.content" value="C9BC6E3BA371E0D9BF9E1200951603F5CA8B326CE2AE274177A35E7F79022D31"/>
     </capability>
     <capability namespace="osgi.service">
       <directive name="uses" value="com.northconcepts.exception"/>
@@ -719,7 +719,7 @@
       <attribute name="size" value="20985" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server-registry/pnnl.goss.core.goss-core-server-registry-11.0.0.jar"/>
-      <attribute name="osgi.content" value="35C949D8FBF2CCFBDB87F02E4992FD1AE0DD3FAEA7F6E0AB5EF46C1AE4C7BABE"/>
+      <attribute name="osgi.content" value="89E4BBF5893E36EC9C49273896905BBD10AC905AC12216F85C2A2B84869CB318"/>
     </capability>
     <capability namespace="osgi.service">
       <directive name="uses" value="pnnl.goss.core.server"/>
@@ -857,10 +857,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.itests"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="44861" type="Long"/>
+      <attribute name="size" value="44864" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.itests/pnnl.goss.core.itests-11.0.0.jar"/>
-      <attribute name="osgi.content" value="6D81D825DC1BD40E5B8A0FF1684745AA05AC1CB65745D9BAACABD105E775AD73"/>
+      <attribute name="osgi.content" value="184831E95F1B83F9586866497355CFAD94560372E8A000AF7D35FE3EE77D31D0"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.jms)(version&gt;=3.1.0)(!(version&gt;=4.0.0)))"/>
@@ -1003,10 +1003,10 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.goss-core-server-api"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="14458" type="Long"/>
+      <attribute name="size" value="14457" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server-api/pnnl.goss.core.goss-core-server-api-11.0.0.jar"/>
-      <attribute name="osgi.content" value="947ED6342F683757FE23E2398564D3BF01304F9A0F595F76BEFBAA79724F1E77"/>
+      <attribute name="osgi.content" value="78F6C3E6F45A26913D9831AE8AD65AA12CBE51C0234C4685635DBCDA79260A51"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
@@ -1068,7 +1068,7 @@
       <attribute name="size" value="48641" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.goss-core-server/pnnl.goss.core.goss-core-server-11.0.0.jar"/>
-      <attribute name="osgi.content" value="269CAD5B3E2194DF231739F5DCD3D9A0F22162E5AF3A9DDE7F91178FCDEAB265"/>
+      <attribute name="osgi.content" value="5FA59CB61D8DA916EEBD6137D43DA17DC134786C74511C1C335A04BA0C68BC0C"/>
     </capability>
     <capability namespace="osgi.service">
       <directive name="uses" value="pnnl.goss.core.server"/>
@@ -1242,14 +1242,14 @@
       <attribute name="osgi.wiring.host" value="pnnl.goss.core.security-propertyfile"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="8226" type="Long"/>
+      <attribute name="size" value="8171" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="pnnl.goss.core.security-propertyfile/pnnl.goss.core.security-propertyfile-11.0.0.jar"/>
-      <attribute name="osgi.content" value="6B143E9A60340F684426BD85FF70B1AFAC0B31B4F8B7FC059A9974EA6DDB41C7"/>
+      <attribute name="osgi.content" value="F176A878B7B4B7B42F0EA7802434BE27F1591FC8683D05D08F0F42A784DEBCB8"/>
     </capability>
     <capability namespace="osgi.service">
-      <directive name="uses" value="pnnl.goss.core.security,pnnl.goss.core.security"/>
-      <attribute name="objectClass" value="pnnl.goss.core.security.GossRealm,pnnl.goss.core.security.PermissionAdapter" type="List&lt;String&gt;"/>
+      <directive name="uses" value="pnnl.goss.core.security"/>
+      <attribute name="objectClass" value="pnnl.goss.core.security.GossRealm" type="List&lt;String&gt;"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.northconcepts.exception)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
