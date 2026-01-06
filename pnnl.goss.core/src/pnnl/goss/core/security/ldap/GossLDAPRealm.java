@@ -29,7 +29,6 @@ import com.northconcepts.exception.SystemException;
 
 import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
-import pnnl.goss.core.security.PermissionAdapter;
 
 /**
  * LDAP-based authentication realm for GOSS.
@@ -49,8 +48,7 @@ import pnnl.goss.core.security.PermissionAdapter;
  * ldap.connectionTimeout=5000
  * </pre>
  */
-@Component(service = {GossRealm.class,
-        PermissionAdapter.class}, configurationPid = "pnnl.goss.core.security.ldap", configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.ldap", configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class GossLDAPRealm extends JndiLdapRealm implements GossRealm {
 
     private static final Logger log = LoggerFactory.getLogger(GossLDAPRealm.class);

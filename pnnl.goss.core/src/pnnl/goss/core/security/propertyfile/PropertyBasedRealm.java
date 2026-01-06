@@ -5,10 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.Modified;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,14 +14,18 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.northconcepts.exception.SystemException;
+
 import pnnl.goss.core.security.GossPermissionResolver;
 import pnnl.goss.core.security.GossRealm;
-import pnnl.goss.core.security.PermissionAdapter;
-
-import com.northconcepts.exception.SystemException;
 
 /**
  * This class handles property based authentication/authorization. It will only
@@ -43,11 +43,9 @@ import com.northconcepts.exception.SystemException;
  * @author Craig Allwardt
  *
  */
-@Component(service = {GossRealm.class,
-        PermissionAdapter.class}, configurationPid = "pnnl.goss.core.security.propertyfile")
+@Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.propertyfile", configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
 
-    private static final String CONFIG_PID = "pnnl.goss.core.security.propertyfile";
     private static final Logger log = LoggerFactory.getLogger(PropertyBasedRealm.class);
 
     private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
