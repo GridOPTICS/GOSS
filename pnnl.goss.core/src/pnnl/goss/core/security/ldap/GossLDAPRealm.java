@@ -13,8 +13,8 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.authz.permission.PermissionResolver;
+import org.apache.shiro.realm.ldap.DefaultLdapRealm;
 import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
-import org.apache.shiro.realm.ldap.JndiLdapRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -49,7 +49,7 @@ import pnnl.goss.core.security.GossRealm;
  * </pre>
  */
 @Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.ldap", configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class GossLDAPRealm extends JndiLdapRealm implements GossRealm {
+public class GossLDAPRealm extends DefaultLdapRealm implements GossRealm {
 
     private static final Logger log = LoggerFactory.getLogger(GossLDAPRealm.class);
 

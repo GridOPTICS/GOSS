@@ -1,9 +1,717 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="bin/main" path="src">
+	<classpathentry kind="src" output="build/classes/java/test" path="test">
 		<attributes>
-			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
+			<attribute name="test" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="build/classes/java/main" path="src">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="build/classes/java/test" path="generated/generated/sources/annotationProcessor/java/test">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="build/classes/java/main" path="generated/generated/sources/annotationProcessor/java/main">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.google.guava"/>
+			<attribute name="artifactId" value="listenablefuture"/>
+			<attribute name="version" value="9999.0-empty-to-avoid-conflict-with-guava"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/felix/org.apache.felix.gogo.runtime/1.1.6/org.apache.felix.gogo.runtime-1.1.6.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.felix.gogo.runtime-1.1.6.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/b19b5927c2c25b6c70f093767041e641ae0b1b35/jsr305-3.0.2-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.google.code.findbugs"/>
+			<attribute name="artifactId" value="jsr305"/>
+			<attribute name="version" value="3.0.2"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.8/9c1489f31d79994d53966dc8bbc387466b2e47ef/jackson-databind-2.9.10.8.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.8/18606acbcf18e7df64e357129f41d10c68148559/jackson-databind-2.9.10.8-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.fasterxml.jackson.core"/>
+			<attribute name="artifactId" value="jackson-databind"/>
+			<attribute name="version" value="2.9.10.8"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/junit/platform/junit-platform-engine/1.11.3/junit-platform-engine-1.11.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="junit-platform-engine-1.11.3.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/commons/commons-pool2/2.12.0/commons-pool2-2.12.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="commons-pool2-2.12.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-core/1.13.0/7e542e3d614b197bf10005e98e19f9f19cb943e7/shiro-core-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-core/1.13.0/4a31271d8f0ff1fd0fb8937d9117f54934df8c5d/shiro-core-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-core"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.shiro.core-1.2.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.shiro.core-1.2.3.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/osgi.enterprise-4.2.0.201003190513.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="osgi.enterprise-4.2.0.201003190513.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/junit/platform/junit-platform-commons/1.11.3/junit-platform-commons-1.11.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="junit-platform-commons-1.11.3.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1dcf1de382a0bf95a3d8b0849546c88bac1292c9/failureaccess-1.0.1.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1d064e61aad6c51cc77f9b59dc2cccc78e792f5a/failureaccess-1.0.1-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.google.guava"/>
+			<attribute name="artifactId" value="failureaccess"/>
+			<attribute name="version" value="1.0.1"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-jms_1.1_spec/1.1.1/c872b46c601d8dc03633288b81269f9e42762cea/geronimo-jms_1.1_spec-1.1.1.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-jms_1.1_spec/1.1.1/c45b919f5434f9c33c546af9e6dfc5e1466b4b3e/geronimo-jms_1.1_spec-1.1.1-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.geronimo.specs"/>
+			<attribute name="artifactId" value="geronimo-jms_1.1_spec"/>
+			<attribute name="version" value="1.1.1"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="httpclient-4.5.14.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.18.1/jackson-annotations-2.18.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jackson-annotations-2.18.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.httpcomponents.httpclient-4.5.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.httpcomponents.httpclient-4.5.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/2.10.0/5786699a0cb71f9dc32e6cca1d665eef07a0882f/checker-qual-2.10.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/2.10.0/e9cee84e891492970403d8bd7281dadeaaf11dd/checker-qual-2.10.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.checkerframework"/>
+			<attribute name="artifactId" value="checker-qual"/>
+			<attribute name="version" value="2.10.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/junit/platform/junit-platform-launcher/1.11.3/junit-platform-launcher-1.11.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="junit-platform-launcher-1.11.3.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-j2ee-management_1.1_spec/1.0.1/5372615b0c04c1913c95c34a0414cef720ca2855/geronimo-j2ee-management_1.1_spec-1.0.1.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.geronimo.specs/geronimo-j2ee-management_1.1_spec/1.0.1/3d3b34584f4137c4ab7db496bceb5d75704f7354/geronimo-j2ee-management_1.1_spec-1.0.1-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.geronimo.specs"/>
+			<attribute name="artifactId" value="geronimo-j2ee-management_1.1_spec"/>
+			<attribute name="version" value="1.0.1"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/httpcomponents/client5/httpclient5/5.4/httpclient5-5.4.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="httpclient5-5.4.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-core-server-api.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="pnnl.goss.core.goss-core-server-api.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-lang/1.13.0/19a4aefea5f09d3271c2ca7bd943af1e71d7b53c/shiro-lang-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-lang/1.13.0/18bd5014c1aef3e88ee7016e05009d40766e9440/shiro-lang-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-lang"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/osgi/osgi.enterprise/7.0.0/osgi.enterprise-7.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="osgi.enterprise-7.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-core/2.0.0/shiro-core-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-core-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/springframework/spring-beans/6.2.0/spring-beans-6.2.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="spring-beans-6.2.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-cipher/1.13.0/b5c359ef02e138c1631218c1a8419b1597a1e96f/shiro-crypto-cipher-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-cipher/1.13.0/5382547a88cfcf4d9915ada6ce9c97a6acf971b1/shiro-crypto-cipher-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-crypto-cipher"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-crypto-cipher/2.0.0/shiro-crypto-cipher-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-crypto-cipher-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-client.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="pnnl.goss.core.goss-client.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="opentest4j-1.3.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/felix/org.apache.felix.http.servlet-api/3.0.0/org.apache.felix.http.servlet-api-3.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.felix.http.servlet-api-3.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.felix.gogo.runtime-0.12.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.felix.gogo.runtime-0.12.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.18.1/jackson-databind-2.18.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jackson-databind-2.18.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.10/53ab2f0f92e87ea4874c8c6997335c211d81e636/jackson-annotations-2.9.10.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.10/62d22990d6d2798103792f6edcd54714c2f6fbf4/jackson-annotations-2.9.10-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.fasterxml.jackson.core"/>
+			<attribute name="artifactId" value="jackson-annotations"/>
+			<attribute name="version" value="2.9.10"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/osgi/osgi.cmpn/7.0.0/osgi.cmpn-7.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="osgi.cmpn-7.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-crypto-core/2.0.0/shiro-crypto-core-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-crypto-core-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="junit-4.13.2.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-config-core/1.13.0/436c450e532f78d490531c78605f3a65bc655d31/shiro-config-core-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-config-core/1.13.0/969ae335b2e98cc1005df2d6e9857274508eeeab/shiro-config-core-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-config-core"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="apiguardian-api-1.1.2.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.activemq/activemq-broker/5.15.16/d7bdea35774cd5de65cc676b2dd831a30a20255a/activemq-broker-5.15.16.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.activemq/activemq-broker/5.15.16/ba5a0d8b81d0d4925dee16b40b0a30f215d82370/activemq-broker-5.15.16-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.activemq"/>
+			<attribute name="artifactId" value="activemq-broker"/>
+			<attribute name="version" value="5.15.16"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/osgi/osgi.core/8.0.0/osgi.core-8.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="osgi.core-8.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.activemq/activemq-client/5.15.16/e3e05c958b64d6bda986a2b1e48bbfb3eb3f9e2f/activemq-client-5.15.16.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.activemq/activemq-client/5.15.16/43252defc2ef8ac64ec8f51ce5cb609390e1fb8d/activemq-client-5.15.16-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.activemq"/>
+			<attribute name="artifactId" value="activemq-client"/>
+			<attribute name="version" value="5.15.16"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/fasterxml/jackson/jaxrs/jackson-jaxrs-base/2.18.1/jackson-jaxrs-base-2.18.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jackson-jaxrs-base-2.18.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/slf4j/slf4j-api/2.0.16/slf4j-api-2.0.16.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="slf4j-api-2.0.16.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="gson-2.11.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.2/8ad72fe39fa8c91eaaf12aadb21e0c3661fe26d5/commons-collections-3.2.2.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.2/78c50ebda5784937ca1615fc0e1d0cb35857d572/commons-collections-3.2.2-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="commons-collections"/>
+			<attribute name="artifactId" value="commons-collections"/>
+			<attribute name="version" value="3.2.2"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.felix.gogo.command-0.14.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.felix.gogo.command-0.14.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.10/66b715dec9dd8b0f39f3296e67e05913bf422d0c/jackson-core-2.9.10.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.10/2bbe05a007ca22ecf0ed3d3b0b0d8cd9726271c2/jackson-core-2.9.10-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.fasterxml.jackson.core"/>
+			<attribute name="artifactId" value="jackson-core"/>
+			<attribute name="version" value="2.9.10"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-crypto-hash/2.0.0/shiro-crypto-hash-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-crypto-hash-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-web/2.0.0/shiro-web-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-web-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-hash/1.13.0/44afb22d9c1817b3ae23cb2fe3b45e75ae454272/shiro-crypto-hash-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-hash/1.13.0/8914ccd71a8fb16842edb8fb7a03d0a9b29593e3/shiro-crypto-hash-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-crypto-hash"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-event/1.13.0/b881592f98c99fffd54b309db455b89690f8e99/shiro-event-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-event/1.13.0/112aa7a8146ff6c9f2b184a75954e24048773546/shiro-event-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-event"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.apache.activemq.shiro-5.10.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.apache.activemq.shiro-5.10.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.2-jre/8ec9ed76528425762174f0011ce8f74ad845b756/guava-28.2-jre.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/28.2-jre/79474f7d08b9a8d03f827161825711d9d62ef09a/guava-28.2-jre-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.google.guava"/>
+			<attribute name="artifactId" value="guava"/>
+			<attribute name="version" value="28.2-jre"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-config-ogdl/1.13.0/67e51dac44eb9cc232e2ba350a70e5d5f24493bf/shiro-config-ogdl-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-config-ogdl/1.13.0/731998d82482b296ad9affb81ae8b4bba97397f8/shiro-config-ogdl-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-config-ogdl"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-lang/2.0.0/shiro-lang-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-lang-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/cnf/cache/6.4.0/GOSS Dependencies/org.h2-1.4.180.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="org.h2-1.4.180.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/slf4j/slf4j-simple/2.0.16/slf4j-simple-2.0.16.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="slf4j-simple-2.0.16.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-core-security.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="pnnl.goss.core.goss-core-security.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.36/6c62681a2f655b49963a5983b8b0950a6120ae14/slf4j-api-1.7.36.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.36/ae9c1aae0033af915cfa75d850eb9d880f21a701/slf4j-api-1.7.36-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.slf4j"/>
+			<attribute name="artifactId" value="slf4j-api"/>
+			<attribute name="version" value="1.7.36"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/pnnl.goss.core/generated/pnnl.goss.core.core-api.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="pnnl.goss.core.core-api.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="commons-dbcp-1.4.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.3.4/dac170e4594de319655ffb62f41cbd6dbb5e601e/error_prone_annotations-2.3.4.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.3.4/950adf6dcd7361e3d1e544a6e13b818587f95d14/error_prone_annotations-2.3.4-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.google.errorprone"/>
+			<attribute name="artifactId" value="error_prone_annotations"/>
+			<attribute name="version" value="2.3.4"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/jakarta/jms/jakarta.jms-api/3.1.0/jakarta.jms-api-3.1.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jakarta.jms-api-3.1.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/commons-io/commons-io/2.18.0/commons-io-2.18.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="commons-io-2.18.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.3/junit-jupiter-engine-5.11.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="junit-jupiter-engine-5.11.3.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/springframework/spring-context/6.2.0/spring-context-6.2.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="spring-context-6.2.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.fusesource.hawtbuf/hawtbuf/1.11/8f0e50ad8bea37b84b698ec40cce09e47714a63e/hawtbuf-1.11.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.fusesource.hawtbuf/hawtbuf/1.11/8218f5081b357c4c79a426bae93933584ed59f0d/hawtbuf-1.11-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.fusesource.hawtbuf"/>
+			<attribute name="artifactId" value="hawtbuf"/>
+			<attribute name="version" value="1.11"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.activemq/activemq-openwire-legacy/5.15.16/5b7978374c35c391b96d5fb0c43c65a727a8414b/activemq-openwire-legacy-5.15.16.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.activemq/activemq-openwire-legacy/5.15.16/26396882ac273a015a0ea34b33bf32f188c193e0/activemq-openwire-legacy-5.15.16-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.activemq"/>
+			<attribute name="artifactId" value="activemq-openwire-legacy"/>
+			<attribute name="version" value="5.15.16"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-cache/1.13.0/c411b286cbde76aa7dedbe5de8d438594dece977/shiro-cache-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-cache/1.13.0/84db966edb9998df1e08dd1c6032ae05024e6017/shiro-cache-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-cache"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/activemq/activemq-client/6.2.0/activemq-client-6.2.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="activemq-client-6.2.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/activemq/activemq-shiro/6.2.0/activemq-shiro-6.2.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="activemq-shiro-6.2.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/pnnl.goss.core/generated/pnnl.goss.core.goss-core-server.jar">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="pnnl.goss.core.goss-core-server.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.3/junit-jupiter-api-5.11.3.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="junit-jupiter-api-5.11.3.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/jakarta/ws/rs/jakarta.ws.rs-api/4.0.0/jakarta.ws.rs-api-4.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jakarta.ws.rs-api-4.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="xstream-1.4.20.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-cache/2.0.0/shiro-cache-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-cache-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/ba035118bc8bac37d7eff77700720999acd9986d/j2objc-annotations-1.3.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/d26c56180205cbb50447c3eca98ecb617cf9f58b/j2objc-annotations-1.3-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="com.google.j2objc"/>
+			<attribute name="artifactId" value="j2objc-annotations"/>
+			<attribute name="version" value="1.3"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/activemq/activemq-osgi/6.2.0/activemq-osgi-6.2.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="activemq-osgi-6.2.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/apache/shiro/shiro-event/2.0.0/shiro-event-2.0.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="shiro-event-2.0.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.9.4/d52b9abcd97f38c81342bb7e7ae1eee9b73cba51/commons-beanutils-1.9.4.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.9.4/f00e0ba867d1810f255876631ab440e0725a9af0/commons-beanutils-1.9.4-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="commons-beanutils"/>
+			<attribute name="artifactId" value="commons-beanutils"/>
+			<attribute name="version" value="1.9.4"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/repos/Test_GOSS/GOSS/pnnl.goss.core/build/classes/java/main">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="main"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-core/1.13.0/66d95fdcdce43743dadfb1d83d062a8d5eee2f7e/shiro-crypto-core-1.13.0.jar" sourcepath="/home/debian/.gradle/caches/modules-2/files-2.1/org.apache.shiro/shiro-crypto-core/1.13.0/8ee5313c51bc7c8bfa46a351ef726ce60187cf2f/shiro-crypto-core-1.13.0-sources.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="org.apache.shiro"/>
+			<attribute name="artifactId" value="shiro-crypto-core"/>
+			<attribute name="version" value="1.13.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/org/springframework/spring-core/6.2.0/spring-core-6.2.0.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="spring-core-6.2.0.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.18.1/jackson-core-2.18.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jackson-core-2.18.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/com/fasterxml/jackson/jaxrs/jackson-jaxrs-json-provider/2.18.1/jackson-jaxrs-json-provider-2.18.1.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="jackson-jaxrs-json-provider-2.18.1.jar"/>
+			<attribute name="version" value="unknown"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/debian/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar">
+		<attributes>
+			<attribute name="gradle.buildServer" value="true"/>
+			<attribute name="groupId" value="unknown"/>
+			<attribute name="artifactId" value="javax.annotation-api-1.3.2.jar"/>
+			<attribute name="version" value="unknown"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/pnnl.goss.core">
@@ -11,14 +719,5 @@
 			<attribute name="gradle.buildServer" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="bin/test" path="test">
-		<attributes>
-			<attribute name="gradle_scope" value="test"/>
-			<attribute name="gradle_used_by_scope" value="test"/>
-			<attribute name="test" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21/"/>
-	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

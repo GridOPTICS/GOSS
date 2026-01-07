@@ -82,6 +82,7 @@ Import-Package: \
     ${jakarta-activation-runpath},\
     ${slf4j-runpath},\
     ${configadmin-runpath},\
+    ${fileinstall-runpath},\
     ${gson-runpath},\
     ${httpclient-osgi-runpath},\
     ${osgi-service-component-runpath},\

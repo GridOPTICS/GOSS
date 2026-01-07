@@ -6,3 +6,9 @@ Private-Package:  \
 Export-Package:  \
 	pnnl.goss.core.security
 Bundle-Version: 11.0.0
+
+# Require FileInstall to be present in the runtime
+# FileInstall watches the conf directory for .cfg files and loads them into ConfigAdmin
+# Without FileInstall, security realms (PropertyBasedRealm, GossLDAPRealm) won't activate
+# because they use configurationPolicy=REQUIRE and need their .cfg files loaded
+Require-Bundle: org.apache.felix.fileinstall

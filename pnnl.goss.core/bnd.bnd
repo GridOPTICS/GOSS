@@ -20,6 +20,7 @@
 	org.apache.commons:commons-pool2;version=2.12.0,\
 	commons-dbcp:commons-dbcp;version=1.4,\
 	org.apache.httpcomponents:httpclient;version=4.5.14,\
+	org.apache.httpcomponents:httpcore;version=4.4.16,\
 	org.apache.httpcomponents.client5:httpclient5;version=5.4,\
 	org.apache.felix:org.apache.felix.http.servlet-api;version=3.0.0,\
 	org.apache.felix:org.apache.felix.gogo.runtime;version=1.1.6,\

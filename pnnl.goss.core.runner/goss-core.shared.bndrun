@@ -7,7 +7,11 @@ shared.runprops: \
 	broker-name=broker,\
 	activemq.start.broker=true,\
 	stomp.port=61613,\
-	ws.port=61614
+	ws.port=61614,\
+	felix.fileinstall.dir=conf,\
+	felix.fileinstall.poll=1000,\
+	felix.fileinstall.noInitialDelay=true,\
+	felix.fileinstall.log.level=3
 	
 # Include from the home directory some private properties.  If
 # there were a shared.runprops then values would overwrite
