@@ -1,0 +1,110 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: 21
+        distribution: 'temurin'
+        cache: gradle
+    
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+    
+    - name: Validate Gradle Wrapper
+      uses: gradle/wrapper-validation-action@v2
+    
+    - name: Run tests
+      run: ./gradlew test --no-daemon
+      env:
+        GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
+    
+    - name: Build release artifacts
+      run: ./gradlew build export -x :pnnl.goss.core.itests:testOSGi --no-daemon
+      env:
+        GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
+    
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Generate changelog from git commits since last tag
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)
+        echo "## Changes" > CHANGELOG.md
+        git log --pretty=format:"* %s (%an)" ${PREVIOUS_TAG}..HEAD >> CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        echo "## Build Information" >> CHANGELOG.md
+        echo "* Java Version: $(java -version 2>&1 | head -n 1)" >> CHANGELOG.md
+        echo "* Build Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> CHANGELOG.md
+        echo "* Commit: ${{ github.sha }}" >> CHANGELOG.md
+    
+    - name: Create release archives
+      run: |
+        # Create distribution archives
+        mkdir -p dist/
+        
+        # Create source archive
+        git archive --format=tar.gz --prefix=goss-${{ github.ref_name }}/ HEAD > dist/goss-${{ github.ref_name }}-src.tar.gz
+        
+        # Create binary archive with all JARs
+        tar -czf dist/goss-${{ github.ref_name }}-bin.tar.gz \
+          -C . \
+          --exclude='*.log' \
+          --exclude='generated/test-*' \
+          cnf/releaserepo/ \
+          */generated/*.jar \
+          README.md \
+          LICENSE \
+          CLAUDE.md
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: GOSS ${{ github.ref_name }}
+        body_path: CHANGELOG.md
+        draft: false
+        prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+        files: |
+          dist/*.tar.gz
+          cnf/releaserepo/**/*.jar
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-artifacts-${{ github.ref_name }}
+        path: |
+          dist/
+          cnf/releaserepo/
+        retention-days: 90

@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -48,69 +48,69 @@ import java.io.Serializable;
 
 public class Event implements Serializable {
 
-	private static final long serialVersionUID = -1962993549035537429L;
+    private static final long serialVersionUID = -1962993549035537429L;
 
-	public enum SeverityType {
-		HIGH, MEDIUM, LOW
-	};
+    public enum SeverityType {
+        HIGH, MEDIUM, LOW
+    };
 
-	int id;
-	String status; // Active,Closed
-	protected SeverityType severity;
-	protected String eventType;
-	protected String description;
-	int relatedEventId;
+    int id;
+    String status; // Active,Closed
+    protected SeverityType severity;
+    protected String eventType;
+    protected String description;
+    int relatedEventId;
 
-	public SeverityType[] getSeverityTypes() {
-		return SeverityType.values();
-	}
+    public SeverityType[] getSeverityTypes() {
+        return SeverityType.values();
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public SeverityType getSeverity() {
-		return severity;
-	}
+    public SeverityType getSeverity() {
+        return severity;
+    }
 
-	public void setSeverity(SeverityType severity) {
-		this.severity = severity;
-	}
+    public void setSeverity(SeverityType severity) {
+        this.severity = severity;
+    }
 
-	public String getEventType() {
-		return eventType;
-	}
+    public String getEventType() {
+        return eventType;
+    }
 
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public int getRelatedEventId() {
-		return relatedEventId;
-	}
+    public int getRelatedEventId() {
+        return relatedEventId;
+    }
 
-	public void setRelatedEventId(int relatedEventId) {
-		this.relatedEventId = relatedEventId;
-	}
+    public void setRelatedEventId(int relatedEventId) {
+        this.relatedEventId = relatedEventId;
+    }
 
 }

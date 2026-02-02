@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.felix.dm.annotation.api.Component;
-import org.apache.felix.dm.annotation.api.ServiceDependency;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -18,106 +18,106 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import pnnl.goss.core.security.SecurityConfig;
+@Component(service = Realm.class)
+public class GossAuthorizingRealm extends AuthorizingRealm implements Realm {
 
-@Component
-public class GossAuthorizingRealm extends AuthorizingRealm implements Realm  {
-	
-	public static final String DEFAULT_SYSTEM_USER = "system";
-	
-	// Depend on this so that the security manager service is loaded before
-	// this package.
-	@ServiceDependency
-	private volatile SecurityManager securityManager;
-	@ServiceDependency
-	private volatile SecurityConfig securityConfig;
-	private HashMap<String, SimpleAccount> accountCache = new HashMap<String, SimpleAccount>();
-	
-	
-	private Collection<String> getPermissionsByRole(String role){
-		Set<String> permissions = new HashSet<>();
-		
-		switch (role) {
-		case "users":
-			permissions.add("queue:*");
-			//permissions.add("queue:request:write");
-			//permissions.add("queue:request:create");
-			permissions.add("temp-queue:*");
-			break;
-			
-		case "advisory":
-			permissions.add("topic:*"); //ctiveMQ.Advisory.*");
-			//permissions.add("topic:ActiveMQ.Advisory.*");
-			break;
-		}
-		
-		return permissions;
-	}
-	
-    protected SimpleAccount getAccount(String username, String password) {
-    	String systemUserName = DEFAULT_SYSTEM_USER;
-    	if(securityConfig!=null){
-    		systemUserName = securityConfig.getManagerUser();
-    	}
-    	
-    	
-    	
-    	SimpleAccount account = null;
-    	Set<String> defaultRoles = new HashSet<String>();
-    	defaultRoles.add("users");
-    	defaultRoles.add("advisory");
-    	
-    	if(username.equals(systemUserName)){
-    		account = new SimpleAccount(username, password, getName());
-    		account.addRole(systemUserName);
-    		account.addStringPermissions(getPermissionsByRole(systemUserName));
-    	}
-    	
-    	if (account == null){
-    		System.out.println("Couldn't authenticate on realm: "+ getName() + " for user: "+username);
-    		return null;
-    	}
-    	
-    	for(String s: defaultRoles){
-    		account.addRole(s);
-    		account.addStringPermissions(getPermissionsByRole(s));
-    	}
-    	
-//    	SimpleAccount account = new SimpleAccount(username, "manager", getName());
-//        //simulate some roles and permissions:
-//        account.addRole("users");
-//        account.addRole("admin");
-//        //most applications would assign permissions to Roles instead of users directly because this is much more
-//        //flexible (it is easier to configure roles and then change role-to-user assignments than it is to maintain
-//        // permissions for each user).
-//        // But these next lines assign permissions directly to this trivial account object just for simulation's sake:
-//        account.addStringPermission("blogEntry:edit"); //this user is allowed to 'edit' _any_ blogEntry
-//        //fine-grained instance level permission:
-//        account.addStringPermission("printer:print:laserjet2000"); //allowed to 'print' to the 'printer' identified
-//        //by the id 'laserjet2000'
+    // Depend on this so that the security manager service is loaded before
+    // this package.
+    @Reference
+    private volatile SecurityManager securityManager;
+
+    private Collection<String> getPermissionsByRole(String role) {
+        Set<String> permissions = new HashSet<>();
+
+        switch (role) {
+            case "users" :
+                permissions.add("queue:*");
+                // permissions.add("queue:request:write");
+                // permissions.add("queue:request:create");
+                permissions.add("temp-queue:*");
+                break;
+
+            case "advisory" :
+                permissions.add("topic:*"); // ctiveMQ.Advisory.*");
+                // permissions.add("topic:ActiveMQ.Advisory.*");
+                break;
+        }
+
+        return permissions;
+    }
+
+    protected SimpleAccount getAccount(String username) {
+
+        SimpleAccount account = null;
+        Set<String> defaultRoles = new HashSet<String>();
+        defaultRoles.add("users");
+        defaultRoles.add("advisory");
+
+        // Populate a dummy instance based upon the username's access privileges.
+        switch (username) {
+            case "darkhelmet" :
+                account = new SimpleAccount(username, "ludicrousspeed", getName());
+                // account.addRole("darklord");
+                // account.addStringPermissions(getPermissionsByRole("users"));
+                break;
+            case "system" :
+                account = new SimpleAccount(username, "manager", getName());
+                account.addRole("system");
+                account.addStringPermissions(getPermissionsByRole("system"));
+                break;
+        }
+
+        if (account == null) {
+            System.out.println("Couldn't authenticate on realm: " + getName() + " for user: " + username);
+            return null;
+        }
+
+        for (String s : defaultRoles) {
+            account.addRole(s);
+            account.addStringPermissions(getPermissionsByRole(s));
+        }
+
+        // SimpleAccount account = new SimpleAccount(username, "manager", getName());
+        // //simulate some roles and permissions:
+        // account.addRole("users");
+        // account.addRole("admin");
+        // //most applications would assign permissions to Roles instead of users
+        // directly because this is much more
+        // //flexible (it is easier to configure roles and then change role-to-user
+        // assignments than it is to maintain
+        // // permissions for each user).
+        // // But these next lines assign permissions directly to this trivial account
+        // object just for simulation's sake:
+        // account.addStringPermission("blogEntry:edit"); //this user is allowed to
+        // 'edit' _any_ blogEntry
+        // //fine-grained instance level permission:
+        // account.addStringPermission("printer:print:laserjet2000"); //allowed to
+        // 'print' to the 'printer' identified
+        // //by the id 'laserjet2000'
 
         return account;
     }
-	
 
-	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(
-			PrincipalCollection principals) {
-		
-		 //get the principal this realm cares about:
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(
+            PrincipalCollection principals) {
+
+        // get the principal this realm cares about:
         String username = (String) getAvailablePrincipal(principals);
-        //call the underlying EIS for the account data:
-//        return getAccount(username);
-		return accountCache.get(username);
-	}
 
-	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(
-			AuthenticationToken token) throws AuthenticationException {
-		
-		//we can safely cast to a UsernamePasswordToken here, because this class 'supports' UsernamePasswordToken
-        //objects.  See the Realm.supports() method if your application will use a different type of token.
+        // call the underlying EIS for the account data:
+        return getAccount(username);
+    }
+
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(
+            AuthenticationToken token) throws AuthenticationException {
+
+        // we can safely cast to a UsernamePasswordToken here, because this class
+        // 'supports' UsernamePasswordToken
+        // objects. See the Realm.supports() method if your application will use a
+        // different type of token.
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-        return getAccount(upToken.getUsername(), upToken.getPassword().toString());
-	}
+        return getAccount(upToken.getUsername());
+    }
 }

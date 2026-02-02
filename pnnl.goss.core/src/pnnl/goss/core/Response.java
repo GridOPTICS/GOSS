@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -52,27 +52,27 @@ import java.util.UUID;
 
 public class Response implements Serializable {
 
-	private static final long serialVersionUID = 8541810525300877513L;
-	String id = UUID.randomUUID().toString();
+    private static final long serialVersionUID = 8541810525300877513L;
+    String id = UUID.randomUUID().toString();
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public int sizeof() throws IOException {
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	    ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-	    ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+    public int sizeof() throws IOException {
 
-	    objectOutputStream.writeObject(this);
-	    objectOutputStream.flush();
-	    objectOutputStream.close();
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
 
-	    return byteOutputStream.toByteArray().length;
-	}
+        objectOutputStream.writeObject(this);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+
+        return byteOutputStream.toByteArray().length;
+    }
 
 }

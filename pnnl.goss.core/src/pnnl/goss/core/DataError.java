@@ -44,7 +44,6 @@
 */
 package pnnl.goss.core;
 
-
 public class DataError implements Error {
 
     /**
@@ -52,14 +51,12 @@ public class DataError implements Error {
      */
     private static final long serialVersionUID = 8779199763024982724L;
 
-
     private String message;
 
-    
-    public DataError(){
+    public DataError() {
     }
 
-    public DataError(String message){
+    public DataError(String message) {
         this.setMessage(message);
     }
 
@@ -73,7 +70,7 @@ public class DataError implements Error {
 
     @Override
     public String toString() {
-        return (message != null)? message: super.toString();
+        return (message != null) ? message : super.toString();
     }
 
 }

@@ -1,0 +1,35 @@
+name: "GOSS CodeQL Configuration"
+
+queries:
+  - name: security-and-quality
+    uses: security-and-quality
+  - name: security-extended
+    uses: security-extended
+
+# Paths to analyze
+paths:
+  - pnnl.goss.core/src
+  - pnnl.goss.core.runner/src
+  - pnnl.goss.core.testutil/src
+  - pnnl.goss.core.itests/src
+
+# Paths to ignore
+paths-ignore:
+  - "**/generated/**"
+  - "**/target/**"
+  - "**/build/**"
+  - "**/*.log"
+  - "**/cache/**"
+  - "**/releaserepo/**"
+  - "**/test/**/*.java" # Focus on main source code
+
+# Disable queries that may produce too many false positives
+disable-default-queries: false
+
+# Additional packs for enhanced security analysis
+packs:
+  - codeql/java-queries:AlertSuppression.ql
+  - codeql/java-queries:Security/CWE
+  - codeql/java-queries:Security/CWE/CWE-078.ql  # OS Command Injection
+  - codeql/java-queries:Security/CWE/CWE-089.ql  # SQL Injection
+  - codeql/java-queries:Security/CWE/CWE-798.ql  # Hard-coded credentials

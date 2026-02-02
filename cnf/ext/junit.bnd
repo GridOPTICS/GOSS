@@ -1,3 +1,32 @@
+# JUnit 4 (legacy)
 junit:\
 	junit;version=latest,\
 	hamcrest-core;version=latest
+
+# JUnit 5 (Jupiter)
+junit5-api: ${repo;org.junit.jupiter:junit-jupiter-api;[5.11.0,6);HIGHEST}
+junit5-engine: ${repo;org.junit.jupiter:junit-jupiter-engine;[5.11.0,6);HIGHEST}
+junit5-params: ${repo;org.junit.jupiter:junit-jupiter-params;[5.11.0,6);HIGHEST}
+junit-platform-commons: ${repo;org.junit.platform:junit-platform-commons;[1.11.0,2);HIGHEST}
+junit-platform-engine: ${repo;org.junit.platform:junit-platform-engine;[1.11.0,2);HIGHEST}
+junit-platform-launcher: ${repo;org.junit.platform:junit-platform-launcher;[1.11.0,2);HIGHEST}
+opentest4j: ${repo;org.opentest4j:opentest4j;[1.3.0,2);HIGHEST}
+apiguardian-api: ${repo;org.apiguardian:apiguardian-api;[1.1.0,2);HIGHEST}
+
+junit5-buildpath: \
+	${junit5-api};version=file,\
+	${junit5-engine};version=file,\
+	${junit-platform-commons};version=file,\
+	${junit-platform-engine};version=file,\
+	${junit-platform-launcher};version=file,\
+	${opentest4j};version=file,\
+	${apiguardian-api};version=file
+
+junit5-runpath: \
+	${junit5-api};version=file,\
+	${junit5-engine};version=file,\
+	${junit5-params};version=file,\
+	${junit-platform-commons};version=file,\
+	${junit-platform-engine};version=file,\
+	${junit-platform-launcher};version=file,\
+	${opentest4j};version=file

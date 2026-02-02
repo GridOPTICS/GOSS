@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+    <!-- 
+        OWASP Dependency Check Suppressions for GOSS Project
+        Add suppressions for known false positives here
+    -->
+
+    <!-- Suppress false positives for test dependencies -->
+    <suppress>
+        <notes><![CDATA[
+            JUnit dependencies are only used for testing and not deployed in production
+        ]]></notes>
+        <gav regex="true">^org\.junit.*:.*:.*$</gav>
+        <cve>CVE-2020-15250</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+            Mockito is only used for testing
+        ]]></notes>
+        <gav regex="true">^org\.mockito:.*:.*$</gav>
+    </suppress>
+
+    <!-- Suppress known issues with build tools that don't affect runtime -->
+    <suppress>
+        <notes><![CDATA[
+            Gradle wrapper vulnerabilities are typically not exploitable in our context
+        ]]></notes>
+        <filePath regex="true">.*gradle-wrapper\.jar</filePath>
+    </suppress>
+
+    <!-- Example: Suppress specific CVE if it's not applicable -->
+    <!-- 
+    <suppress>
+        <notes><![CDATA[
+            CVE-XXXX-XXXX does not apply to our usage pattern because...
+        ]]></notes>
+        <gav>group:artifact:version</gav>
+        <cve>CVE-XXXX-XXXX</cve>
+    </suppress>
+    -->
+
+    <!-- Suppress low-severity issues in development dependencies -->
+    <suppress base="true">
+        <notes><![CDATA[
+            Low severity issues in development-only dependencies
+        ]]></notes>
+        <gav regex="true">^biz\.aQute\.bnd:.*:.*$</gav>
+        <cvssBelow>4.0</cvssBelow>
+    </suppress>
+
+</suppressions>

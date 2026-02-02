@@ -7,9 +7,9 @@ import pnnl.goss.core.security.AuthorizationHandler;
 
 public abstract class AbstractAuthorizeAll implements AuthorizationHandler {
 
-	@Override
-	public boolean isAuthorized(Request request, Set<String> permissions) {
-		return true;
-	}
+    @Override
+    public boolean isAuthorized(Request request, Set<String> permissions) {
+        return true;
+    }
 
 }

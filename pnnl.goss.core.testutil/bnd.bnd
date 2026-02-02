@@ -1,7 +1,6 @@
-Bundle-Version: 1.0.0.${tstamp}
+Bundle-Version: 12.1.0
 -buildpath: \
 	${configadmin-buildpath},\
-	org.amdatu.testing.configurator;version=4.0,\
 	pnnl.goss.core.core-api,\
 	pnnl.goss.core.goss-client,\
 	pnnl.goss.core.goss-core-commands,\

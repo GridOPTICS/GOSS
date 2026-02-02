@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -50,20 +50,20 @@ import java.util.List;
 
 public class EventsList implements Serializable {
 
-	private static final long serialVersionUID = -2783212735188372776L;
+    private static final long serialVersionUID = -2783212735188372776L;
 
-	List<Event> eventsList = new ArrayList<Event>();
+    List<Event> eventsList = new ArrayList<Event>();
 
-	public List<Event> getEventsList() {
-		return eventsList;
-	}
+    public List<Event> getEventsList() {
+        return eventsList;
+    }
 
-	public void setEventsList(List<Event> eventsList) {
-		this.eventsList = eventsList;
-	}
+    public void setEventsList(List<Event> eventsList) {
+        this.eventsList = eventsList;
+    }
 
-	public void addEvent(Event event) {
-		this.eventsList.add(event);
-	}
+    public void addEvent(Event event) {
+        this.eventsList.add(event);
+    }
 
 }

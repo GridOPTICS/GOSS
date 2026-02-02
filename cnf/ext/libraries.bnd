@@ -1,29 +1,24 @@
 # OSGi bundles
+# Updated to use latest versions as of November 2025
 #
 # On a combined buildpath the R6 remoteserviceadmin must be before the R5 enterprise so it overrides it on
 # the classpath.
 #
-framework: ${repo;org.apache.felix.framework;[4.3.1,5);HIGHEST}
+framework: ${repo;org.apache.felix:org.apache.felix.framework;[7.0.5,8);HIGHEST}
 framework-buildpath: ${framework};version=file
 framework-runpath: ${framework};version=file
 
-osgi-core: ${repo;osgi.core;[5,6);HIGHEST}
+osgi-core: ${repo;org.osgi:osgi.core;[8.0.0,9);HIGHEST}
 osgi-core-buildpath: ${osgi-core};version=file
 osgi-core-runpath: ${osgi-core};version=file
 
-osgi-cmpn: ${repo;osgi.cmpn;[5,6);HIGHEST}
+osgi-cmpn: ${repo;org.osgi:osgi.cmpn;[7.0.0,8);HIGHEST}
 osgi-cmpn-buildpath: ${osgi-cmpn};version=file
 osgi-cmpn-runpath: ${osgi-cmpn};version=file
 
-osgi-enterprise: ${repo;osgi.enterprise;[5,6);HIGHEST}
+osgi-enterprise: ${repo;org.osgi:osgi.enterprise;[7.0.0,8);HIGHEST}
 osgi-enterprise-buildpath: ${osgi-enterprise};version=file
 osgi-enterprise-runpath: ${osgi-enterprise};version=file
-
-# Removed these until I get them better.
-#osgi-rsa: ${repo;org.osgi.service.remoteserviceadmin;[1.1.0,1.2);HIGHEST}
-#osgi-rsa-buildpath: ${osgi-rsa};version=file
-#osgi-rsa-runpath: ${osgi-rsa};version=file
-#${osgi-rsa-buildpath},\
 
 osgi-buildpath: \
   ${osgi-core-buildpath},\
@@ -34,59 +29,55 @@ osgi-runpath: \
   ${osgi-enterprise-buildpath},\
   ${osgi-cmpn-buildpath}
 
-# Activemq
-# In order to use activemq one must include ${javax-runpath} as well.
-activemq: ${repo;org.apache.activemq.activemq-osgi;[5.11.1,5.11.2);HIGHEST}
-activemq-shiro: ${repo;org.apache.activemq.shiro;[5.11.1,5.11.2);HIGHEST}
-shiro: ${repo;org.apache.shiro.core;[1.2.3,1.2.4);HIGHEST}
-aries: ${repo;org.apache.aries.blueprint;[1.1.0, 1.1.1);HIGHEST}
-aries-blueprint-api: ${repo;org.apache.aries.blueprint.api;[1.0.0,1.0.1);HIGHEST}
-aries-proxy-api: ${repo;org.apache.aries.proxy.api;[1.0.0,1.0.1);HIGHEST}
-aries-util: ${repo;org.apache.aries.util;[1.1.0,1.1.1);HIGHEST}
-asm: ${repo;org.objectweb.asm.all;[4.1.0,4.1.1);HIGHEST}
-activemq-buildpath: ${activemq};version=file
-activemq-runpath: ${activemq-buildpath},\
-  ${shiro};version=file,\
-  ${activemq-shiro};version=file,\
-  ${aries};version=file,\
-  ${aries-blueprint-api};version=file,\
-  ${aries-proxy-api};version=file,\
-  ${aries-util};version=file,\
-  ${asm};version=file
-#	com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
-#	javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
-#	org.apache.activemq.activemq-osgi;version='[5.11.1,5.11.2)',\
-#	org.apache.activemq.shiro;version='[5.11.1,5.11.2)',\
-#	org.apache.aries.blueprint;version=1.1.0,\
-#	org.apache.aries.blueprint.api;version=1.0.0,\
-#	org.apache.aries.proxy.api;version='[1.0.0,1.0.1)',\
-#	org.apache.aries.util;version='[1.1.0,1.1.1)',\
-#	org.apache.felix.configadmin;version='[1.8.0,1.8.1)',\
-#	org.apache.felix.gogo.command;version='[0.14.0,0.14.1)',\
-#	org.apache.felix.gogo.runtime;version='[0.16.2,0.16.3)',\
-#	org.apache.felix.gogo.shell;version='[0.10.0,0.10.1)',\
-#	org.apache.geronimo.specs.geronimo-jms_1.1_spec;version='[1.1.1,1.1.2)',\
-#	org.apache.shiro.core;version='[1.2.3,1.2.4)',\
-#	org.glassfish.javax.ejb;version='[3.1.1,3.1.2)',\
-#	org.objectweb.asm.all;version='[4.1.0,4.1.1)',\
-#	osgi.enterprise;version='[4.2.0,4.2.1)',\
-#	slf4j.api;version=1.7.7,\
-#	slf4j.simple;version=1.7.7,\
-#	org.amdatu.jta;version=2.0.0,\
-#	org.amdatu.jta.api;version=1.0.0
+# ActiveMQ 6.x (uses Jakarta JMS)
+# In order to use activemq one must include ${jakarta-runpath} as well.
+activemq: ${repo;org.apache.activemq:activemq-osgi;[6.0.0,7);HIGHEST}
+activemq-shiro: ${repo;org.apache.activemq:activemq-shiro;[6.0.0,7);HIGHEST}
 
-# Config Admin
-#
-configadmin: ${repo;org.apache.felix.configadmin;[1.8.0,1.8.1);HIGHEST}
+# Shiro 2.0.0 - exact version required for activemq-shiro compatibility (<=2.0.0)
+shiro: ${repo;org.apache.shiro:shiro-core;[2.0.0,2.0.1);HIGHEST}
+shiro-lang: ${repo;org.apache.shiro:shiro-lang;[2.0.0,2.0.1);HIGHEST}
+shiro-cache: ${repo;org.apache.shiro:shiro-cache;[2.0.0,2.0.1);HIGHEST}
+shiro-event: ${repo;org.apache.shiro:shiro-event;[2.0.0,2.0.1);HIGHEST}
+shiro-crypto-core: ${repo;org.apache.shiro:shiro-crypto-core;[2.0.0,2.0.1);HIGHEST}
+shiro-crypto-hash: ${repo;org.apache.shiro:shiro-crypto-hash;[2.0.0,2.0.1);HIGHEST}
+shiro-config-core: ${repo;org.apache.shiro:shiro-config-core;[2.0.0,2.0.1);HIGHEST}
+shiro-config-ogdl: ${repo;org.apache.shiro:shiro-config-ogdl;[2.0.0,2.0.1);HIGHEST}
+
+activemq-buildpath: ${activemq};version=file
+shiro-crypto-cipher: ${repo;org.apache.shiro:shiro-crypto-cipher;[2.0.0,2.0.1);HIGHEST}
+
+activemq-runpath: ${activemq-buildpath},\
+  ${activemq-shiro};version=file,\
+  ${shiro};version=file,\
+  ${shiro-lang};version=file,\
+  ${shiro-cache};version=file,\
+  ${shiro-event};version=file,\
+  ${shiro-crypto-core};version=file,\
+  ${shiro-crypto-hash};version=file,\
+  ${shiro-crypto-cipher};version=file,\
+  ${shiro-config-core};version=file,\
+  ${shiro-config-ogdl};version=file
+
+# XStream
+xstream: ${repo;com.thoughtworks.xstream:xstream;[1.4.0,2);HIGHEST}
+xstream-runpath: ${xstream};version=file
+
+# Config Admin - Latest
+configadmin: ${repo;org.apache.felix:org.apache.felix.configadmin;[1.9.0,2);HIGHEST}
 configadmin-buildpath: ${configadmin};version=file
 configadmin-runpath: ${configadmin};version=file
 
+# FileInstall - Watches conf directory for .cfg files and loads them into ConfigAdmin
+# This is required for GOSS security realms to activate (they use configurationPolicy=REQUIRE)
+fileinstall: ${repo;org.apache.felix:org.apache.felix.fileinstall;[3.7.0,4);HIGHEST}
+fileinstall-buildpath: ${fileinstall};version=file
+fileinstall-runpath: ${fileinstall};version=file
 
-# Gogo Shell
-#
-gogo-command: ${repo;org.apache.felix.gogo.command;[0.12.0,0.13.0);HIGHEST}
-gogo-runtime: ${repo;org.apache.felix.gogo.runtime;[0.10.0,0.11.0);HIGHEST}
-gogo-shell: ${repo;org.apache.felix.gogo.shell;[0.10.0,0.11.0);HIGHEST}
+# Gogo Shell - Latest
+gogo-command: ${repo;org.apache.felix:org.apache.felix.gogo.command;[1.1.0,2);HIGHEST}
+gogo-runtime: ${repo;org.apache.felix:org.apache.felix.gogo.runtime;[1.1.0,2);HIGHEST}
+gogo-shell: ${repo;org.apache.felix:org.apache.felix.gogo.shell;[1.1.0,2);HIGHEST}
 gogo-buildpath: ${gogo-command};version=file,\
   ${gogo-runtime};version=file
 gogo-runpath: ${gogo-command};version=file,\
@@ -94,41 +85,30 @@ gogo-runpath: ${gogo-command};version=file,\
   ${gogo-shell};version=file
 
 # Event Admin
-#
-eventadmin: ${repo;org.apache.felix.eventadmin;[1,2);HIGHEST}
+eventadmin: ${repo;org.apache.felix:org.apache.felix.eventadmin;[1.6.0,2);HIGHEST}
 eventadmin-buildpath: ${eventadmin};version=file
 eventadmin-runpath: ${eventadmin};version=file
 
-# Dependency Manager
-#
-dm: ${repo;org.apache.felix.dependencymanager;[4.3,5);HIGHEST}
-dm-shell: ${repo;org.apache.felix.dependencymanager.shell;[4.0.4,4.1);HIGHEST}
-dm-runtime: ${repo;org.apache.felix.dependencymanager.runtime;[4.0.1,4.1);HIGHEST}
+# Dependency Manager - Latest
+dm: ${repo;org.apache.felix:org.apache.felix.dependencymanager;[4.6.0,5);HIGHEST}
+dm-shell: ${repo;org.apache.felix:org.apache.felix.dependencymanager.shell;[4.0.4,5);HIGHEST}
+dm-runtime: ${repo;org.apache.felix:org.apache.felix.dependencymanager.runtime;[4.0.1,5);HIGHEST}
 dm-buildpath: ${dm};version=file
 dm-runpath: ${dm};version=file,\
   ${dm-runtime};version=file,\
   ${dm-shell};version=file
 
-
-
 # Http Service
-#
-# Felix servlet-api provides us with a Servlet 3.0 bundles that also exports itself as Servlet 2.6. This allows
-# Bundles requiring [2.3,3) to operate normally because 3.0 is beckward compatible.
-#
-servlet: ${repo;org.apache.felix.http.servlet-api;[1.0.0, 1.1);HIGHEST}
+servlet: ${repo;org.apache.felix:org.apache.felix.http.servlet-api;[3.0.0,4);HIGHEST}
 servlet-buildpath: ${servlet};version=file
 servlet-runpath: ${servlet};version=file
 
-
-
-# Jackson json/xml parser
-# Allows easy conversion from object to json.
-jackson: ${repo;com.fasterxml.jackson.core.jackson-core;[2.6.3,2.7);HIGHEST}
-jackson-annotations: ${repo;com.fasterxml.jackson.core.jackson-annotations;[2.6.3,2.7);HIGHEST}
-jackson-databind: ${repo;com.fasterxml.jackson.core.jackson-databind;[2.6.3,2.7);HIGHEST}
-jackson-base: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;[2.6.3,2.7);HIGHEST}
-jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;[2.6.3,2.7);HIGHEST}
+# Jackson json/xml parser - Latest
+jackson: ${repo;com.fasterxml.jackson.core:jackson-core;[2.18.0,3);HIGHEST}
+jackson-annotations: ${repo;com.fasterxml.jackson.core:jackson-annotations;[2.18.0,3);HIGHEST}
+jackson-databind: ${repo;com.fasterxml.jackson.core:jackson-databind;[2.18.0,3);HIGHEST}
+jackson-base: ${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;[2.18.0,3);HIGHEST}
+jackson-json-provider: ${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;[2.18.0,3);HIGHEST}
 
 jackson-buildpath: \
   ${jackson};version=file, \
@@ -137,43 +117,174 @@ jackson-buildpath: \
   ${jackson-base};version=file, \
   ${jackson-json-provider};version=file
 
+# Jakarta JMS (for ActiveMQ 6.x)
+jakarta-jms: ${repo;jakarta.jms:jakarta.jms-api;[3.0.0,4);HIGHEST}
+jakarta-annotation: ${repo;javax.annotation:javax.annotation-api;[1.3.0,2);HIGHEST}
+jakarta-resource: ${repo;jakarta.resource:jakarta.resource-api;[2.1.0,3);HIGHEST}
+jakarta-transaction: ${repo;jakarta.transaction:jakarta.transaction-api;[2.0.0,3);HIGHEST}
+jakarta-cdi: ${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;[4.0.0,5);HIGHEST}
+jakarta-inject: ${repo;jakarta.inject:jakarta.inject-api;[2.0.0,3);HIGHEST}
+jakarta-interceptor: ${repo;jakarta.interceptor:jakarta.interceptor-api;[2.1.0,3);HIGHEST}
+jakarta-lang-model: ${repo;jakarta.enterprise:jakarta.enterprise.lang-model;[4.0.0,5);HIGHEST}
+jakarta-el: ${repo;jakarta.el:jakarta.el-api;[5.0.0,6);HIGHEST}
+jakarta-runpath: ${jakarta-jms};version=file,\
+  ${jakarta-annotation};version=file,\
+  ${jakarta-resource};version=file,\
+  ${jakarta-transaction};version=file,\
+  ${jakarta-cdi};version=file,\
+  ${jakarta-inject};version=file,\
+  ${jakarta-interceptor};version=file,\
+  ${jakarta-lang-model};version=file,\
+  ${jakarta-el};version=file
 
+# Legacy Javax JMS (for backwards compatibility)
+javax-jms: ${repo;javax.jms:javax.jms-api;[2.0.0,3);HIGHEST}
+javax-annotation: ${repo;javax.annotation:javax.annotation-api;[1.3.0,2);HIGHEST}
+javax-runpath: ${javax-jms};version=file,\
+  ${javax-annotation};version=file
 
-
-# All javax elements should go here.
-#com.springsource.javax.jms;version='[1.1.0,1.1.1)',\
-#javax.management.j2ee-api;version='[1.1.1,1.1.2)',\
-
-javax-annotation: ${repo;javax.annotation;[1.1.0,1.1.1);HIGHEST}
-javax-ejb: ${repo;org.glassfish.javax.ejb;[3.1.1,3.1.2);HIGHEST}
-javax-jms: ${repo;com.springsource.javax.jms;[1.1.0,1.1.1);HIGHEST}
-javax-management: ${repo;javax.management.j2ee-api;[1.1.1,1.1.2);HIGHEST}
-javax-xml: ${repo;javax.xml;[1.3.4,1.3.5);HIGHEST}
-javax-xml-stream: ${repo;javax.xml.stream;[1.0.1,1.0.2);HIGHEST}
-javax-runpath: ${javax-annotation};version=file,\
-  ${javax-ejb};version=file,\
-  ${javax-jms};version=file,\
-  ${javax-management};version=file,\
-  ${javax-xml};version=file,\
-  ${javax-xml-stream};version=file
-
-# Commons lang3
-#
-lang3=${repo;org.apache.commons.lang3;[3.1.0,3.2.0);HIGHEST}
+# Commons lang3 - Latest
+lang3: ${repo;org.apache.commons:commons-lang3;[3.17.0,4);HIGHEST}
 lang3-buildpath: ${lang3};version=file
 lang3-runpath: ${lang3};version=file
 
-# Log Service
-#
-logservice: ${repo;org.apache.felix.log;[1.0.1,1.1);HIGHEST}
+# Log Service - Latest
+logservice: ${repo;org.apache.felix:org.apache.felix.log;[1.3.0,2);HIGHEST}
 logservice-buildpath: ${logservice};version=file
 logservice-runpath: ${logservice};version=file
 
-# SLF4j
-#
-slf4j-api: ${repo;slf4j.api;[1.7.7,1.8);HIGHEST}
-slf4j-simple: ${repo;slf4j.simple;[1.7.7,1.8);HIGHEST}
+# SLF4J - Latest
+slf4j-api: ${repo;org.slf4j:slf4j-api;[2.0.0,3);HIGHEST}
+slf4j-simple: ${repo;org.slf4j:slf4j-simple;[2.0.0,3);HIGHEST}
 slf4j-buildpath: ${slf4j-api};version=file,\
   ${slf4j-simple};version=file
 slf4j-runpath: ${slf4j-api};version=file,\
   ${slf4j-simple};version=file
+
+# Commons IO - Latest
+commons-io: ${repo;commons-io:commons-io;[2.18.0,3);HIGHEST}
+commons-io-buildpath: ${commons-io};version=file
+commons-io-runpath: ${commons-io};version=file
+
+# Gson - Latest
+gson: ${repo;com.google.code.gson:gson;[2.11.0,3);HIGHEST}
+gson-buildpath: ${gson};version=file
+gson-runpath: ${gson};version=file
+
+# HttpClient - Latest
+httpclient: ${repo;org.apache.httpcomponents:httpclient;[4.5.0,5);HIGHEST}
+httpcore: ${repo;org.apache.httpcomponents:httpcore;[4.4.0,5);HIGHEST}
+httpclient-buildpath: ${httpclient};version=file,\
+  ${httpcore};version=file
+httpclient-runpath: ${httpclient};version=file,\
+  ${httpcore};version=file
+
+# Commons DBCP
+commons-dbcp: ${repo;commons-dbcp:commons-dbcp;[1.4,2);HIGHEST}
+commons-dbcp-runpath: ${commons-dbcp};version=file
+
+# Commons Logging (HttpClient 4.x requires [1.1.0, 1.3.0))
+commons-logging: ${repo;commons-logging:commons-logging;[1.2.0,1.3.0);HIGHEST}
+commons-logging-runpath: ${commons-logging};version=file
+
+# Apache Aries SPI Fly (for ServiceLoader in OSGi)
+spifly: ${repo;org.apache.aries.spifly:org.apache.aries.spifly.dynamic.framework.extension;[1.3.0,2);HIGHEST}
+spifly-bundle: ${repo;org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle;[1.3.0,2);HIGHEST}
+asm: ${repo;org.ow2.asm:asm;[9.0.0,10);HIGHEST}
+asm-commons: ${repo;org.ow2.asm:asm-commons;[9.0.0,10);HIGHEST}
+asm-util: ${repo;org.ow2.asm:asm-util;[9.0.0,10);HIGHEST}
+asm-tree: ${repo;org.ow2.asm:asm-tree;[9.0.0,10);HIGHEST}
+asm-analysis: ${repo;org.ow2.asm:asm-analysis;[9.0.0,10);HIGHEST}
+spifly-runpath: ${spifly};version=file
+spifly-bundle-runpath: ${spifly-bundle};version=file,\
+  ${asm};version=file,\
+  ${asm-commons};version=file,\
+  ${asm-util};version=file,\
+  ${asm-tree};version=file,\
+  ${asm-analysis};version=file
+
+# OSGi util.promise and function (for service.component)
+osgi-promise: ${repo;org.osgi:org.osgi.util.promise;[1.3.0,2);HIGHEST}
+osgi-function: ${repo;org.osgi:org.osgi.util.function;[1.2.0,2);HIGHEST}
+osgi-util-runpath: ${osgi-promise};version=file,\
+  ${osgi-function};version=file
+
+# Jakarta XML Bind (for ActiveMQ 6.x)
+jakarta-xml-bind: ${repo;jakarta.xml.bind:jakarta.xml.bind-api;[4.0.0,5);HIGHEST}
+jaxb-runtime: ${repo;org.glassfish.jaxb:jaxb-runtime;[4.0.0,5);HIGHEST}
+# API only (runtime requires txw2 which isn't an OSGi bundle)
+jakarta-xml-bind-api-runpath: ${jakarta-xml-bind};version=file
+# Full runtime (includes jaxb-runtime which requires txw2)
+jakarta-xml-bind-runpath: ${jakarta-xml-bind};version=file,\
+  ${jaxb-runtime};version=file
+
+# OSGi Service Component (for Felix SCR)
+osgi-service-component: ${repo;org.osgi:org.osgi.service.component;[1.5.0,2);HIGHEST}
+osgi-service-component-runpath: ${osgi-service-component};version=file
+
+# javax.transaction (for Commons DBCP) - using geronimo to avoid CDI dependency
+geronimo-jta: ${repo;org.apache.geronimo.specs:geronimo-jta_1.1_spec;[1.1.0,2);HIGHEST}
+geronimo-jta-runpath: ${geronimo-jta};version=file
+
+# Jakarta Activation (for JAXB)
+jakarta-activation: ${repo;jakarta.activation:jakarta.activation-api;[2.1.0,3);HIGHEST}
+angus-activation: ${repo;org.eclipse.angus:angus-activation;[2.0.0,3);HIGHEST}
+jakarta-activation-runpath: ${jakarta-activation};version=file,\
+  ${angus-activation};version=file
+
+# istack-commons (for JAXB runtime)
+istack-commons: ${repo;com.sun.istack:istack-commons-runtime;[4.0.0,5);HIGHEST}
+istack-commons-runpath: ${istack-commons};version=file
+
+# Commons BeanUtils (for Shiro config)
+commons-beanutils: ${repo;commons-beanutils:commons-beanutils;[1.9.0,2);HIGHEST}
+commons-collections: ${repo;commons-collections:commons-collections;[3.2.0,4);HIGHEST}
+commons-beanutils-runpath: ${commons-beanutils};version=file,\
+  ${commons-collections};version=file
+
+# Commons Pool (for DBCP)
+commons-pool: ${repo;commons-pool:commons-pool;[1.6,2);HIGHEST}
+commons-pool-runpath: ${commons-pool};version=file
+
+# Jakarta Annotation 2.1.x (for ActiveMQ 6.x)
+jakarta-annotation-api: ${repo;jakarta.annotation:jakarta.annotation-api;[2.1.0,3);HIGHEST}
+jakarta-annotation-api-runpath: ${jakarta-annotation-api};version=file
+
+# TXW2 (for JAXB runtime)
+txw2: ${repo;org.glassfish.jaxb:txw2;[4.0.0,5);HIGHEST}
+txw2-runpath: ${txw2};version=file
+
+# HttpClient OSGi bundles (proper OSGi bundles with all packages)
+httpclient-osgi: ${repo;org.apache.httpcomponents:httpclient-osgi;[4.5.0,5);HIGHEST}
+httpcore-osgi: ${repo;org.apache.httpcomponents:httpcore-osgi;[4.4.0,5);HIGHEST}
+httpclient-osgi-runpath: ${httpclient-osgi};version=file,\
+  ${httpcore-osgi};version=file
+
+# Felix SCR (Declarative Services) - already defined in core buildpath
+# Adding runpath for .bndrun files
+scr: ${repo;org.apache.felix:org.apache.felix.scr;[2.2.0,3);HIGHEST}
+scr-buildpath: ${scr};version=file
+scr-runpath: ${scr};version=file,\
+  ${osgi-util-runpath}
+
+# Pax Logging (OSGi logging framework)
+pax-logging-api: ${repo;org.ops4j.pax.logging:pax-logging-api;[2.2.0,3);HIGHEST}
+pax-logging-service: ${repo;org.ops4j.pax.logging:pax-logging-service;[2.2.0,3);HIGHEST}
+pax-logging-runpath: ${pax-logging-api};version=file,\
+  ${pax-logging-service};version=file
+
+# Felix HTTP Service
+http-servlet-api: ${repo;org.apache.felix:org.apache.felix.http.servlet-api;[3.0.0,4);HIGHEST}
+http-jetty: ${repo;org.apache.felix:org.apache.felix.http.jetty;[5.0.0,6);HIGHEST}
+http-runpath: ${http-servlet-api};version=file,\
+  ${http-jetty};version=file
+
+# H2 Database
+h2: ${repo;com.h2database:h2;[2.0.0,3);HIGHEST}
+h2-buildpath: ${h2};version=file
+h2-runpath: ${h2};version=file
+
+# Commons Pool 2 (different from commons-pool version 1.x)
+commons-pool2: ${repo;org.apache.commons:commons-pool2;[2.11.0,3);HIGHEST}
+commons-pool2-buildpath: ${commons-pool2};version=file
+commons-pool2-runpath: ${commons-pool2};version=file

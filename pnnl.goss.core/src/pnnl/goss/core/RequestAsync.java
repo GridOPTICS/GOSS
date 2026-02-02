@@ -11,7 +11,7 @@
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
     ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     
+
     DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
     ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
@@ -44,18 +44,18 @@
 */
 package pnnl.goss.core;
 
-public class RequestAsync extends Request{
+public class RequestAsync extends Request {
 
-	private static final long serialVersionUID = -7613047700580927505L;
-	
-	protected int frequency = 0;
+    private static final long serialVersionUID = -7613047700580927505L;
 
-	public int getFrequency() {
-		return frequency;
-	}
+    protected int frequency = 0;
 
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
 
 }

@@ -1,0 +1,180 @@
+// Apply BndRunner plugin for generic .bndrun task support
+apply plugin: com.pnnl.goss.gradle.BndRunnerPlugin
+
+// Configure BndRunner plugin (optional - uses sensible defaults)
+bndRunner {
+    bundleDirs = [
+        file('generated'),
+        file('../pnnl.goss.core/generated')
+    ]
+    configDir = file('conf')
+}
+
+// BND handles build dependencies
+dependencies {
+    implementation project(':pnnl.goss.core')
+
+    // For simple runner
+    implementation 'org.apache.activemq:activemq-broker:5.15.16'
+    implementation 'org.apache.shiro:shiro-core:1.13.0'
+}
+
+// Simple executable JAR - no OSGi complexity
+task createSimpleRunner(type: Jar) {
+    archiveBaseName = 'goss-simple-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    manifest {
+        attributes(
+            'Main-Class': 'pnnl.goss.core.runner.GossSimpleRunner'
+        )
+    }
+    
+    // Include everything - make it work
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    from sourceSets.main.output
+    from project(':pnnl.goss.core').sourceSets.main.output
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+task createSSLRunner(type: Jar) {
+    archiveBaseName = 'goss-ssl-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+
+    manifest {
+        attributes(
+            'Main-Class': 'pnnl.goss.core.runner.GossSSLRunner'
+        )
+    }
+
+    // Include everything for SSL runner
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    from sourceSets.main.output
+    from project(':pnnl.goss.core').sourceSets.main.output
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// CLI tool for subscribing and publishing to queues/topics
+task createCli(type: Jar) {
+    archiveBaseName = 'goss-cli'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+
+    manifest {
+        attributes(
+            'Main-Class': 'pnnl.goss.core.runner.GossCli'
+        )
+    }
+
+    // Include everything needed for the CLI
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    from sourceSets.main.output
+    from project(':pnnl.goss.core').sourceSets.main.output
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Note: configurations and dependencies for buildRunner are now provided by BndRunnerPlugin
+
+task createGossRunner(type: Jar) {
+    archiveBaseName = 'goss-core-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    // Main class that starts Felix
+    manifest {
+        attributes(
+            'Main-Class': 'org.apache.felix.main.Main',
+            'Bundle-SymbolicName': 'goss.core.runner',
+            'Bundle-Version': '1.0.0'
+        )
+    }
+    
+    // Include ONLY Felix framework classes - no OSGi bundles embedded
+    from {
+        configurations.felixRuntime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    // Include our GOSS bundles as separate JAR files
+    into('bundle') {
+        from fileTree(dir: '../pnnl.goss.core/generated', include: '*.jar')
+        from fileTree(dir: 'generated', include: '*.jar')
+    }
+    
+    // Include runtime dependencies as OSGi bundles
+    into('bundle') {
+        from configurations.gossRuntime
+    }
+    
+    // Include configuration
+    into('conf') {
+        from fileTree(dir: 'conf', include: '**/*')
+    }
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+task createGossSSLRunner(type: Jar) {
+    archiveBaseName = 'goss-core-ssl-runner'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+    
+    // Main class that starts Felix
+    manifest {
+        attributes(
+            'Main-Class': 'org.apache.felix.main.Main',
+            'Bundle-SymbolicName': 'goss.core.ssl.runner',
+            'Bundle-Version': '1.0.0'
+        )
+    }
+    
+    // Include ONLY Felix framework classes - no OSGi bundles embedded
+    from {
+        configurations.felixRuntime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    
+    // Include our GOSS bundles as separate JAR files
+    into('bundle') {
+        from fileTree(dir: '../pnnl.goss.core/generated', include: '*.jar')
+        from fileTree(dir: 'generated', include: '*.jar')
+    }
+    
+    // Include runtime dependencies as OSGi bundles
+    into('bundle') {
+        from configurations.gossRuntime
+    }
+    
+    // Include SSL configuration
+    into('conf') {
+        from fileTree(dir: 'conf', include: '**/*')
+        from fileTree(dir: 'keystores', include: '**/*')
+    }
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Make sure GOSS bundles are built first
+createGossRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createGossSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createSimpleRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createCli.dependsOn(':pnnl.goss.core:jar', 'jar')
+
+build.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner, createCli
+
+// Note: Generic buildRunner.<name> tasks are now provided by BndRunnerPlugin
+// Usage: ./gradlew buildRunner.goss-core  (builds from goss-core.bndrun)
+//        ./gradlew buildRunner.goss-core-ssl  (builds from goss-core-ssl.bndrun)

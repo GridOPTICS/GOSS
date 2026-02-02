@@ -1,6 +1,12 @@
-Private-Package:  \
+Export-Package:  \
 	pnnl.goss.core.server.impl
 DynamicImport-Package: *
+
+# Override version constraints for commons-io (2.x is backwards compatible with 1.x)
+Import-Package: \
+	org.apache.commons.io;version="[1.4,3)",\
+	org.apache.commons.io.*;version="[1.4,3)",\
+	*
 #Include-Resource: \
 #	OSGI-INF/blueprint/blueprint.xml=config/blueprint.xml
-Bundle-Version: 2.0.203.${tstamp}
+Bundle-Version: 12.1.0

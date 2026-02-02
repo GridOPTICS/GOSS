@@ -1,11 +1,11 @@
 package pnnl.goss.core;
 
-import javax.jms.MessageConsumer;
+import jakarta.jms.MessageConsumer;
 
 public interface ClientConsumer {
 
-	public void close();
+    public void close();
 
-	public MessageConsumer getMessageConsumer();	
-	
+    public MessageConsumer getMessageConsumer();
+
 }

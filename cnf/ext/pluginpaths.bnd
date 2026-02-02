@@ -1,3 +1,4 @@
+# Plugin paths for BND
+# Note: Dependency Manager annotation plugin removed - using OSGi Declarative Services (SCR) instead
 -pluginpath: \
-	${plugin-dir}/biz.aQute.repository/biz.aQute.repository.jar,\
-	${workspace}/cnf/buildrepo/org.apache.felix.dependencymanager.annotation/org.apache.felix.dependencymanager.annotation-4.0.1.jar
+	${plugin-dir}/biz.aQute.repository/biz.aQute.repository.jar
