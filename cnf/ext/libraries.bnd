@@ -68,6 +68,12 @@ configadmin: ${repo;org.apache.felix:org.apache.felix.configadmin;[1.9.0,2);HIGH
 configadmin-buildpath: ${configadmin};version=file
 configadmin-runpath: ${configadmin};version=file
 
+# FileInstall - Watches conf directory for .cfg files and loads them into ConfigAdmin
+# This is required for GOSS security realms to activate (they use configurationPolicy=REQUIRE)
+fileinstall: ${repo;org.apache.felix:org.apache.felix.fileinstall;[3.7.0,4);HIGHEST}
+fileinstall-buildpath: ${fileinstall};version=file
+fileinstall-runpath: ${fileinstall};version=file
+
 # Gogo Shell - Latest
 gogo-command: ${repo;org.apache.felix:org.apache.felix.gogo.command;[1.1.0,2);HIGHEST}
 gogo-runtime: ${repo;org.apache.felix:org.apache.felix.gogo.runtime;[1.1.0,2);HIGHEST}

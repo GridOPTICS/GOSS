@@ -1,4 +1,4 @@
-Bundle-Version: 11.0.0-SNAPSHOT
+Bundle-Version: 12.1.0
 -buildpath: \
 	org.apache.felix.gogo.command,\
 	org.apache.felix.gogo.runtime,\
@@ -12,6 +12,7 @@ Bundle-Version: 11.0.0-SNAPSHOT
 	jakarta.jms:jakarta.jms-api;version=3.1.0,\
 	org.apache.activemq:activemq-osgi;version=6.2.0,\
 	pnnl.goss.core.core-api;version=latest,\
+	pnnl.goss.core.goss-client;version=latest,\
 	pnnl.goss.core.goss-core-security;version=latest,\
 	pnnl.goss.core.goss-core-server-api;version=latest,\
 	pnnl.goss.core.goss-core-server;version=latest,\

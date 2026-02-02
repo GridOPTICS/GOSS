@@ -46,21 +46,44 @@ task createSSLRunner(type: Jar) {
     archiveBaseName = 'goss-ssl-runner'
     archiveVersion = ''
     destinationDirectory = file("$buildDir/executable")
-    
+
     manifest {
         attributes(
             'Main-Class': 'pnnl.goss.core.runner.GossSSLRunner'
         )
     }
-    
+
     // Include everything for SSL runner
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    
+
     from sourceSets.main.output
     from project(':pnnl.goss.core').sourceSets.main.output
-    
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// CLI tool for subscribing and publishing to queues/topics
+task createCli(type: Jar) {
+    archiveBaseName = 'goss-cli'
+    archiveVersion = ''
+    destinationDirectory = file("$buildDir/executable")
+
+    manifest {
+        attributes(
+            'Main-Class': 'pnnl.goss.core.runner.GossCli'
+        )
+    }
+
+    // Include everything needed for the CLI
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    from sourceSets.main.output
+    from project(':pnnl.goss.core').sourceSets.main.output
+
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -148,8 +171,9 @@ createGossRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 createGossSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 createSimpleRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 createSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
+createCli.dependsOn(':pnnl.goss.core:jar', 'jar')
 
-build.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner
+build.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner, createCli
 
 // Note: Generic buildRunner.<name> tasks are now provided by BndRunnerPlugin
 // Usage: ./gradlew buildRunner.goss-core  (builds from goss-core.bndrun)

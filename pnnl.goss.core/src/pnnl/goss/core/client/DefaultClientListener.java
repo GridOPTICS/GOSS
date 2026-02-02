@@ -1,5 +1,6 @@
 package pnnl.goss.core.client;
 
+import jakarta.jms.BytesMessage;
 import jakarta.jms.Message;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.TextMessage;
@@ -11,6 +12,7 @@ import pnnl.goss.core.ClientListener;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Response;
+import pnnl.goss.core.security.SecurityConstants;
 
 public class DefaultClientListener implements ClientListener {
     private static Logger log = LoggerFactory.getLogger(DefaultClientListener.class);
@@ -23,7 +25,8 @@ public class DefaultClientListener implements ClientListener {
     }
 
     public void onMessage(Message message) {
-
+        log.info("DefaultClientListener.onMessage called with message type: {}",
+                message != null ? message.getClass().getSimpleName() : "null");
         try {
             if (message instanceof ObjectMessage) {
                 log.debug("message of type: " + message.getClass() + " received");
@@ -36,6 +39,11 @@ public class DefaultClientListener implements ClientListener {
                             objectMessage.getObject());
                     if (response.getDestination() == null)
                         response.setDestination(message.getJMSDestination().toString());
+                    // Set reply destination and username from JMS headers
+                    if (message.getJMSReplyTo() != null)
+                        response.setReplyDestination(message.getJMSReplyTo());
+                    if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
+                        response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                     responseEvent.onMessage(response);
                 }
             } else if (message instanceof TextMessage) {
@@ -43,16 +51,37 @@ public class DefaultClientListener implements ClientListener {
                 DataResponse response = new DataResponse(textMessage.getText());
                 if (response.getDestination() == null)
                     response.setDestination(message.getJMSDestination().toString());
+                // Set reply destination and username from JMS headers
+                if (message.getJMSReplyTo() != null)
+                    response.setReplyDestination(message.getJMSReplyTo());
+                if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
+                    response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                 responseEvent.onMessage(response);
+            } else if (message instanceof BytesMessage) {
+                // BytesMessage is used by STOMP clients (Python, JavaScript, etc.)
+                BytesMessage bytesMessage = (BytesMessage) message;
+                // Read the bytes and convert to string
+                long bodyLength = bytesMessage.getBodyLength();
+                byte[] bytes = new byte[(int) bodyLength];
+                bytesMessage.readBytes(bytes);
+                String text = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+                log.debug("BytesMessage received, body length: {}, content: {}", bodyLength, text);
+
+                DataResponse response = new DataResponse(text);
+                if (response.getDestination() == null)
+                    response.setDestination(message.getJMSDestination().toString());
+                // Set reply destination and username from JMS headers
+                if (message.getJMSReplyTo() != null)
+                    response.setReplyDestination(message.getJMSReplyTo());
+                if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
+                    response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
+                responseEvent.onMessage(response);
+            } else {
+                log.warn("Unhandled message type: {}", message.getClass().getName());
             }
-            // TODO Look at implementing these?
-            // Other possible types are
+            // Other possible types that could be implemented:
             // MapMessage - A set of keyword/value pairs.
-            // BytesMessage - A block of binary data, represented in Java as a byte array.
-            // This format is often used to interface with an external messaging system that
-            // defines its own binary protocol for message formats.
-            // StreamMessage - A list of Java primitive values. This type can be used to
-            // represent certain data types used by existing messaging systems.
+            // StreamMessage - A list of Java primitive values.
 
         } catch (Exception e) {
             log.error("ERROR Receiving message", e);

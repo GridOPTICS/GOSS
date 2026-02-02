@@ -1,4 +1,4 @@
-Bundle-Version: 11.0.0-SNAPSHOT
+Bundle-Version: 12.1.0
 
 # Build dependencies - JUnit 5
 # Note: Using osgi-core-buildpath only (not full osgi-buildpath) to avoid javax.jms from osgi.enterprise
@@ -82,6 +82,7 @@ Import-Package: \
     ${jakarta-activation-runpath},\
     ${slf4j-runpath},\
     ${configadmin-runpath},\
+    ${fileinstall-runpath},\
     ${gson-runpath},\
     ${httpclient-osgi-runpath},\
     ${osgi-service-component-runpath},\

@@ -132,6 +132,9 @@ conf/local/
 conf/*.local.cfg
 local.properties
 
+# ActiveMQ data directory
+data/
+
 ## Code Coverage ##
 jacoco*.exec
 *.lcov

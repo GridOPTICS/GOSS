@@ -9,6 +9,7 @@
 	${activemq-runpath},\
 	${javax-runpath},\
 	${configadmin-runpath},\
+	${fileinstall-runpath},\
 	${gogo-runpath},\
 	${scr-runpath},\
 	${pax-logging-runpath},\

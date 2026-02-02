@@ -1,4 +1,4 @@
 Export-Package: \
 	com.northconcepts.exception,\
 	pnnl.goss.core
-Bundle-Version: 11.0.0-SNAPSHOT
+Bundle-Version: 12.1.0

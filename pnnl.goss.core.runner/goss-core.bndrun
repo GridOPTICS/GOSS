@@ -12,6 +12,8 @@
 -runbundles: \
 	${activemq-runpath},\
 	${jakarta-runpath},\
+	${configadmin-runpath},\
+	${fileinstall-runpath},\
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-client;version=latest,\
 	pnnl.goss.core.goss-core-commands;version=latest,\
@@ -32,7 +34,11 @@
 	broker-name=broker,\
 	activemq.start.broker=true,\
 	stomp.port=61613,\
-	ws.port=61614
+	ws.port=61614,\
+	felix.fileinstall.dir=conf,\
+	felix.fileinstall.poll=1000,\
+	felix.fileinstall.noInitialDelay=true,\
+	felix.fileinstall.log.level=3
 
 
 

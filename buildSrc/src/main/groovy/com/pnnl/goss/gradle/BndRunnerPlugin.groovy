@@ -57,6 +57,7 @@ class BndRunnerPlugin implements Plugin<Project> {
             // Core OSGi services - updated versions
             gossRuntime 'org.apache.felix:org.apache.felix.scr:2.2.12'
             gossRuntime 'org.apache.felix:org.apache.felix.configadmin:1.9.26'
+            gossRuntime 'org.apache.felix:org.apache.felix.fileinstall:3.7.4'
             gossRuntime 'org.apache.felix:org.apache.felix.gogo.runtime:1.1.6'
             gossRuntime 'org.apache.felix:org.apache.felix.gogo.shell:1.1.4'
             gossRuntime 'org.apache.felix:org.apache.felix.gogo.command:1.1.2'
