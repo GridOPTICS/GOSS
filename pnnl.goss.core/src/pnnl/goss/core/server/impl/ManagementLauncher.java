@@ -13,6 +13,7 @@ import pnnl.goss.core.Client.PROTOCOL;
 import pnnl.goss.core.ClientFactory;
 import pnnl.goss.core.DataResponse;
 import pnnl.goss.core.GossResponseEvent;
+import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.server.DataSourceRegistry;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;

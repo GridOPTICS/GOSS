@@ -70,6 +70,7 @@ import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.SslBrokerService;
 import org.apache.activemq.shiro.ShiroPlugin;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.osgi.service.component.annotations.Activate;
@@ -92,6 +93,9 @@ import jakarta.jms.MessageProducer;
 import jakarta.jms.Session;
 import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.security.GossRealm;
+import pnnl.goss.core.security.GossSecurityManager;
+import pnnl.goss.core.security.SecurityConfig;
+//import pnnl.goss.core.security.SecurityConfig;
 import pnnl.goss.core.server.RequestHandlerRegistry;
 import pnnl.goss.core.server.ServerControl;
 

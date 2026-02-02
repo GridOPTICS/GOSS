@@ -1,6 +1,7 @@
 package pnnl.goss.core.security.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 

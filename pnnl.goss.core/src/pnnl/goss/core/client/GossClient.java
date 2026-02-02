@@ -47,6 +47,9 @@ package pnnl.goss.core.client;
 //import static pnnl.goss.core.GossCoreContants.PROP_CORE_CLIENT_CONFIG;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,16 +64,23 @@ import jakarta.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQSslConnectionFactory;
+import org.apache.activemq.shiro.authc.AuthenticationTokenFactory;
+import org.apache.activemq.shiro.subject.SubjectConnectionReference;
 import org.apache.http.auth.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pnnl.goss.core.Client;
+import pnnl.goss.core.ClientConsumer;
 import pnnl.goss.core.ClientPublishser;
 import pnnl.goss.core.DataResponse;
+import pnnl.goss.core.GossCoreContants;
 import pnnl.goss.core.GossResponseEvent;
 import pnnl.goss.core.Request.RESPONSE_FORMAT;
+import pnnl.goss.core.security.GossSecurityManager;
+import pnnl.goss.core.security.JWTAuthenticationToken;
 import pnnl.goss.core.security.SecurityConstants;
+import pnnl.goss.core.security.impl.SecurityManagerImpl;
 import pnnl.goss.core.Response;
 import pnnl.goss.core.ResponseError;
 

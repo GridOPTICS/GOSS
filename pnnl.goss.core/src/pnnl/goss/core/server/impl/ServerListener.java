@@ -100,6 +100,7 @@ public class ServerListener implements MessageListener {
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 ServerPublisher serverPublisher = new ServerPublisher(session);
+            	String username = "";
                 try {
                     ObjectMessage objectMessage = (ObjectMessage) message;
 
@@ -151,6 +152,7 @@ public class ServerListener implements MessageListener {
 
                             if (data instanceof Event) {
                                 DataResponse dataResponse = new DataResponse();
+                                dataResponse.setUsername(username);
                                 dataResponse.setData(data);
                                 serverPublisher.sendEvent(dataResponse, data.getClass().getName()
                                         .substring(data.getClass().getName().lastIndexOf(".") + 1));
@@ -172,6 +174,7 @@ public class ServerListener implements MessageListener {
                         // AbstractRequestHandler handler = handlerService.getHandler(request);
 
                         DataResponse response = (DataResponse) handlerRegistry.handle(request);
+                        response.setUsername(username);
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null) {
@@ -199,6 +202,7 @@ public class ServerListener implements MessageListener {
 
                         // DataResponse response = (DataResponse) ServerRequestHandler.handle(request);
                         response.setResponseComplete(true);
+                        response.setUsername(username);
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null)
