@@ -93,6 +93,7 @@ Import-Package: \
     ${geronimo-jta-runpath},\
     ${xstream-runpath},\
     ${commons-io-runpath},\
+    ${nimbus-jose-jwt-runpath},\
     junit-platform-commons;version='[1.11.0,2)',\
     junit-platform-engine;version='[1.11.0,2)',\
     junit-platform-launcher;version='[1.11.0,2)',\

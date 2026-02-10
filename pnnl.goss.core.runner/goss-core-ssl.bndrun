@@ -10,6 +10,7 @@
 	${javax-runpath},\
 	${configadmin-runpath},\
 	${fileinstall-runpath},\
+	${nimbus-jose-jwt-runpath},\
 	${gogo-runpath},\
 	${scr-runpath},\
 	${pax-logging-runpath},\

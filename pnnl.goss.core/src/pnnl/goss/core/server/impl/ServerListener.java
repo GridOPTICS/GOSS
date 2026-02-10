@@ -100,7 +100,7 @@ public class ServerListener implements MessageListener {
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 ServerPublisher serverPublisher = new ServerPublisher(session);
-            	String username = "";
+                String username = "";
                 try {
                     ObjectMessage objectMessage = (ObjectMessage) message;
 

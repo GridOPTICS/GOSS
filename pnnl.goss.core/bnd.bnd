@@ -29,6 +29,8 @@
 	org.springframework:spring-core;version=6.2.0,\
 	javax.annotation:javax.annotation-api;version=1.3.2,\
 	com.thoughtworks.xstream:xstream;version=1.4.20,\
+	com.nimbusds:nimbus-jose-jwt;version=9.31,\
+	net.minidev:json-smart;version=2.4.11,\
 	junit:junit;version=4.13.2
 
 # -plugin org.apache.felix.dm.annotation.plugin.bnd.AnnotationPlugin;log=debug

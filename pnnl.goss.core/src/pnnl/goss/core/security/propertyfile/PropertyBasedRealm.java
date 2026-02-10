@@ -78,7 +78,13 @@ public class PropertyBasedRealm extends AuthorizingRealm implements GossRealm {
         // objects. See the Realm.supports() method if your application will use a
         // different type of token.
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-        return userMap.get(upToken.getUsername());
+        String username = upToken.getUsername();
+        if (username == null) {
+            log.warn("Authentication attempt with null username (client may be using "
+                    + "token-based auth against a server without token support)");
+            return null;
+        }
+        return userMap.get(username);
     }
 
     @Modified
