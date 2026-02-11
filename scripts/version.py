@@ -44,6 +44,9 @@ def find_bnd_files(root: Path) -> list[Path]:
     """Find all .bnd files that contain Bundle-Version."""
     bnd_files = []
     for bnd_file in root.rglob('*.bnd'):
+        # Skip directories that happen to match *.bnd
+        if not bnd_file.is_file():
+            continue
         # Skip cnf/ext directory (these are config files, not bundles)
         if 'cnf/ext' in str(bnd_file):
             continue
@@ -157,14 +160,17 @@ def get_current_version(root: Path) -> str | None:
             base_version = version.replace('-SNAPSHOT', '')
             versions.add(base_version)
 
-    if len(versions) == 0:
-        return None
-    if len(versions) > 1:
-        log_warn(f"Multiple versions found: {sorted(versions)}")
-        # Return the highest version
-        return sorted(versions, key=lambda v: [int(x) for x in v.split('.')])[-1]
+    # Filter to only semver-like versions (all parts are numeric)
+    semver_versions = {v for v in versions if all(p.isdigit() for p in v.split('.'))}
 
-    return versions.pop()
+    if len(semver_versions) == 0:
+        return None
+    if len(semver_versions) > 1:
+        log_warn(f"Multiple versions found: {sorted(semver_versions)}")
+        # Return the highest version
+        return sorted(semver_versions, key=lambda v: [int(x) for x in v.split('.')])[-1]
+
+    return semver_versions.pop()
 
 
 def bump_version(version: str, bump_type: str) -> str:
