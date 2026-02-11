@@ -70,6 +70,22 @@ public class GossSimpleRunner {
 	private static final String USER_PROPERTIES_FILE = "pnnl.goss.core.runner/conf/pnnl.goss.core.security.propertyfile.cfg";
 	private static final String TOKEN_TOPIC = GossCoreContants.PROP_TOKEN_QUEUE;
 
+	// Configurable ports (system property > env var > default)
+	private static final int DEFAULT_OPENWIRE_PORT = 61617;
+	private static final int DEFAULT_STOMP_PORT = 61618;
+
+	private int openwirePort;
+	private int stompPort;
+
+	/** Read an int config value from system property, env var, or default. */
+	private static int configInt(String sysProp, String envVar, int defaultVal) {
+		String val = System.getProperty(sysProp);
+		if (val != null && !val.isEmpty()) return Integer.parseInt(val);
+		val = System.getenv(envVar);
+		if (val != null && !val.isEmpty()) return Integer.parseInt(val);
+		return defaultVal;
+	}
+
 	public static void main(String[] args) {
 		System.out.println("Starting GOSS Simple Runner...");
 
@@ -97,6 +113,10 @@ public class GossSimpleRunner {
 	}
 
 	public void start() throws Exception {
+		// 0. Read configurable ports
+		openwirePort = configInt("goss.openwire.port", "GOSS_OPENWIRE_PORT", DEFAULT_OPENWIRE_PORT);
+		stompPort = configInt("goss.stomp.port", "GOSS_STOMP_PORT", DEFAULT_STOMP_PORT);
+
 		// 1. Load user properties
 		loadUserProperties();
 
@@ -111,8 +131,8 @@ public class GossSimpleRunner {
 		startTokenHandler();
 
 		System.out.println("GOSS Core services are running");
-		System.out.println("ActiveMQ Broker: tcp://0.0.0.0:61617");
-		System.out.println("STOMP: stomp://0.0.0.0:61618");
+		System.out.println("ActiveMQ Broker: tcp://0.0.0.0:" + openwirePort);
+		System.out.println("STOMP: stomp://0.0.0.0:" + stompPort);
 		System.out.println("Security: Shiro authentication enabled (" + userMap.size() + " users)");
 		System.out.println("Token support: JWT token authentication enabled");
 	}
@@ -232,12 +252,12 @@ public class GossSimpleRunner {
 
 		// Add connectors
 		TransportConnector openwireConnector = new TransportConnector();
-		openwireConnector.setUri(new URI("tcp://0.0.0.0:61617"));
+		openwireConnector.setUri(new URI("tcp://0.0.0.0:" + openwirePort));
 		openwireConnector.setName("openwire");
 		brokerService.addConnector(openwireConnector);
 
 		TransportConnector stompConnector = new TransportConnector();
-		stompConnector.setUri(new URI("stomp://0.0.0.0:61618"));
+		stompConnector.setUri(new URI("stomp://0.0.0.0:" + stompPort));
 		stompConnector.setName("stomp");
 		brokerService.addConnector(stompConnector);
 
@@ -246,7 +266,7 @@ public class GossSimpleRunner {
 
 	private void startTokenHandler() throws Exception {
 		// Connect to the local broker as the system user
-		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61617");
+		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:" + openwirePort);
 		factory.setUserName(SYSTEM_USER);
 		factory.setPassword(SYSTEM_PASSWORD);
 		tokenHandlerConnection = factory.createConnection();

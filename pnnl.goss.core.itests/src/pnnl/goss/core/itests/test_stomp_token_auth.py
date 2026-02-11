@@ -1,16 +1,25 @@
 """
-STOMP Token Authentication Integration Test
+GOSS STOMP Integration Tests
 
-Tests the full token authentication flow for an external STOMP client
-connecting to a GOSS server:
+Python-based integration tests that exercise the GOSS server over STOMP,
+covering the same ground as the Java OSGi integration tests
+(GossOSGiEndToEndTest) plus token authentication:
 
-  1. Connect via STOMP with username/password
-  2. Request a JWT token from the token topic
-  3. Verify the token is returned and non-empty
-  4. Disconnect and reconnect using the token as credentials
-  5. Verify the token-based connection can publish/subscribe
+  Core connectivity (mirrors GossOSGiEndToEndTest):
+    - Server is reachable via STOMP
+    - Publish/subscribe on a topic
+    - Multiple subscribers receive a broadcast
+    - Client reconnection with unique sessions
 
-Requires a running GOSS server with token authentication enabled.
+  Token authentication:
+    - Request a JWT token via the token topic
+    - Verify the token is non-empty (regression for parseToken bug)
+    - Reconnect using the token
+    - Pub/sub works on a token-authenticated connection
+    - Invalid credentials are rejected
+    - Empty token is rejected
+
+Requires a running GOSS server with STOMP transport enabled.
 Configure via environment variables or command-line arguments.
 
 Usage:
@@ -20,12 +29,12 @@ Usage:
     # Run via pixi
     pixi run test-stomp-token
 
-    # Against default localhost:61613 with system/manager
+    # Against default localhost:61618 with system/manager
     pixi run test-stomp-token-standalone
 
     # Against a specific host
     pixi run python src/pnnl/goss/core/itests/test_stomp_token_auth.py \\
-        --host 192.168.1.10 --port 61613
+        --host 192.168.1.10 --port 61618
 
     # With custom credentials
     pixi run python src/pnnl/goss/core/itests/test_stomp_token_auth.py \\
@@ -111,6 +120,28 @@ class PubSubListener(stomp.ConnectionListener):
         log.error("STOMP error in pub/sub: %s", body)
         self.error = body
         self._event.set()
+
+    def wait(self, timeout=5):
+        return self._event.wait(timeout)
+
+
+class MultiMessageListener(stomp.ConnectionListener):
+    """Collects multiple messages, signaling after a target count is reached."""
+
+    def __init__(self, target_count=1):
+        self.messages = []
+        self._target = target_count
+        self._event = threading.Event()
+
+    def on_message(self, frame):
+        body = frame.body if hasattr(frame, "body") else str(frame)
+        self.messages.append(body)
+        if len(self.messages) >= self._target:
+            self._event.set()
+
+    def on_error(self, frame):
+        body = frame.body if hasattr(frame, "body") else str(frame)
+        log.error("STOMP error: %s", body)
 
     def wait(self, timeout=5):
         return self._event.wait(timeout)
@@ -223,7 +254,157 @@ def verify_pubsub_with_token(conn, token):
 
 
 # ---------------------------------------------------------------------------
-# Test cases (usable with pytest or standalone)
+# Test cases: Core STOMP functionality (mirrors GossOSGiEndToEndTest)
+# ---------------------------------------------------------------------------
+class TestStompCore:
+    """
+    Core STOMP integration tests that mirror the Java GossOSGiEndToEndTest.
+
+    These verify the same server behaviors that the OSGi tests check, but
+    from an external STOMP client rather than from inside the OSGi container.
+    """
+
+    host = STOMP_HOST
+    port = STOMP_PORT
+    username = USERNAME
+    password = PASSWORD
+
+    def _connect(self):
+        """Helper: create and connect a STOMP client with credentials."""
+        conn = create_connection(self.host, self.port)
+        conn.connect(self.username, self.password, wait=True)
+        assert conn.is_connected(), "Failed to connect"
+        return conn
+
+    # -- mirrors GossOSGiEndToEndTest.testServerIsRunning / testGossClientConnection --
+    def test_server_reachable(self):
+        """Server accepts STOMP connections (mirrors testServerIsRunning)."""
+        conn = self._connect()
+        log.info("PASS: server reachable at %s:%d", self.host, self.port)
+        conn.disconnect()
+
+    # -- mirrors GossOSGiEndToEndTest.testPublishSubscribe --
+    def test_publish_subscribe(self):
+        """Publish a message and receive it on the same topic (mirrors testPublishSubscribe)."""
+        conn = self._connect()
+        test_topic = "/topic/test.stomp.pubsub"
+        test_message = f'{{"msg": "hello from STOMP", "ts": {time.time()}}}'
+
+        listener = PubSubListener()
+        conn.set_listener("pubsub", listener)
+        conn.subscribe(destination=test_topic, id="ps-1", ack="auto")
+        time.sleep(0.5)
+
+        conn.send(destination=test_topic, body=test_message)
+        assert listener.wait(5), "Should receive the published message"
+        assert listener.received_message is not None
+        assert "hello from STOMP" in listener.received_message, (
+            f"Content mismatch: {listener.received_message}"
+        )
+        log.info("PASS: publish/subscribe")
+        conn.disconnect()
+
+    # -- mirrors GossOSGiEndToEndTest.testMultipleClients --
+    def test_multiple_subscribers(self):
+        """Two subscribers both receive a broadcast (mirrors testMultipleClients)."""
+        publisher = self._connect()
+        sub1 = self._connect()
+        sub2 = self._connect()
+
+        test_topic = "/topic/test.stomp.multi"
+        test_message = "broadcast message"
+
+        listener1 = PubSubListener()
+        listener2 = PubSubListener()
+        sub1.set_listener("sub1", listener1)
+        sub2.set_listener("sub2", listener2)
+        sub1.subscribe(destination=test_topic, id="m-1", ack="auto")
+        sub2.subscribe(destination=test_topic, id="m-2", ack="auto")
+        time.sleep(0.5)
+
+        publisher.send(destination=test_topic, body=test_message)
+
+        assert listener1.wait(5), "Subscriber 1 should receive the message"
+        assert listener2.wait(5), "Subscriber 2 should receive the message"
+        assert test_message in listener1.received_message
+        assert test_message in listener2.received_message
+        log.info("PASS: multiple subscribers")
+
+        publisher.disconnect()
+        sub1.disconnect()
+        sub2.disconnect()
+
+    # -- mirrors GossOSGiEndToEndTest.testClientReconnection --
+    def test_client_reconnection(self):
+        """Disconnect and reconnect; new session still works (mirrors testClientReconnection)."""
+        # First connection
+        conn1 = self._connect()
+        id1 = conn1.get_listener("") or id(conn1)  # no session-id in stomp.py; use object id
+        conn1.disconnect()
+
+        # Second connection
+        conn2 = self._connect()
+        id2 = conn2.get_listener("") or id(conn2)
+        assert id1 != id2, "Each connection should be a distinct object"
+
+        # Verify second connection can pub/sub
+        test_topic = "/topic/test.stomp.reconnect"
+        listener = PubSubListener()
+        conn2.set_listener("recon", listener)
+        conn2.subscribe(destination=test_topic, id="r-1", ack="auto")
+        time.sleep(0.3)
+        conn2.send(destination=test_topic, body="after reconnect")
+        assert listener.wait(5), "Should receive message after reconnect"
+        assert "after reconnect" in listener.received_message
+        log.info("PASS: client reconnection")
+        conn2.disconnect()
+
+    def test_publish_json_data(self):
+        """Publish structured JSON and receive it intact."""
+        conn = self._connect()
+        test_topic = "/topic/test.stomp.json"
+        import json
+        payload = json.dumps({"name": "test", "value": 42, "nested": {"a": True}})
+
+        listener = PubSubListener()
+        conn.set_listener("json", listener)
+        conn.subscribe(destination=test_topic, id="j-1", ack="auto")
+        time.sleep(0.5)
+
+        conn.send(destination=test_topic, body=payload)
+        assert listener.wait(5), "Should receive JSON message"
+        received = json.loads(listener.received_message)
+        assert received["name"] == "test"
+        assert received["value"] == 42
+        assert received["nested"]["a"] is True
+        log.info("PASS: JSON data round-trip")
+        conn.disconnect()
+
+    def test_multiple_topics(self):
+        """Subscribe to two topics and receive messages on both."""
+        conn = self._connect()
+        topic_a = "/topic/test.stomp.topicA"
+        topic_b = "/topic/test.stomp.topicB"
+
+        listener = MultiMessageListener(target_count=2)
+        conn.set_listener("multi_topic", listener)
+        conn.subscribe(destination=topic_a, id="ta-1", ack="auto")
+        conn.subscribe(destination=topic_b, id="tb-1", ack="auto")
+        time.sleep(0.5)
+
+        conn.send(destination=topic_a, body="msg for A")
+        conn.send(destination=topic_b, body="msg for B")
+
+        assert listener.wait(5), "Should receive messages on both topics"
+        bodies = " ".join(listener.messages)
+        assert "msg for A" in bodies
+        assert "msg for B" in bodies
+        log.info("PASS: multiple topics")
+        conn.disconnect()
+
+
+# ---------------------------------------------------------------------------
+# Test cases: Token authentication
 # ---------------------------------------------------------------------------
 class TestStompTokenAuth:
     """Integration tests for STOMP token authentication against a live GOSS server."""
@@ -350,41 +531,45 @@ class TestStompTokenAuth:
 # ---------------------------------------------------------------------------
 def run_all_tests(host, port, username, password):
     """Run all tests sequentially, reporting pass/fail."""
-    tests = TestStompTokenAuth()
-    tests.host = host
-    tests.port = port
-    tests.username = username
-    tests.password = password
-
-    test_methods = [m for m in sorted(dir(tests)) if m.startswith("test_")]
+    test_classes = [TestStompCore, TestStompTokenAuth]
     passed = 0
     failed = 0
     skipped = 0
     errors = []
 
     print(f"\n{'='*60}")
-    print(f"GOSS STOMP Token Authentication Tests")
+    print(f"GOSS STOMP Integration Tests")
     print(f"Server: {host}:{port}  User: {username}")
-    print(f"{'='*60}\n")
-
-    for method_name in test_methods:
-        method = getattr(tests, method_name)
-        doc = method.__doc__ or method_name
-        print(f"  {method_name}: {doc.strip()}")
-        try:
-            method()
-            passed += 1
-            print(f"    -> PASSED\n")
-        except Exception as e:
-            if "SKIP" in str(e) or "skip" in type(e).__name__.lower():
-                skipped += 1
-                print(f"    -> SKIPPED: {e}\n")
-            else:
-                failed += 1
-                errors.append((method_name, e))
-                print(f"    -> FAILED: {e}\n")
-
     print(f"{'='*60}")
+
+    for cls in test_classes:
+        instance = cls()
+        instance.host = host
+        instance.port = port
+        instance.username = username
+        instance.password = password
+
+        test_methods = [m for m in sorted(dir(instance)) if m.startswith("test_")]
+        print(f"\n  [{cls.__name__}]")
+
+        for method_name in test_methods:
+            method = getattr(instance, method_name)
+            doc = method.__doc__ or method_name
+            print(f"    {method_name}: {doc.strip()}")
+            try:
+                method()
+                passed += 1
+                print(f"      -> PASSED")
+            except Exception as e:
+                if "SKIP" in str(e) or "skip" in type(e).__name__.lower():
+                    skipped += 1
+                    print(f"      -> SKIPPED: {e}")
+                else:
+                    failed += 1
+                    errors.append((f"{cls.__name__}.{method_name}", e))
+                    print(f"      -> FAILED: {e}")
+
+    print(f"\n{'='*60}")
     print(f"Results: {passed} passed, {failed} failed, {skipped} skipped "
           f"out of {passed + failed + skipped}")
     print(f"{'='*60}")

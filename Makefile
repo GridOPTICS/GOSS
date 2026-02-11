@@ -1,7 +1,7 @@
 # GOSS Makefile
 # Provides version management and release automation
 
-.PHONY: help version release snapshot build test itest clean push-snapshot-local push-release-local \
+.PHONY: help version release snapshot build test itest itest-java clean push-snapshot-local push-release-local \
         bump-patch bump-minor bump-major next-snapshot check-api format format-check \
         run run-ssl stop status log
 
@@ -40,7 +40,8 @@ help:
 	@echo "  6. make next-snapshot             # Bump to next snapshot"
 	@echo ""
 	@echo "Integration testing:"
-	@echo "  make itest            Build, start GOSS, run pixi integration tests, stop GOSS"
+	@echo "  make itest            Build, start GOSS, run Java + Python integration tests, stop GOSS"
+	@echo "  make itest-java       Build, start GOSS, run Java external server tests, stop GOSS"
 	@echo ""
 	@echo "Running:"
 	@echo "  make run              Build and run GOSS in the background (logs to log/goss.log)"
@@ -128,10 +129,9 @@ ITESTS_DIR = pnnl.goss.core.itests
 STOMP_PORT = 61618
 GOSS_READY_TIMEOUT = 30
 
-# Build GOSS, start it, run pixi integration tests, then stop GOSS
-itest: $(SIMPLE_JAR)
+# Helper: start GOSS and wait for STOMP port
+define start-goss
 	@mkdir -p $(LOG_DIR)
-	@# Stop any existing instance
 	@if [ -f $(PID_FILE) ] && kill -0 $$(cat $(PID_FILE)) 2>/dev/null; then \
 		echo "Stopping existing GOSS (PID $$(cat $(PID_FILE)))..."; \
 		kill $$(cat $(PID_FILE)); \
@@ -156,13 +156,33 @@ itest: $(SIMPLE_JAR)
 		exit 1; \
 	fi
 	@echo "GOSS is ready (PID $$(cat $(PID_FILE)))"
+endef
+
+# Build GOSS, start it, run Java external server tests, then stop GOSS
+itest-java: $(SIMPLE_JAR)
+	$(start-goss)
 	@echo ""
-	@echo "Running pixi integration tests..."
-	@cd $(ITESTS_DIR) && pixi run test-stomp-token; rc=$$?; \
+	@echo "Running Java external server tests..."
+	@./gradlew :pnnl.goss.core.itests:testExternal --no-daemon; rc=$$?; \
 	echo ""; \
 	echo "Stopping GOSS..."; \
-	kill $$(cat ../$(PID_FILE)) 2>/dev/null; rm -f ../$(PID_FILE); \
+	kill $$(cat $(PID_FILE)) 2>/dev/null; rm -f $(PID_FILE); \
 	exit $$rc
+
+# Build GOSS, start it, run Java + Python integration tests, then stop GOSS
+itest: $(SIMPLE_JAR)
+	$(start-goss)
+	@echo ""
+	@echo "Running Java external server tests..."
+	@./gradlew :pnnl.goss.core.itests:testExternal --no-daemon; java_rc=$$?; \
+	echo ""; \
+	echo "Running Python STOMP integration tests..."; \
+	cd $(ITESTS_DIR) && pixi run test-stomp-token; py_rc=$$?; cd ..; \
+	echo ""; \
+	echo "Stopping GOSS..."; \
+	kill $$(cat $(PID_FILE)) 2>/dev/null; rm -f $(PID_FILE); \
+	if [ $$java_rc -ne 0 ]; then exit $$java_rc; fi; \
+	exit $$py_rc
 
 # --- Runtime targets ---
 
