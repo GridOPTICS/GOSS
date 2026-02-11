@@ -1,5 +1,5 @@
 Private-Package:  \
 	pnnl.goss.core.exception
-Bundle-Version: 13.0.0-SNAPSHOT
+Bundle-Version: 13.0.0
 Export-Package:  \
 	com.northconcepts.exception

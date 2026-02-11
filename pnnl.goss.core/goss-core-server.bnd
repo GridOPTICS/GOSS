@@ -9,4 +9,4 @@ Import-Package: \
 	*
 #Include-Resource: \
 #	OSGI-INF/blueprint/blueprint.xml=config/blueprint.xml
-Bundle-Version: 13.0.0-SNAPSHOT
+Bundle-Version: 13.0.0
