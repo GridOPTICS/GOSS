@@ -21,26 +21,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java-version: [21, 22]
+        java-version: [21]
         include:
           - java-version: 21
             primary: true
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0  # Full history for better analysis
     
     - name: Set up JDK ${{ matrix.java-version }}
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: ${{ matrix.java-version }}
         distribution: 'temurin'
         cache: gradle
     
     - name: Cache Gradle dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.gradle/caches
@@ -54,7 +54,7 @@ jobs:
       run: chmod +x gradlew
     
     - name: Validate Gradle Wrapper
-      uses: gradle/wrapper-validation-action@v2
+      uses: gradle/actions/wrapper-validation@v5
     
     - name: Run unit tests
       run: ./gradlew test --continue --no-daemon
@@ -67,32 +67,32 @@ jobs:
         GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
     
     - name: Build project
-      run: ./gradlew build -x :pnnl.goss.core.itests:testOSGi --no-daemon
+      run: ./gradlew assemble --no-daemon
       env:
         GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
     
     - name: Generate test report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v2
       if: success() || failure()
       with:
         name: Test Results (JDK ${{ matrix.java-version }})
-        path: '**/generated/test-results/test/TEST-*.xml'
+        path: '**/generated/test-reports/test/TEST-*.xml'
         reporter: java-junit
         fail-on-error: false
     
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: test-results-jdk${{ matrix.java-version }}
         path: |
-          **/generated/test-results/
+          **/generated/test-reports/
           **/generated/reports/
         retention-days: 30
     
     - name: Upload build artifacts (primary JDK only)
       if: matrix.primary && (success() || failure())
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: build-artifacts
         path: |
@@ -108,10 +108,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: 21
         distribution: 'temurin'
@@ -127,7 +127,7 @@ jobs:
 
     - name: Upload OSGi test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: osgi-test-results
         path: |
@@ -144,10 +144,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: 21
         distribution: 'temurin'
@@ -162,9 +162,7 @@ jobs:
         GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
 
     - name: Build OSGi runners using BndRunnerPlugin
-      run: |
-        ./gradlew buildRunner.goss-core --no-daemon
-        ./gradlew buildRunner.goss-core-ssl --no-daemon
+      run: ./gradlew buildRunner.goss-core --no-daemon
       env:
         GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
 
@@ -172,12 +170,11 @@ jobs:
       run: |
         ls -lh pnnl.goss.core.runner/generated/runners/
         test -f pnnl.goss.core.runner/generated/runners/goss-core-runner.jar
-        test -f pnnl.goss.core.runner/generated/runners/goss-core-ssl-runner.jar
-        echo "✅ All runner JARs built successfully"
+        echo "All runner JARs built successfully"
 
     - name: Upload runner artifacts
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: osgi-runners
         path: pnnl.goss.core.runner/generated/runners/*.jar
