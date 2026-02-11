@@ -60,12 +60,7 @@ jobs:
       run: ./gradlew test --continue --no-daemon
       env:
         GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
-    
-    - name: Run integration tests (non-OSGi)
-      run: ./gradlew check -x :pnnl.goss.core.itests:testOSGi --continue --no-daemon
-      env:
-        GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
-    
+
     - name: Build project
       run: ./gradlew assemble --no-daemon
       env:

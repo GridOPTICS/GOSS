@@ -77,9 +77,9 @@ endif
 build:
 	./gradlew assemble
 
-# Run tests
+# Run tests (excludes OSGi integration tests which require a running framework; use 'make itest' for those)
 test:
-	./gradlew check
+	./gradlew test --continue
 
 # Clean build artifacts
 clean:
