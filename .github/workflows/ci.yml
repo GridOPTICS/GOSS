@@ -136,6 +136,76 @@ jobs:
           pnnl.goss.core.itests/**/*.log
         retention-days: 30
 
+  stomp-integration-tests:
+    name: STOMP Integration Tests
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name != 'schedule'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: 21
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+
+    - name: Build SimpleRunner JAR
+      run: ./gradlew :pnnl.goss.core.runner:createSimpleRunner --no-daemon
+      env:
+        GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
+
+    - name: Install pixi
+      uses: prefix-dev/setup-pixi@v0.9.4
+      with:
+        pixi-version: latest
+        manifest-path: pnnl.goss.core.itests/pixi.toml
+
+    - name: Start GOSS SimpleRunner
+      run: |
+        nohup java -jar pnnl.goss.core.runner/generated/executable/goss-simple-runner.jar > goss.log 2>&1 &
+        echo $! > goss.pid
+        echo "Waiting for STOMP port 61618..."
+        elapsed=0
+        while ! ss -tln | grep -q ":61618 " && [ $elapsed -lt 30 ]; do
+          sleep 1
+          elapsed=$((elapsed + 1))
+          printf "."
+        done
+        echo ""
+        if ! ss -tln | grep -q ":61618 "; then
+          echo "ERROR: GOSS did not start within 30s"
+          tail -20 goss.log
+          exit 1
+        fi
+        echo "GOSS is ready (PID $(cat goss.pid))"
+
+    - name: Run STOMP token auth tests
+      working-directory: pnnl.goss.core.itests
+      run: pixi run test-stomp-token
+
+    - name: Stop GOSS
+      if: always()
+      run: |
+        if [ -f goss.pid ]; then
+          kill $(cat goss.pid) 2>/dev/null || true
+          rm -f goss.pid
+        fi
+
+    - name: Upload GOSS logs
+      if: always()
+      uses: actions/upload-artifact@v6
+      with:
+        name: stomp-test-logs
+        path: goss.log
+        retention-days: 30
+
   build-runners:
     name: Build OSGi Runners
     runs-on: ubuntu-latest
@@ -183,7 +253,7 @@ jobs:
   build-status:
     name: Build Status
     runs-on: ubuntu-latest
-    needs: [test, osgi-integration-tests, build-runners]
+    needs: [test, osgi-integration-tests, stomp-integration-tests, build-runners]
     if: always()
 
     steps:
@@ -191,9 +261,12 @@ jobs:
       run: |
         echo "Test job status: ${{ needs.test.result }}"
         echo "OSGi job status: ${{ needs.osgi-integration-tests.result }}"
+        echo "STOMP job status: ${{ needs.stomp-integration-tests.result }}"
         echo "Build runners job status: ${{ needs.build-runners.result }}"
 
-        if [[ "${{ needs.test.result }}" == "success" ]] && [[ "${{ needs.build-runners.result }}" == "success" ]]; then
+        if [[ "${{ needs.test.result }}" == "success" ]] && \
+           [[ "${{ needs.stomp-integration-tests.result }}" == "success" ]] && \
+           [[ "${{ needs.build-runners.result }}" == "success" ]]; then
           echo "✅ Core build, tests, and runners passed!"
           exit 0
         else
