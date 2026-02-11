@@ -42,7 +42,7 @@ jobs:
         cache: gradle
     
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql/codeql-config.yml
@@ -64,13 +64,13 @@ jobs:
     
     - name: Build for CodeQL analysis
       run: |
-        # Build without tests to speed up analysis
-        ./gradlew build -x test -x check -x :pnnl.goss.core.itests:testOSGi --no-daemon
+        # Compile only (no tests) for CodeQL to analyze
+        ./gradlew assemble --no-daemon
       env:
         GRADLE_OPTS: -Xmx3g -Dorg.gradle.daemon=false
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
         upload: true
