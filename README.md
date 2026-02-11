@@ -1,6 +1,10 @@
 # GridOPTICS Software System (GOSS)
 
-[![Build Status](https://github.com/GridOPTICS/GOSS/actions/workflows/build.yml/badge.svg)](https://github.com/GridOPTICS/GOSS/actions)
+[![CI](https://github.com/GridOPTICS/GOSS/actions/workflows/ci.yml/badge.svg)](https://github.com/GridOPTICS/GOSS/actions/workflows/ci.yml)
+[![Tests](https://github.com/GridOPTICS/GOSS/actions/workflows/test.yml/badge.svg)](https://github.com/GridOPTICS/GOSS/actions/workflows/test.yml)
+[![CodeQL](https://github.com/GridOPTICS/GOSS/actions/workflows/codeql.yml/badge.svg)](https://github.com/GridOPTICS/GOSS/actions/workflows/codeql.yml)
+[![Java 21](https://img.shields.io/badge/Java-21-blue)](https://openjdk.org/projects/jdk/21/)
+[![License](https://img.shields.io/badge/License-BSD--2--Clause-green)](pnnl.goss.core/LICENSE)
 
 GOSS is a JMS-based messaging framework providing client/server architecture, request/response patterns, and security integration for distributed power grid applications. It serves as the foundation for [GridAPPS-D](https://github.com/GRIDAPPSD/GOSS-GridAPPS-D) and other grid simulation platforms.
 
@@ -48,12 +52,6 @@ java -jar pnnl.goss.core.runner/generated/runners/goss-core-runner.jar
 - **Use case**: Production, modular deployments
 - **Includes**: Updated dependencies (ActiveMQ 6.2.0, Jakarta JMS, Shiro 2.0)
 
-#### Option C: SSL-Enabled OSGi Runner
-```bash
-./gradlew buildRunner.goss-core-ssl
-java -jar pnnl.goss.core.runner/generated/runners/goss-core-ssl-runner.jar
-```
-
 **3. Verify GOSS is running:**
 
 Once started, you can use these Gogo shell commands:
@@ -76,7 +74,6 @@ GOSS includes a **BndRunnerPlugin** that creates executable OSGi JARs from any `
 **Examples:**
 ```bash
 ./gradlew buildRunner.goss-core      # Uses goss-core.bndrun
-./gradlew buildRunner.goss-core-ssl  # Uses goss-core-ssl.bndrun
 ./gradlew buildRunner.my-app         # Uses my-app.bndrun
 ```
 
@@ -273,28 +270,16 @@ I'll wait here
 # Message was stored and delivered when consumer connected!
 ```
 
-### JWT Token Authentication Support
-GOSS now includes optional JWT (JSON Web Token) authentication support:
+### Security and Authentication
 
-```java
-// Create client with token authentication
-ClientFactory factory = // ... get factory
-Client client = factory.create(PROTOCOL.OPENWIRE, credentials, true); // useToken=true
-```
+GOSS uses [Apache Shiro](https://shiro.apache.org/) integrated with ActiveMQ via the ShiroPlugin. All broker connections (OpenWire, STOMP) require authentication and are subject to permission checks.
 
-**New Security Classes:**
-- `JWTAuthenticationToken` - Token data structure and parsing
-- `SecurityConfig` - Token validation and creation interface
-- `GossSecurityManager` - Enhanced security management
-- `RoleManager` - Role-based permission management
+See the **[Security Guide](docs/SECURITY.md)** for full details on user management, permissions, and token authentication.
 
-**Security Configuration:**
-```properties
-goss.system.use.token=true
-goss.system.token.secret=your-secret-key
-goss.system.manager=admin
-goss.system.manager.password=admin-password
-```
+**Quick overview:**
+- Users are configured in `pnnl.goss.core.runner/conf/pnnl.goss.core.security.propertyfile.cfg`
+- Permissions control access to queues, topics, and temporary queues
+- JWT tokens allow clients to authenticate once and reconnect without re-sending credentials
 
 ### Session Auto-Renewal
 Clients now automatically renew their JMS session when publish operations fail, improving reliability in long-running applications.
@@ -316,6 +301,11 @@ make version              # Show versions of all bundles
 make build                # Build all bundles
 make test                 # Run tests
 make clean                # Clean build artifacts
+make run                  # Build and run GOSS in the background (logs to log/goss.log)
+make stop                 # Stop the background GOSS process
+make status               # Check if GOSS is running
+make log                  # Tail the GOSS log file
+make itest                # Build, start GOSS, run integration tests, stop GOSS
 ```
 
 #### API Change Detection
@@ -427,6 +417,9 @@ When making changes to GOSS, follow these guidelines:
 - **[Quick Start Guide](docs/QUICK-START.md)** - Get up and running with GOSS in 5 minutes
 - **[Developer Setup](docs/DEVELOPER-SETUP.md)** - Complete development environment setup for Eclipse and VS Code
 - **[Production Deployment](docs/PRODUCTION-DEPLOYMENT.md)** - Production deployment guide with systemd, SSL, and monitoring
+
+### Security
+- **[Security Guide](docs/SECURITY.md)** - Authentication, permissions, JWT tokens, and user management
 
 ### Development
 - **[Code Formatting Guide](docs/FORMATTING.md)** - Code style and formatting configuration for consistent code across IDEs
@@ -593,7 +586,7 @@ GOSS serves as the messaging foundation for:
 
 ## License
 
-This project is licensed under the BSD-3-Clause License. See [LICENSE](LICENSE) for details.
+This project is licensed under the BSD-2-Clause License. See [LICENSE](pnnl.goss.core/LICENSE) for details.
 
 ## Contributing
 

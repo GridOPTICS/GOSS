@@ -7,6 +7,7 @@ generated/
 target/
 out/
 bin/
+bin_test/
 *.jar
 !cnf/releaserepo/**/*.jar
 *.war
@@ -142,6 +143,32 @@ coverage/
 
 ## Dependency Check ##
 dependency-check-data/
+
+## Python ##
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+.eggs/
+dist/
+*.whl
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+
+## Pixi (Python package manager) ##
+pixi.lock
+.pixi/
+
+## Environment Files ##
+.env
+.env.*
+!.env.example
 
 ## Custom Local Files ##
 *.local
