@@ -24,21 +24,20 @@ import pnnl.goss.core.client.GossClient;
 /**
  * Integration tests that connect to an already-running GOSS server process.
  *
- * Unlike {@link GossEndToEndTest} which embeds its own ActiveMQ broker,
- * these tests hit a real GOSS server externally — the same way Python/STOMP
- * clients (and the companion test_stomp_token_auth.py) connect.
+ * Unlike {@link GossEndToEndTest} which embeds its own ActiveMQ broker, these
+ * tests hit a real GOSS server externally — the same way Python/STOMP clients
+ * (and the companion test_stomp_token_auth.py) connect.
  *
  * This validates the full stack: ActiveMQ transport, Shiro authentication,
  * message routing, and pub/sub — from a GossClient over OpenWire.
  *
- * Configuration (system properties or environment variables):
- *   goss.openwire.uri / GOSS_OPENWIRE_URI  (default: tcp://localhost:61617)
- *   goss.stomp.uri    / GOSS_STOMP_URI      (default: stomp://localhost:61618)
- *   goss.username     / GOSS_USERNAME        (default: system)
- *   goss.password     / GOSS_PASSWORD        (default: manager)
+ * Configuration (system properties or environment variables): goss.openwire.uri
+ * / GOSS_OPENWIRE_URI (default: tcp://localhost:61617) goss.stomp.uri /
+ * GOSS_STOMP_URI (default: stomp://localhost:61618) goss.username /
+ * GOSS_USERNAME (default: system) goss.password / GOSS_PASSWORD (default:
+ * manager)
  *
- * Run:
- *   ./gradlew :pnnl.goss.core.itests:testExternal
+ * Run: ./gradlew :pnnl.goss.core.itests:testExternal
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
@@ -51,21 +50,25 @@ public class GossExternalServerTest {
     private String username;
     private String password;
 
-    /** Read config from system properties, falling back to env vars, then defaults. */
+    /**
+     * Read config from system properties, falling back to env vars, then defaults.
+     */
     private static String config(String sysProp, String envVar, String defaultVal) {
         String val = System.getProperty(sysProp);
-        if (val != null && !val.isEmpty()) return val;
+        if (val != null && !val.isEmpty())
+            return val;
         val = System.getenv(envVar);
-        if (val != null && !val.isEmpty()) return val;
+        if (val != null && !val.isEmpty())
+            return val;
         return defaultVal;
     }
 
     @BeforeAll
     public void setUp() {
         openwireUri = config("goss.openwire.uri", "GOSS_OPENWIRE_URI", "tcp://localhost:61617");
-        stompUri    = config("goss.stomp.uri",    "GOSS_STOMP_URI",    "stomp://localhost:61618");
-        username    = config("goss.username",      "GOSS_USERNAME",     "system");
-        password    = config("goss.password",      "GOSS_PASSWORD",     "manager");
+        stompUri = config("goss.stomp.uri", "GOSS_STOMP_URI", "stomp://localhost:61618");
+        username = config("goss.username", "GOSS_USERNAME", "system");
+        password = config("goss.password", "GOSS_PASSWORD", "manager");
 
         System.out.println("GossExternalServerTest targeting:");
         System.out.println("  OpenWire: " + openwireUri);
@@ -158,8 +161,14 @@ public class GossExternalServerTest {
             AtomicReference<String> msg1 = new AtomicReference<>();
             AtomicReference<String> msg2 = new AtomicReference<>();
 
-            sub1.subscribe(topic, response -> { msg1.set(response.toString()); latch.countDown(); });
-            sub2.subscribe(topic, response -> { msg2.set(response.toString()); latch.countDown(); });
+            sub1.subscribe(topic, response -> {
+                msg1.set(response.toString());
+                latch.countDown();
+            });
+            sub2.subscribe(topic, response -> {
+                msg2.set(response.toString());
+                latch.countDown();
+            });
 
             Thread.sleep(200);
             publisher.publish(topic, message);
@@ -241,8 +250,14 @@ public class GossExternalServerTest {
             AtomicReference<String> msgA = new AtomicReference<>();
             AtomicReference<String> msgB = new AtomicReference<>();
 
-            client.subscribe(topicA, response -> { msgA.set(response.toString()); latch.countDown(); });
-            client.subscribe(topicB, response -> { msgB.set(response.toString()); latch.countDown(); });
+            client.subscribe(topicA, response -> {
+                msgA.set(response.toString());
+                latch.countDown();
+            });
+            client.subscribe(topicB, response -> {
+                msgB.set(response.toString());
+                latch.countDown();
+            });
 
             Thread.sleep(200);
             client.publish(topicA, "Message for A");
