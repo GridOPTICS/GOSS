@@ -71,7 +71,7 @@ public class DefaultClientListener implements ClientListener {
                     response.setDestination(message.getJMSDestination().toString());
                 // Set reply destination and username from JMS headers
                 if (message.getJMSReplyTo() != null)
-                    response.setReplyDestination(message.getJMSReplyTo());
+                    response.setReplyDestination(normalizeReplyDestination(message.getJMSReplyTo()));
                 if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
                     response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                 responseEvent.onMessage(response);
@@ -90,7 +90,7 @@ public class DefaultClientListener implements ClientListener {
                     response.setDestination(message.getJMSDestination().toString());
                 // Set reply destination and username from JMS headers
                 if (message.getJMSReplyTo() != null)
-                    response.setReplyDestination(message.getJMSReplyTo());
+                    response.setReplyDestination(normalizeReplyDestination(message.getJMSReplyTo()));
                 if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
                     response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                 responseEvent.onMessage(response);
