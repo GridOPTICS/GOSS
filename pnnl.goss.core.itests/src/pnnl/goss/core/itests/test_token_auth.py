@@ -190,6 +190,50 @@ def request_token(conn_factory, host, port, username, password):
     return got_response, token, listener.error
 
 
+def request_token_bare_reply(conn_factory, host, port, username, password):
+    """
+    Same as request_token but sends reply-to WITHOUT the /queue/ prefix.
+
+    This tests that the server correctly handles bare destination names
+    (e.g., "temp.token_resp.xyz" instead of "/queue/temp.token_resp.xyz").
+    """
+    conn = conn_factory(host, port)
+    listener = TokenResponseListener()
+    conn.set_listener("token_listener", listener)
+
+    log.info("Connecting to %s:%d as '%s' to request token (bare reply-to)...",
+             host, port, username)
+    conn.connect(username, password, wait=True)
+    assert conn.is_connected(), "Failed to connect with username/password"
+
+    bare_dest = f"temp.token_resp.bare.{username}-{uuid.uuid4().hex[:12]}"
+    auth_payload = base64.b64encode(f"{username}:{password}".encode()).decode()
+
+    # Subscribe using /queue/ prefix (STOMP requires it for subscription)
+    conn.subscribe(destination=f"/queue/{bare_dest}", id="token-sub-bare", ack="auto")
+    log.info("Subscribed to /queue/%s", bare_dest)
+
+    time.sleep(0.3)
+
+    # Send with bare reply-to (no /queue/ prefix)
+    conn.send(
+        destination=TOKEN_TOPIC,
+        body=auth_payload,
+        headers={"reply-to": bare_dest},
+    )
+    log.info("Sent token request with bare reply-to: %s", bare_dest)
+
+    got_response = listener.wait(TOKEN_TIMEOUT_S)
+    token = listener.token
+
+    try:
+        conn.disconnect()
+    except Exception as e:
+        log.debug("Non-critical error during disconnect: %s", e)
+
+    return got_response, token, listener.error
+
+
 def connect_with_token(conn_factory, host, port, token):
     """Connect using a JWT token as the username with an empty password."""
     conn = conn_factory(host, port)
@@ -335,6 +379,25 @@ class TestStompTokenAuth:
         log.info("STOMP: PASS received valid JWT (%d bytes)", len(token))
         TestStompTokenAuth._token = token
 
+    def test_02b_request_token_bare_reply_to(self):
+        """Request a JWT token with bare reply-to (no /queue/ prefix) over STOMP."""
+        got_response, token, error = request_token_bare_reply(
+            self._factory(), self.host, self.port, self.username, self.password
+        )
+        assert got_response, (
+            f"Should get a token response with bare reply-to within {TOKEN_TIMEOUT_S}s"
+        )
+        assert error is None, f"Should not get an error: {error}"
+        assert token is not None, "Token must not be None"
+        assert len(token.strip()) > 0, "Token must not be empty"
+        assert token != "authentication failed", "Token request should not fail auth"
+
+        parts = token.split(".")
+        assert len(parts) == 3, (
+            f"Token should be a JWT with 3 parts, got {len(parts)}: {token[:80]}..."
+        )
+        log.info("STOMP: PASS bare reply-to token request (%d bytes)", len(token))
+
     def test_03_connect_with_token(self):
         """Reconnect using the JWT token over STOMP."""
         token = TestStompTokenAuth._token
@@ -456,6 +519,25 @@ class TestWsTokenAuth:
         )
         log.info("WS: PASS received valid JWT (%d bytes)", len(token))
         TestWsTokenAuth._token = token
+
+    def test_02b_request_token_bare_reply_to(self):
+        """Request a JWT token with bare reply-to (no /queue/ prefix) over WebSocket."""
+        got_response, token, error = request_token_bare_reply(
+            self._factory(), self.host, self.port, self.username, self.password
+        )
+        assert got_response, (
+            f"Should get a token response with bare reply-to within {TOKEN_TIMEOUT_S}s"
+        )
+        assert error is None, f"Should not get an error: {error}"
+        assert token is not None, "Token must not be None"
+        assert len(token.strip()) > 0, "Token must not be empty"
+        assert token != "authentication failed", "Token request should not fail auth"
+
+        parts = token.split(".")
+        assert len(parts) == 3, (
+            f"Token should be a JWT with 3 parts, got {len(parts)}: {token[:80]}..."
+        )
+        log.info("WS: PASS bare reply-to token request (%d bytes)", len(token))
 
     def test_03_connect_with_token(self):
         """Reconnect using the JWT token over WebSocket."""
