@@ -1,4 +1,4 @@
-Bundle-Version: 15.0.0
+Bundle-Version: 15.0.1
 
 # Build dependencies - JUnit 5
 # Note: Using osgi-core-buildpath only (not full osgi-buildpath) to avoid javax.jms from osgi.enterprise
