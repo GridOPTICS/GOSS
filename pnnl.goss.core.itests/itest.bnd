@@ -1,5 +1,5 @@
 # Modern OSGi Integration Test Configuration
-Bundle-Version: 13.0.0
+Bundle-Version: 14.0.0
 
 # Use JUnit 5 and OSGi Test
 # Note: Using osgi-core-buildpath to avoid javax.jms from osgi.enterprise

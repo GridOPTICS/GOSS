@@ -5,7 +5,7 @@ Private-Package:  \
 # The Activator class provides SecurityManager via @Component annotation
 Export-Package:  \
 	pnnl.goss.core.security
-Bundle-Version: 13.0.0
+Bundle-Version: 14.0.0
 
 # Require FileInstall to be present in the runtime
 # FileInstall watches the conf directory for .cfg files and loads them into ConfigAdmin

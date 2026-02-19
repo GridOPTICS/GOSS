@@ -157,20 +157,22 @@ public class GossSimpleRunner {
     }
 
     /**
-     * Locate the user properties file by checking (in order):
-     *   1. GOSS_USER_PROPERTIES env var / goss.user.properties system property
-     *   2. conf/<filename>  (next to the JAR / working dir)
-     *   3. pnnl.goss.core.runner/conf/<filename>  (run from GOSS root)
-     *   4. ../conf/<filename>  (JAR is inside generated/executable)
-     *   5. ../../conf/<filename>
+     * Locate the user properties file by checking (in order): 1.
+     * GOSS_USER_PROPERTIES env var / goss.user.properties system property 2.
+     * conf/<filename> (next to the JAR / working dir) 3.
+     * pnnl.goss.core.runner/conf/<filename> (run from GOSS root) 4.
+     * ../conf/<filename> (JAR is inside generated/executable) 5.
+     * ../../conf/<filename>
      */
     private File findUserPropertiesFile() {
         // Explicit override
         String explicit = System.getProperty("goss.user.properties");
-        if (explicit == null) explicit = System.getenv("GOSS_USER_PROPERTIES");
+        if (explicit == null)
+            explicit = System.getenv("GOSS_USER_PROPERTIES");
         if (explicit != null) {
             File f = new File(explicit);
-            if (f.exists()) return f;
+            if (f.exists())
+                return f;
             System.err.println("Explicit user properties path not found: " + explicit);
         }
 
@@ -184,16 +186,17 @@ public class GossSimpleRunner {
         }
 
         String[] candidates = {
-            "conf/" + USER_PROPERTIES_FILENAME,
-            "pnnl.goss.core.runner/conf/" + USER_PROPERTIES_FILENAME,
-            jarDir + "/conf/" + USER_PROPERTIES_FILENAME,
-            jarDir + "/../conf/" + USER_PROPERTIES_FILENAME,
-            jarDir + "/../../conf/" + USER_PROPERTIES_FILENAME,
+                "conf/" + USER_PROPERTIES_FILENAME,
+                "pnnl.goss.core.runner/conf/" + USER_PROPERTIES_FILENAME,
+                jarDir + "/conf/" + USER_PROPERTIES_FILENAME,
+                jarDir + "/../conf/" + USER_PROPERTIES_FILENAME,
+                jarDir + "/../../conf/" + USER_PROPERTIES_FILENAME,
         };
 
         for (String path : candidates) {
             File f = new File(path);
-            if (f.exists()) return f;
+            if (f.exists())
+                return f;
         }
         return null;
     }
