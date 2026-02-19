@@ -673,6 +673,19 @@ public class GossClient implements Client {
 
         try {
             if (protocol.equals(PROTOCOL.OPENWIRE) || protocol.equals(PROTOCOL.STOMP)) {
+                // Strip STOMP-style prefixes from destination names.
+                // STOMP protocol uses /topic/ and /queue/ prefixes to identify destination
+                // type, but JMS uses the raw name. Since this client uses JMS/OpenWire
+                // internally (even for PROTOCOL.STOMP), we need to strip the prefixes
+                // so JMS topic names match what STOMP clients (browser, Python) send to.
+                if (destinationName.startsWith("/topic/")) {
+                    destinationName = destinationName.substring(7);
+                    destinationType = DESTINATION_TYPE.TOPIC;
+                } else if (destinationName.startsWith("/queue/")) {
+                    destinationName = destinationName.substring(7);
+                    destinationType = DESTINATION_TYPE.QUEUE;
+                }
+
                 // Both OPENWIRE and STOMP use standard JMS with ActiveMQ
                 if (destinationType == DESTINATION_TYPE.QUEUE) {
                     destination = getSession().createQueue(destinationName);

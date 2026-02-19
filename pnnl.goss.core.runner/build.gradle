@@ -17,6 +17,8 @@ dependencies {
     // For simple runner (ActiveMQ 6.x uses jakarta.jms)
     implementation 'org.apache.activemq:activemq-broker:6.2.0'
     implementation 'org.apache.activemq:activemq-shiro:6.2.0'
+    implementation 'org.apache.activemq:activemq-http:6.2.0'  // WebSocket transport (Jetty)
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.26'
     implementation 'org.apache.shiro:shiro-core:1.13.0'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
 }

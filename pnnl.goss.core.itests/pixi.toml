@@ -8,7 +8,10 @@ version = "0.1.0"
 [tasks]
 test-stomp-token = "pytest src/pnnl/goss/core/itests/test_stomp_token_auth.py -v"
 test-stomp-token-standalone = "python src/pnnl/goss/core/itests/test_stomp_token_auth.py"
+test-token-auth = "pytest src/pnnl/goss/core/itests/test_token_auth.py -v"
+test-token-auth-standalone = "python src/pnnl/goss/core/itests/test_token_auth.py"
 
 [dependencies]
 "stomp.py" = ">=8.2.0,<9"
+"websocket-client" = ">=1.7.0,<2"
 pytest = ">=9.0.2,<10"

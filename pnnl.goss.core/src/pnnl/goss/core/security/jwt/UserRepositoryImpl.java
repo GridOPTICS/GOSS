@@ -2,6 +2,8 @@ package pnnl.goss.core.security.jwt;
 
 import java.io.Serializable;
 import java.util.Base64;
+
+import jakarta.jms.Destination;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -147,10 +149,13 @@ public class UserRepositoryImpl implements UserRepository {
                     // Send authentication failed message
                     responseData = "authentication failed";
                 }
-                log.info("Returning token for user " + userId + " on destination "
-                        + ((DataResponse) response).getReplyDestination());
-
-                client.publish(((DataResponse) response).getReplyDestination(), responseData);
+                Destination replyDest = ((DataResponse) response).getReplyDestination();
+                if (replyDest != null) {
+                    log.info("Returning token for user " + userId + " on destination " + replyDest);
+                    client.publish(replyDest, responseData);
+                } else {
+                    log.debug("No reply destination for token request from user " + userId + " - ignoring");
+                }
             } else {
                 client.publish("goss/management/response", responseData);
             }

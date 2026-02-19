@@ -67,15 +67,17 @@ public class GossSimpleRunner {
 
     private static final String SYSTEM_USER = "system";
     private static final String SYSTEM_PASSWORD = "manager";
-    private static final String USER_PROPERTIES_FILE = "pnnl.goss.core.runner/conf/pnnl.goss.core.security.propertyfile.cfg";
+    private static final String USER_PROPERTIES_FILENAME = "pnnl.goss.core.security.propertyfile.cfg";
     private static final String TOKEN_TOPIC = GossCoreContants.PROP_TOKEN_QUEUE;
 
     // Configurable ports (system property > env var > default)
     private static final int DEFAULT_OPENWIRE_PORT = 61617;
     private static final int DEFAULT_STOMP_PORT = 61618;
+    private static final int DEFAULT_WS_PORT = 61616;
 
     private int openwirePort;
     private int stompPort;
+    private int wsPort;
 
     /** Read an int config value from system property, env var, or default. */
     private static int configInt(String sysProp, String envVar, int defaultVal) {
@@ -118,6 +120,7 @@ public class GossSimpleRunner {
         // 0. Read configurable ports
         openwirePort = configInt("goss.openwire.port", "GOSS_OPENWIRE_PORT", DEFAULT_OPENWIRE_PORT);
         stompPort = configInt("goss.stomp.port", "GOSS_STOMP_PORT", DEFAULT_STOMP_PORT);
+        wsPort = configInt("goss.ws.port", "GOSS_WS_PORT", DEFAULT_WS_PORT);
 
         // 1. Load user properties
         loadUserProperties();
@@ -135,6 +138,7 @@ public class GossSimpleRunner {
         System.out.println("GOSS Core services are running");
         System.out.println("ActiveMQ Broker: tcp://0.0.0.0:" + openwirePort);
         System.out.println("STOMP: stomp://0.0.0.0:" + stompPort);
+        System.out.println("WebSocket: ws://0.0.0.0:" + wsPort);
         System.out.println("Security: Shiro authentication enabled (" + userMap.size() + " users)");
         System.out.println("Token support: JWT token authentication enabled");
     }
@@ -152,10 +156,53 @@ public class GossSimpleRunner {
         }
     }
 
+    /**
+     * Locate the user properties file by checking (in order):
+     *   1. GOSS_USER_PROPERTIES env var / goss.user.properties system property
+     *   2. conf/<filename>  (next to the JAR / working dir)
+     *   3. pnnl.goss.core.runner/conf/<filename>  (run from GOSS root)
+     *   4. ../conf/<filename>  (JAR is inside generated/executable)
+     *   5. ../../conf/<filename>
+     */
+    private File findUserPropertiesFile() {
+        // Explicit override
+        String explicit = System.getProperty("goss.user.properties");
+        if (explicit == null) explicit = System.getenv("GOSS_USER_PROPERTIES");
+        if (explicit != null) {
+            File f = new File(explicit);
+            if (f.exists()) return f;
+            System.err.println("Explicit user properties path not found: " + explicit);
+        }
+
+        // Resolve the directory that contains the JAR
+        File jarDir;
+        try {
+            jarDir = new File(GossSimpleRunner.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI()).getParentFile();
+        } catch (Exception e) {
+            jarDir = new File(".");
+        }
+
+        String[] candidates = {
+            "conf/" + USER_PROPERTIES_FILENAME,
+            "pnnl.goss.core.runner/conf/" + USER_PROPERTIES_FILENAME,
+            jarDir + "/conf/" + USER_PROPERTIES_FILENAME,
+            jarDir + "/../conf/" + USER_PROPERTIES_FILENAME,
+            jarDir + "/../../conf/" + USER_PROPERTIES_FILENAME,
+        };
+
+        for (String path : candidates) {
+            File f = new File(path);
+            if (f.exists()) return f;
+        }
+        return null;
+    }
+
     private void loadUserProperties() {
-        File propsFile = new File(USER_PROPERTIES_FILE);
-        if (!propsFile.exists()) {
-            System.out.println("No user properties file found at " + USER_PROPERTIES_FILE);
+        File propsFile = findUserPropertiesFile();
+        if (propsFile == null) {
+            System.out.println("No user properties file (" + USER_PROPERTIES_FILENAME
+                    + ") found in any search path");
             System.out.println("Using default system user only");
             SimpleAccount systemAcct = new SimpleAccount(SYSTEM_USER, SYSTEM_PASSWORD, "SimpleRunnerRealm");
             systemAcct.addStringPermission("*");
@@ -166,6 +213,7 @@ public class GossSimpleRunner {
             return;
         }
 
+        System.out.println("Loading users from " + propsFile.getAbsolutePath());
         try (BufferedReader reader = new BufferedReader(new FileReader(propsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -197,7 +245,7 @@ public class GossSimpleRunner {
                 userMap.put(username, acct);
                 userPermissions.put(username, perms);
             }
-            System.out.println("Loaded " + userMap.size() + " users from " + USER_PROPERTIES_FILE);
+            System.out.println("Loaded " + userMap.size() + " users from " + propsFile.getAbsolutePath());
         } catch (Exception e) {
             System.err.println("Error reading user properties: " + e.getMessage());
             // Fall back to default system user
@@ -262,6 +310,14 @@ public class GossSimpleRunner {
         stompConnector.setUri(new URI("stomp://0.0.0.0:" + stompPort));
         stompConnector.setName("stomp");
         brokerService.addConnector(stompConnector);
+
+        TransportConnector wsConnector = new TransportConnector();
+        wsConnector.setUri(new URI("ws://0.0.0.0:" + wsPort
+                + "?websocket.maxTextMessageSize=999999"
+                + "&websocket.maxIdleTime=60000"
+                + "&websocket.bufferSize=32536"));
+        wsConnector.setName("ws");
+        brokerService.addConnector(wsConnector);
 
         brokerService.start();
     }
