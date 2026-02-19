@@ -128,6 +128,7 @@ jobs:
 
     - name: Start GOSS SimpleRunner
       run: |
+        rm -rf data/goss-broker
         nohup java -jar pnnl.goss.core.runner/generated/executable/goss-simple-runner.jar > goss.log 2>&1 &
         echo $! > goss.pid
         echo "Waiting for STOMP port 61618..."
@@ -153,6 +154,10 @@ jobs:
     - name: Run STOMP token auth tests
       working-directory: pnnl.goss.core.itests
       run: pixi run test-stomp-token
+
+    - name: Run STOMP + WebSocket token auth tests
+      working-directory: pnnl.goss.core.itests
+      run: pixi run test-token-auth
 
     - name: Stop GOSS
       if: always()

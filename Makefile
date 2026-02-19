@@ -138,6 +138,10 @@ define start-goss
 		rm -f $(PID_FILE); \
 		sleep 2; \
 	fi
+	@if [ -d $(DATA_DIR) ]; then \
+		echo "Cleaning stale KahaDB data..."; \
+		rm -rf $(DATA_DIR); \
+	fi
 	@echo "Starting GOSS for integration tests (logging to $(LOG_FILE))..."
 	@nohup java -jar $(SIMPLE_JAR) >> $(LOG_FILE) 2>&1 & echo $$! > $(PID_FILE)
 	@echo "Waiting for GOSS STOMP port $(STOMP_PORT)..."
@@ -177,12 +181,16 @@ itest: $(SIMPLE_JAR)
 	@./gradlew :pnnl.goss.core.itests:testExternal --no-daemon; java_rc=$$?; \
 	echo ""; \
 	echo "Running Python STOMP integration tests..."; \
-	cd $(ITESTS_DIR) && pixi run test-stomp-token; py_rc=$$?; cd ..; \
+	cd $(ITESTS_DIR) && pixi run test-stomp-token; py_stomp_rc=$$?; cd ..; \
+	echo ""; \
+	echo "Running Python STOMP + WebSocket token auth tests..."; \
+	cd $(ITESTS_DIR) && pixi run test-token-auth; py_token_rc=$$?; cd ..; \
 	echo ""; \
 	echo "Stopping GOSS..."; \
 	kill $$(cat $(PID_FILE)) 2>/dev/null; rm -f $(PID_FILE); \
 	if [ $$java_rc -ne 0 ]; then exit $$java_rc; fi; \
-	exit $$py_rc
+	if [ $$py_stomp_rc -ne 0 ]; then exit $$py_stomp_rc; fi; \
+	exit $$py_token_rc
 
 # --- Runtime targets ---
 
@@ -192,6 +200,7 @@ SSL_JAR    = $(RUNNER_DIR)/generated/executable/goss-ssl-runner.jar
 LOG_DIR    = log
 LOG_FILE   = $(LOG_DIR)/goss.log
 PID_FILE   = $(LOG_DIR)/goss.pid
+DATA_DIR   = data/goss-broker
 
 # Build (if needed) and run GOSS in the background
 run: $(SIMPLE_JAR)
@@ -200,6 +209,7 @@ run: $(SIMPLE_JAR)
 		echo "GOSS is already running (PID $$(cat $(PID_FILE))). Use 'make stop' first."; \
 		exit 1; \
 	fi
+	@rm -f $(DATA_DIR)/KahaDB/lock
 	@echo "Starting GOSS (logging to $(LOG_FILE))..."
 	@nohup java -jar $(SIMPLE_JAR) >> $(LOG_FILE) 2>&1 & echo $$! > $(PID_FILE)
 	@echo "GOSS started (PID $$(cat $(PID_FILE)))"
@@ -211,6 +221,7 @@ run-ssl: $(SSL_JAR)
 		echo "GOSS is already running (PID $$(cat $(PID_FILE))). Use 'make stop' first."; \
 		exit 1; \
 	fi
+	@rm -f $(DATA_DIR)/KahaDB/lock
 	@echo "Starting GOSS with SSL (logging to $(LOG_FILE))..."
 	@nohup java -jar $(SSL_JAR) >> $(LOG_FILE) 2>&1 & echo $$! > $(PID_FILE)
 	@echo "GOSS started with SSL (PID $$(cat $(PID_FILE)))"
