@@ -1,10 +1,13 @@
 package pnnl.goss.core.client;
 
 import jakarta.jms.BytesMessage;
+import jakarta.jms.Destination;
 import jakarta.jms.Message;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.TextMessage;
 
+import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +27,21 @@ public class DefaultClientListener implements ClientListener {
         responseEvent = event;
     }
 
+    /**
+     * Normalize a reply destination to ensure it is a well-formed JMS Destination.
+     * STOMP clients may send bare destination names (e.g., "feeder-models" instead
+     * of "/queue/feeder-models"). This ensures they are treated as queues, which is
+     * the correct default for request/response patterns.
+     */
+    private Destination normalizeReplyDestination(Destination dest) {
+        if (dest == null)
+            return null;
+        if (dest instanceof ActiveMQQueue || dest instanceof ActiveMQTopic)
+            return dest;
+        log.debug("Normalizing bare reply destination: {} -> ActiveMQQueue", dest);
+        return new ActiveMQQueue(dest.toString());
+    }
+
     public void onMessage(Message message) {
         log.info("DefaultClientListener.onMessage called with message type: {}",
                 message != null ? message.getClass().getSimpleName() : "null");
@@ -41,7 +59,7 @@ public class DefaultClientListener implements ClientListener {
                         response.setDestination(message.getJMSDestination().toString());
                     // Set reply destination and username from JMS headers
                     if (message.getJMSReplyTo() != null)
-                        response.setReplyDestination(message.getJMSReplyTo());
+                        response.setReplyDestination(normalizeReplyDestination(message.getJMSReplyTo()));
                     if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
                         response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                     responseEvent.onMessage(response);

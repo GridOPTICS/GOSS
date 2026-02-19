@@ -46,6 +46,7 @@ package pnnl.goss.core.server.impl;
 
 import java.io.Serializable;
 
+import jakarta.jms.Destination;
 import jakarta.jms.InvalidDestinationException;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
@@ -53,6 +54,8 @@ import jakarta.jms.MessageListener;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Session;
 
+import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +95,26 @@ public class ServerListener implements MessageListener {
         return this;
     }
 
+    /**
+     * Normalize a reply destination to ensure it is a well-formed JMS Destination.
+     * STOMP clients may send bare destination names (e.g., "feeder-models" instead
+     * of "/queue/feeder-models"). This ensures they are treated as queues, which is
+     * the correct default for request/response patterns.
+     */
+    private Destination normalizeReplyDestination(Destination dest) {
+        if (dest == null)
+            return null;
+        if (dest instanceof ActiveMQQueue || dest instanceof ActiveMQTopic)
+            return dest;
+        try {
+            log.debug("Normalizing bare reply destination: {} -> Queue", dest);
+            return session.createQueue(dest.toString());
+        } catch (JMSException e) {
+            log.warn("Failed to normalize destination: {}", dest, e);
+            return dest;
+        }
+    }
+
     public void onMessage(Message message1) {
 
         final Message message = message1;
@@ -113,7 +136,8 @@ public class ServerListener implements MessageListener {
                     if (useAuth) {
                         if (!message.getBooleanProperty(SecurityConstants.HAS_SUBJECT_HEADER)) {
                             log.error("Identifier not set in message header");
-                            serverPublisher.sendErrror("Invalid subject in message!", message.getJMSReplyTo());
+                            serverPublisher.sendErrror("Invalid subject in message!",
+                                    normalizeReplyDestination(message.getJMSReplyTo()));
                             return;
 
                         }
@@ -125,7 +149,8 @@ public class ServerListener implements MessageListener {
                         if (!allowed) {
                             log.info("Access denied to " + identifier + " for request type "
                                     + request.getClass().getName());
-                            serverPublisher.sendErrror("Access Denied for the requested data", message.getJMSReplyTo());
+                            serverPublisher.sendErrror("Access Denied for the requested data",
+                                    normalizeReplyDestination(message.getJMSReplyTo()));
                             return;
                         }
                         log.debug("Access allowed to the request");
@@ -141,13 +166,13 @@ public class ServerListener implements MessageListener {
 
                             UploadResponse response = (UploadResponse) handlerRegistry.handle(dataType, data);
                             response.setId(request.getId());
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo());
+                            serverPublisher.sendResponse(response, normalizeReplyDestination(message.getJMSReplyTo()));
 
                             // TODO: Added capability for event processing without upload. Example - FNCS
                             /*
                              * UploadResponse response = new UploadResponse(true);
                              * response.setId(request.getId()); serverPublisher.sendResponse(response,
-                             * message.getJMSReplyTo());
+                             * normalizeReplyDestination(message.getJMSReplyTo()));
                              */
 
                             if (data instanceof Event) {
@@ -164,7 +189,8 @@ public class ServerListener implements MessageListener {
                             log.error("Upload request failed!" + e);
                             UploadResponse uploadResponse = new UploadResponse(false);
                             uploadResponse.setMessage(e.getMessage());
-                            serverPublisher.sendResponse(uploadResponse, message.getJMSReplyTo());
+                            serverPublisher.sendResponse(uploadResponse,
+                                    normalizeReplyDestination(message.getJMSReplyTo()));
                             serverPublisher.close();
                         }
                     } else if (request instanceof RequestAsync) {
@@ -178,10 +204,11 @@ public class ServerListener implements MessageListener {
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null) {
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo(),
+                            serverPublisher.sendResponse(response, normalizeReplyDestination(message.getJMSReplyTo()),
                                     RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
                         } else {
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                            serverPublisher.sendResponse(response, normalizeReplyDestination(message.getJMSReplyTo()),
+                                    null);
                         }
 
                         while (response.isResponseComplete() == false) {
@@ -190,10 +217,12 @@ public class ServerListener implements MessageListener {
                             response.setId(request.getId());
 
                             if (message.getStringProperty("RESPONSE_FORMAT") != null) {
-                                serverPublisher.sendResponse(response, message.getJMSReplyTo(),
+                                serverPublisher.sendResponse(response,
+                                        normalizeReplyDestination(message.getJMSReplyTo()),
                                         RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
                             } else {
-                                serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                                serverPublisher.sendResponse(response,
+                                        normalizeReplyDestination(message.getJMSReplyTo()), null);
                             }
                         }
                     } else {
@@ -206,10 +235,11 @@ public class ServerListener implements MessageListener {
                         response.setId(request.getId());
 
                         if (message.getStringProperty("RESPONSE_FORMAT") != null)
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo(),
+                            serverPublisher.sendResponse(response, normalizeReplyDestination(message.getJMSReplyTo()),
                                     RESPONSE_FORMAT.valueOf(message.getStringProperty("RESPONSE_FORMAT")));
                         else
-                            serverPublisher.sendResponse(response, message.getJMSReplyTo(), null);
+                            serverPublisher.sendResponse(response, normalizeReplyDestination(message.getJMSReplyTo()),
+                                    null);
                         // System.out.println(System.currentTimeMillis());
                     }
 
@@ -219,7 +249,7 @@ public class ServerListener implements MessageListener {
                     try {
                         serverPublisher.sendResponse(
                                 new DataResponse(new DataError("Exception occured: " + e.getMessage())),
-                                message.getJMSReplyTo());
+                                normalizeReplyDestination(message.getJMSReplyTo()));
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -230,7 +260,7 @@ public class ServerListener implements MessageListener {
                     e.printStackTrace();
                     try {
                         serverPublisher.sendResponse(new DataResponse(new DataError("Exception occured")),
-                                message.getJMSReplyTo());
+                                normalizeReplyDestination(message.getJMSReplyTo()));
                     } catch (JMSException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
