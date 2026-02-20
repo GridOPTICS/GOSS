@@ -9,4 +9,4 @@ Import-Package: \
 	*
 #Include-Resource: \
 #	OSGI-INF/blueprint/blueprint.xml=config/blueprint.xml
-Bundle-Version: 15.0.1
+Bundle-Version: 15.0.2
