@@ -76,10 +76,25 @@ public class PooledBasicDataSourceBuilderImpl implements DataSourceBuilder {
         log.debug("Creating BasicDataSource\n\tURI:" + properties.getProperty("url") + "\n\tUser:\n\t"
                 + properties.getProperty("username"));
 
-        Class.forName(properties.getProperty("driverClassName"));
-
-        DataSource ds = BasicDataSourceFactory.createDataSource(properties);
-
-        registry.add(dsName, new DataSourceObjectImpl(dsName, DataSourceType.DS_TYPE_JDBC, ds));
+        // Use this bundle's classloader so that OSGi DynamicImport-Package can
+        // resolve the JDBC driver from the MySQL bundle. The thread context
+        // classloader (often the app classloader) cannot see OSGi bundles.
+        ClassLoader bundleCl = PooledBasicDataSourceBuilderImpl.class.getClassLoader();
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(bundleCl);
+            Class.forName(properties.getProperty("driverClassName"), true, bundleCl);
+            DataSource ds = BasicDataSourceFactory.createDataSource(properties);
+            // Force DBCP's lazy driver loading while TCCL is still set.
+            // DBCP 1.4 caches the connection factory after first getConnection().
+            try {
+                ds.getConnection().close();
+            } catch (Exception e) {
+                log.debug("Initial connection probe failed (database may not be ready): {}", e.getMessage());
+            }
+            registry.add(dsName, new DataSourceObjectImpl(dsName, DataSourceType.DS_TYPE_JDBC, ds));
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+        }
     }
 }
