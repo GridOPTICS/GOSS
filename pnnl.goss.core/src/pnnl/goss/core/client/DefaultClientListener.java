@@ -6,6 +6,7 @@ import jakarta.jms.Message;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.TextMessage;
 
+import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
@@ -36,7 +37,10 @@ public class DefaultClientListener implements ClientListener {
         try {
             Destination dest = msg.getJMSReplyTo();
             if (dest != null) {
-                if (dest instanceof ActiveMQQueue || dest instanceof ActiveMQTopic)
+                // Accept any ActiveMQ destination type directly, including
+                // ActiveMQTempQueue and ActiveMQTempTopic which do NOT extend
+                // ActiveMQQueue/ActiveMQTopic (they extend ActiveMQTempDestination).
+                if (dest instanceof ActiveMQDestination)
                     return dest;
                 log.debug("Normalizing reply destination: {} -> ActiveMQQueue", dest);
                 return new ActiveMQQueue(dest.toString());
