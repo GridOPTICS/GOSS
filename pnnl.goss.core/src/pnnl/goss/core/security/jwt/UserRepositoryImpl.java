@@ -137,7 +137,7 @@ public class UserRepositoryImpl implements UserRepository {
                         token = tokenMap.get(userId);
                         log.debug("Token already exists for " + userId);
                     } else {
-                        token = securityConfig.createToken(authArr[0], userRoles.get(userId.toString()));
+                        token = securityConfig.createToken(authArr[0], userRoles.get(userId));
                         log.debug("Created token for " + userId);
                         tokenMap.put(userId, token);
                     }
