@@ -137,7 +137,7 @@ public class SecurityConfigImpl implements SecurityConfig {
     }
 
     public boolean validateToken(String token) {
-        log.debug("Validate token " + token);
+        log.debug("Validating token");
         try {
             SignedJWT signed = SignedJWT.parse(token);
             JWSVerifier verifier = new MACVerifierExtended(getSharedKey(), signed.getJWTClaimsSet());
