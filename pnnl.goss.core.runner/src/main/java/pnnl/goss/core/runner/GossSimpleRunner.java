@@ -82,11 +82,23 @@ public class GossSimpleRunner {
     /** Read an int config value from system property, env var, or default. */
     private static int configInt(String sysProp, String envVar, int defaultVal) {
         String val = System.getProperty(sysProp);
-        if (val != null && !val.isEmpty())
-            return Integer.parseInt(val);
+        if (val != null && !val.isEmpty()) {
+            try {
+                return Integer.parseInt(val.trim());
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid integer value for system property '" + sysProp
+                        + "': '" + val + "'. Falling back to environment variable or default.");
+            }
+        }
         val = System.getenv(envVar);
-        if (val != null && !val.isEmpty())
-            return Integer.parseInt(val);
+        if (val != null && !val.isEmpty()) {
+            try {
+                return Integer.parseInt(val.trim());
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid integer value for environment variable '" + envVar
+                        + "': '" + val + "'. Falling back to default.");
+            }
+        }
         return defaultVal;
     }
 
