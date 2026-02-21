@@ -14,6 +14,7 @@
 	${jakarta-runpath},\
 	${configadmin-runpath},\
 	${fileinstall-runpath},\
+	${nimbus-jose-jwt-runpath},\
 	pnnl.goss.core.core-api;version=latest,\
 	pnnl.goss.core.goss-client;version=latest,\
 	pnnl.goss.core.goss-core-commands;version=latest,\

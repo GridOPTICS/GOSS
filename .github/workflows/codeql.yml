@@ -30,26 +30,26 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
     
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: 21
         distribution: 'temurin'
         cache: gradle
     
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql/codeql-config.yml
         queries: +security-and-quality
     
     - name: Cache Gradle dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.gradle/caches
@@ -64,20 +64,20 @@ jobs:
     
     - name: Build for CodeQL analysis
       run: |
-        # Build without tests to speed up analysis
-        ./gradlew build -x test -x check -x :pnnl.goss.core.itests:testOSGi --no-daemon
+        # Compile only (no tests) for CodeQL to analyze
+        ./gradlew assemble --no-daemon
       env:
         GRADLE_OPTS: -Xmx3g -Dorg.gradle.daemon=false
     
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
         upload: true
     
     - name: Upload CodeQL results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: codeql-results
         path: |

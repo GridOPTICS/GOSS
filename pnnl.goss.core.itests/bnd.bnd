@@ -1,4 +1,4 @@
-Bundle-Version: 12.1.0
+Bundle-Version: 15.0.2
 
 # Build dependencies - JUnit 5
 # Note: Using osgi-core-buildpath only (not full osgi-buildpath) to avoid javax.jms from osgi.enterprise
@@ -12,7 +12,6 @@ Bundle-Version: 12.1.0
     org.junit.platform:junit-platform-launcher;version='[1.10.0,2)',\
     org.opentest4j:opentest4j;version='[1.3.0,2)',\
     org.apiguardian:apiguardian-api;version='[1.1.0,2)',\
-    biz.aQute.tester.junit-platform;version='[6.4.0,7)',\
     ${slf4j-buildpath},\
     ${activemq-buildpath},\
     org.apache.shiro:shiro-core;version=2.0.0,\
@@ -29,16 +28,6 @@ Bundle-Version: 12.1.0
     pnnl.goss.core.goss-core-exceptions;version=snapshot,\
     pnnl.goss.core.goss-core-server-registry;version=snapshot,\
     pnnl.goss.core.testutil;version=latest
-
-# Use JUnit 5 tester
--tester: biz.aQute.tester.junit-platform
-
-# OSGi Runtime Configuration
--runfw: org.apache.felix.framework;version='[7.0.5,8)'
--runee: JavaSE-21
-
-# Test discovery - JUnit 5
-Test-Cases: ${classes;ANNOTATION;org.junit.jupiter.api.Test}
 
 # Private packages
 Private-Package:  \
@@ -59,54 +48,3 @@ Import-Package: \
     org.osgi.framework.*,\
     *
 
-# Disable baselining for integration tests
-#-baselining: *
-
-# Modern launcher configuration
-# SPI Fly is a framework extension for ServiceLoader support
--runpath: \
-    biz.aQute.launcher;version='[6.4.0,7)',\
-    ${spifly-runpath}
-
-# Runtime bundles for OSGi tests - JUnit 5
-# Using library macros and skip osgi.service resolution for simpler setup
--resolve.effective: active;skip:="osgi.service"
-
--runbundles: \
-    ${spifly-bundle-runpath},\
-    ${osgi-util-runpath},\
-    ${activemq-runpath},\
-    ${jakarta-runpath},\
-    ${jakarta-annotation-api-runpath},\
-    ${jakarta-xml-bind-api-runpath},\
-    ${jakarta-activation-runpath},\
-    ${slf4j-runpath},\
-    ${configadmin-runpath},\
-    ${fileinstall-runpath},\
-    ${gson-runpath},\
-    ${httpclient-osgi-runpath},\
-    ${osgi-service-component-runpath},\
-    ${commons-dbcp-runpath},\
-    ${commons-pool-runpath},\
-    ${commons-logging-runpath},\
-    ${commons-beanutils-runpath},\
-    ${geronimo-jta-runpath},\
-    ${xstream-runpath},\
-    ${commons-io-runpath},\
-    junit-platform-commons;version='[1.11.0,2)',\
-    junit-platform-engine;version='[1.11.0,2)',\
-    junit-platform-launcher;version='[1.11.0,2)',\
-    junit-jupiter-api;version='[5.11.0,6)',\
-    junit-jupiter-engine;version='[5.11.0,6)',\
-    org.opentest4j;version='[1.3.0,2)',\
-    org.apache.felix.scr;version='[2.2.0,3)',\
-    pnnl.goss.core.core-api;version=snapshot,\
-    pnnl.goss.core.goss-client;version=snapshot,\
-    pnnl.goss.core.goss-core-server;version=snapshot,\
-    pnnl.goss.core.goss-core-server-api;version=snapshot,\
-    pnnl.goss.core.goss-core-exceptions;version=snapshot,\
-    pnnl.goss.core.goss-core-server-registry;version=snapshot,\
-    pnnl.goss.core.goss-core-security;version=snapshot,\
-    pnnl.goss.core.goss-core-commands;version=snapshot,\
-    pnnl.goss.core.security-propertyfile;version=snapshot,\
-    pnnl.goss.core.testutil;version=snapshot

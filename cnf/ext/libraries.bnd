@@ -288,3 +288,11 @@ h2-runpath: ${h2};version=file
 commons-pool2: ${repo;org.apache.commons:commons-pool2;[2.11.0,3);HIGHEST}
 commons-pool2-buildpath: ${commons-pool2};version=file
 commons-pool2-runpath: ${commons-pool2};version=file
+
+# Nimbus JOSE+JWT (for JWT token support)
+nimbus-jose-jwt: ${repo;com.nimbusds:nimbus-jose-jwt;[9.31,10);HIGHEST}
+json-smart: ${repo;net.minidev:json-smart;[2.4.0,3);HIGHEST}
+nimbus-jose-jwt-buildpath: ${nimbus-jose-jwt};version=file,\
+  ${json-smart};version=file
+nimbus-jose-jwt-runpath: ${nimbus-jose-jwt};version=file,\
+  ${json-smart};version=file

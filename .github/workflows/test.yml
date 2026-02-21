@@ -7,55 +7,48 @@ on:
     branches: [ main, master, develop ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@v6
+
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'temurin'
-    
+        cache: 'gradle'
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    
-    - name: Build with Gradle
-      run: ./gradlew clean build -x check
-    
+
+    - name: Build project
+      run: ./gradlew assemble --no-daemon
+      env:
+        GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
+
     - name: Run unit tests
+      run: ./gradlew test --continue --no-daemon
+      env:
+        GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
+
+    - name: Verify JARs built
       run: |
-        echo "Running GOSS Core Tests..."
-        ./gradlew :pnnl.goss.core.itests:jar
-        
-        # Create a simple test to verify build works
-        java -version
-        
-        # Verify jars were built
-        ls -la pnnl.goss.core/generated/*.jar || true
-        ls -la pnnl.goss.core.itests/generated/*.jar || true
-        
-        echo "✅ Build and jar creation successful"
-    
-    - name: Test Core Functionality
-      run: |
-        # Run a simple validation that classes can be loaded
-        echo "Testing class loading..."
-        
-        # Check that core classes exist in the jar
-        jar tf pnnl.goss.core/generated/pnnl.goss.core.core-api.jar | grep -q "pnnl/goss/core/Client.class" && echo "✅ Client class found" || echo "❌ Client class not found"
-        jar tf pnnl.goss.core/generated/pnnl.goss.core.goss-client.jar | grep -q "pnnl/goss/core/client/GossClient.class" && echo "✅ GossClient class found" || echo "❌ GossClient class not found"
-        
-        echo "✅ Core functionality tests passed"
-    
+        ls -la pnnl.goss.core/generated/*.jar
+        echo "Build and tests successful"
+
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: test-results
         path: |
-          **/build/reports/
-          **/generated/*.jar
+          **/generated/test-reports/
+          **/generated/reports/
+        retention-days: 30

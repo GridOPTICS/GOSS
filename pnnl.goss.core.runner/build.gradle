@@ -14,9 +14,13 @@ bndRunner {
 dependencies {
     implementation project(':pnnl.goss.core')
 
-    // For simple runner
-    implementation 'org.apache.activemq:activemq-broker:5.15.16'
+    // For simple runner (ActiveMQ 6.x uses jakarta.jms)
+    implementation 'org.apache.activemq:activemq-broker:6.2.0'
+    implementation 'org.apache.activemq:activemq-shiro:6.2.0'
+    implementation 'org.apache.activemq:activemq-http:6.2.0'  // WebSocket transport (Jetty)
+    implementation 'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.26'
     implementation 'org.apache.shiro:shiro-core:1.13.0'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
 }
 
 // Simple executable JAR - no OSGi complexity
@@ -35,10 +39,12 @@ task createSimpleRunner(type: Jar) {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    
+
     from sourceSets.main.output
     from project(':pnnl.goss.core').sourceSets.main.output
-    
+
+    // Exclude signature files from signed JARs to avoid fat JAR conflicts
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -61,6 +67,7 @@ task createSSLRunner(type: Jar) {
     from sourceSets.main.output
     from project(':pnnl.goss.core').sourceSets.main.output
 
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -84,6 +91,7 @@ task createCli(type: Jar) {
     from sourceSets.main.output
     from project(':pnnl.goss.core').sourceSets.main.output
 
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -173,7 +181,7 @@ createSimpleRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 createSSLRunner.dependsOn(':pnnl.goss.core:jar', 'jar')
 createCli.dependsOn(':pnnl.goss.core:jar', 'jar')
 
-build.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner, createCli
+assemble.dependsOn createGossRunner, createGossSSLRunner, createSimpleRunner, createSSLRunner, createCli
 
 // Note: Generic buildRunner.<name> tasks are now provided by BndRunnerPlugin
 // Usage: ./gradlew buildRunner.goss-core  (builds from goss-core.bndrun)

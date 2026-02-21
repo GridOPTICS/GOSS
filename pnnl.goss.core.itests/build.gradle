@@ -25,9 +25,39 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    
+
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
+    }
+}
+
+// Tests against an already-running GOSS server (no embedded broker).
+// Usage:
+//   ./gradlew :pnnl.goss.core.itests:testExternal
+//   ./gradlew :pnnl.goss.core.itests:testExternal -Dgoss.openwire.uri=tcp://myhost:61616
+tasks.register('testExternal', Test) {
+    useJUnitPlatform()
+
+    description = 'Run integration tests against an external GOSS server'
+    group = 'verification'
+
+    // BND projects put all sources in src/ (main source set), not src/test/java
+    testClassesDirs = sourceSets.main.output.classesDirs
+    classpath = sourceSets.main.runtimeClasspath
+
+    // Only include the external-server test class
+    include '**/GossExternalServerTest.class'
+
+    // Forward system properties so the test can find the server
+    systemProperties System.properties.subMap([
+        'goss.openwire.uri', 'goss.stomp.uri',
+        'goss.username', 'goss.password'
+    ])
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = true
     }
 }

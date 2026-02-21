@@ -28,6 +28,20 @@ Complete development environment setup for both Eclipse and VS Code IDEs.
 - Debugging GOSS applications
 - OSGi bundle development
 
+## Security
+
+### [Security Guide](SECURITY.md)
+
+Authentication, permissions, JWT tokens, and user management.
+
+**Topics:**
+
+- User management via property files
+- Permission format and wildcards
+- JWT token authentication flow
+- STOMP client token workflow
+- Security architecture
+
 ## Development Guides
 
 ### [Code Formatting Guide](FORMATTING.md)
@@ -112,11 +126,9 @@ Production deployment guide with systemd, SSL, and monitoring.
 
 # Create executable JARs (OSGi runners with updated dependencies)
 ./gradlew buildRunner.goss-core
-./gradlew buildRunner.goss-core-ssl
 
 # Create simple fat JARs
 ./gradlew :pnnl.goss.core.runner:createSimpleRunner
-./gradlew :pnnl.goss.core.runner:createSSLRunner
 
 # Check code formatting
 ./gradlew spotlessCheck
@@ -136,8 +148,7 @@ java -jar goss-simple-runner.jar
 **Option B: OSGi Runner (Production)**
 ```bash
 cd pnnl.goss.core.runner/generated/runners
-java -jar goss-core-runner.jar        # Standard
-java -jar goss-core-ssl-runner.jar    # With SSL
+java -jar goss-core-runner.jar
 ```
 
 ### GOSS Shell Commands

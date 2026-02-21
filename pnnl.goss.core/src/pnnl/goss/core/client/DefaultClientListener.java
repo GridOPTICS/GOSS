@@ -1,10 +1,14 @@
 package pnnl.goss.core.client;
 
 import jakarta.jms.BytesMessage;
+import jakarta.jms.Destination;
 import jakarta.jms.Message;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.TextMessage;
 
+import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +28,36 @@ public class DefaultClientListener implements ClientListener {
         responseEvent = event;
     }
 
+    /**
+     * Get the reply destination from a JMS message, falling back to string
+     * properties when the STOMP adapter can't parse a bare reply-to header into a
+     * JMS Destination (e.g., "feeder-models" instead of "/queue/feeder-models").
+     */
+    private Destination getReplyDestination(Message msg) {
+        try {
+            Destination dest = msg.getJMSReplyTo();
+            if (dest != null) {
+                // Accept any ActiveMQ destination type directly, including
+                // ActiveMQTempQueue and ActiveMQTempTopic which do NOT extend
+                // ActiveMQQueue/ActiveMQTopic (they extend ActiveMQTempDestination).
+                if (dest instanceof ActiveMQDestination)
+                    return dest;
+                log.debug("Normalizing reply destination: {} -> ActiveMQQueue", dest);
+                return new ActiveMQQueue(dest.toString());
+            }
+            // JMSReplyTo is null - check for bare reply-to string property
+            // ActiveMQ STOMP adapter sets this when it can't map to a Destination
+            String replyTo = msg.getStringProperty("reply-to");
+            if (replyTo != null && !replyTo.isEmpty()) {
+                log.debug("Using bare reply-to property as queue: {}", replyTo);
+                return new ActiveMQQueue(replyTo);
+            }
+        } catch (Exception e) {
+            log.warn("Failed to get reply destination", e);
+        }
+        return null;
+    }
+
     public void onMessage(Message message) {
         log.info("DefaultClientListener.onMessage called with message type: {}",
                 message != null ? message.getClass().getSimpleName() : "null");
@@ -40,8 +74,9 @@ public class DefaultClientListener implements ClientListener {
                     if (response.getDestination() == null)
                         response.setDestination(message.getJMSDestination().toString());
                     // Set reply destination and username from JMS headers
-                    if (message.getJMSReplyTo() != null)
-                        response.setReplyDestination(message.getJMSReplyTo());
+                    Destination replyDest = getReplyDestination(message);
+                    if (replyDest != null)
+                        response.setReplyDestination(replyDest);
                     if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
                         response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                     responseEvent.onMessage(response);
@@ -52,8 +87,9 @@ public class DefaultClientListener implements ClientListener {
                 if (response.getDestination() == null)
                     response.setDestination(message.getJMSDestination().toString());
                 // Set reply destination and username from JMS headers
-                if (message.getJMSReplyTo() != null)
-                    response.setReplyDestination(message.getJMSReplyTo());
+                Destination replyDest = getReplyDestination(message);
+                if (replyDest != null)
+                    response.setReplyDestination(replyDest);
                 if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
                     response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                 responseEvent.onMessage(response);
@@ -71,8 +107,9 @@ public class DefaultClientListener implements ClientListener {
                 if (response.getDestination() == null)
                     response.setDestination(message.getJMSDestination().toString());
                 // Set reply destination and username from JMS headers
-                if (message.getJMSReplyTo() != null)
-                    response.setReplyDestination(message.getJMSReplyTo());
+                Destination replyDest = getReplyDestination(message);
+                if (replyDest != null)
+                    response.setReplyDestination(replyDest);
                 if (message.getStringProperty(SecurityConstants.SUBJECT_HEADER) != null)
                     response.setUsername(message.getStringProperty(SecurityConstants.SUBJECT_HEADER));
                 responseEvent.onMessage(response);

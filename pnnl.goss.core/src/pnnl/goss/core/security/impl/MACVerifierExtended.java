@@ -23,17 +23,17 @@ public class MACVerifierExtended extends MACVerifier {
     }
 
     @Override
-    public boolean verify(final JWSHeader header, final byte[] signingInput, final Base64URL signature) throws JOSEException {
+    public boolean verify(final JWSHeader header, final byte[] signingInput, final Base64URL signature)
+            throws JOSEException {
         boolean value = super.verify(header, signingInput, signature);
-//        long time = System.currentTimeMillis();
-        
+        // long time = System.currentTimeMillis();
+
         long time = new Date().getTime();
-        time=time*1000;
-        
+        time = time * 1000;
+
         boolean notBeforeTime = claimsSet.getNotBeforeTime().getTime() <= time;
         boolean beforeExpiration = time < claimsSet.getExpirationTime().getTime();
-        
-        
+
         return value && notBeforeTime && beforeExpiration;
     }
 }
