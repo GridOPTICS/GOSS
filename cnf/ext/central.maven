@@ -26,7 +26,7 @@ org.apache.felix:org.apache.felix.fileinstall:3.7.4
 
 # Pax Logging - OSGi logging framework
 org.ops4j.pax.logging:pax-logging-api:2.2.7
-org.ops4j.pax.logging:pax-logging-service:2.2.7
+org.ops4j.pax.logging:pax-logging-log4j2:2.2.7
 
 # H2 Database
 com.h2database:h2:2.3.232
