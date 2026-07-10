@@ -81,10 +81,18 @@ public class DefaultClientConsumer implements ClientConsumer {
     }
 
     public void close() {
+        // messageConsumer can be null when the constructor's session.createConsumer()
+        // call failed: the constructor logs and swallows the exception rather than
+        // rethrowing, so a partially-constructed consumer with a null messageConsumer
+        // can still end up tracked and later closed. Guard against that null so close()
+        // cannot NPE on a consumer that never finished construction.
+        if (getMessageConsumer() == null) {
+            return;
+        }
         try {
             getMessageConsumer().close();
         } catch (JMSException e) {
-            e.printStackTrace();
+            log.error("Failed to close message consumer", e);
         }
     }
 
