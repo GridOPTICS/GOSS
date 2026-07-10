@@ -104,6 +104,11 @@ public class GossClient implements Client {
     private String trustStore;
     private String trustStorePassword;
     private List<Thread> threads = new ArrayList<Thread>();
+    // Consumers created by subscribe() are long-lived (unlike the getResponse()
+    // consumer, which is closed in its own try/finally). Track them here so
+    // close() can deregister every subscription's MessageConsumer from the
+    // broker instead of leaking it when the reference goes out of scope.
+    private final List<ClientConsumer> subscriptionConsumers = new ArrayList<ClientConsumer>();
     private PROTOCOL protocol;
     private Credentials credentials = null;
     private String token = null;
@@ -366,8 +371,9 @@ public class GossClient implements Client {
             if (this.protocol.equals(PROTOCOL.OPENWIRE) || this.protocol.equals(PROTOCOL.STOMP)) {
                 // Both OPENWIRE and STOMP use the same JMS patterns with ActiveMQ
                 destination = getDestination(topicName);
-                new DefaultClientConsumer(new DefaultClientListener(event),
-                        session, destination);
+                ClientConsumer clientConsumer = new DefaultClientConsumer(
+                        new DefaultClientListener(event), session, destination);
+                subscriptionConsumers.add(clientConsumer);
             }
         } finally {
 
@@ -399,8 +405,9 @@ public class GossClient implements Client {
             if (this.protocol.equals(PROTOCOL.OPENWIRE) || this.protocol.equals(PROTOCOL.STOMP)) {
                 // Both OPENWIRE and STOMP use the same JMS patterns with ActiveMQ
                 destination = getDestination(destinationName, destinationType);
-                new DefaultClientConsumer(new DefaultClientListener(event),
-                        session, destination);
+                ClientConsumer clientConsumer = new DefaultClientConsumer(
+                        new DefaultClientListener(event), session, destination);
+                subscriptionConsumers.add(clientConsumer);
             }
         } finally {
 
@@ -603,6 +610,23 @@ public class GossClient implements Client {
     public void close() {
         try {
             log.debug("Client closing!");
+
+            // Close every consumer created by subscribe() before the session closes,
+            // so the MessageConsumer (and its listener thread) is deregistered from
+            // the broker instead of being abandoned. Each close() is individually
+            // guarded: one consumer throwing must not skip the remaining consumers,
+            // the list clear below, or the session/connection teardown that follows,
+            // otherwise a single bad consumer strands the authenticated session.
+            for (ClientConsumer clientConsumer : subscriptionConsumers) {
+                try {
+                    clientConsumer.close();
+                } catch (Exception e) {
+                    log.warn("Failed to close subscription consumer {}; continuing to close remaining consumers",
+                            clientConsumer, e);
+                }
+            }
+            subscriptionConsumers.clear();
+
             if (session != null) {
                 session.close();
                 session = null;

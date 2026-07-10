@@ -692,6 +692,14 @@ openssl x509 -in /opt/goss/ssl/goss-server.crt -text -noout
 openssl s_client -connect localhost:61443
 ```
 
+#### 5. Platform Startup Hangs with No Broker
+
+If the platform hangs at startup with no error message and the broker does not initialize, the system realm configuration may be missing. Starting with PR #1882, the system-authenticating Shiro realm (SystemBasedRealm) is a mandatory Declarative Services dependency for platform startup, declared with ConfigurationPolicy.REQUIRE and configuration PID pnnl.goss.core.security.systemrealm.
+
+When the configuration file pnnl.goss.core.security.systemrealm.cfg is absent, the system realm never publishes as a service. The mandatory @Reference that gates the broker and SecurityManager never binds, causing the platform startup to hang indefinitely with no broker started. This is intentional fail-closed behavior: the system will not start an insecure broker.
+
+Remedy: ensure the configuration file pnnl.goss.core.security.systemrealm.cfg is present and properly mounted in the deployment environment. If the file is missing, copy it from the distribution bundle or recreate it with appropriate security settings for your deployment.
+
 ### Getting Support
 
 1. **Check logs**: `/opt/goss/logs/`

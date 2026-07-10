@@ -127,6 +127,9 @@ public class GridOpticsServer implements ServerControl {
     private static final String PROP_SYSTEM_MANAGER = "goss.system.manager";
     private static final String PROP_SYSTEM_MANAGER_PASSWORD = "goss.system.manager.password";
 
+    private static final String DEFAULT_SYSTEM_MANAGER_USER = "system";
+    private static final String DEFAULT_SYSTEM_MANAGER_PASSWORD = "manager";
+
     private BrokerService broker;
     private Connection connection;
     private Session session;
@@ -146,6 +149,13 @@ public class GridOpticsServer implements ServerControl {
     private String wsTransport = null;
     // Topic to listen on for receiving requests
     private String requestQueue = null;
+
+    // The broker connection principal used at createConnection(...). Defaults to
+    // system/manager (GADP-014 / issue #42) so a deployment that never sets
+    // goss.system.manager[.password] in pnnl.goss.core.server.cfg keeps today's
+    // behavior unchanged.
+    private String systemManagerUser = DEFAULT_SYSTEM_MANAGER_USER;
+    private String systemManagerPassword = DEFAULT_SYSTEM_MANAGER_PASSWORD;
 
     // SSL Parameters
     private boolean sslEnabled = false;
@@ -170,8 +180,27 @@ public class GridOpticsServer implements ServerControl {
     @Reference
     private volatile RequestHandlerRegistry handlerRegistry;
 
-    @Reference
-    private volatile GossRealm permissionAdapter;
+    /**
+     * Mandatory, target-filtered dependency on the system-authenticating realm
+     * (SystemBasedRealm, marked with the realm.type=system service property).
+     *
+     * This is the explicit activation-order gate for GADP-012 / issue #1882.
+     * Declarative Services will not invoke this component's @Activate (start(Map),
+     * which reaches createConnection("system", "manager") below) until the realm
+     * that authenticates the system principal with the "*" permission is bound. The
+     * SecurityManager reference above provides the same ordering transitively (its
+     * own component gates publication on this realm); holding the reference here as
+     * well makes the contract local, explicit, and independent of the
+     * SecurityManager component's internals. The field was previously declared as
+     * an unused permissionAdapter reference; it is retargeted, not added.
+     *
+     * Never read directly in Java: the field's sole purpose is to give DS a
+     * mandatory reference to gate @Activate on, so it is unused from this class's
+     * own code and the compiler's unused-field warning is suppressed.
+     */
+    @Reference(target = GossRealm.SYSTEM_REALM_TARGET_FILTER)
+    @SuppressWarnings("unused")
+    private volatile GossRealm systemRealm;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -204,10 +233,10 @@ public class GridOpticsServer implements ServerControl {
 
         if (properties != null) {
 
-            getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
-                    "system");
-            getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
-                    "manager");
+            systemManagerUser = getProperty((String) properties.get(PROP_SYSTEM_MANAGER),
+                    DEFAULT_SYSTEM_MANAGER_USER);
+            systemManagerPassword = getProperty((String) properties.get(PROP_SYSTEM_MANAGER_PASSWORD),
+                    DEFAULT_SYSTEM_MANAGER_PASSWORD);
 
             shouldStartBroker = Boolean.parseBoolean(
                     getProperty((String) properties.get(PROP_START_BROKER), "true"));
@@ -430,10 +459,10 @@ public class GridOpticsServer implements ServerControl {
                 connectionFactory = new ActiveMQConnectionFactory(openwireTransport);
             }
 
-            connection = connectionFactory.createConnection("system", "manager");
+            connection = connectionFactory.createConnection(systemManagerUser, systemManagerPassword);
             connection.start();
         } catch (Exception e) {
-            log.debug("Error Connecting to ActiveMQ", e);
+            log.warn("Error Connecting to ActiveMQ", e);
             if (shouldStartBroker) {
                 try {
                     if (broker != null) {
