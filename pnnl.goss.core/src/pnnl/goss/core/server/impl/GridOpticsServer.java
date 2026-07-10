@@ -170,8 +170,27 @@ public class GridOpticsServer implements ServerControl {
     @Reference
     private volatile RequestHandlerRegistry handlerRegistry;
 
-    @Reference
-    private volatile GossRealm permissionAdapter;
+    /**
+     * Mandatory, target-filtered dependency on the system-authenticating realm
+     * (SystemBasedRealm, marked with the realm.type=system service property).
+     *
+     * This is the explicit activation-order gate for GADP-012 / issue #1882.
+     * Declarative Services will not invoke this component's @Activate (start(Map),
+     * which reaches createConnection("system", "manager") below) until the realm
+     * that authenticates the system principal with the "*" permission is bound. The
+     * SecurityManager reference above provides the same ordering transitively (its
+     * own component gates publication on this realm); holding the reference here as
+     * well makes the contract local, explicit, and independent of the
+     * SecurityManager component's internals. The field was previously declared as
+     * an unused permissionAdapter reference; it is retargeted, not added.
+     *
+     * Never read directly in Java: the field's sole purpose is to give DS a
+     * mandatory reference to gate @Activate on, so it is unused from this class's
+     * own code and the compiler's unused-field warning is suppressed.
+     */
+    @Reference(target = GossRealm.SYSTEM_REALM_TARGET_FILTER)
+    @SuppressWarnings("unused")
+    private volatile GossRealm systemRealm;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 

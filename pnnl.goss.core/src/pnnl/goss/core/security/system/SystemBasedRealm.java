@@ -39,10 +39,19 @@ import pnnl.goss.core.security.SecurityConfig;
  *
  * NOTE: This class assumes uniqueness of username in the properties file.
  *
+ * The realm.type=system service property is the distinguishing marker that lets
+ * ordering-sensitive consumers (the SecurityManager Activator and
+ * GridOpticsServer) select this realm with a target filter, so Declarative
+ * Services can gate their activation on the system-authenticating realm rather
+ * than on "some realm". See GADP-012 / issue #1882: without this marker the
+ * AT_LEAST_ONE realm guard let GridOpticsServer connect as system/manager
+ * before this realm was wired.
+ *
  * @author Craig Allwardt
  *
  */
-@Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.systemrealm", configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(service = GossRealm.class, configurationPid = "pnnl.goss.core.security.systemrealm", configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
+        GossRealm.REALM_TYPE_PROPERTY + "=" + GossRealm.SYSTEM_REALM_TYPE})
 public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
 
     private static final Logger log = LoggerFactory.getLogger(SystemBasedRealm.class);

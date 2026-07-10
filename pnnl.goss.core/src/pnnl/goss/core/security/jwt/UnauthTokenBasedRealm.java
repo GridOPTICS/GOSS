@@ -113,7 +113,7 @@ public class UnauthTokenBasedRealm extends AuthorizingRealm implements GossRealm
                     // look up permissions based on roles and add them
                     Set<String> permissions = new HashSet<String>();
                     JWTAuthenticationToken tokenObj = securityConfig.parseToken(username);
-                    log.info("Has token roles count: {}", 
+                    log.info("Has token roles count: {}",
                             tokenObj.getRoles() != null ? tokenObj.getRoles().size() : 0);
 
                     if (roleManager != null) {
