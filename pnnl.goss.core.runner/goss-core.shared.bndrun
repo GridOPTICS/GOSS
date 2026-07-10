@@ -33,7 +33,7 @@ shared.runrequires: \
 	osgi.identity;filter:='(osgi.identity=pnnl.goss.core.runner)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.scr)(version>=2.2.10))',\
 	osgi.identity;filter:='(osgi.identity=org.ops4j.pax.logging.pax-logging-api)',\
-	osgi.identity;filter:='(osgi.identity=org.ops4j.pax.logging.pax-logging-service)',\
+	osgi.identity;filter:='(osgi.identity=org.ops4j.pax.logging.pax-logging-log4j2)',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.runtime)(version>=1.1.6))',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.shell)(version>=1.1.4))',\
 	osgi.identity;filter:='(&(osgi.identity=org.apache.felix.gogo.command)(version>=1.1.2))',\
