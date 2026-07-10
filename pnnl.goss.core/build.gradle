@@ -20,7 +20,15 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    
+
+    // The activation-order test (GADP-012) asserts the generated Declarative
+    // Services descriptors, which are the real runtime contract. DS annotations
+    // are CLASS-retention and invisible to runtime reflection, so the bnd-emitted
+    // OSGI-INF XML is the authoritative artifact to assert against. Build the
+    // bundles first and hand the test their output directory.
+    dependsOn 'jar'
+    systemProperty 'goss.generated.dir', project.file('generated').absolutePath
+
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
