@@ -93,6 +93,12 @@ public class GossClient implements Client {
 
     private static final Logger log = LoggerFactory.getLogger(GossClient.class);
 
+    // jakarta.jms.MessageConsumer#receive(long) treats a timeout of 0 as "block
+    // indefinitely", the same contract as the no-arg receive() it replaces. Used
+    // by the unbounded getResponse() overloads below so their behavior is
+    // unchanged after the bounded-timeout overload was added (GADP-051).
+    private static final long UNBOUNDED_RECEIVE_TIMEOUT_MS = 0L;
+
     private UUID uuid = null;
     private String brokerUri = null;
     private String stompUri = null;
@@ -288,7 +294,9 @@ public class GossClient implements Client {
 
     /**
      * Sends request and gets response for synchronous communication with specified
-     * destination type.
+     * destination type. Blocks indefinitely for a reply; see
+     * {@link #getResponse(Serializable, String, RESPONSE_FORMAT, DESTINATION_TYPE, long)}
+     * for a bounded-wait variant.
      *
      * @param message
      *            instance of pnnl.goss.core.Request or any of its subclass.
@@ -308,6 +316,55 @@ public class GossClient implements Client {
     @Override
     public Serializable getResponse(Serializable message, String destinationName,
             RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType) throws SystemException, JMSException {
+        // Preserve the unbounded-wait contract exactly: 0 means "block indefinitely"
+        // per jakarta.jms.MessageConsumer#receive(long), the same as the no-arg
+        // receive() this delegation replaced.
+        return getResponse(message, destinationName, responseFormat, destinationType,
+                UNBOUNDED_RECEIVE_TIMEOUT_MS);
+    }
+
+    /**
+     * Sends request and gets response for synchronous communication, defaulting to
+     * QUEUE destination type, bounded by an explicit receive timeout. See
+     * {@link #getResponse(Serializable, String, RESPONSE_FORMAT, DESTINATION_TYPE, long)}
+     * for the timeout semantics.
+     */
+    @Override
+    public Serializable getResponse(Serializable message, String destinationName,
+            RESPONSE_FORMAT responseFormat, long timeoutMillis) throws SystemException, JMSException {
+        return getResponse(message, destinationName, responseFormat, DESTINATION_TYPE.QUEUE, timeoutMillis);
+    }
+
+    /**
+     * Sends request and gets response for synchronous communication with specified
+     * destination type, bounded by an explicit receive timeout (GADP-051). Unlike
+     * the unbounded overloads, this returns {@code null} once {@code timeoutMillis}
+     * elapses without a reply, rather than blocking the calling thread forever.
+     *
+     * @param message
+     *            instance of pnnl.goss.core.Request or any of its subclass.
+     * @param destinationName
+     *            the destination name (topic or queue)
+     * @param responseFormat
+     *            the response format
+     * @param destinationType
+     *            TOPIC or QUEUE
+     * @param timeoutMillis
+     *            maximum time to wait for a reply, in milliseconds. A value of
+     *            {@code 0} blocks indefinitely (matches
+     *            {@link jakarta.jms.MessageConsumer#receive(long)} semantics).
+     * @return return an Object which could be a pnnl.goss.core.DataResponse,
+     *         pnnl.goss.core.UploadResponse or pnnl.goss.core.DataError, or
+     *         {@code null} if no reply arrived within {@code timeoutMillis}.
+     * @throws IllegalStateException
+     *             when GossCLient is initialized with an GossResponseEvent. Cannot
+     *             synchronously receive a message when a MessageListener is set.
+     * @throws JMSException
+     */
+    @Override
+    public Serializable getResponse(Serializable message, String destinationName,
+            RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType, long timeoutMillis)
+            throws SystemException, JMSException {
         if (protocol == null) {
             protocol = PROTOCOL.OPENWIRE;
         }
@@ -330,7 +387,19 @@ public class GossClient implements Client {
             clientPublisher.sendMessage(message, destination, replyDestination,
                     responseFormat);
             Message responseMessage = clientConsumer.getMessageConsumer()
-                    .receive();
+                    .receive(timeoutMillis);
+            if (responseMessage == null) {
+                // Timed out waiting for a reply (or the consumer was concurrently
+                // closed, per the JMS receive(long) contract). A null Message here
+                // means "no reply arrived in time", not "an empty reply": return
+                // null explicitly rather than falling through to the TextMessage
+                // cast below, which would NPE on a null responseMessage. Callers
+                // that retry (e.g. FieldBusManager's bounded topology request) rely
+                // on this null to mean "not ready yet, try again".
+                log.debug("No response received on " + replyDestination + " within "
+                        + timeoutMillis + "ms");
+                return response;
+            }
             response = ((TextMessage) responseMessage).getText();
             if (responseMessage instanceof ObjectMessage) {
                 ObjectMessage objectMessage = (ObjectMessage) responseMessage;
