@@ -53,6 +53,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.jms.BytesMessage;
 import jakarta.jms.Connection;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSException;
@@ -92,6 +93,20 @@ import com.northconcepts.exception.SystemException;
 public class GossClient implements Client {
 
     private static final Logger log = LoggerFactory.getLogger(GossClient.class);
+
+    // jakarta.jms.MessageConsumer#receive(long) treats a timeout of 0 as "block
+    // indefinitely", the same contract as the no-arg receive() it replaces. Used
+    // by the unbounded getResponse() overloads below so their behavior is
+    // unchanged after the bounded-timeout overload was added (GADP-051).
+    private static final long UNBOUNDED_RECEIVE_TIMEOUT_MS = 0L;
+
+    // Sane upper bound on a BytesMessage reply body decoded by getResponse().
+    // A topology/response JSON reply is at most a few MB; a length beyond this
+    // is either a malformed/adversarial wire value or provider corruption, and
+    // allocating a byte[] directly from an unbounded wire-supplied length is an
+    // OOM denial-of-service vector (and the (int) cast on getBodyLength() is
+    // lossy/negative past Integer.MAX_VALUE). Reject rather than allocate.
+    private static final long MAX_BYTES_MESSAGE_BODY_LENGTH = 8L * 1024 * 1024;
 
     private UUID uuid = null;
     private String brokerUri = null;
@@ -288,7 +303,9 @@ public class GossClient implements Client {
 
     /**
      * Sends request and gets response for synchronous communication with specified
-     * destination type.
+     * destination type. Blocks indefinitely for a reply; see
+     * {@link #getResponse(Serializable, String, RESPONSE_FORMAT, DESTINATION_TYPE, long)}
+     * for a bounded-wait variant.
      *
      * @param message
      *            instance of pnnl.goss.core.Request or any of its subclass.
@@ -308,6 +325,74 @@ public class GossClient implements Client {
     @Override
     public Serializable getResponse(Serializable message, String destinationName,
             RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType) throws SystemException, JMSException {
+        // Preserve the unbounded-wait contract exactly: 0 means "block indefinitely"
+        // per jakarta.jms.MessageConsumer#receive(long), the same as the no-arg
+        // receive() this delegation replaced.
+        return getResponse(message, destinationName, responseFormat, destinationType,
+                UNBOUNDED_RECEIVE_TIMEOUT_MS);
+    }
+
+    /**
+     * Sends request and gets response for synchronous communication, defaulting to
+     * QUEUE destination type, bounded by an explicit receive timeout (GADP-051).
+     * See
+     * {@link #getResponse(Serializable, String, RESPONSE_FORMAT, DESTINATION_TYPE, long)}
+     * for the full timeout semantics.
+     *
+     * @param message
+     *            instance of pnnl.goss.core.Request or any of its subclass.
+     * @param destinationName
+     *            the destination name (topic or queue)
+     * @param responseFormat
+     *            the response format
+     * @param timeoutMillis
+     *            maximum time to wait for a reply, in milliseconds. A value of
+     *            {@code 0} blocks indefinitely (matches
+     *            {@link jakarta.jms.MessageConsumer#receive(long)} semantics).
+     * @return return an Object which could be a pnnl.goss.core.DataResponse,
+     *         pnnl.goss.core.UploadResponse or pnnl.goss.core.DataError, or
+     *         {@code null} if no reply arrived within {@code timeoutMillis}.
+     * @throws IllegalStateException
+     *             when GossCLient is initialized with an GossResponseEvent. Cannot
+     *             synchronously receive a message when a MessageListener is set.
+     * @throws JMSException
+     */
+    @Override
+    public Serializable getResponse(Serializable message, String destinationName,
+            RESPONSE_FORMAT responseFormat, long timeoutMillis) throws SystemException, JMSException {
+        return getResponse(message, destinationName, responseFormat, DESTINATION_TYPE.QUEUE, timeoutMillis);
+    }
+
+    /**
+     * Sends request and gets response for synchronous communication with specified
+     * destination type, bounded by an explicit receive timeout (GADP-051). Unlike
+     * the unbounded overloads, this returns {@code null} once {@code timeoutMillis}
+     * elapses without a reply, rather than blocking the calling thread forever.
+     *
+     * @param message
+     *            instance of pnnl.goss.core.Request or any of its subclass.
+     * @param destinationName
+     *            the destination name (topic or queue)
+     * @param responseFormat
+     *            the response format
+     * @param destinationType
+     *            TOPIC or QUEUE
+     * @param timeoutMillis
+     *            maximum time to wait for a reply, in milliseconds. A value of
+     *            {@code 0} blocks indefinitely (matches
+     *            {@link jakarta.jms.MessageConsumer#receive(long)} semantics).
+     * @return return an Object which could be a pnnl.goss.core.DataResponse,
+     *         pnnl.goss.core.UploadResponse or pnnl.goss.core.DataError, or
+     *         {@code null} if no reply arrived within {@code timeoutMillis}.
+     * @throws IllegalStateException
+     *             when GossCLient is initialized with an GossResponseEvent. Cannot
+     *             synchronously receive a message when a MessageListener is set.
+     * @throws JMSException
+     */
+    @Override
+    public Serializable getResponse(Serializable message, String destinationName,
+            RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType, long timeoutMillis)
+            throws SystemException, JMSException {
         if (protocol == null) {
             protocol = PROTOCOL.OPENWIRE;
         }
@@ -320,33 +405,175 @@ public class GossClient implements Client {
         }
 
         Serializable response = null;
-        Destination replyDestination = getTemporaryDestination();
-        Destination destination = getDestination(destinationName, destinationType);
 
-        log.debug("Creating consumer for destination " + replyDestination + " (type: " + destinationType + ")");
-        DefaultClientConsumer clientConsumer = new DefaultClientConsumer(
-                session, replyDestination);
+        // GADP-051 (session-isolation): the synchronous receive() below MUST run
+        // on a Session that has NO MessageListener attached. The shared `session`
+        // may carry async subscribe() listeners (for example FieldBusManager's
+        // device-output subscription, which publishDeviceOutput() registers before
+        // it issues its synchronous topology request on the same client), and
+        // jakarta.jms forbids a synchronous receive() on such a session:
+        // ActiveMQSession.checkMessageListener throws IllegalStateException,
+        // "Cannot synchronously receive a message when a MessageListener is set".
+        // That made every topology getResponse() throw instantly regardless of
+        // timing, so the caller's bounded-retry window could never succeed.
+        //
+        // Fix: derive a dedicated, listener-free Session from the SAME Connection
+        // for this request/reply, and close it in the finally block. A JMS
+        // Connection supports many Sessions, so this isolates the synchronous
+        // path from the async listener path without disturbing the shared
+        // session's subscriptions. The request is still SENT via the shared
+        // clientPublisher (publishing on a listener-bound session is permitted);
+        // only the temporary reply destination, its consumer, and the synchronous
+        // receive move onto the dedicated session. The session is always closed,
+        // so no session is leaked per call.
+        getSession(); // ensure the shared Connection exists before deriving a session from it
+        Session syncSession = null;
+        DefaultClientConsumer clientConsumer = null;
         try {
+            syncSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination replyDestination = getTemporaryDestination(syncSession);
+            Destination destination = getDestination(destinationName, destinationType);
+
+            log.debug("Creating consumer for destination " + replyDestination + " (type: " + destinationType + ")");
+            clientConsumer = new DefaultClientConsumer(syncSession, replyDestination);
+
             clientPublisher.sendMessage(message, destination, replyDestination,
                     responseFormat);
             Message responseMessage = clientConsumer.getMessageConsumer()
-                    .receive();
-            response = ((TextMessage) responseMessage).getText();
+                    .receive(timeoutMillis);
+            if (responseMessage == null) {
+                // Timed out waiting for a reply (or the consumer was concurrently
+                // closed, per the JMS receive(long) contract). A null Message here
+                // means "no reply arrived in time", not "an empty reply": return
+                // null explicitly rather than falling through to the TextMessage
+                // cast below, which would NPE on a null responseMessage. Callers
+                // that retry (e.g. FieldBusManager's bounded topology request) rely
+                // on this null to mean "not ready yet, try again".
+                log.debug("No response received on " + replyDestination + " within "
+                        + timeoutMillis + "ms");
+                return response;
+            }
+            // GADP-051 (message-type dispatch): check instanceof BEFORE casting.
+            // The previous code unconditionally cast responseMessage to TextMessage
+            // before these checks, so any reply that was NOT a TextMessage (for
+            // example ActiveMQBytesMessage, which is how a reply arrives over the
+            // STOMP-to-OpenWire bridge, e.g. the topology background service's
+            // response) threw ClassCastException immediately. That exception was
+            // previously masked by the session-listener IllegalStateException this
+            // method used to throw first (GADP-051 session-split fix); once that
+            // was fixed the latent bad cast surfaced. Handle each real message type
+            // explicitly, matching the decode convention already used in
+            // DefaultClientListener.onMessage for the same wire formats, and fail
+            // loudly (data-invariants Rule 2) rather than defaulting to null/empty
+            // on an unrecognized type: the body is consumed downstream (e.g.
+            // TopologyRequestProcess builds its topology map from it), so a wrong
+            // or empty body would be silent data corruption, not just a crash.
             if (responseMessage instanceof ObjectMessage) {
                 ObjectMessage objectMessage = (ObjectMessage) responseMessage;
                 if (objectMessage.getObject() instanceof Response) {
+                    // The reply carries a first-class pnnl.goss.core.Response
+                    // (or subclass, e.g. DataResponse) written as the
+                    // ObjectMessage payload by an OpenWire-side sender. Unwrap
+                    // it directly rather than treating it as opaque
+                    // Serializable, so callers get the typed Response contract
+                    // they expect from this method's declared return.
                     response = (Response) objectMessage.getObject();
+                } else {
+                    // The reply carries some other Serializable payload (not a
+                    // Response). This method's contract is "return whatever
+                    // was sent", so pass it through unchanged rather than
+                    // rejecting it: the sender, not this client, decides what
+                    // is a valid payload shape.
+                    response = (Serializable) objectMessage.getObject();
                 }
             } else if (responseMessage instanceof TextMessage) {
                 response = ((TextMessage) responseMessage).getText();
+            } else if (responseMessage instanceof BytesMessage) {
+                // BytesMessage is used by STOMP clients (Python, JavaScript, etc.)
+                // and by replies bridged from STOMP to OpenWire. Decode with the
+                // same UTF-8 convention DefaultClientListener.onMessage uses for
+                // the equivalent BytesMessage case, so both synchronous and
+                // asynchronous receive paths interpret the wire body identically.
+                BytesMessage bytesMessage = (BytesMessage) responseMessage;
+                long bodyLength = bytesMessage.getBodyLength();
+                // Validate the wire-supplied length BEFORE allocating. An
+                // unbounded/negative bodyLength allocated directly into `new
+                // byte[(int) bodyLength]` is an OOM denial-of-service vector
+                // (and the (int) cast is lossy/negative past
+                // Integer.MAX_VALUE, which would throw
+                // NegativeArraySizeException from inside the allocation
+                // rather than a clear diagnostic). A real topology/response
+                // JSON reply is a few MB at most, so reject anything outside
+                // a sane cap loudly, matching the else-branch's fail-loud
+                // contract, rather than allocating from an unvalidated value.
+                if (bodyLength < 0 || bodyLength > MAX_BYTES_MESSAGE_BODY_LENGTH) {
+                    throw SystemException.wrap(new JMSException(
+                            "BytesMessage reply body length " + bodyLength
+                                    + " is negative or exceeds the "
+                                    + MAX_BYTES_MESSAGE_BODY_LENGTH
+                                    + "-byte cap for getResponse replies"))
+                            .set("destination", destinationName)
+                            .set("message", message);
+                }
+                byte[] bytes = new byte[(int) bodyLength];
+                bytesMessage.readBytes(bytes);
+                response = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+            } else {
+                // An unexpected/unsupported JMS message type. Do not silently
+                // return null or an empty body here: that would convert a visible
+                // failure into invisible data loss for whatever consumed the
+                // response downstream. Fail loudly with the concrete type so the
+                // caller (and its logs) can diagnose it.
+                throw SystemException.wrap(new JMSException(
+                        "Unsupported JMS message type for getResponse reply: "
+                                + responseMessage.getClass().getName()))
+                        .set("destination", destinationName)
+                        .set("message", message);
             }
 
         } catch (JMSException e) {
-            SystemException.wrap(e).set("destination", destinationName).set("message", message);
+            // GOSS-023: a genuine JMSException here (a real transport/provider
+            // failure, e.g. the broker or consumer going away mid-receive) must
+            // never be silently coerced into the same null result as a genuine
+            // timeout. The previous code constructed a SystemException and threw
+            // it away without ever calling throw, so this catch block was a dead
+            // computation: the failure was swallowed and getResponse fell through
+            // to "return response" (still null) after only the few milliseconds
+            // it took the provider to report the failure, not the requested
+            // timeoutMillis. That made a hard error indistinguishable from
+            // "no reply arrived in time" and collapsed callers' bounded-retry
+            // windows (see GADP-051's TopologyRequestProcess, whose designed
+            // ~19s retry budget collapsed to ~4s because every attempt returned
+            // in a few ms instead of blocking). Surface it instead, matching the
+            // getTemporaryDestination/getDestination pattern already used
+            // elsewhere in this class: throw, don't swallow.
+            throw SystemException.wrap(e).set("destination", destinationName).set("message", message);
 
         } finally {
+            // Guard the consumer close the same way the session close below is
+            // guarded: if consumer.close() throws, that must not skip the
+            // syncSession.close() that follows, which would otherwise leak the
+            // dedicated request/reply session. Log with context rather than
+            // swallowing silently.
             if (clientConsumer != null) {
-                clientConsumer.close();
+                try {
+                    clientConsumer.close();
+                } catch (Exception e) {
+                    log.warn("Failed to close synchronous request/reply consumer for destination {}",
+                            destinationName, e);
+                }
+            }
+            // Close the dedicated request/reply session so it is not leaked per
+            // call. Guard the close so a failure tearing down this session cannot
+            // mask a response already computed above, and log it with context
+            // rather than swallowing it silently.
+            if (syncSession != null) {
+                try {
+                    syncSession.close();
+                } catch (JMSException e) {
+                    log.warn("Failed to close synchronous request/reply session for destination {}",
+                            destinationName, e);
+                }
             }
         }
 
@@ -661,19 +888,24 @@ public class GossClient implements Client {
         return session;
     }
 
-    private Destination getTemporaryDestination() throws SystemException {
+    // Create the temporary reply queue on the supplied session. A JMS
+    // TemporaryQueue is scoped to the Session (really the Connection) that
+    // created it and can only be consumed by that same session, so the
+    // synchronous getResponse() path passes its dedicated, listener-free session
+    // here (GADP-051) rather than the shared listener-bearing `session`.
+    private Destination getTemporaryDestination(Session destinationSession) throws SystemException {
         Destination destination = null;
 
         try {
             if (protocol.equals(PROTOCOL.SSL)) {
-                destination = getSession().createTemporaryQueue();
+                destination = destinationSession.createTemporaryQueue();
                 if (destination == null) {
                     throw new SystemException(ConnectionCode.DESTINATION_ERROR);
                 }
             } else {
                 if (protocol.equals(PROTOCOL.OPENWIRE) || protocol.equals(PROTOCOL.STOMP)) {
                     // Both OPENWIRE and STOMP use standard JMS with ActiveMQ
-                    destination = getSession().createTemporaryQueue();
+                    destination = destinationSession.createTemporaryQueue();
                     if (destination == null) {
                         throw new SystemException(
                                 ConnectionCode.DESTINATION_ERROR);

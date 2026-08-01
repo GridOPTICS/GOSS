@@ -56,6 +56,53 @@ public interface Client {
             RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType) throws SystemException, JMSException;
 
     /**
+     * Makes synchronous call to the server using QUEUE destination (default),
+     * bounded by an explicit receive timeout. Unlike the no-timeout overloads
+     * (which block indefinitely waiting for a reply), this returns {@code null}
+     * once {@code timeoutMillis} elapses without a reply, rather than blocking the
+     * calling thread forever. Intended for callers that need to retry against a
+     * service that may not be answerable yet (a boot-order race), where an
+     * unbounded wait would defeat the retry loop entirely.
+     *
+     * @param request
+     * @param destination
+     * @param responseFormat
+     * @param timeoutMillis
+     *            maximum time to wait for a reply, in milliseconds. A value of
+     *            {@code 0} blocks indefinitely (matches
+     *            {@link jakarta.jms.MessageConsumer#receive(long)} semantics).
+     * @return the response, or {@code null} if no reply arrived within
+     *         {@code timeoutMillis}
+     * @throws SystemException
+     */
+    public Serializable getResponse(Serializable request, String destination,
+            RESPONSE_FORMAT responseFormat, long timeoutMillis) throws SystemException, JMSException;
+
+    /**
+     * Makes synchronous call to the server with specified destination type, bounded
+     * by an explicit receive timeout. See
+     * {@link #getResponse(Serializable, String, RESPONSE_FORMAT, long)} for the
+     * timeout semantics.
+     *
+     * @param request
+     * @param destination
+     *            destination name
+     * @param responseFormat
+     * @param destinationType
+     *            TOPIC or QUEUE
+     * @param timeoutMillis
+     *            maximum time to wait for a reply, in milliseconds. A value of
+     *            {@code 0} blocks indefinitely (matches
+     *            {@link jakarta.jms.MessageConsumer#receive(long)} semantics).
+     * @return the response, or {@code null} if no reply arrived within
+     *         {@code timeoutMillis}
+     * @throws SystemException
+     */
+    public Serializable getResponse(Serializable request, String destination,
+            RESPONSE_FORMAT responseFormat, DESTINATION_TYPE destinationType, long timeoutMillis)
+            throws SystemException, JMSException;
+
+    /**
      * Lets the client subscribe to a Topic of the given name for event based
      * communication.
      *
