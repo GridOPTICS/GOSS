@@ -46,7 +46,8 @@ import pnnl.goss.core.client.GossClient;
  * and the pre-existing unbounded overloads keep calling receive(0), preserving
  * their exact prior "block indefinitely" behavior for other callers.
  *
- * <p>GADP-051 (session-isolation): getResponse() now derives a dedicated,
+ * <p>
+ * GADP-051 (session-isolation): getResponse() now derives a dedicated,
  * listener-free Session from the Connection for its synchronous request/reply
  * (so an async subscribe() listener on the shared session cannot poison the
  * synchronous receive()). The mock wiring therefore stubs the Connection to
