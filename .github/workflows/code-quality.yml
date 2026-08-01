@@ -62,7 +62,7 @@ jobs:
       run: chmod +x gradlew
     
     - name: Check code formatting
-      run: ./gradlew spotlessCheck --no-daemon || true
+      run: ./gradlew spotlessCheck --no-daemon
       env:
         GRADLE_OPTS: -Xmx2g -Dorg.gradle.daemon=false
     
