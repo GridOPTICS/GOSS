@@ -334,7 +334,8 @@ public class GossClient implements Client {
 
     /**
      * Sends request and gets response for synchronous communication, defaulting to
-     * QUEUE destination type, bounded by an explicit receive timeout (GADP-051). See
+     * QUEUE destination type, bounded by an explicit receive timeout (GADP-051).
+     * See
      * {@link #getResponse(Serializable, String, RESPONSE_FORMAT, DESTINATION_TYPE, long)}
      * for the full timeout semantics.
      *

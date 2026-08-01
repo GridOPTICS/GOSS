@@ -18,40 +18,45 @@ import pnnl.goss.core.client.GossClient;
 /**
  * GADP-051 (session-isolation) regression coverage.
  *
- * <p>Root cause verified at runtime cold start: FieldBusManager registers an
- * async device-output {@code MessageListener} via {@code subscribe(...)} and
- * then issues a synchronous topology {@code getResponse(...)} on the SAME
+ * <p>
+ * Root cause verified at runtime cold start: FieldBusManager registers an async
+ * device-output {@code MessageListener} via {@code subscribe(...)} and then
+ * issues a synchronous topology {@code getResponse(...)} on the SAME
  * {@link pnnl.goss.core.client.GossClient}. Both operations shared the client's
  * single JMS {@code Session}, and {@code jakarta.jms} forbids a synchronous
  * {@code receive()} on a session that has a {@code MessageListener} attached:
  * {@code org.apache.activemq.ActiveMQSession.checkMessageListener} throws
- * {@code jakarta.jms.IllegalStateException} with the message
- * "Cannot synchronously receive a message when a MessageListener is set".
- * That made every topology attempt throw instantly regardless of timing, so
- * the caller's bounded-retry window (GADP-051 / GOSS-023) could never succeed.
+ * {@code jakarta.jms.IllegalStateException} with the message "Cannot
+ * synchronously receive a message when a MessageListener is set". That made
+ * every topology attempt throw instantly regardless of timing, so the caller's
+ * bounded-retry window (GADP-051 / GOSS-023) could never succeed.
  *
- * <p>This test reproduces the exact interaction against a real embedded broker
- * (a mock cannot exercise {@code ActiveMQSession.checkMessageListener}): it
+ * <p>
+ * This test reproduces the exact interaction against a real embedded broker (a
+ * mock cannot exercise {@code ActiveMQSession.checkMessageListener}): it
  * subscribes an async listener, then calls the bounded {@code getResponse}
  * overload against a destination with no responder.
  *
  * <ul>
- *   <li>RED (pre-fix, shared session): the synchronous receive throws
- *       {@code IllegalStateException} within a few milliseconds; it never
- *       reaches its timeout budget.</li>
- *   <li>GREEN (post-fix, dedicated listener-free session): the synchronous
- *       receive runs cleanly on its own session, blocks for its timeout budget,
- *       and returns {@code null} (no reply arrived) without throwing.</li>
+ * <li>RED (pre-fix, shared session): the synchronous receive throws
+ * {@code IllegalStateException} within a few milliseconds; it never reaches its
+ * timeout budget.</li>
+ * <li>GREEN (post-fix, dedicated listener-free session): the synchronous
+ * receive runs cleanly on its own session, blocks for its timeout budget, and
+ * returns {@code null} (no reply arrived) without throwing.</li>
  * </ul>
  *
- * <p>Same embedded-broker pattern as {@link GossClientBoundedReceiveWallClockTest}.
+ * <p>
+ * Same embedded-broker pattern as
+ * {@link GossClientBoundedReceiveWallClockTest}.
  */
 public class GossClientSyncReceiveWithActiveListenerTest {
 
     private static final String LISTENER_TOPIC = "goss.gridappsd.test.device.output";
     private static final String SYNC_DESTINATION = "goss.gridappsd.test.topology.no.responder";
     private static final long TIMEOUT_MILLIS = 1200L;
-    // Scheduling jitter margin, mirrored from GossClientBoundedReceiveWallClockTest.
+    // Scheduling jitter margin, mirrored from
+    // GossClientBoundedReceiveWallClockTest.
     private static final long TOLERANCE_MILLIS = 400L;
 
     private BrokerService broker;
