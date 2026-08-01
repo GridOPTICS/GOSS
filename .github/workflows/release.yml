@@ -84,6 +84,15 @@ jobs:
           README.md \
           pnnl.goss.core/LICENSE
     
+    - name: Determine release version
+      id: release_version
+      run: |
+        # Strip the leading 'v' from the tag (v16.0.0 -> 16.0.0) so the
+        # asset glob below matches only this release's jars, not the
+        # full cnf/releaserepo/ history of every prior release.
+        version="${{ github.ref_name }}"
+        echo "version=${version#v}" >> "$GITHUB_OUTPUT"
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
@@ -94,7 +103,7 @@ jobs:
         prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
         files: |
           dist/*.tar.gz
-          cnf/releaserepo/**/*.jar
+          cnf/releaserepo/**/*-${{ steps.release_version.outputs.version }}.jar
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
