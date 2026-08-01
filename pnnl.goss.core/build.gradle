@@ -16,6 +16,12 @@ dependencies {
     
     // AssertJ for fluent assertions
     testImplementation 'org.assertj:assertj-core:3.26.3'
+
+    // Embedded broker for GOSS-023: bounded-receive must be proven against a
+    // real JMS session's wall-clock blocking behavior, not only a mocked
+    // MessageConsumer. Test-scope only; pnnl.goss.core.runner already carries
+    // this at implementation scope for its own live-broker itests.
+    testImplementation 'org.apache.activemq:activemq-broker:6.2.0'
 }
 
 test {
