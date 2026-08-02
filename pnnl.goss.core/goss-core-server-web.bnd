@@ -2,7 +2,7 @@ DynamicImport-Package: *
 Private-Package:  \
 	pnnl.goss.core.server.web
 
-Bundle-Version: 16.0.1-SNAPSHOT
+Bundle-Version: 16.0.1
 
 # Import webroot folder to path resources/webroot
 Include-Resource: resources/webroot=webroot
