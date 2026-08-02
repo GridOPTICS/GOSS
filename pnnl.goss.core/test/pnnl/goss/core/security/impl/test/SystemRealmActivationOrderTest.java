@@ -160,6 +160,55 @@ public class SystemRealmActivationOrderTest {
     }
 
     @Test
+    @DisplayName("GOSS-025: system realm hangs its account load off container-driven entry points, not Shiro init()")
+    public void systemRealmDeclaresContainerDrivenLifecycleEntryPoints() throws Exception {
+        Document doc = descriptor("pnnl.goss.core.security-system.jar",
+                "pnnl.goss.core.security.system.SystemBasedRealm");
+        Element component = doc.getDocumentElement();
+
+        // The GOSS-025 defect was that the ONLY population path was Shiro's
+        // onInit(), which nothing in this deployment calls. These attributes are the
+        // paths Declarative Services is contractually guaranteed to invoke, so the
+        // descriptor is where that guarantee has to be asserted.
+        assertThat(component.getAttribute("activate"))
+                .as("DS must have an activate method to drive; without it the realm loads from nothing")
+                .isEqualTo("activate");
+        assertThat(component.getAttribute("modified"))
+                .as("a configuration update must reach the realm rather than silently deactivating it")
+                .isEqualTo("updated");
+        assertThat(component.getAttribute("configuration-policy"))
+                .as("GOSS-004 documents the required systemrealm.cfg dependency deliberately")
+                .isEqualTo("require");
+        assertThat(component.getAttribute("configuration-pid"))
+                .isEqualTo("pnnl.goss.core.security.systemrealm");
+    }
+
+    @Test
+    @DisplayName("GOSS-025: the system realm's SecurityConfig reference is mandatory and notifies on change")
+    public void systemRealmSecurityConfigReferenceIsMandatoryAndNotifying() throws Exception {
+        Document doc = descriptor("pnnl.goss.core.security-system.jar",
+                "pnnl.goss.core.security.system.SystemBasedRealm");
+        Element ref = referenceByInterface(doc, "pnnl.goss.core.security.SecurityConfig");
+        assertNotNull(ref, "the system realm must declare a SecurityConfig reference; it is the credential source");
+
+        String cardinality = ref.getAttribute("cardinality");
+        assertThat(cardinality.isEmpty() || "1..1".equals(cardinality))
+                .as("the credential source must be mandatory so DS cannot activate an unauthenticatable realm;"
+                        + " was '%s'", cardinality)
+                .isTrue();
+        assertThat(ref.getAttribute("bind"))
+                .as("a bind callback is what lets the realm load on wiring rather than on an uncalled hook")
+                .isEqualTo("setSecurityConfig");
+        assertThat(ref.getAttribute("unbind"))
+                .as("an unbind callback is what lets the realm fail closed when the credential source goes")
+                .isEqualTo("unsetSecurityConfig");
+        assertThat(ref.getAttribute("updated"))
+                .as("pnnl.goss.security.cfg edits change the bound service's properties, not the instance;"
+                        + " without this callback a rotated manager credential is never picked up")
+                .isEqualTo("updatedSecurityConfig");
+    }
+
+    @Test
     @DisplayName("SecurityManager component gates activation on the system realm via a mandatory target filter")
     public void activatorReferencesSystemRealmWithTargetFilter() throws Exception {
         Document doc = descriptor("pnnl.goss.core.goss-core-security.jar",
@@ -292,6 +341,20 @@ public class SystemRealmActivationOrderTest {
             if (e.getName().startsWith("OSGI-INF/") && e.getName().endsWith(".xml")
                     && e.getName().contains(componentName)) {
                 return e;
+            }
+        }
+        return null;
+    }
+
+    private Element referenceByInterface(Document doc, String interfaceName) {
+        NodeList refs = doc.getElementsByTagName("reference");
+        for (int i = 0; i < refs.getLength(); i++) {
+            Node node = refs.item(i);
+            if (node instanceof Element) {
+                Element ref = (Element) node;
+                if (interfaceName.equals(ref.getAttribute("interface"))) {
+                    return ref;
+                }
             }
         }
         return null;

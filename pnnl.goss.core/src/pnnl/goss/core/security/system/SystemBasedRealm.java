@@ -19,6 +19,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +50,20 @@ import pnnl.goss.core.security.SecurityConfig;
  * AT_LEAST_ONE realm guard let GridOpticsServer connect as system/manager
  * before this realm was wired.
  *
+ * LIFECYCLE (GOSS-025): the account map is loaded from {@link #activate}, which
+ * Declarative Services is guaranteed to call. It used to be loaded only from
+ * Shiro's {@code onInit()} hook, which is unreachable in this deployment:
+ * {@code onInit()} is protected and called only from
+ * {@code Initializable.init()}, normally driven by
+ * {@code LifecycleUtils.init()} out of an ini/Spring bootstrap. Nothing in
+ * goss-core, in Felix DS, or in shiro-core 2.0.0's own wiring calls it for a
+ * DS-managed realm: {@code RealmSecurityManager.setRealms()} reaches only
+ * {@code afterRealmsSet() -> applyCacheManagerToRealms()}. The realm therefore
+ * activated with a permanently empty map and the broker connect in
+ * GridOpticsServer.start() failed with UnknownAccountException for "system".
+ * {@code onInit()} is retained and delegates to the same idempotent loader, so
+ * the realm stays correct if any future host does drive Shiro's lifecycle.
+ *
  * @author Craig Allwardt
  *
  */
@@ -56,35 +73,152 @@ public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
 
     private static final Logger log = LoggerFactory.getLogger(SystemBasedRealm.class);
 
+    /**
+     * The permission string granted to the system principal. Consumed verbatim by
+     * the ActiveMQ Shiro authorization plugin through
+     * {@link pnnl.goss.core.security.impl.GossWildcardPermissionResolver}; changing
+     * it changes what the broker connection is allowed to do.
+     */
+    private static final String SYSTEM_PERMISSIONS = "queue:*,topic:*,temp-queue:*,fusion:*:read,fusion:*:write";
+
     private final Map<String, SimpleAccount> userMap = new ConcurrentHashMap<>();
     private final Map<String, Set<String>> userPermissions = new ConcurrentHashMap<>();
 
     @Reference
     GossPermissionResolver gossPermissionResolver;
 
-    @Reference
     private volatile SecurityConfig securityConfig;
 
+    /**
+     * The credential source, bound through methods rather than a field so this
+     * component is notified when it changes.
+     *
+     * The manager user and password do not come from this component's own PID
+     * (pnnl.goss.core.security.systemrealm carries only load=true); they come from
+     * the pnnl.goss.security PID by way of SecurityConfigImpl. A FileInstall edit
+     * to pnnl.goss.security.cfg calls SecurityConfigImpl's modified method, which
+     * leaves the same service instance registered with updated service properties.
+     * A field reference would give this component no callback for that, so the
+     * realm would keep serving a superseded credential. The updated= callback below
+     * is the DS 1.3+ hook for exactly that case, and the dynamic bind reloads on
+     * service replacement.
+     */
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, unbind = "unsetSecurityConfig", updated = "updatedSecurityConfig")
+    public void setSecurityConfig(SecurityConfig securityConfig) {
+        this.securityConfig = securityConfig;
+        loadSystemAccount();
+    }
+
+    /**
+     * Called when the bound SecurityConfig's service properties change, which DS
+     * does after SecurityConfigImpl's modified method runs for a
+     * pnnl.goss.security.cfg edit. Reloads so a rotated manager credential takes
+     * effect without a bundle restart.
+     */
+    public void updatedSecurityConfig(SecurityConfig securityConfig) {
+        this.securityConfig = securityConfig;
+        loadSystemAccount();
+    }
+
+    /**
+     * Fails closed on unbind: the account map is emptied so this realm cannot keep
+     * authenticating against a credential source that is gone. The reference is
+     * mandatory, so DS deactivates this component (and transitively the
+     * SecurityManager and GridOpticsServer) when no replacement exists. The
+     * identity check keeps a greedy bind-then-unbind swap from wiping the account
+     * that the new service just loaded.
+     */
+    public void unsetSecurityConfig(SecurityConfig securityConfig) {
+        if (this.securityConfig == securityConfig) {
+            this.securityConfig = null;
+            clearAccounts();
+            log.warn("SecurityConfig unbound from SystemBasedRealm; system account cleared. "
+                    + "This realm cannot authenticate the system principal until a SecurityConfig rebinds.");
+        }
+    }
+
+    /**
+     * Rebuilds the system account from the bound {@link SecurityConfig}.
+     *
+     * The map is cleared before it is rebuilt, so a rename of the manager user
+     * cannot leave the previous principal behind and a failure cannot leave a
+     * half-built or stale account in place.
+     *
+     * @throws IllegalStateException
+     *             when no SecurityConfig is bound or the configured manager
+     *             credential is missing. Thrown rather than logged-and-swallowed so
+     *             the failure is fail-closed: propagated out of activate() it
+     *             aborts DS activation, this realm's service is never published,
+     *             the Activator's mandatory realm.type=system reference stays
+     *             unsatisfied, the SecurityManager service is never published, and
+     *             GridOpticsServer never opens a broker connection against an empty
+     *             realm.
+     */
+    private synchronized void loadSystemAccount() {
+        clearAccounts();
+
+        SecurityConfig config = this.securityConfig;
+        if (config == null) {
+            throw new IllegalStateException("SystemBasedRealm cannot build the system account: no SecurityConfig "
+                    + "service is bound. Check that pnnl.goss.security.cfg exists and that SecurityConfigImpl "
+                    + "activated.");
+        }
+
+        String managerUser = config.getManagerUser();
+        if (managerUser == null || managerUser.trim().isEmpty()) {
+            throw new IllegalStateException("SystemBasedRealm cannot build the system account: property "
+                    + "goss.system.manager is missing or blank in pnnl.goss.security.cfg.");
+        }
+
+        String managerPassword = config.getManagerPassword();
+        if (managerPassword == null || managerPassword.trim().isEmpty()) {
+            throw new IllegalStateException("SystemBasedRealm cannot build the system account for user '"
+                    + managerUser + "': property goss.system.manager.password is missing or blank in "
+                    + "pnnl.goss.security.cfg.");
+        }
+
+        SimpleAccount account = new SimpleAccount(managerUser, managerPassword, getName());
+        account.addStringPermission(SYSTEM_PERMISSIONS);
+
+        Set<String> perms = new HashSet<>();
+        perms.add(SYSTEM_PERMISSIONS);
+
+        userMap.put(managerUser, account);
+        userPermissions.put(managerUser, perms);
+
+        log.info("SystemBasedRealm loaded the system account for manager user '{}'", managerUser);
+    }
+
+    private void clearAccounts() {
+        userMap.clear();
+        userPermissions.clear();
+    }
+
+    /**
+     * Shiro's Initializable hook. Nothing drives it in this OSGi deployment (see
+     * the class comment), but it is kept wired to the same idempotent loader so the
+     * realm is correct under either entry point rather than silently empty under
+     * one of them.
+     */
     @Override
     protected void onInit() {
         super.onInit();
-        Set<String> perms = new HashSet<>();
-
-        SimpleAccount acnt = new SimpleAccount(securityConfig.getManagerUser(), securityConfig.getManagerPassword(),
-                getName());
-        acnt.addStringPermission("queue:*,topic:*,temp-queue:*,fusion:*:read,fusion:*:write");
-        perms.add("queue:*,topic:*,temp-queue:*,fusion:*:read,fusion:*:write");
-        userMap.put(securityConfig.getManagerUser(), acnt);
-        userPermissions.put(securityConfig.getManagerUser(), perms);
+        loadSystemAccount();
     }
 
     @Activate
     public void activate(Map<String, Object> properties) {
         log.info("Activating SystemBasedRealm");
+        // The component properties (systemrealm.cfg carries only load=true) are not
+        // the credential source; the bound SecurityConfig is. Reload anyway so
+        // activation never depends on bind-callback ordering.
+        loadSystemAccount();
     }
 
     @Modified
     public synchronized void updated(Map<String, Object> properties) {
+        log.info("Reloading SystemBasedRealm after a configuration update");
+        loadSystemAccount();
     }
 
     @Override
