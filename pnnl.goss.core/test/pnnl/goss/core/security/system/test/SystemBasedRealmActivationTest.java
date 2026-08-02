@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -23,17 +22,17 @@ import pnnl.goss.core.security.system.SystemBasedRealm;
 /**
  * Covers the GOSS-025 bootstrap failure: SystemBasedRealm populated its account
  * map only from Shiro's {@code onInit()} hook, and nothing in this OSGi
- * deployment ever calls {@code Initializable.init()}. Declarative Services calls
- * {@code @Activate}; Shiro's RealmSecurityManager.setRealms() reaches only
- * afterRealmsSet() -> applyCacheManagerToRealms(), never init(). So the realm
- * activated with a permanently empty userMap and every system/manager
+ * deployment ever calls {@code Initializable.init()}. Declarative Services
+ * calls {@code @Activate}; Shiro's RealmSecurityManager.setRealms() reaches
+ * only afterRealmsSet() -> applyCacheManagerToRealms(), never init(). So the
+ * realm activated with a permanently empty userMap and every system/manager
  * authentication against it threw UnknownAccountException, which broke the
  * broker connect in GridOpticsServer.start().
  *
- * The load-bearing assertion in this class is that the realm resolves the system
- * account after DS activation WITHOUT any call to init(). Everything else here
- * guards the surrounding lifecycle: config reload, reference rebind, and fail-
- * closed behavior when the credential source is unusable.
+ * The load-bearing assertion in this class is that the realm resolves the
+ * system account after DS activation WITHOUT any call to init(). Everything
+ * else here guards the surrounding lifecycle: config reload, reference rebind,
+ * and fail- closed behavior when the credential source is unusable.
  */
 public class SystemBasedRealmActivationTest {
 
@@ -90,14 +89,11 @@ public class SystemBasedRealmActivationTest {
     }
 
     /**
-     * Simulates the Declarative Services reference injection for the
-     * securityConfig reference. The production reference is a field reference
-     * today, so this mirrors it exactly.
+     * Simulates the Declarative Services bind callback for the securityConfig
+     * reference. DS invokes bind methods before @Activate.
      */
-    private static void bindSecurityConfig(SystemBasedRealm realm, SecurityConfig config) throws Exception {
-        Field field = SystemBasedRealm.class.getDeclaredField("securityConfig");
-        field.setAccessible(true);
-        field.set(realm, config);
+    private static void bindSecurityConfig(SystemBasedRealm realm, SecurityConfig config) {
+        realm.setSecurityConfig(config);
     }
 
     /** The DS-supplied component properties: systemrealm.cfg carries load=true. */
@@ -221,29 +217,90 @@ public class SystemBasedRealmActivationTest {
     }
 
     @Test
-    @DisplayName("Activation fails closed with an empty realm when the manager user is absent")
-    public void activationFailsClosedWithoutManagerUser() throws Exception {
+    @DisplayName("A rebound SecurityConfig replaces the account rather than adding to it")
+    public void rebindReplacesTheSystemAccount() {
         SystemBasedRealm realm = new SystemBasedRealm();
-        bindSecurityConfig(realm, new FakeSecurityConfig(null, SYSTEM_PASSWORD));
+        FakeSecurityConfig first = new FakeSecurityConfig(SYSTEM_USER, SYSTEM_PASSWORD);
+        bindSecurityConfig(realm, first);
+        realm.activate(componentProperties());
 
-        assertThatThrownBy(() -> realm.activate(componentProperties()))
-                .as("a missing manager user must abort activation, not publish an empty realm")
+        realm.setSecurityConfig(new FakeSecurityConfig("operator", "rotated"));
+        realm.unsetSecurityConfig(first);
+
+        assertThat(realm.hasIdentifier(SYSTEM_USER))
+                .as("greedy rebind must not leave the previous credential source's account behind")
+                .isFalse();
+        assertThat(realm.hasIdentifier("operator")).isTrue();
+        assertThat(realm.getPermissions("operator")).containsExactly(SYSTEM_PERMISSIONS);
+
+        AuthenticationInfo info = realm.getAuthenticationInfo(
+                new UsernamePasswordToken("operator", "rotated"));
+        assertThat(info.getCredentials()).isEqualTo("rotated");
+    }
+
+    @Test
+    @DisplayName("An updated SecurityConfig service picks up a rotated credential without reactivation")
+    public void updatedReferenceCallbackReloadsCredentials() {
+        SystemBasedRealm realm = new SystemBasedRealm();
+        FakeSecurityConfig config = new FakeSecurityConfig(SYSTEM_USER, SYSTEM_PASSWORD);
+        bindSecurityConfig(realm, config);
+        realm.activate(componentProperties());
+
+        // pnnl.goss.security.cfg edited: SecurityConfigImpl's modified method runs
+        // on the same instance, DS updates its service properties, and DS calls the
+        // updated= callback on this reference.
+        config.managerPassword = "rotated";
+        realm.updatedSecurityConfig(config);
+
+        assertThatThrownBy(() -> realm.getAuthenticationInfo(
+                new UsernamePasswordToken(SYSTEM_USER, SYSTEM_PASSWORD)))
+                .isInstanceOf(IncorrectCredentialsException.class);
+        assertThat(realm.getAuthenticationInfo(new UsernamePasswordToken(SYSTEM_USER, "rotated"))
+                .getCredentials()).isEqualTo("rotated");
+    }
+
+    @Test
+    @DisplayName("Unbinding the credential source empties the realm rather than leaving it authenticating")
+    public void unbindFailsClosed() {
+        SystemBasedRealm realm = new SystemBasedRealm();
+        FakeSecurityConfig config = new FakeSecurityConfig(SYSTEM_USER, SYSTEM_PASSWORD);
+        bindSecurityConfig(realm, config);
+        realm.activate(componentProperties());
+
+        realm.unsetSecurityConfig(config);
+
+        assertThat(realm.hasIdentifier(SYSTEM_USER)).isFalse();
+        assertThat(realm.getPermissions(SYSTEM_USER)).isEmpty();
+        assertThat(realm.getAuthenticationInfo(new UsernamePasswordToken(SYSTEM_USER, SYSTEM_PASSWORD)))
+                .isNull();
+    }
+
+    @Test
+    @DisplayName("Wiring fails closed with an empty realm when the manager user is absent")
+    public void wiringFailsClosedWithoutManagerUser() {
+        SystemBasedRealm realm = new SystemBasedRealm();
+
+        assertThatThrownBy(() -> realm.setSecurityConfig(new FakeSecurityConfig(null, SYSTEM_PASSWORD)))
+                .as("a missing manager user must abort DS wiring, not publish an empty realm")
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("goss.system.manager");
 
         assertThat(realm.hasIdentifier(SYSTEM_USER)).isFalse();
         assertThat(realm.getAuthenticationInfo(new UsernamePasswordToken(SYSTEM_USER, SYSTEM_PASSWORD)))
                 .isNull();
+        assertThatThrownBy(() -> realm.activate(componentProperties()))
+                .as("activation must not paper over the unusable credential source either")
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("goss.system.manager");
     }
 
     @Test
-    @DisplayName("Activation fails closed with an empty realm when the manager password is absent")
-    public void activationFailsClosedWithoutManagerPassword() throws Exception {
+    @DisplayName("Wiring fails closed with an empty realm when the manager password is blank")
+    public void wiringFailsClosedWithoutManagerPassword() {
         SystemBasedRealm realm = new SystemBasedRealm();
-        bindSecurityConfig(realm, new FakeSecurityConfig(SYSTEM_USER, "   "));
 
-        assertThatThrownBy(() -> realm.activate(componentProperties()))
-                .as("a blank manager password must abort activation, not publish an empty realm")
+        assertThatThrownBy(() -> realm.setSecurityConfig(new FakeSecurityConfig(SYSTEM_USER, "   ")))
+                .as("a blank manager password must abort DS wiring, not publish an empty realm")
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("goss.system.manager.password");
 
@@ -262,6 +319,24 @@ public class SystemBasedRealmActivationTest {
                 .hasMessageContaining("SecurityConfig");
 
         assertThat(realm.hasIdentifier(SYSTEM_USER)).isFalse();
+    }
+
+    @Test
+    @DisplayName("A configuration update that breaks the credential source empties the realm")
+    public void modifiedFailsClosedOnBrokenConfig() {
+        SystemBasedRealm realm = new SystemBasedRealm();
+        FakeSecurityConfig config = new FakeSecurityConfig(SYSTEM_USER, SYSTEM_PASSWORD);
+        bindSecurityConfig(realm, config);
+        realm.activate(componentProperties());
+
+        config.managerPassword = null;
+        assertThatThrownBy(() -> realm.updated(componentProperties()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("goss.system.manager.password");
+
+        assertThat(realm.hasIdentifier(SYSTEM_USER))
+                .as("a failed reload must not leave the superseded account authenticating")
+                .isFalse();
     }
 
     @Test

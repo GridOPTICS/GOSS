@@ -32,9 +32,9 @@ import pnnl.goss.core.security.impl.Activator;
  *
  * Shiro offers no way to install an empty realm set, so the guard must decline
  * the write and log it. The realm set the SecurityManager still holds is not a
- * widened authorization surface: the Activator's realm reference is AT_LEAST_ONE,
- * so DS deactivates this component when the last realm goes, and the
- * SecurityManager service is unpublished with it.
+ * widened authorization surface: the Activator's realm reference is
+ * AT_LEAST_ONE, so DS deactivates this component when the last realm goes, and
+ * the SecurityManager service is unpublished with it.
  */
 public class ActivatorRealmRemovalTest {
 

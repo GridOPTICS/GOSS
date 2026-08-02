@@ -115,10 +115,33 @@ public class Activator extends DefaultActiveMqSecurityManager {
         }
     }
 
+    /**
+     * Writes the collected realms onto the SecurityManager.
+     *
+     * Shiro's RealmSecurityManager.setRealms() rejects an empty collection with
+     * IllegalArgumentException, so removing the LAST realm used to throw out of
+     * realmRemoved() and DS logged "The realmRemoved method has thrown an
+     * exception" on every teardown. Shiro offers no way to install an empty realm
+     * set, so the guard declines the write and logs it.
+     *
+     * Declining does not widen the authorization surface. The realm reference is
+     * AT_LEAST_ONE, so losing the last realm makes this component unsatisfied and
+     * DS deactivates it; the SecurityManager service is unpublished with it, and
+     * GridOpticsServer's mandatory reference on that service goes with it. The
+     * throwing version left exactly the same stale realm set behind, because it
+     * threw before assigning, so this is strictly the same state without the
+     * spurious error.
+     */
     private synchronized void registerAllRealms() {
         Set<Realm> realms = new HashSet<>();
         for (GossRealm r : realmMap.values()) {
             realms.add((Realm) r);
+        }
+        if (realms.isEmpty()) {
+            log.warn("No GossRealm services remain; leaving the previously registered realm set in place. "
+                    + "Shiro rejects an empty realm set, and this component is about to be deactivated by DS "
+                    + "because its realm reference is AT_LEAST_ONE.");
+            return;
         }
         setRealms(realms);
         log.info("Registered {} realms with SecurityManager: {}", realms.size(),
