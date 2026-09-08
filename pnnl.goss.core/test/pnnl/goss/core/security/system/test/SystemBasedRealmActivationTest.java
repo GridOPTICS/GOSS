@@ -40,12 +40,26 @@ public class SystemBasedRealmActivationTest {
     private static final String SYSTEM_PASSWORD = "manager";
 
     /**
-     * The exact permission string the broker's authorization plugin consumes for
-     * the system principal. Deliberately duplicated here as a literal rather than
-     * referenced from production code: this test is the guard that the string is
-     * not silently altered.
+     * The comma-separated permission list configured for the system principal.
+     * Deliberately duplicated here as a literal rather than referenced from
+     * production code: this test is the guard that the realm grants exactly these
+     * permissions and no others.
+     *
+     * The realm must split this into individual Shiro permissions
+     * ({@link #SYSTEM_PERMISSION_SET}). Storing the whole comma-joined string as
+     * one permission is a bug: Shiro's WildcardPermission treats ',' as
+     * alternatives within a single ':'-delimited part, so a single
+     * "queue:*,topic:*,..." permission does not imply the concrete
+     * "topic:ActiveMQ.Advisory.*:create" permissions the broker checks, and the
+     * system principal is denied.
      */
     private static final String SYSTEM_PERMISSIONS = "queue:*,topic:*,temp-queue:*,fusion:*:read,fusion:*:write";
+
+    /**
+     * The individual permissions the realm must grant, one Shiro permission each.
+     */
+    private static final String[] SYSTEM_PERMISSION_SET = {"queue:*", "topic:*", "temp-queue:*", "fusion:*:read",
+            "fusion:*:write"};
 
     /** Mutable SecurityConfig stub standing in for SecurityConfigImpl. */
     private static final class FakeSecurityConfig implements SecurityConfig {
@@ -124,12 +138,32 @@ public class SystemBasedRealmActivationTest {
         assertThat(info).isInstanceOf(SimpleAccount.class);
         SimpleAccount account = (SimpleAccount) info;
         assertThat(account.getStringPermissions())
-                .as("the system account must carry exactly the broker permission string, unaltered")
-                .containsExactly(SYSTEM_PERMISSIONS);
+                .as("the system account must carry each broker permission as a separate Shiro permission")
+                .containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
 
         assertThat(realm.getPermissions(SYSTEM_USER))
-                .as("PermissionAdapter view must report the same single permission string")
-                .containsExactly(SYSTEM_PERMISSIONS);
+                .as("PermissionAdapter view must report the same split permissions")
+                .containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
+    }
+
+    @Test
+    @DisplayName("The granted permission set is exactly the comma-separated source list, split")
+    public void grantedPermissionsAreTheSourceListSplit() {
+        // Guards the split invariant against the source-of-truth string: the set the
+        // realm grants must be exactly SYSTEM_PERMISSIONS split on ',', with no part
+        // dropped, merged, or left as the whole joined blob.
+        assertThat(SYSTEM_PERMISSION_SET)
+                .as("test's split set must match the configured permission string")
+                .containsExactlyInAnyOrder(SYSTEM_PERMISSIONS.split(","));
+
+        SystemBasedRealm realm = new SystemBasedRealm();
+        bindSecurityConfig(realm, new FakeSecurityConfig(SYSTEM_USER, SYSTEM_PASSWORD));
+        realm.activate(componentProperties());
+
+        assertThat(realm.getPermissions(SYSTEM_USER))
+                .as("the realm must not store the joined string as a single permission")
+                .doesNotContain(SYSTEM_PERMISSIONS)
+                .containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
     }
 
     @Test
@@ -168,7 +202,7 @@ public class SystemBasedRealmActivationTest {
         realm.init();
 
         assertThat(realm.hasIdentifier(SYSTEM_USER)).isTrue();
-        assertThat(realm.getPermissions(SYSTEM_USER)).containsExactly(SYSTEM_PERMISSIONS);
+        assertThat(realm.getPermissions(SYSTEM_USER)).containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
         AuthenticationInfo info = realm.getAuthenticationInfo(
                 new UsernamePasswordToken(SYSTEM_USER, SYSTEM_PASSWORD));
         assertThat(info.getPrincipals().getPrimaryPrincipal()).isEqualTo(SYSTEM_USER);
@@ -213,7 +247,7 @@ public class SystemBasedRealmActivationTest {
                 .isFalse();
         assertThat(realm.getPermissions(SYSTEM_USER)).isEmpty();
         assertThat(realm.hasIdentifier("operator")).isTrue();
-        assertThat(realm.getPermissions("operator")).containsExactly(SYSTEM_PERMISSIONS);
+        assertThat(realm.getPermissions("operator")).containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
     }
 
     @Test
@@ -231,7 +265,7 @@ public class SystemBasedRealmActivationTest {
                 .as("greedy rebind must not leave the previous credential source's account behind")
                 .isFalse();
         assertThat(realm.hasIdentifier("operator")).isTrue();
-        assertThat(realm.getPermissions("operator")).containsExactly(SYSTEM_PERMISSIONS);
+        assertThat(realm.getPermissions("operator")).containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
 
         AuthenticationInfo info = realm.getAuthenticationInfo(
                 new UsernamePasswordToken("operator", "rotated"));
@@ -351,6 +385,6 @@ public class SystemBasedRealmActivationTest {
 
         assertThat(realm.hasIdentifier(SYSTEM_USER)).isTrue();
         assertThat(realm.hasIdentifier("load")).isFalse();
-        assertThat(realm.getPermissions(SYSTEM_USER)).containsExactly(SYSTEM_PERMISSIONS);
+        assertThat(realm.getPermissions(SYSTEM_USER)).containsExactlyInAnyOrder(SYSTEM_PERMISSION_SET);
     }
 }

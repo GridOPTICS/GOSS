@@ -1,5 +1,6 @@
 package pnnl.goss.core.security.system;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -177,11 +178,10 @@ public class SystemBasedRealm extends AuthorizingRealm implements GossRealm {
                     + "pnnl.goss.security.cfg.");
         }
 
-        SimpleAccount account = new SimpleAccount(managerUser, managerPassword, getName());
-        account.addStringPermission(SYSTEM_PERMISSIONS);
+        Set<String> perms = new HashSet<>(Arrays.asList(SYSTEM_PERMISSIONS.split(",")));
 
-        Set<String> perms = new HashSet<>();
-        perms.add(SYSTEM_PERMISSIONS);
+        SimpleAccount account = new SimpleAccount(managerUser, managerPassword, getName());
+        account.addStringPermissions(perms);
 
         userMap.put(managerUser, account);
         userPermissions.put(managerUser, perms);
